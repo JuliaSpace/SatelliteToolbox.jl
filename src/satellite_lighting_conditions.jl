@@ -50,13 +50,7 @@ const SAT_LIGHTING_UMBRA = 2
 #
 #==#
 
-function sat_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
-    # Earth radius [m].
-    const R0 = 6371009.0
-
-    # Sun radius [m].
-    const Rs = 6.963e8
-
+function satellite_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
     # Norme of the sun position vector.
     norm_s_i = norm(s_i)
     
