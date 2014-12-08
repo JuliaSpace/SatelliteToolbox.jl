@@ -2,11 +2,13 @@ module SatToolbox
 
 export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
 export satellite_lighting_condition, satellite_position_i, sun_position_i
+export satellite_orbit_compute_f
 export OrbitalParameters
 export R0, m0, J2, Rs
 
 import Base: asin, atan2, cos, mod, sin
 
+# Structure that defines the orbital parameters of a satellite.
 type OrbitalParameters
     a::Float64
     e::Float64
@@ -28,6 +30,7 @@ const J2 = 1.0826269E-03
 # Sun radius [m].
 const Rs = 6.963e8
 
+include("satellite_orbit_step.jl")
 include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
 include("sun_position.jl")
