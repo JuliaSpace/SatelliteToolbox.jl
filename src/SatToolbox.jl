@@ -16,11 +16,11 @@ type OrbitalParameters
     f::Float64
 end
 
-# Earth radius [km].
-const R0 = 6378.1363;
+# Earth radius [m].
+const R0 = 6378136.3;
 
-# Standard gravitational parameter for Earth [km^3/s^2]
-const m0 = 398600.4415;
+# Standard gravitational parameter for Earth [m^3/s^2]
+const m0 = 3.986004415e14;
 
 # J2 perturbation term.
 const J2 = 1.0826269E-03
