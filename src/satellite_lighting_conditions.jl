@@ -10,7 +10,10 @@
 #
 # Description
 #
-#    Compute the sun position.
+#    Compute the lighting condition of a satellite: 
+#        1) Sunlight, 
+#        2) penumbra, or
+#        3) umbra.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

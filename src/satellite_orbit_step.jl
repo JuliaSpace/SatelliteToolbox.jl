@@ -16,8 +16,8 @@
 #
 # References:
 #
-# [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics and
-#     Applications. Microcosm Press.
+#    [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics 
+#        and Applications. Microcosm Press.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

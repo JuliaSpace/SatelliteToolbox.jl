@@ -16,12 +16,12 @@
 #
 # Changelog
 #
-# 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
-#
 # 2014-08-12: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Add support to the structure OrbitalParameters.
 #    WARNING: the order of parameters in function satellite_position_i changed.
+#
+# 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+#    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

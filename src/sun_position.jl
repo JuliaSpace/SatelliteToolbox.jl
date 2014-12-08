@@ -46,7 +46,7 @@
 # @param[in] time Time of day [s].
 #
 # @return The vector between the origin of the Inertial coordinate frame and
-# the Sun represented in the Ielestial coordinate frame [m].
+# the Sun represented in the Celestial coordinate frame [m].
 #
 #==#
 
