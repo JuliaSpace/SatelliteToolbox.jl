@@ -42,7 +42,7 @@ import Rotations: angle2dcm
 #
 #==#
 
-function satellite_position_i(sat::OrbitalParameters)
+function satellite_position_i{T}(sat::OrbitalParameters{T})
   return satellite_position_i(sat.a, sat.e, sat.i, sat.RAAN, sat.w, sat.f)
 end
 
@@ -66,7 +66,7 @@ end
 #
 #==#
 
-function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+function satellite_position_i{T}(a::T, e::T, i::T, RAAN::T, w::T, f::T)
     # Compute the radius from the focus.
     norm_r = a*(1-e^2)/(1+e*cos(f))
 

@@ -47,11 +47,11 @@
 #
 #==#
 
-function satellite_orbit_compute_f(a::Real,
-                                   e::Real,
-                                   i::Real,
-                                   m::Real,
-                                   tol::Real = 1e-10)
+function satellite_orbit_compute_f{T}(a::T,
+                                      e::T,
+                                      i::T,
+                                      m::T,
+                                      tol::Float64 = 1e-10)
 
     # Update the eccentric anomaly using the Newton-Raphson method.
     # =============================================================

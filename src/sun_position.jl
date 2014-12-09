@@ -50,7 +50,7 @@
 #
 #==#
 
-function sun_position_i(day::Integer, time::Integer)
+function sun_position_i(day::Int, time::Int)
     # Constants
     const deg2rad = pi/180
     const au2m = 1.4960e11

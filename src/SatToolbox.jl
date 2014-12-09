@@ -9,13 +9,13 @@ export R0, m0, J2, Rs
 import Base: asin, atan2, cos, mod, sin
 
 # Structure that defines the orbital parameters of a satellite.
-type OrbitalParameters
-    a::Float64
-    e::Float64
-    i::Float64
-    RAAN::Float64
-    w::Float64
-    f::Float64
+type OrbitalParameters{T}
+    a::T
+    e::T
+    i::T
+    RAAN::T
+    w::T
+    f::T
 end
 
 # Earth radius [m].
