@@ -91,7 +91,7 @@ function sun_position_i(day::Int, time::Int)
     sin_L = sin(L)
 
     cos_e = cos(e)
-    sin_e = sin_e
+    sin_e = sin(e)
     
     ra_i = atan2( cos_e*sin_L, cos_L )
     dec_i = asin( sin_e*sin_L )
