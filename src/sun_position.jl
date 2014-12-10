@@ -87,12 +87,24 @@ function sun_position_i(day::Int, time::Int)
     # # # # # # # # # # # # # # # #
 
     # Right ascension and declination.
-    ra_i = atan2( cos(e)*sin(L), cos(L) )
-    dec_i = asin( sin(e)*sin(L) )
+    cos_L = cos(L)
+    sin_L = sin(L)
+
+    cos_e = cos(e)
+    sin_e = sin_e
+    
+    ra_i = atan2( cos_e*sin_L, cos_L )
+    dec_i = asin( sin_e*sin_L )
 
     # Compute the vector from the origin of the Celestial Coordinate Frame to
     # the center of the Sun represented in the Celestial Coordinate Frame.
-    S_i = [cos(ra_i)*cos(dec_i);
-           sin(ra_i)*cos(dec_i);
-           sin(dec_i)]*R;
+    cos_ra_i = cos(ra_i)
+    sin_ra_i = sin(ra_i)
+
+    cos_dec_i = cos(dec_i)
+    sin_dec_i = sin(dec_i)
+    
+    S_i = [cos_ra_i*cos_dec_i;
+           sin_ra_i*cos_dec_i;
+           sin_dec_i]*R;
 end

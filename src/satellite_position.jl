@@ -25,7 +25,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm
+import Rotations: angle2dcm!
 
 #==#
 # 
@@ -84,7 +84,8 @@ function satellite_position_i{T}(a::T, e::T, i::T, RAAN::T, w::T, f::T)
 
     # Compute the matrix that rotates from the S coordinate frame to the
     # Inertial coordinate Frame.
-    Dsi = angle2dcm(RAAN, i, w+f, "ZXZ")
+    Dsi = Array(T,(3,3))
+    angle2dcm!(Dsi, RAAN, i, w+f, "ZXZ")
 
     # Compute the satellite vector represented in the Inertial coordinate
     # frame.
