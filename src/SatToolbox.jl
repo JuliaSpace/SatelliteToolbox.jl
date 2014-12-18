@@ -1,6 +1,7 @@
 module SatToolbox
 
 export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
+export dRAAN_J2, dw_J2, n_J0, n_J2
 export satellite_lighting_condition, satellite_position_i, sun_position_i
 export satellite_orbit_compute_f
 export OrbitalParameters
@@ -30,6 +31,7 @@ const J2 = 1.0826269E-03
 # Sun radius [m].
 const Rs = 6.963e8
 
+include("orbit.jl")
 include("satellite_orbit_step.jl")
 include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
