@@ -1,7 +1,7 @@
 module SatToolbox
 
 export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
-export dRAAN_J2, dw_J2, n_J0, n_J2
+export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 export satellite_lighting_condition, satellite_position_i, sun_position_i
 export satellite_orbit_compute_f
 export OrbitalParameters

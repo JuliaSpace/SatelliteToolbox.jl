@@ -33,14 +33,14 @@
 #
 #==#
 
-function dRAAN_J2(a::Real, e::Real, i::Real)
+function dRAAN_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1-e) <= R0)
-        throw(OrbitInvalidPerigee(a*(1-e)))
+    if (a*(1.0-e) <= R0)
+        throw(OrbitInvalidPerigee(a*(1.0-e)))
     end
 
     # Semi-lactum rectum.
-    p = a*(1-e^2)
+    p = a*(1.0-e^2)
 
     # Unperturbed orbit period.
     n0 = n_J0(a)
@@ -61,20 +61,20 @@ end
 #
 #==#
 
-function dw_J2(a::Real, e::Real, i::Real)
+function dw_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1-e) <= R0)
-        throw(OrbitInvalidPerigee(a*(1-e)))
+    if (a*(1.0-e) <= R0)
+        throw(OrbitInvalidPerigee(a*(1.0-e)))
     end
     
     # Semi-lactum rectum.
-    p = a*(1-e^2)
+    p = a*(1.0-e^2)
 
     # Unperturbed orbit period.
     n0 = n_J0(a)
     
     # Perturbation of the argument of perigee.
-    3*R0^2*J2/(4*p^2)*n0*(5*cos(i)^2-1)
+    3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
 end
 
 #==#
@@ -88,7 +88,7 @@ end
 #
 #==#
 
-n_J0(a::Real) = sqrt(m0/a^3)
+n_J0(a::FloatingPoint) = sqrt(m0/a^3)
 
 #==#
 # 
@@ -103,18 +103,51 @@ n_J0(a::Real) = sqrt(m0/a^3)
 #
 #==#
 
-function n_J2(a::Real, e::Real, i::Real)
+function n_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1-e) <= R0)
+    if (a*(1.0-e) <= R0)
         throw(OrbitInvalidPerigee(a*(1-e)))
     end
 
     # Semi-lactum rectum.
-    p = a*(1-e^2)
+    p = a*(1.0-e^2)
 
     # Unperturbed orbit period.
     n0 = n_J0(a)
 
     # Orbit period considering the perturbations (up to J2).
-    n0 + 3*R0^2*J2/(4*p^2)*n0*(sqrt(1-e^2)*(3*cos(i)^2-1) + (5*cos(i)^2-1))
+    n0 + 3.0*R0^2*J2/(4.0*p^2)*n0*(sqrt(1.0-e^2)*(3.0*cos(i)^2-1.0) +
+                                   (5.0*cos(i)^2-1.0))
 end
+
+#==#
+# 
+# @brief Return the orbit period neglecting the perturbations (two-body).
+#
+# @param[in] a Semi-major axis [m].
+#
+# @return The unperturbed orbit period [s].
+#
+#==#
+
+function t_J0(a::FloatingPoint)
+    2.0*pi/n_J0(a)
+end
+
+#==#
+# 
+# @brief Return the orbit period considering the perturbations (up to J2 terms).
+#
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity.
+# @param[in] i Inclination [rad].
+#
+# @return The perturbed orbit period [s].
+#
+#==#
+
+function t_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
+    2.0*pi/n_J2(a, e, i)
+end
+
+    
