@@ -9,6 +9,10 @@ export R0, m0, J2, Rs
 
 import Base: asin, atan2, cos, mod, sin
 
+################################################################################
+#                                  Structures
+################################################################################
+
 # Structure that defines the orbital parameters of a satellite.
 type OrbitalParameters{T}
     a::T
@@ -18,6 +22,10 @@ type OrbitalParameters{T}
     w::T
     f::T
 end
+
+################################################################################
+#                                  Constants
+################################################################################
 
 # Earth radius [m].
 const R0 = 6378136.3;
@@ -30,6 +38,21 @@ const J2 = 1.0826269E-03
 
 # Sun radius [m].
 const Rs = 6.963e8
+
+################################################################################
+#                                  Exceptions
+################################################################################
+
+# Exception: The perigee is inside the Earth.
+type OrbitInvalidPerigee <: Exception
+    R_p::Real
+end
+Base.showerror(io::IO, e::OrbitInvalidPerigee) =
+    print(io, "The orbit perigee (", e.R_p, " m) is inside Earth!")
+
+################################################################################
+#                                    Files
+################################################################################
 
 include("orbit.jl")
 include("satellite_orbit_step.jl")

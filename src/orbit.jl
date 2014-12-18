@@ -34,6 +34,11 @@
 #==#
 
 function dRAAN_J2(a::Real, e::Real, i::Real)
+    # Check if the perigee is inside Earth.
+    if (a*(1-e) <= R0)
+        throw(OrbitInvalidPerigee(a*(1-e)))
+    end
+
     # Semi-lactum rectum.
     p = a*(1-e^2)
 
@@ -57,6 +62,11 @@ end
 #==#
 
 function dw_J2(a::Real, e::Real, i::Real)
+    # Check if the perigee is inside Earth.
+    if (a*(1-e) <= R0)
+        throw(OrbitInvalidPerigee(a*(1-e)))
+    end
+    
     # Semi-lactum rectum.
     p = a*(1-e^2)
 
@@ -94,6 +104,11 @@ n_J0(a::Real) = sqrt(m0/a^3)
 #==#
 
 function n_J2(a::Real, e::Real, i::Real)
+    # Check if the perigee is inside Earth.
+    if (a*(1-e) <= R0)
+        throw(OrbitInvalidPerigee(a*(1-e)))
+    end
+
     # Semi-lactum rectum.
     p = a*(1-e^2)
 
