@@ -35,7 +35,7 @@
 
 function dRAAN_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1.0-e) <= R0)
+    if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1.0-e)))
     end
 
@@ -63,7 +63,7 @@ end
 
 function dw_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1.0-e) <= R0)
+    if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1.0-e)))
     end
     
@@ -75,6 +75,23 @@ function dw_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     
     # Perturbation of the argument of perigee.
     3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
+end
+
+#==#
+# 
+# @brief Verify if the orbit is valid.
+#
+# @param[in] a Semi-major axis [m].
+# @param[in] b Eccentricity.
+#
+# @RETVAL true The orbit is valid.
+# @RETVAL false The orbit is invalid.
+#
+#==#
+
+function is_orbit_valid(a::FloatingPoint, e::FloatingPoint)
+    # Check if the perigee is inside Earth.
+    (a*(1-e) > R0)
 end
 
 #==#
@@ -105,7 +122,7 @@ n_J0(a::FloatingPoint) = sqrt(m0/a^3)
 
 function n_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     # Check if the perigee is inside Earth.
-    if (a*(1.0-e) <= R0)
+    if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1-e)))
     end
 
