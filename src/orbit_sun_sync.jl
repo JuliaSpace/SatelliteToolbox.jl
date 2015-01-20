@@ -35,6 +35,15 @@
 #==#
 
 function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
+    # Check if the arguments are valid.
+    if (n <= 0)
+        throw(ArgumentError("The angular velocity must be greater than 0."))
+    end
+
+    if !( 0. <= e < 1. )
+        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+    end
+
     # Tolerance for the Newton-Raphson method.
     const tol = 1e-18
 
@@ -106,10 +115,10 @@ end
 
 #==#
 # 
-# @brief Compute the sun-synchronous orbit given the period and the
-# eccentricity.
+# @brief Compute the sun-synchronous orbit given the number of revolutions per
+# day and the eccentricity.
 #
-# @param[in] t Period [s].
+# @param[in] numRevPD Number of revolutions per day.
 # @param[in] e Eccentricity.
 #
 # @return The semi-major axis [m], the inclination [rad], the residues of the
@@ -117,8 +126,8 @@ end
 #
 #==#
 
-function compute_ss_orbit_by_period(t::Real, e::Real)
-    compute_ss_orbit_by_ang_vel(t*2*pi/86400.0, e)
+function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
+    compute_ss_orbit_by_ang_vel(numRevPD*2*pi/86400.0, e)
 end
 
 #==#
@@ -150,6 +159,24 @@ end
 function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
                                       minAlt::Real=-1.0, maxAlt::Real=-1.0,
                                       e::Real=0.0)
+    numRevPD = 0
+    # Check if the arguments are valid.
+    if (minRep <= 0)
+        throw(ArgumentError("The minimum repetition time must be greater than 0."))
+    end
+
+    if (maxRep <= 0)
+        throw(ArgumentError("The maximum repetition time must be greater than 0."))
+    end
+
+    if (minRep > maxRep)
+        throw(ArgumentError("The minimum repetition time must be smaller or equal to the maximum repetition time."))
+    end
+    
+    if !( 0. <= e < 1. )
+        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+    end
+    
     # Matrix to store the available orbits.
     ss_orbits = Array(Float64, 0, 7)
 
@@ -158,18 +185,22 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
     
     # Loop for the possible repetition times.
     for den = minRep:maxRep
-        for num = 1:den-1
+        for num = 0:den-1
             # Check if the fraction num/den is irreducible.
             if ( gcd(num, den) == 1.0 )
                 # Loop through the integer parts.
                 for ino in intNumOrb
                     addOrbit = false
-                    
-                    period = ino+float64(num)/float64(den)
+
+                    # Number of revolutions per day.
+                    numRevPD = ino+float64(num)/float64(den)
 
                     (a, i, f1r, f2r, converged) =
-                        compute_ss_orbit_by_period(period, e)
+                        compute_ss_orbit_by_num_rev_per_day(numRevPD, e)
 
+                    # Check if the orbit is valid.
+                    (!is_orbit_valid(a, e)) && continue
+                        
                     # Check if the altitude interval must be verified.
                     if (minAlt > 0) && (maxAlt > 0)
                         if (minAlt < a-R0) && (a-R0 < maxAlt) && (converged)
@@ -181,8 +212,12 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
 
                     # Check if the orbit must be added to the list.
                     if (addOrbit)
+                        # Compute the period of the orbit considering
+                        # perturbations (J2).
+                        period = t_J2(a, e, i)
+
                         ss_orbits =
-                            vcat(ss_orbits, [a a-R0 i period ino  num den])
+                            vcat(ss_orbits, [a a-R0 i period ino num den])
                     end
                 end
             end

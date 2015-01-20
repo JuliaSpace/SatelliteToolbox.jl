@@ -1,7 +1,7 @@
 module SatToolbox
 
 export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
-export compute_ss_orbit_by_ang_vel, compute_ss_orbit_by_period
+export compute_ss_orbit_by_ang_vel, compute_ss_orbit_by_num_rev_per_day
 export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 export satellite_lighting_condition, satellite_position_i, sun_position_i
