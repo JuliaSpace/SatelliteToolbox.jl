@@ -6,6 +6,7 @@ export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 export satellite_lighting_condition, satellite_position_i, sun_position_i
 export satellite_orbit_compute_f
+export satellite_beta_angle
 export OrbitalParameters
 export R0, m0, J2, Rs
 
@@ -58,9 +59,12 @@ Base.showerror(io::IO, e::OrbitInvalidPerigee) =
 
 include("orbit.jl")
 include("orbit_sun_sync.jl")
+
 include("satellite_orbit_step.jl")
 include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
+include("satellite_beta_angle.jl")
+
 include("sun_position.jl")
 
 end # module
