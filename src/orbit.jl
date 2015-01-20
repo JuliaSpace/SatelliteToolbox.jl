@@ -90,8 +90,17 @@ end
 #==#
 
 function is_orbit_valid(a::FloatingPoint, e::FloatingPoint)
+    # Check if the arguments are valid.
+    if ( a < 0. )
+        throw(ArgumentError("The semi-major axis must be greater than 0."))
+    end
+
+    if !( 0. <= e < 1. )
+        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+    end
+    
     # Check if the perigee is inside Earth.
-    (a*(1-e) > R0)
+    (a*(1.-e) > R0)
 end
 
 #==#
@@ -105,7 +114,14 @@ end
 #
 #==#
 
-n_J0(a::FloatingPoint) = sqrt(m0/a^3)
+function n_J0(a::FloatingPoint)
+    # Check if the arguments are valid.
+    if ( a < 0. )
+        throw(ArgumentError("The semi-major axis must be greater than 0."))
+    end    
+    
+    sqrt(m0/a^3)
+end
 
 #==#
 # 
