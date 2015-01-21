@@ -22,6 +22,29 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 #==#
+#
+# @brief Compute the RAAN given a date and a local time.
+# @param[in] t0 Launch date [number of days since 01/01/2000].
+# @param[in] asc_node_lt Desired local time for the ascending node [hour].
+# @return The RAAN in the interval [0, 2pi].
+# @remarks The sun position is computed at noon of the day t0.
+#==#
+    
+function compute_RAAN_lt(t0::Int, asc_node_lt::FloatingPoint)
+    # Get the sun position at noon (UT) represented in the Inertial ref. frame.
+    Si = sun_position_i(t0, 43200)
+    
+    # Get the desired angle between the Sun and the ascending node [deg].
+    alpha = (asc_node_lt-12.0)*float(pi)/12.0
+
+    # Get the ascension of the Sun in the Inertial ref. frame.
+    S_asc_i = atan2(Si[2],Si[1])
+
+    # Compute the desired RAAN in the interval 0, 2*pi.
+    RAAN = mod(S_asc_i+alpha, 2*float(pi))
+end
+
+#==#
 # 
 # @brief Return perturbation of the right accession of the ascending node.
 #
