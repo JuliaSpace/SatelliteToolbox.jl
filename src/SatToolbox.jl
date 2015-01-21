@@ -7,6 +7,7 @@ export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 export satellite_lighting_condition, satellite_position_i, sun_position_i
 export satellite_orbit_compute_f
 export satellite_beta_angle
+export satellite_eclipse_time
 export compute_RAAN_lt
 export OrbitalParameters
 export R0, m0, J2, Rs
@@ -67,6 +68,6 @@ include("satellite_orbit_step.jl")
 include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
 include("satellite_beta_angle.jl")
-
+include("satellite_eclipse_time.jl")
 
 end # module
