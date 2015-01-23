@@ -115,6 +115,44 @@ end
 
 #==#
 # 
+# @brief Compute the sun-synchronous orbit given the inclination and the
+# eccentricity
+#
+# @param[in] i Inclination [rad].
+# @param[in] e Eccentricity.
+#
+# @return The semi-major axis [m].
+#
+#==#
+
+function compute_ss_orbit_by_inclination(i::Real, e::Real)
+    if !( 0. <= e < 1. )
+        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+    end
+
+    # Auxiliary variables.
+    sqrt_m0 = sqrt(m0)
+
+    # Earth's orbit mean motion.
+    ne = 0.98561228*pi/180.0/24.0/3600.0
+
+    # Auxiliary constant.
+    K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
+
+    # Compute the semi-major axis.
+    a = (-2*cos(i)*K1/ne)^(2.0/7.0)
+
+    # Check if the orbit is valid.
+    if ( a*(1.0-e) <  R0 )
+        throw(ErrorException("It was not possible to find a valid sun-synchronous orbit with the inclination given."))
+    end
+
+    # Return.
+    a
+end
+
+#==#
+# 
 # @brief Compute the sun-synchronous orbit given the number of revolutions per
 # day and the eccentricity.
 #
