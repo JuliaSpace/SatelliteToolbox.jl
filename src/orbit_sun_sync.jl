@@ -192,7 +192,6 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
 
     # Auxiliary variables.
     sqrt_m0 = sqrt(m0)
-    sqrt_e2 = sqrt(1-e^2)
 
     # Earth's orbit mean motion.
     ne = 0.98561228*pi/180.0/24.0/3600.0
