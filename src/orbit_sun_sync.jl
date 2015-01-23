@@ -132,6 +132,103 @@ end
 
 #==#
 # 
+# @brief Compute the sun-synchronous orbit given the semi-major axis and the
+# eccentricity
+#
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity.
+#
+# @return The inclination [rad].
+#
+#==#
+
+function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
+    # Check if the arguments are valid.
+    if (a*(1.0-e) <= R0)
+        throw(ArgumentError("The perigee must be larger than the Earth radius."))
+    end
+
+    if !( 0. <= e < 1. )
+        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+    end
+
+    # Auxiliary variables.
+    sqrt_m0 = sqrt(m0)
+    sqrt_e2 = sqrt(1-e^2)
+
+    # Earth's orbit mean motion.
+    ne = 0.98561228*pi/180.0/24.0/3600.0
+
+    # Auxiliary constant.
+    K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
+
+    # Compute the inclination.
+    cos_i = -ne*a^3*sqrt(a)/(2*K1)
+
+    # Check if -1 <= cos_i <= 1.
+    if ( (cos_i < -1) || (cos_i > 1) )
+        throw(ErrorException("It was not possible to find a sun-synchronous orbit with the semi-major axis given."))
+    end
+    
+    # Return.
+    acos(cos_i)
+end
+
+#==#
+#
+# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
+# orbit to cover the entire Equator within the revisit interval.
+#
+# @param[in] rp Perigee [m].
+# @param[in] T Orbit period [s].
+# @param[in] i Inclination [rad].
+# @param[in] revisit Revisit interval of the GRSS orbit [days].
+#
+# @return The minimum swath [m] and the half-FOV [rad].
+#==#
+
+function minimum_swath_grss(rp::Real, T::Real, i::Real, revisit::Integer)
+    # Angle between two adjacent traces.
+    theta = T*pi/43200.0
+
+    # Angle of swath.
+    beta = asin(sin(theta)*sin(i))/revisit
+
+    # Minimum swath.
+    minSwath = beta*R0
+
+    # Compute the minimum half-FOV.
+    b = sqrt(R0^2+rp^2-2*R0*rp*cos(beta/2.0))
+    minAlpha = asin(R0/b*sin(beta/2.0))
+
+    (minSwath, minAlpha)
+end
+
+#==#
+#
+# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
+# orbit to cover the entire Equator within the revisit interval.
+#
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity [s].
+# @param[in] i Inclination [rad].
+# @param[in] revisit Revisit interval of the GRSS orbit [days].
+#
+#==#
+
+function minimum_swath_orbit_grss(a::Real, e::Real, i::Real, revisit::Integer)
+    # Perigee.
+    rp = a*(1.0-e)
+
+    # Period (J2).
+    T = t_J2(a,e,i)
+
+    # Compute the minimum swath.
+    minimum_swath_grss(rp, T, i, revisit)
+end
+
+#==#
+# 
 # @brief Compute a list of repeating sun-synchronous orbits.
 #
 # @param[in] minRep Minimum repetition time of the orbit [days].
