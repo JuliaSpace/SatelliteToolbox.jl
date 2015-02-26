@@ -53,11 +53,11 @@
 function sun_position_i(day::Int, time::Int)
     # Constants
     const deg2rad = pi/180
-    const au2m = 1.4960e11
+    const au2m = 149597870700.0
 
     # Get the Julian date - 2451545.0 (noon, 1 January 2000), which is the input
     # to the algorithm.
-    hour = time/(86400)
+    hour = time/(86400.0)
     D = day + hour - 0.5
 
     # # # # # # # # # # # # # # # #
@@ -106,5 +106,5 @@ function sun_position_i(day::Int, time::Int)
     
     S_i = [cos_ra_i*cos_dec_i;
            sin_ra_i*cos_dec_i;
-           sin_dec_i]*R;
+           sin_dec_i]*R
 end
