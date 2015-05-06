@@ -54,9 +54,6 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     sqrt_m0 = sqrt(m0)
     sqrt_e2 = sqrt(1-e^2)
 
-    # Earth's orbit mean motion.
-    ne = 0.98561228*pi/180.0/24.0/3600.0
-
     # Auxiliary constant to compute the functions.
     K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
 
@@ -133,9 +130,6 @@ function compute_ss_orbit_by_inclination(i::Real, e::Real)
     # Auxiliary variables.
     sqrt_m0 = sqrt(m0)
 
-    # Earth's orbit mean motion.
-    ne = 0.98561228*pi/180.0/24.0/3600.0
-
     # Auxiliary constant.
     K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
 
@@ -192,9 +186,6 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
 
     # Auxiliary variables.
     sqrt_m0 = sqrt(m0)
-
-    # Earth's orbit mean motion.
-    ne = 0.98561228*pi/180.0/24.0/3600.0
 
     # Auxiliary constant.
     K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)

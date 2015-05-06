@@ -10,6 +10,7 @@ export satellite_lighting_condition, satellite_position_i, sun_position_i
 export satellite_orbit_compute_f
 export satellite_beta_angle
 export satellite_eclipse_time
+export satellite_sun_angle_earth_pointing
 export compute_RAAN_lt
 export minimum_swath_grss, minimum_swath_orbit_grss
 export OrbitalParameters
@@ -36,16 +37,19 @@ end
 ################################################################################
 
 # Earth radius [m].
-const R0 = 6378136.3;
+const R0 = 6378137;
 
 # Standard gravitational parameter for Earth [m^3/s^2]
 const m0 = 3.986004415e14;
 
 # J2 perturbation term.
-const J2 = 1.0826269E-03
+const J2 = 0.0010826267
 
 # Sun radius [m].
 const Rs = 6.963e8
+
+# Earth's orbit mean motion [rad/s]
+const ne = (360.0/365.2421897)*pi/180/86400
 
 ################################################################################
 #                                  Exceptions
@@ -72,5 +76,7 @@ include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
 include("satellite_beta_angle.jl")
 include("satellite_eclipse_time.jl")
+
+include("satellite_sun_angle.jl")
 
 end # module
