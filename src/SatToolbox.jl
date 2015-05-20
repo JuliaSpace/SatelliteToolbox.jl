@@ -15,7 +15,7 @@ export satellite_sun_radiation_earth_pointing
 export compute_RAAN_lt
 export minimum_swath_grss, minimum_swath_orbit_grss
 export OrbitalParameters
-export R0, m0, J2, Rs, ne, au2m
+export R0, m0, J2, Rs, ne, au2m, sunRad
 
 import Base: asin, atan2, cos, mod, sin
 
