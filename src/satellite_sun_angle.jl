@@ -16,7 +16,7 @@
 #
 # Changelog
 #
-# 2014-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+# 2015-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #
 #    Add function to compute the sun angle depending on a user-provided function
 #    that describe the surface normal according to the solar vector represented
@@ -28,7 +28,7 @@
 #            [cos(theta_p); 0.0; -sin(theta_p)]
 #        end
 #
-# 2014-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+# 2015-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
