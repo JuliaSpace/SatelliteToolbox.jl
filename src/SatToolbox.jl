@@ -11,6 +11,7 @@ export satellite_orbit_compute_f
 export satellite_beta_angle
 export satellite_eclipse_time
 export satellite_sun_angle_earth_pointing
+export satellite_sun_radiation_earth_pointing
 export compute_RAAN_lt
 export minimum_swath_grss, minimum_swath_orbit_grss
 export OrbitalParameters
@@ -54,6 +55,9 @@ const ne = (360.0/365.2421897)*pi/180/86400
 # Conversion factor from AU to m.
 const au2m = 149597870700.0
 
+# Sun radiation emitted [J/sec].
+const sunRad = 3.826e26
+
 ################################################################################
 #                                  Exceptions
 ################################################################################
@@ -81,5 +85,6 @@ include("satellite_beta_angle.jl")
 include("satellite_eclipse_time.jl")
 
 include("satellite_sun_angle.jl")
+include("satellite_sun_radiation.jl")
 
 end # module
