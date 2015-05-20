@@ -14,7 +14,7 @@ export satellite_sun_angle_earth_pointing
 export compute_RAAN_lt
 export minimum_swath_grss, minimum_swath_orbit_grss
 export OrbitalParameters
-export R0, m0, J2, Rs
+export R0, m0, J2, Rs, ne, au2m
 
 import Base: asin, atan2, cos, mod, sin
 
@@ -50,6 +50,9 @@ const Rs = 6.963e8
 
 # Earth's orbit mean motion [rad/s]
 const ne = (360.0/365.2421897)*pi/180/86400
+
+# Conversion factor from AU to m.
+const au2m = 149597870700.0
 
 ################################################################################
 #                                  Exceptions
