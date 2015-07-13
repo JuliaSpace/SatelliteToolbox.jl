@@ -38,7 +38,7 @@ end
 ################################################################################
 
 # Earth radius [m].
-const R0 = 6378137;
+const R0 = 6378137.0;
 
 # Standard gravitational parameter for Earth [m^3/s^2]
 const m0 = 3.986004415e14;
