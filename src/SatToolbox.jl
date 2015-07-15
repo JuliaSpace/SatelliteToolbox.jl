@@ -13,6 +13,7 @@ export satellite_eclipse_time
 export satellite_sun_angle_earth_pointing
 export satellite_sun_radiation_earth_pointing
 export compute_RAAN_lt
+export minimum_half_FOV_grss, minimum_half_FOV_orbit_grss
 export minimum_swath_grss, minimum_swath_orbit_grss
 export OrbitalParameters
 export R0, Rm, m0, J2, Rs, ne, au2m, sunRad

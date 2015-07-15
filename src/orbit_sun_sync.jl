@@ -16,6 +16,10 @@
 #
 # Changelog
 #
+# 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br> The function
+#    `minimum_swath_grss` no longer return the minimum Half-FOV. This
+#    functionality was moved to the function `minimum_half_fov`.
+#
 # 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
@@ -204,18 +208,74 @@ end
 
 #==#
 #
-# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
-# orbit to cover the entire Equator within the revisit interval.
+# @brief Compute the minimum half FOV of a ground repeating sun-synchronous
+# (GRSS) orbit to cover the entire Equator within the revisit interval.
 #
-# @param[in] rp Perigee [m].
+# @param[in] h Orbit altitude in the Equator [m].
 # @param[in] T Orbit period [s].
 # @param[in] i Inclination [rad].
 # @param[in] revisit Revisit interval of the GRSS orbit [days].
 #
-# @return The minimum swath [m] and the half-FOV [rad].
+# @return The minimum half FOV [rad].
+#
 #==#
 
-function minimum_swath_grss(rp::Real, T::Real, i::Real, revisit::Integer)
+function minimum_half_FOV_grss(h::Real, T::Real, i::Real, revisit::Integer)
+    # Angle between two adjacent traces.
+    theta = T*pi/43200.0
+
+    # Angle of swath.
+    beta = asin(sin(theta)*sin(i))/revisit
+
+    # Compute the minimum half-FOV.
+    b = sqrt(R0^2+(R0+h)^2-2*R0*(R0+h)*cos(beta/2.0))
+
+    # Minimum Half FOV.
+    asin(R0/b*sin(beta/2.0))
+end
+
+#==#
+#
+# @brief Compute the minimum half FOV of a ground repeating sun-synchronous
+# (GRSS) orbit to cover the entire Equator within the revisit interval.
+#
+# @param[in] h Orbit altitude in the Equator [m].
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity [s].
+# @param[in] i Inclination [rad].
+# @param[in] revisit Revisit interval of the GRSS orbit [days].
+#
+# @return The minimum half FOV [rad].
+#
+#==#
+
+function minimum_half_FOV_orbit_grss(h::Real, a::Real, e::Real, i::Real,
+                                     revisit::Integer)
+    # Check if h is between the perigee and apogee.
+    ( (h < (a*(1-e)-R0)) || (h > (a*(1+e)-R0)) ) &&
+    throw(ArgumentError("The altitude must be between the perigee and apogee."))
+
+    # Period (J2).
+    T = t_J2(a,e,i)
+
+    # Compute the minimum half FOV.
+    minimum_half_FOV_grss(h, T, i, revisit)
+end
+    
+#==#
+#
+# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
+# orbit to cover the entire Equator within the revisit interval.
+#
+# @param[in] T Orbit period [s].
+# @param[in] i Inclination [rad].
+# @param[in] revisit Revisit interval of the GRSS orbit [days].
+#
+# @return The minimum swath [m].
+#
+#==#
+
+function minimum_swath_grss(T::Real, i::Real, revisit::Integer)
     # Angle between two adjacent traces.
     theta = T*pi/43200.0
 
@@ -223,13 +283,7 @@ function minimum_swath_grss(rp::Real, T::Real, i::Real, revisit::Integer)
     beta = asin(sin(theta)*sin(i))/revisit
 
     # Minimum swath.
-    minSwath = beta*R0
-
-    # Compute the minimum half-FOV.
-    b = sqrt(R0^2+rp^2-2*R0*rp*cos(beta/2.0))
-    minAlpha = asin(R0/b*sin(beta/2.0))
-
-    (minSwath, minAlpha)
+    beta*R0
 end
 
 #==#
@@ -242,17 +296,16 @@ end
 # @param[in] i Inclination [rad].
 # @param[in] revisit Revisit interval of the GRSS orbit [days].
 #
+# @return The minimum swath [m].
+#
 #==#
 
 function minimum_swath_orbit_grss(a::Real, e::Real, i::Real, revisit::Integer)
-    # Perigee.
-    rp = a*(1.0-e)
-
     # Period (J2).
     T = t_J2(a,e,i)
 
     # Compute the minimum swath.
-    minimum_swath_grss(rp, T, i, revisit)
+    minimum_swath_grss(T, i, revisit)
 end
 
 #==#
