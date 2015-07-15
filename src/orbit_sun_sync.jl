@@ -26,6 +26,125 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 #==#
+#
+# @brief Compute the distance between adjacent ground tracks in a given latitude
+# for a ground repeating, sun synchronous orbit.
+#
+# @param[in] T Orbit period [s].
+# @param[in] i Inclination [rad].
+# @param[in] To Orbit cycle [days].
+# @param[in] lat Latitude [rad].
+#
+# @return The distance between adjacent ground tracks [m].
+#
+# @remarks The function does not check if the orbit is a GRSS orbit.
+#
+#==#
+
+function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
+    # Angle between two adjacent traces.
+    theta = (T/To)*pi/43200.0
+
+    # Angle of swath.
+    beta = asin(sin(theta)*sin(i))
+
+    # Minimum swath.
+    beta*R0*cos(lat)
+end
+
+#==#
+#
+# @brief Compute the distance between adjacent ground tracks in a given latitude
+# for a ground repeating, sun synchronous orbit.
+#
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity [s].
+# @param[in] i Inclination [rad].
+# @param[in] To Orbit cycle [days].
+# @param[in] lat Latitude [rad].
+#
+# @return The distance between adjacent ground tracks [m].
+#
+# @remarks The function does not check if the orbit is a GRSS orbit.
+#
+#==#
+
+function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
+                                      lat::Real)
+    # Orbit period.
+    T = t_J2(a,e,i)
+
+    # Compute the distance between adjacent ground tracks.
+    adjacent_track_distance_grss(T, i, To, lat)
+end
+
+#==#
+#
+# @brief Compute the angle between two adjacent ground tracks in a given
+# latitude measured on the satellite position for a ground repeating, sun
+# synchronous orbit.
+#
+# @param[in] h Orbit altitude in the Equator [m].
+# @param[in] T Orbit period [s].
+# @param[in] i Inclination [rad].
+# @param[in] To Orbit cycle [days].
+# @param[in] lat Latitude [rad].
+#
+# @return The angle between adjacent ground tracks [rad].
+#
+# @remarks The function does not check if the orbit is a GRSS orbit.
+#
+#==#
+
+function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
+                                   lat::Real)
+    # Angle between two adjacent traces.
+    theta = (T/To)*pi/43200.0
+
+    # Angle of swath.
+    beta = asin(sin(theta)*sin(i))
+
+    # Get the Earth radius in the plane perpendicular to the Equatorial plane.
+    Rp = R0*cos(lat)
+    
+    # Compute the angle between the two ground tracks.
+    b = sqrt(Rp^2+(Rp+h)^2-2*Rp*(Rp+h)*cos(beta/2.0))
+    asin(Rp/b*sin(beta/2.0))
+end
+
+#==#
+#
+# @brief Compute the angle between two adjacent ground tracks in a given
+# latitude measured on the satellite position for a ground repeating, sun
+# synchronous orbit.
+#
+# @param[in] h Orbit altitude in the Equator [m].
+# @param[in] a Semi-major axis [m].
+# @param[in] e Eccentricity [s].
+# @param[in] i Inclination [rad].
+# @param[in] To Orbit cycle [days].
+# @param[in] lat Latitude [rad].
+#
+# @return The angle between adjacent ground tracks [rad].
+#
+# @remarks The function does not check if the orbit is a GRSS orbit.
+#
+#==#
+
+function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
+                                   To::Integer, lat::Real)
+    # Check if h is between the perigee and apogee.
+    ( (h < (a*(1-e)-R0)) || (h > (a*(1+e)-R0)) ) &&
+    throw(ArgumentError("The altitude must be between the perigee and apogee."))
+
+    # Period (J2).
+    T = t_J2(a,e,i)
+
+    # Compute the minimum half FOV.
+    minimum_half_FOV_grss(h, T, i, To, lat)
+end
+
+#==#
 # 
 # @brief Compute the sun-synchronous orbit given the angular velocity and the
 # eccentricity.
@@ -204,108 +323,6 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
     
     # Return.
     acos(cos_i)
-end
-
-#==#
-#
-# @brief Compute the minimum half FOV of a ground repeating sun-synchronous
-# (GRSS) orbit to cover the entire Equator within the revisit interval.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-#
-# @return The minimum half FOV [rad].
-#
-#==#
-
-function minimum_half_FOV_grss(h::Real, T::Real, i::Real, To::Integer)
-    # Angle between two adjacent traces.
-    theta = (T/To)*pi/43200.0
-
-    # Angle of swath.
-    beta = asin(sin(theta)*sin(i))
-
-    # Compute the minimum half-FOV.
-    b = sqrt(R0^2+(R0+h)^2-2*R0*(R0+h)*cos(beta/2.0))
-
-    # Minimum Half FOV.
-    asin(R0/b*sin(beta/2.0))
-end
-
-#==#
-#
-# @brief Compute the minimum half FOV of a ground repeating sun-synchronous
-# (GRSS) orbit to cover the entire Equator within the revisit interval.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-#
-# @return The minimum half FOV [rad].
-#
-#==#
-
-function minimum_half_FOV_orbit_grss(h::Real, a::Real, e::Real, i::Real,
-                                     To::Integer)
-    # Check if h is between the perigee and apogee.
-    ( (h < (a*(1-e)-R0)) || (h > (a*(1+e)-R0)) ) &&
-    throw(ArgumentError("The altitude must be between the perigee and apogee."))
-
-    # Period (J2).
-    T = t_J2(a,e,i)
-
-    # Compute the minimum half FOV.
-    minimum_half_FOV_grss(h, T, i, To)
-end
-    
-#==#
-#
-# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
-# orbit to cover the entire Equator within the revisit interval.
-#
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-#
-# @return The minimum swath [m].
-#
-#==#
-
-function minimum_swath_grss(T::Real, i::Real, To::Integer)
-    # Angle between two adjacent traces.
-    theta = (T/To)*pi/43200.0
-
-    # Angle of swath.
-    beta = asin(sin(theta)*sin(i))
-
-    # Minimum swath.
-    beta*R0
-end
-
-#==#
-#
-# @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)
-# orbit to cover the entire Equator within the revisit interval.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-#
-# @return The minimum swath [m].
-#
-#==#
-
-function minimum_swath_orbit_grss(a::Real, e::Real, i::Real, To::Integer)
-    # Period (J2).
-    T = t_J2(a,e,i)
-
-    # Compute the minimum swath.
-    minimum_swath_grss(T, i, To)
 end
 
 #==#
