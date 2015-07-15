@@ -141,7 +141,7 @@ function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
     T = t_J2(a,e,i)
 
     # Compute the minimum half FOV.
-    minimum_half_FOV_grss(h, T, i, To, lat)
+    adjacent_track_angle_grss(h, T, i, To, lat)
 end
 
 #==#
