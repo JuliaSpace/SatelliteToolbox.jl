@@ -133,10 +133,6 @@ end
 
 function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
                                    To::Integer, lat::Real)
-    # Check if h is between the perigee and apogee.
-    ( (h < (a*(1-e)-R0)) || (h > (a*(1+e)-R0)) ) &&
-    throw(ArgumentError("The altitude must be between the perigee and apogee."))
-
     # Period (J2).
     T = t_J2(a,e,i)
 
