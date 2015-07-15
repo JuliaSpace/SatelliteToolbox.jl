@@ -81,6 +81,7 @@ include("sun_position.jl")
 
 include("orbit.jl")
 include("orbit_sun_sync.jl")
+include("orbit_sun_sync_ground_reap.jl")
 
 include("payload_optical_analysis.jl")
 

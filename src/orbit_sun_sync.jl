@@ -10,135 +10,23 @@
 #
 # Description
 #
-#    Many auxiliary functions for sun-synchronous orbit computations.
+#    Many auxiliary functions for sun synchronous orbit computations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
-# 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br> The function
-#    `minimum_swath_grss` no longer return the minimum Half-FOV. This
-#    functionality was moved to the function `minimum_half_fov`.
+# 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+#    The function `minimum_swath_grss` no longer return the minimum Half-FOV.
+#    This functionality was moved to the function `minimum_half_fov`.
+#
+#    Move the functions related to ground repeating, sun synchronous orbits to
+#    the file "orbit_sun_sync_ground_reap.jl".
 #
 # 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
-
-#==#
-#
-# @brief Compute the distance between adjacent ground tracks in a given latitude
-# for a ground repeating, sun synchronous orbit.
-#
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The distance between adjacent ground tracks [m].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
-
-function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
-    # Angle between two adjacent traces.
-    theta = (T/To)*pi/43200.0
-
-    # Angle of swath.
-    beta = asin(sin(theta)*sin(i))
-
-    # Minimum swath.
-    beta*R0*cos(lat)
-end
-
-#==#
-#
-# @brief Compute the distance between adjacent ground tracks in a given latitude
-# for a ground repeating, sun synchronous orbit.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The distance between adjacent ground tracks [m].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
-
-function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
-                                      lat::Real)
-    # Orbit period.
-    T = t_J2(a,e,i)
-
-    # Compute the distance between adjacent ground tracks.
-    adjacent_track_distance_grss(T, i, To, lat)
-end
-
-#==#
-#
-# @brief Compute the angle between two adjacent ground tracks in a given
-# latitude measured on the satellite position for a ground repeating, sun
-# synchronous orbit.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The angle between adjacent ground tracks [rad].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
-
-function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
-                                   lat::Real)
-    # Angle between two adjacent traces.
-    theta = (T/To)*pi/43200.0
-
-    # Angle of swath.
-    beta = asin(sin(theta)*sin(i))
-
-    # Get the Earth radius in the plane perpendicular to the Equatorial plane.
-    Rp = R0*cos(lat)
-    
-    # Compute the angle between the two ground tracks.
-    b = sqrt(Rp^2+(Rp+h)^2-2*Rp*(Rp+h)*cos(beta/2.0))
-    asin(Rp/b*sin(beta/2.0))
-end
-
-#==#
-#
-# @brief Compute the angle between two adjacent ground tracks in a given
-# latitude measured on the satellite position for a ground repeating, sun
-# synchronous orbit.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The angle between adjacent ground tracks [rad].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
-
-function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
-                                   To::Integer, lat::Real)
-    # Period (J2).
-    T = t_J2(a,e,i)
-
-    # Compute the minimum half FOV.
-    adjacent_track_angle_grss(h, T, i, To, lat)
-end
 
 #==#
 # 
@@ -266,23 +154,6 @@ end
 
 #==#
 # 
-# @brief Compute the sun-synchronous orbit given the number of revolutions per
-# day and the eccentricity.
-#
-# @param[in] numRevPD Number of revolutions per day.
-# @param[in] e Eccentricity.
-#
-# @return The semi-major axis [m], the inclination [rad], the residues of the
-# two functions and a boolean variable that indicates if the method converged.
-#
-#==#
-
-function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
-    compute_ss_orbit_by_ang_vel(numRevPD*2*pi/86400.0, e)
-end
-
-#==#
-# 
 # @brief Compute the sun-synchronous orbit given the semi-major axis and the
 # eccentricity
 #
@@ -320,115 +191,3 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
     # Return.
     acos(cos_i)
 end
-
-#==#
-# 
-# @brief Compute a list of repeating sun-synchronous orbits.
-#
-# @param[in] minRep Minimum repetition time of the orbit [days].
-# @param[in] maxRep Maximum repetition time of the orbit [days].
-# @param[in] minAlt Minimum altitude of the orbits on the list [m].
-# @param[in] maxAlt Maximum altitude of the orbits on the list [m].
-# @param[in] e Eccentricity.
-#
-# @return A matrix containing the orbits found.
-#
-# @remarks
-#
-# 1) If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a
-# orbit is added to the list.
-#
-# 2) The output matrix has the following format:
-#
-# Semi-major axis [m] | Altitude [m] | Period [s] | Int | Num | Den
-# --------------------|--------------|------------|-----|-----|----
-#
-# in which the period is Int + Num/Den.
-#
-#==#
-
-function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
-                                      minAlt::Real=-1.0, maxAlt::Real=-1.0,
-                                      e::Real=0.0)
-    numRevPD = 0
-    # Check if the arguments are valid.
-    if (minRep <= 0)
-        throw(ArgumentError("The minimum repetition time must be greater than 0."))
-    end
-
-    if (maxRep <= 0)
-        throw(ArgumentError("The maximum repetition time must be greater than 0."))
-    end
-
-    if (minRep > maxRep)
-        throw(ArgumentError("The minimum repetition time must be smaller or equal to the maximum repetition time."))
-    end
-    
-    if !( 0. <= e < 1. )
-        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-    end
-    
-    # Matrix to store the available orbits.
-    ss_orbits = Array(Float64, 0, 7)
-
-    # Integer part of the number of orbits per day.
-    intNumOrb = [13., 14., 15., 16., 17.]
-    
-    # Loop for the possible repetition times.
-    for den = minRep:maxRep
-        for num = 0:den-1
-            # Check if the fraction num/den is irreducible.
-            if ( gcd(num, den) == 1.0 )
-                # Loop through the integer parts.
-                for ino in intNumOrb
-                    addOrbit = false
-
-                    # Number of revolutions per day.
-                    numRevPD = ino+float64(num)/float64(den)
-
-                    (a, i, f1r, f2r, converged) =
-                        compute_ss_orbit_by_num_rev_per_day(numRevPD, e)
-
-                    # Check if the orbit is valid.
-                    (!is_orbit_valid(a, e)) && continue
-                        
-                    # Check if the altitude interval must be verified.
-                    if (minAlt > 0) && (maxAlt > 0)
-                        if (minAlt < a-R0) && (a-R0 < maxAlt) && (converged)
-                            addOrbit = true
-                        end
-                    else
-                        addOrbit = converged
-                    end
-
-                    # Check if the orbit must be added to the list.
-                    if (addOrbit)
-                        # Compute the period of the orbit considering
-                        # perturbations (J2).
-                        period = t_J2(a, e, i)
-
-                        ss_orbits =
-                            vcat(ss_orbits, [a a-R0 i period ino num den])
-                    end
-                end
-            end
-        end
-    end
-
-    # Return the list of orbits.    
-    ss_orbits
-end
-
-#==#
-# 
-# @brief Sort the list of sun-synchronous orbits by height.
-#
-# @param[in] ss_orbits List of sun-synchronous orbits (@see
-# list_ss_orbits_by_rep_period).
-#
-# @return A matrix containing a list of sun-synchronous orbits sorted by height.
-#
-#==#
-
-sort_list_ss_orbits_by_height(ss_orbits::Array{Float64, 2}) =
-    sortrows(ss_orbits, by=x->x[1])
