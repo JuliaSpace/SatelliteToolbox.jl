@@ -89,7 +89,7 @@ end
 #
 #==#
 
-function minimum_swath_orbit_grss(a::Real, e::Real, i::Real, To::Integer)
+function minimum_swath_grss(a::Real, e::Real, i::Real, To::Integer)
     adjacent_track_distance_grss(a, e, i, To, 0.0)
 end
 
