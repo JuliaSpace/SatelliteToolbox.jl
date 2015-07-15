@@ -30,6 +30,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+export satellite_eclipse_time
+
 #==#
 # 
 # @brief Compute the eclipse time of a satellite.

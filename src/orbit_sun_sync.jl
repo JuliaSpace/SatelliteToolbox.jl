@@ -28,6 +28,10 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export compute_ss_orbit_by_ang_vel
+export compute_ss_orbit_by_inclination
+export compute_ss_orbit_by_semi_major_axis
+
 #==#
 # 
 # @brief Compute the sun-synchronous orbit given the angular velocity and the

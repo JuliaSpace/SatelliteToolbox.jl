@@ -22,6 +22,10 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export adjacent_track_distance_grss, adjacent_track_angle_grss
+export compute_ss_orbit_by_num_rev_per_day
+export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
+
 #==#
 #
 # @brief Compute the distance between adjacent ground tracks in a given latitude

@@ -27,6 +27,8 @@
 
 import Rotations: angle2dcm!
 
+export  satellite_position_i, sun_position_i
+
 #==#
 # 
 # @brief Compute the satellite position on the Inertial coordinate frame.

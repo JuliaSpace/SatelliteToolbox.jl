@@ -1,20 +1,5 @@
 module SatToolbox
 
-export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
-export compute_ss_orbit_by_ang_vel, compute_ss_orbit_by_num_rev_per_day
-export compute_ss_orbit_by_semi_major_axis
-export compute_ss_orbit_by_inclination
-export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
-export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
-export satellite_lighting_condition, satellite_position_i, sun_position_i
-export satellite_orbit_compute_f
-export satellite_beta_angle
-export satellite_eclipse_time
-export satellite_sun_angle_earth_pointing
-export satellite_sun_radiation_earth_pointing
-export compute_RAAN_lt
-export adjacent_track_distance_grss, adjacent_track_angle_grss
-export minimum_swath_grss, minimum_half_FOV_grss
 export OrbitalParameters
 export R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 

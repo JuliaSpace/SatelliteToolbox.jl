@@ -21,6 +21,9 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export compute_RAAN_lt
+export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
+
 #==#
 #
 # @brief Compute the RAAN given a date and a local time.
@@ -205,5 +208,3 @@ end
 function t_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
     2.0*pi/n_J2(a, e, i)
 end
-
-    

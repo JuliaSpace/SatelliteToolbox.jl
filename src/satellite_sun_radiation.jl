@@ -23,6 +23,8 @@
 
 import Rotations: angle2dcm!
 
+export satellite_sun_radiation_earth_pointing
+
 #==#
 # 
 # @brief Compute the sun radiation on a surface for an Earth pointing mission.

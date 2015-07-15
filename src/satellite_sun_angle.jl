@@ -35,6 +35,8 @@
 
 import Rotations: angle2dcm!
 
+export satellite_sun_angle_earth_pointing
+
 #==#
 # 
 # @brief Compute the sun angle on a surface for an Earth pointing mission.

@@ -28,6 +28,8 @@
 
 import Rotations: angle2dcm!
 
+export satellite_beta_angle
+
 #==#
 # 
 # @brief Compute the beta angle of a satellite.

@@ -28,6 +28,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export satellite_orbit_compute_f
+
 #==#
 # 
 # @brief Compute the true anomaly given the mean anomaly.

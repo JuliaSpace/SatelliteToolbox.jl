@@ -38,6 +38,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export sun_position_i
+
 #==#
 # 
 # @brief Compute the sun position on the Inertial coordinate frame (J2000).

@@ -21,6 +21,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export minimum_swath_grss, minimum_half_FOV_grss
+
 #==#
 #
 # @brief Compute the minimum half FOV of a ground repeating sun-synchronous

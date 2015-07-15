@@ -32,6 +32,9 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export SAT_LIGHTING_SUNLIGHT, SAT_LIGHTING_UMBRA, SAT_LIGHTING_PENUMBRA
+export satellite_lighting_condition
+
 # Constants.
 const SAT_LIGHTING_SUNLIGHT = 0
 const SAT_LIGHTING_PENUMBRA = 1
