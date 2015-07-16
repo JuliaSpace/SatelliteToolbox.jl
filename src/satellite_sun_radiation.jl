@@ -23,8 +23,6 @@
 
 import Rotations: angle2dcm!
 
-export satellite_sun_radiation_earth_pointing
-
 #==#
 # 
 # @brief Compute the sun radiation on a surface for an Earth pointing mission.
@@ -90,6 +88,9 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     # RAAN rotation rate [rad/s].
     dOmega = dRAAN_J2(a, e, i)
 
+    # Perturbation of the argument of perigee [rad/s].
+    dw = dw_J2(a, e, i)
+    
     # DCM that rotates the Inertial reference frame to the orbit reference frame.
     Doi = Array(Float64, (3,3))
 
@@ -112,15 +113,16 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
         norm_s_i = norm(s_i)
         
         # Compute the new orbit parameters due to perturbations.
+        w_d    = w + dw*(d*day2sec)
         RAAN_d = RAAN + dOmega*(d*day2sec)
-
+        
         # Loop through the orbit.
         for k in [1:length(M)]
             # Get the satellite position vector represented in the Inertial
             # coordinate frame.
             f = satellite_orbit_compute_f(a, e, i, M[k])
 
-            (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w, f)
+            (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
             
             # Check the lighting conditions.
             lighting = satellite_lighting_condition(r_i, s_i)
@@ -128,7 +130,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
             if (lighting == SAT_LIGHTING_SUNLIGHT)
                 # Convert the sun vector from the Inertial coordinate frame to
                 # the body coordinate frame.
-                angle2dcm!(Doi, RAAN_d, i, f, "ZXZ")                
+                angle2dcm!(Doi, RAAN_d, i, w_d+f, "ZXZ")
                 s_b = Dbo*Doi*(s_i/norm_s_i)
 
                 # Vector normal to the solar panel.
