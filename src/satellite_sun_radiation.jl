@@ -10,11 +10,18 @@
 #
 # Description
 #
-#    Compute the sun radiaton received in a satellite surface.
+#    Compute the sun radiation received in a satellite surface.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
+#
+# 2015-07-16: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+#    The function to compute the sun radiation can propagate the orbit using the
+#    orbit latitude or the mean anomaly. Notice that if the latter is used, then
+#    the average value of the output will be the average sun radiation that the
+#    surface will receive, because the angular steps have the same time
+#    interval.
 #
 # 2015-05-20: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version, based on satellite_sun_angle.jl.
@@ -39,7 +46,9 @@ export satellite_sun_radiation_earth_pointing
 # @param[in] fN_k Function f(s_b) that describes the solar panel normal at each
 # k-th sampling step. s_b is the sun vector represented in the body coordinate
 # frame.
-# @param[in] step (OPTIONAL) Mean anomaly step (default = 0.1 deg).
+# @param[in] meanAnomaly (OPTIONAL) If true, compute using angular steps in the
+# mean anomaly instead of in the orbit latitude.
+# @param[in] step (OPTIONAL) Angular propagation step (default = 0.1 deg).
 #
 # @return A matrix containing the sun radiation [W/m^2] for each position in
 # orbit for each day. If the sun angle is larger than 90 deg or if the satellite
@@ -51,6 +60,13 @@ export satellite_sun_radiation_earth_pointing
 #     _ X axis completes the right-hand reference frame.
 # which is common for Earth pointing satellites.
 #
+# @note If the mean anomaly is used, then the average value of the output is the
+# average sun radiation received by the satellite surface, because every angular
+# steps have a fixed time interval.
+#
+# @note If the mean anomaly is used, then the angle interval is [0, 2pi].
+# Otherwise, the angle interval is [-pi,pi].
+#
 #==#
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
@@ -61,6 +77,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                                                 w::FloatingPoint,
                                                 numDays::Integer,
                                                 fN_k::Function,
+                                                meanAnomaly::Bool = false,
                                                 step::Float64 = 0.1*pi/180.0)
     # Constants
     const deg2rad = pi/180.0
@@ -73,8 +90,8 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     days = [0:1:numDays-1] # Vector of the days in which the beta angle will be
                            # computed.
 
-    # Mean anomaly.
-    M = [0:step:2*pi]
+    # Angle.
+    ang = (!meanAnomaly) ? [-pi:step:pi] : [0:step:2*pi]
 
     # Period of an orbit [rad/s].
     n = n_J2(a, e, i)
@@ -83,7 +100,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     tstep = step/n
 
     # Sun angles.
-    sun_radiation = zeros(length(M),numDays)
+    sun_radiation = zeros(length(ang),numDays)
     
     # Perturbations.
     #
@@ -119,11 +136,16 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
         RAAN_d = RAAN + dOmega*(d*day2sec)
         
         # Loop through the orbit.
-        for k in [1:length(M)]
+        for k in [1:length(ang)]
             # Get the satellite position vector represented in the Inertial
             # coordinate frame.
-            f = satellite_orbit_compute_f(a, e, i, M[k])
 
+            if (!meanAnomaly)
+                f = ang[k]-w_d
+            else
+                f = satellite_orbit_compute_f(a, e, i, ang[k])
+            end
+            
             (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
             
             # Check the lighting conditions.
@@ -171,6 +193,8 @@ end
 # @param[in] numDays Number of days in the analysis.
 # @param[in] N Vector normal to the surface represented in the body reference
 # frame.
+# @param[in] meanAnomaly (OPTIONAL) If true, compute using angular steps in the
+# mean anomaly instead of in the orbit latitude.
 # @param[in] step (OPTIONAL) Mean anomaly step (default = 0.1 deg).
 #
 # @return A matrix containing the sun radiation [W/m^2] for each position in
@@ -183,6 +207,13 @@ end
 #     _ X axis completes the right-hand reference frame.
 # which is common for Earth pointing satellites.
 #
+# @note If the mean anomaly is used, then the average value of the output is the
+# average sun radiation received by the satellite surface, because every angular
+# steps have a fixed time interval.
+#
+# @note If the mean anomaly is used, then the angle interval is [0, 2pi].
+# Otherwise, the angle interval is [-pi,pi].
+#
 #==#
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
@@ -193,7 +224,9 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                                                 w::FloatingPoint,
                                                 numDays::Integer,
                                                 N::Array{Float64,1},
+                                                meanAnomaly::Bool = false,
                                                 step::Float64 = 0.1*pi/180.0)
     fN_k(x) = N
-    satellite_sun_radiation_earth_pointing(t0, a, e, i, RAAN, w, numDays, fN_k, step)
+    satellite_sun_radiation_earth_pointing(t0, a, e, i, RAAN, w, numDays, fN_k,
+                                           meanAnomaly, step)
 end
