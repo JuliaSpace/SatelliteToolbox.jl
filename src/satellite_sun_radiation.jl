@@ -23,6 +23,8 @@
 #    surface will receive, because the angular steps have the same time
 #    interval.
 #
+#    Add functions to compute the sun radiation average per day.
+#
 # 2015-05-20: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version, based on satellite_sun_angle.jl.
 #
@@ -31,6 +33,7 @@
 import Rotations: angle2dcm!
 
 export satellite_sun_radiation_earth_pointing
+export satellite_sun_radiation_earth_pointing_mean
 
 #==#
 # 
@@ -182,6 +185,43 @@ end
 
 #==#
 # 
+# @brief Compute the mean sun radiation on a surface for an Earth pointing
+# mission.
+#
+# See function `satellite_sun_radiation_earth_pointing` for description of the
+# parameters.
+#
+#==#
+
+function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
+                                                     a::FloatingPoint,
+                                                     e::FloatingPoint,
+                                                     i::FloatingPoint,
+                                                     RAAN::FloatingPoint,
+                                                     w::FloatingPoint,
+                                                     numDays::Integer,
+                                                     fN_k::Function,
+                                                     step::Float64 = 0.1*pi/180.0)
+    sun_radiation = satellite_sun_radiation_earth_pointing(t0,
+                                                           a,
+                                                           e,
+                                                           i,
+                                                           RAAN,
+                                                           w,
+                                                           numDays,
+                                                           fN_k,
+                                                           false,
+                                                           step)
+
+    # Remove the NaNs.
+    sun_radiation[find(x->(isnan(x)), sun_radiation)] = 0.0
+
+    # Compute the mean.
+    squeeze(mean(sun_radiation, 1), 1)
+end
+
+#==#
+# 
 # @brief Compute the sun radiation on a surface for an Earth pointing mission.
 #
 # @param[in] t0 Launch date [number of days since 01/01/2000].
@@ -229,4 +269,41 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     fN_k(x) = N
     satellite_sun_radiation_earth_pointing(t0, a, e, i, RAAN, w, numDays, fN_k,
                                            meanAnomaly, step)
+end
+
+#==#
+# 
+# @brief Compute the mean sun radiation on a surface for an Earth pointing
+# mission.
+#
+# See function `satellite_sun_radiation_earth_pointing` for description of the
+# parameters.
+#
+#==#
+
+function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
+                                                     a::FloatingPoint,
+                                                     e::FloatingPoint,
+                                                     i::FloatingPoint,
+                                                     RAAN::FloatingPoint,
+                                                     w::FloatingPoint,
+                                                     numDays::Integer,
+                                                     N::Array{Float64,1},
+                                                     step::Float64 = 0.1*pi/180.0)
+    sun_radiation = satellite_sun_radiation_earth_pointing(t0,
+                                                           a,
+                                                           e,
+                                                           i,
+                                                           RAAN,
+                                                           w,
+                                                           numDays,
+                                                           N,
+                                                           true,
+                                                           step)
+
+    # Remove the NaNs.
+    sun_radiation[find(x->(isnan(x)), sun_radiation)] = 0.0
+
+    # Compute the mean.
+    squeeze(mean(sun_radiation, 1), 1)
 end
