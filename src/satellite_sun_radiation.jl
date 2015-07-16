@@ -210,7 +210,7 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
                                                            w,
                                                            numDays,
                                                            fN_k,
-                                                           false,
+                                                           true,
                                                            step)
 
     # Remove the NaNs.
