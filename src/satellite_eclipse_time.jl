@@ -25,6 +25,9 @@
 #
 # Changelog
 #
+# 2015-07-17:  Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+#    Add option to plot the eclipse time relative to the nodal period.
+#
 # 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
@@ -43,6 +46,7 @@ export satellite_eclipse_time
 # @param[in] w Argument of perigee [rad].
 # @param[in] RAAN Right ascension of the ascending node at launch date [rad].
 # @param[in] numDays Number of days in the analysis.
+# @param[in] relative Compute the eclipse time relative to the nodal period.
 #
 # @return The beta angle computed for each day in degrees.
 #
@@ -54,7 +58,8 @@ function satellite_eclipse_time(t0::Integer,
                                 i::FloatingPoint,
                                 w::FloatingPoint,
                                 RAAN::FloatingPoint,
-                                numDays::Integer)
+                                numDays::Integer,
+                                relative::Bool = false)
     # Constants
     const deg2rad = pi/180.0
     const rad2deg = 180.0/pi
@@ -84,9 +89,9 @@ function satellite_eclipse_time(t0::Integer,
     # Semi-lactum rectum.
     p = a*(1.0-e^2)
 
-    # Period of an orbit [rad/s].
+    # Angular velocity of the orbit [rad/s].
     n = n_J2(a, e, i)
-
+    
     # Step in time
     tstep = step/n
 
@@ -127,5 +132,10 @@ function satellite_eclipse_time(t0::Integer,
         end 
     end
 
-    [days s_time p_time u_time]
+    if (!relative)
+        [days s_time p_time u_time]
+    else
+        total_time = s_time + p_time + u_time
+        [days s_time./total_time p_time./total_time u_time./total_time]
+    end
 end
