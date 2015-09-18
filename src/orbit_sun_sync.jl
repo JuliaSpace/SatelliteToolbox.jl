@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -33,7 +33,7 @@ export compute_ss_orbit_by_inclination
 export compute_ss_orbit_by_semi_major_axis
 
 #==#
-# 
+#
 # @brief Compute the sun-synchronous orbit given the angular velocity and the
 # eccentricity.
 #
@@ -81,13 +81,13 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     # Jacobian.
     Jf1f2(a, i) = [df1da(a,i) df1di(a,i);
                    df2da(a,i) df2di(a,i);]
-    
+
     ################################################################################
     # Solve for zeros of f1 and f2 using Newton-Raphson method.
     ################################################################################
 
-    # Maximum number of 
-    
+    # Maximum number of
+
     # Initial guess based on the unperturbed model.
     a_k = (m0/n^2)^(1/3)
     i_k = acos( -ne*a_k^(3.5)/(2*K1) )
@@ -95,7 +95,7 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     # Loop
     it = 0;
     converged = true
-    
+
     while (abs(f1(a_k, i_k)) > tol) || (abs(f2(a_k, i_k)) > tol)
         a_k_1 = a_k
         i_k_1 = i_k
@@ -122,7 +122,7 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
 end
 
 #==#
-# 
+#
 # @brief Compute the sun-synchronous orbit given the inclination and the
 # eccentricity
 #
@@ -157,7 +157,7 @@ function compute_ss_orbit_by_inclination(i::Real, e::Real)
 end
 
 #==#
-# 
+#
 # @brief Compute the sun-synchronous orbit given the semi-major axis and the
 # eccentricity
 #
@@ -191,7 +191,7 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
     if ( (cos_i < -1) || (cos_i > 1) )
         throw(ErrorException("It was not possible to find a sun-synchronous orbit with the semi-major axis given."))
     end
-    
+
     # Return.
     acos(cos_i)
 end

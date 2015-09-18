@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -36,7 +36,7 @@ export satellite_sun_radiation_earth_pointing
 export satellite_sun_radiation_earth_pointing_mean
 
 #==#
-# 
+#
 # @brief Compute the sun radiation on a surface for an Earth pointing mission.
 #
 # @param[in] t0 Launch date [number of days since 01/01/2000].
@@ -88,13 +88,14 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     const day2sec = 24.0*60.0*60.0
 
     # Initialization of variables.
-    theta = 0.0            # Sun angle relative to the inertial coordinate frame.
-    
-    days = [0:1:numDays-1] # Vector of the days in which the beta angle will be
-                           # computed.
+    theta = 0.0                   # Sun angle relative to the inertial
+                                  # coordinate frame.
+
+    days = collect(0:1:numDays-1) # Vector of the days in which the eclipse time
+                                  # will be computed.
 
     # Angle.
-    ang = (!meanAnomaly) ? [-pi:step:pi] : [0:step:2*pi]
+    ang = (!meanAnomaly) ? collect(-pi:step:pi) : collect(0:step:2*pi)
 
     # Period of an orbit [rad/s].
     n = n_J2(a, e, i)
@@ -104,7 +105,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
 
     # Sun angles.
     sun_radiation = zeros(length(ang),numDays)
-    
+
     # Perturbations.
     #
     # RAAN rotation rate [rad/s].
@@ -112,7 +113,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
 
     # Perturbation of the argument of perigee [rad/s].
     dw = dw_J2(a, e, i)
-    
+
     # DCM that rotates the Inertial reference frame to the orbit reference frame.
     Doi = Array(Float64, (3,3))
 
@@ -123,23 +124,23 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     #     _ Y axis points towards the negative direction of orbit normal;
     #     _ X axis completes the right-hand reference frame.
     # which is common for Earth pointing satellites.
-    
+
     Dbo = [ 0.0 1.0  0.0;
             0.0 0.0 -1.0;
            -1.0 0.0  0.0];
-    
+
     # Loop for each day.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(int(t0+d), 43200)
+        s_i = sun_position_i(Int(t0+d), 43200)
         norm_s_i = norm(s_i)
-        
+
         # Compute the new orbit parameters due to perturbations.
         w_d    = w + dw*(d*day2sec)
         RAAN_d = RAAN + dOmega*(d*day2sec)
-        
+
         # Loop through the orbit.
-        for k in [1:length(ang)]
+        for k in 1:length(ang)
             # Get the satellite position vector represented in the Inertial
             # coordinate frame.
 
@@ -148,9 +149,9 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
             else
                 f = satellite_orbit_compute_f(a, e, i, ang[k])
             end
-            
+
             (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
-            
+
             # Check the lighting conditions.
             lighting = satellite_lighting_condition(r_i, s_i)
 
@@ -163,7 +164,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                 # Vector normal to the solar panel.
                 N_k = fN_k(s_b)
                 sun_angle_k = acos(dot(s_b,N_k))
-                
+
                 # If the sun angle is larger than 90 deg, then the surface is
                 # not iluminated. Thus, the angle will be defined as NaN.
                 if (sun_angle_k > pi/2)
@@ -175,16 +176,16 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
             else
                 # If the satellite is in eclipse, then the surface is not
                 # iluminated. Thus, the angle will be defined as NaN.
-                sun_radiation[k,d+1] = NaN 
+                sun_radiation[k,d+1] = NaN
             end
-        end 
+        end
     end
 
     sun_radiation
 end
 
 #==#
-# 
+#
 # @brief Compute the mean sun radiation on a surface for an Earth pointing
 # mission.
 #
@@ -221,7 +222,7 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
 end
 
 #==#
-# 
+#
 # @brief Compute the sun radiation on a surface for an Earth pointing mission.
 #
 # @param[in] t0 Launch date [number of days since 01/01/2000].
@@ -272,7 +273,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
 end
 
 #==#
-# 
+#
 # @brief Compute the mean sun radiation on a surface for an Earth pointing
 # mission.
 #

@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -109,7 +109,7 @@ function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
 
     # Get the Earth radius in the plane perpendicular to the Equatorial plane.
     Rp = R0*cos(lat)
-    
+
     # Compute the angle between the two ground tracks.
     b = sqrt(Rp^2+(Rp+h)^2-2*Rp*(Rp+h)*cos(beta/2.0))
     asin(Rp/b*sin(beta/2.0))
@@ -144,7 +144,7 @@ function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
 end
 
 #==#
-# 
+#
 # @brief Compute the sun-synchronous orbit given the number of revolutions per
 # day and the eccentricity.
 #
@@ -161,7 +161,7 @@ function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
 end
 
 #==#
-# 
+#
 # @brief Compute a list of repeating sun-synchronous orbits.
 #
 # @param[in] minRep Minimum repetition time of the orbit [days].
@@ -202,17 +202,17 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
     if (minRep > maxRep)
         throw(ArgumentError("The minimum repetition time must be smaller or equal to the maximum repetition time."))
     end
-    
+
     if !( 0. <= e < 1. )
         throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
     end
-    
+
     # Matrix to store the available orbits.
     ss_orbits = Array(Float64, 0, 7)
 
     # Integer part of the number of orbits per day.
     intNumOrb = [13., 14., 15., 16., 17.]
-    
+
     # Loop for the possible repetition times.
     for den = minRep:maxRep
         for num = 0:den-1
@@ -223,14 +223,14 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
                     addOrbit = false
 
                     # Number of revolutions per day.
-                    numRevPD = ino+float64(num)/float64(den)
+                    numRevPD = ino+Float64(num)/Float64(den)
 
                     (a, i, f1r, f2r, converged) =
                         compute_ss_orbit_by_num_rev_per_day(numRevPD, e)
 
                     # Check if the orbit is valid.
                     (!is_orbit_valid(a, e)) && continue
-                        
+
                     # Check if the altitude interval must be verified.
                     if (minAlt > 0) && (maxAlt > 0)
                         if (minAlt < a-R0) && (a-R0 < maxAlt) && (converged)
@@ -254,12 +254,12 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
         end
     end
 
-    # Return the list of orbits.    
+    # Return the list of orbits.
     ss_orbits
 end
 
 #==#
-# 
+#
 # @brief Sort the list of sun-synchronous orbits by height.
 #
 # @param[in] ss_orbits List of sun-synchronous orbits (@see

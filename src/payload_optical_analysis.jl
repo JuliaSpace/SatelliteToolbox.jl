@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -59,7 +59,7 @@ end
 function minimum_half_FOV_grss(h::Real, a::Real, e::Real, i::Real, To::Integer)
     adjacent_track_angle_grss(h, a, e, i, To, 0.0)
 end
-    
+
 #==#
 #
 # @brief Compute the minimum swath of a ground repeating sun-synchronous (GRSS)

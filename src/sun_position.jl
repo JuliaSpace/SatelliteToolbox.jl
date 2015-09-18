@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -24,7 +24,7 @@
 #
 # 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    - The sun vector is returned in meters.
-#    - The Celestial Coordinate Frame is now called Inertial coordinate frame 
+#    - The Celestial Coordinate Frame is now called Inertial coordinate frame
 #      (i).
 #
 # 2014-07-25: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
@@ -41,7 +41,7 @@
 export sun_position_i
 
 #==#
-# 
+#
 # @brief Compute the sun position on the Inertial coordinate frame (J2000).
 #
 # @param[in] day Number of days since 01/01/2000 (J2000.0 epoch).
@@ -93,7 +93,7 @@ function sun_position_i(day::Int, time::Int)
 
     cos_e = cos(e)
     sin_e = sin(e)
-    
+
     ra_i = atan2( cos_e*sin_L, cos_L )
     dec_i = asin( sin_e*sin_L )
 
@@ -104,7 +104,7 @@ function sun_position_i(day::Int, time::Int)
 
     cos_dec_i = cos(dec_i)
     sin_dec_i = sin(dec_i)
-    
+
     S_i = [cos_ra_i*cos_dec_i;
            sin_ra_i*cos_dec_i;
            sin_dec_i]*R

@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -31,7 +31,7 @@ import Rotations: angle2dcm!
 export satellite_beta_angle
 
 #==#
-# 
+#
 # @brief Compute the beta angle of a satellite.
 #
 # @param[in] t0 Launch date [number of days since 01/01/2000].
@@ -53,18 +53,20 @@ function satellite_beta_angle(t0::Integer,
                               numDays::Integer)
     # Constants
     rad2deg = 180.0/pi
-    
+
     # Initialization of variables.
-    theta = 0.0            # Sun angle relative to the inertial coordinate frame.
-    
-    days = [0:1:numDays-1] # Vector of the days in which the beta angle will be
-                           # computed.
-    
-    N = [0.0; 0.0; 0.0]    # Versor normal to the orbital plane, represented in the
-                           # inertial coordinate frame.
-    
-    S = [0.0; 0.0; 0.0]    # Versor that points to the Sun, represented in the
-                           # inertial coordinate frame.
+    theta = 0.0                   # Sun angle relative to the inertial
+                                  # coordinate frame.
+
+    days = collect(0:1:numDays-1) # Vector of the days in which the beta angle
+                                  # will be computed.
+
+    N = [0.0; 0.0; 0.0]           # Versor normal to the orbital plane,
+                                  # represented in the inertial coordinate
+                                  # frame.
+
+    S = [0.0; 0.0; 0.0]           # Versor that points to the Sun, represented
+                                  # in the inertial coordinate frame.
 
     # Output vector.
     beta = Array(Float64, (numDays,1))
@@ -86,7 +88,7 @@ function satellite_beta_angle(t0::Integer,
 
         # Compute the Sun position at noon (UT) represented in the Inertial ref.
         # frame.
-        S_i = sun_position_i(int(t+t0), 43200)
+        S_i = sun_position_i(Int(t+t0), 43200)
         S_i = S_i/norm(S_i)
 
         # Get the angle between N_i and S_i [deg].

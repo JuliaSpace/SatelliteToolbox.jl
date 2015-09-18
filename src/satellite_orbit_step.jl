@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -16,7 +16,7 @@
 #
 # References:
 #
-#    [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics 
+#    [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
 #        and Applications. Microcosm Press.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -31,7 +31,7 @@
 export satellite_orbit_compute_f
 
 #==#
-# 
+#
 # @brief Compute the true anomaly given the mean anomaly.
 #
 # @param[in] a Semi-major axis [m].
@@ -67,24 +67,24 @@ function satellite_orbit_compute_f{T}(a::T,
     # Newton-Raphson iterations.
     while ( abs(u - e*sin_u - m) > tol )
         u = u - (u - e*sin_u - m)/(1-e*cos_u)
-        
+
         sin_u = sin(u)
         cos_u = cos(u)
     end
-    
+
     # Transform u to the interval [0, 2*pi].
     u = mod(u, 2*pi)
-    
+
     # Compute the true anomaly.
     half_f = atan( sqrt( (1+e)/(1-e) )*(sin_u/(1+cos_u))  )
-    
+
     # f/2 and u/2 are in the same quadrant.
     if ( (u/2 > pi/2) && (u/2 <= 1.5*pi) )
         half_f += pi
     elseif ( u/2 > 1.5*pi )
         half_f = 2*pi - half_f
     end
-    
+
     # Compute the true anomaly in the interval [0, 2*pi].
     f = mod(2*half_f, 2*pi)
 end

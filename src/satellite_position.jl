@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -30,7 +30,7 @@ import Rotations: angle2dcm!
 export  satellite_position_i, sun_position_i
 
 #==#
-# 
+#
 # @brief Compute the satellite position on the Inertial coordinate frame.
 #
 # @param[in] sat Orbital parameters.
@@ -49,7 +49,7 @@ function satellite_position_i{T}(sat::OrbitalParameters{T})
 end
 
 #==#
-# 
+#
 # @brief Compute the satellite position on the Inertial coordinate frame.
 #
 # @param[in] a Semi-major axis.

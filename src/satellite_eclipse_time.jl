@@ -1,4 +1,4 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -36,7 +36,7 @@
 export satellite_eclipse_time
 
 #==#
-# 
+#
 # @brief Compute the eclipse time of a satellite.
 #
 # @param[in] t0 Launch date [number of days since 01/01/2000].
@@ -64,18 +64,19 @@ function satellite_eclipse_time(t0::Integer,
     const deg2rad = pi/180.0
     const rad2deg = 180.0/pi
     const day2sec = 24.0*60.0*60.0
-    
+
     # Step of the orbit propagation (mean anomaly) [rad].
     const step = 0.1*deg2rad
-    
+
     # Initialization of variables.
-    theta = 0.0            # Sun angle relative to the inertial coordinate frame.
-    
-    days = [0:1:numDays-1] # Vector of the days in which the beta angle will be
-                           # computed.
+    theta = 0.0                   # Sun angle relative to the inertial
+                                  # coordinate frame.
+
+    days = collect(0:1:numDays-1) # Vector of the days in which the beta angle
+                                  # will be computed.
 
     # Mean anomaly.
-    M = [0:step:2*pi]
+    M = collect(0:step:2*pi)
 
     # Penumbra time.
     p_time = zeros(numDays)
@@ -85,13 +86,13 @@ function satellite_eclipse_time(t0::Integer,
 
     # Sunlight time.
     s_time = zeros(numDays)
-    
+
     # Semi-lactum rectum.
     p = a*(1.0-e^2)
 
     # Angular velocity of the orbit [rad/s].
     n = n_J2(a, e, i)
-    
+
     # Step in time
     tstep = step/n
 
@@ -106,7 +107,7 @@ function satellite_eclipse_time(t0::Integer,
     # Loop.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(int(t0+d), 43200)
+        s_i = sun_position_i(Int(t0+d), 43200)
 
         # Compute the new orbit parameters due to perturbations.
         w_d = w + dw*(d*day2sec)
@@ -118,7 +119,7 @@ function satellite_eclipse_time(t0::Integer,
             f = satellite_orbit_compute_f(a, e, i, m_k)
 
             (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
-            
+
             # Check the lighting conditions.
             lighting = satellite_lighting_condition(r_i, s_i)
 
@@ -129,7 +130,7 @@ function satellite_eclipse_time(t0::Integer,
             else
                 p_time[d+1] += tstep
             end
-        end 
+        end
     end
 
     if (!relative)
