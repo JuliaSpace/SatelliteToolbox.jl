@@ -21,7 +21,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export minimum_swath_grss, minimum_half_FOV_grss
+export minimum_swath_grss, minimum_half_FOV_grss, swath_width
 
 #==#
 #
@@ -105,7 +105,7 @@ end
 #==#
 
 function swath_width(h::Real, HalfFOV::Real)
-    gamma = pi - asin((R0+h)/R0 + sin(HalfFOV))
+    gamma = pi - asin((R0+h)/R0*sin(HalfFOV))
     alpha = pi - gamma - HalfFOV
     S = R0*alpha
 end
