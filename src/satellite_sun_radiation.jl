@@ -73,11 +73,11 @@ export satellite_sun_radiation_earth_pointing_mean
 #==#
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
-                                                a::FloatingPoint,
-                                                e::FloatingPoint,
-                                                i::FloatingPoint,
-                                                RAAN::FloatingPoint,
-                                                w::FloatingPoint,
+                                                a::Real,
+                                                e::Real,
+                                                i::Real,
+                                                RAAN::Real,
+                                                w::Real,
                                                 numDays::Integer,
                                                 fN_k::Function,
                                                 meanAnomaly::Bool = false,
@@ -195,11 +195,11 @@ end
 #==#
 
 function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
-                                                     a::FloatingPoint,
-                                                     e::FloatingPoint,
-                                                     i::FloatingPoint,
-                                                     RAAN::FloatingPoint,
-                                                     w::FloatingPoint,
+                                                     a::Real,
+                                                     e::Real,
+                                                     i::Real,
+                                                     RAAN::Real,
+                                                     w::Real,
                                                      numDays::Integer,
                                                      fN_k::Function,
                                                      step::Float64 = 0.1*pi/180.0)
@@ -258,11 +258,11 @@ end
 #==#
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
-                                                a::FloatingPoint,
-                                                e::FloatingPoint,
-                                                i::FloatingPoint,
-                                                RAAN::FloatingPoint,
-                                                w::FloatingPoint,
+                                                a::Real,
+                                                e::Real,
+                                                i::Real,
+                                                RAAN::Real,
+                                                w::Real,
                                                 numDays::Integer,
                                                 N::Array{Float64,1},
                                                 meanAnomaly::Bool = false,
@@ -283,11 +283,11 @@ end
 #==#
 
 function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
-                                                     a::FloatingPoint,
-                                                     e::FloatingPoint,
-                                                     i::FloatingPoint,
-                                                     RAAN::FloatingPoint,
-                                                     w::FloatingPoint,
+                                                     a::Real,
+                                                     e::Real,
+                                                     i::Real,
+                                                     RAAN::Real,
+                                                     w::Real,
                                                      numDays::Integer,
                                                      N::Array{Float64,1},
                                                      step::Float64 = 0.1*pi/180.0)

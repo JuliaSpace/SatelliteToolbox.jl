@@ -16,6 +16,9 @@
 #
 # Changelog
 #
+# 2015-11-05: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    Remove the deprecated structure OrbitalParameters.
+#
 # 2014-08-12: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Add support to the structure OrbitalParameters.
 #    WARNING: the order of parameters in function satellite_position_i changed.
@@ -27,26 +30,7 @@
 
 import Rotations: angle2dcm!
 
-export  satellite_position_i, sun_position_i
-
-#==#
-#
-# @brief Compute the satellite position on the Inertial coordinate frame.
-#
-# @param[in] sat Orbital parameters.
-#
-# @return The satellite vector and the versor that is perpendicular to the
-# satellite vector and lies on the orbit plane, both represented in the Inertial
-# coordinate frame.
-#
-# @note The dimension of the satellite vector will be the same of that of the
-# semi-major axis.
-#
-#==#
-
-function satellite_position_i{T}(sat::OrbitalParameters{T})
-  return satellite_position_i(sat.a, sat.e, sat.i, sat.RAAN, sat.w, sat.f)
-end
+export satellite_position_i
 
 #==#
 #
@@ -68,7 +52,8 @@ end
 #
 #==#
 
-function satellite_position_i{T}(a::T, e::T, i::T, RAAN::T, w::T, f::T)
+function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real,
+                              w::Real, f::Real)
     # Compute the radius from the focus.
     norm_r = a*(1-e^2)/(1+e*cos(f))
 
@@ -86,7 +71,7 @@ function satellite_position_i{T}(a::T, e::T, i::T, RAAN::T, w::T, f::T)
 
     # Compute the matrix that rotates from the S coordinate frame to the
     # Inertial coordinate Frame.
-    Dsi = Array(T,(3,3))
+    Dsi = Array(Float64,(3,3))
     angle2dcm!(Dsi, RAAN, i, w+f, "ZXZ")
 
     # Compute the satellite vector represented in the Inertial coordinate

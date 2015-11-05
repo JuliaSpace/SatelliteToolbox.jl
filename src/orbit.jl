@@ -33,7 +33,7 @@ export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 # @remarks The sun position is computed at noon of the day t0.
 #==#
 
-function compute_RAAN_lt(t0::Int, asc_node_lt::FloatingPoint)
+function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
     Si = sun_position_i(t0, 43200)
 
@@ -59,7 +59,7 @@ end
 #
 #==#
 
-function dRAAN_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
+function dRAAN_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
     if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1.0-e)))
@@ -87,7 +87,7 @@ end
 #
 #==#
 
-function dw_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
+function dw_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
     if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1.0-e)))
@@ -115,7 +115,7 @@ end
 #
 #==#
 
-function is_orbit_valid(a::FloatingPoint, e::FloatingPoint)
+function is_orbit_valid(a::Real, e::Real)
     # Check if the arguments are valid.
     if ( a < 0. )
         throw(ArgumentError("The semi-major axis must be greater than 0."))
@@ -140,13 +140,13 @@ end
 #
 #==#
 
-function n_J0(a::FloatingPoint)
+function n_J0(a::Real)
     # Check if the arguments are valid.
     if ( a < 0. )
         throw(ArgumentError("The semi-major axis must be greater than 0."))
     end
 
-    sqrt(m0/a^3)
+    sqrt(m0/Float64(a)^3)
 end
 
 #==#
@@ -162,7 +162,7 @@ end
 #
 #==#
 
-function n_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
+function n_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
     if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1-e)))
@@ -189,7 +189,7 @@ end
 #
 #==#
 
-function t_J0(a::FloatingPoint)
+function t_J0(a::Real)
     2.0*pi/n_J0(a)
 end
 
@@ -205,6 +205,6 @@ end
 #
 #==#
 
-function t_J2(a::FloatingPoint, e::FloatingPoint, i::FloatingPoint)
+function t_J2(a::Real, e::Real, i::Real)
     2.0*pi/n_J2(a, e, i)
 end

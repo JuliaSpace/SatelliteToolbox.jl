@@ -1,6 +1,7 @@
+VERSION >= v"0.4.0-dev+6521" && __precompile__()
+
 module SatToolbox
 
-export OrbitalParameters
 export R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 
 import Base: asin, atan2, cos, mod, sin
@@ -8,16 +9,6 @@ import Base: asin, atan2, cos, mod, sin
 ################################################################################
 #                                  Structures
 ################################################################################
-
-# Structure that defines the orbital parameters of a satellite.
-type OrbitalParameters{T}
-    a::T
-    e::T
-    i::T
-    RAAN::T
-    w::T
-    f::T
-end
 
 ################################################################################
 #                                  Constants

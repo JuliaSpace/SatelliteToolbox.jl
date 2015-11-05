@@ -53,11 +53,11 @@ export satellite_eclipse_time
 #==#
 
 function satellite_eclipse_time(t0::Integer,
-                                a::FloatingPoint,
-                                e::FloatingPoint,
-                                i::FloatingPoint,
-                                w::FloatingPoint,
-                                RAAN::FloatingPoint,
+                                a::Real,
+                                e::Real,
+                                i::Real,
+                                w::Real,
+                                RAAN::Real,
                                 numDays::Integer,
                                 relative::Bool = false)
     # Constants

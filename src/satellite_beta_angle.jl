@@ -46,10 +46,10 @@ export satellite_beta_angle
 #==#
 
 function satellite_beta_angle(t0::Integer,
-                              a::FloatingPoint,
-                              e::FloatingPoint,
-                              i::FloatingPoint,
-                              RAAN::FloatingPoint,
+                              a::Real,
+                              e::Real,
+                              i::Real,
+                              RAAN::Real,
                               numDays::Integer)
     # Constants
     rad2deg = 180.0/pi
