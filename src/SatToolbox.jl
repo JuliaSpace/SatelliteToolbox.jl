@@ -2,7 +2,7 @@ VERSION >= v"0.4.0-dev+6521" && __precompile__()
 
 module SatToolbox
 
-export R0, Rm, m0, J2, Rs, ne, au2m, sunRad
+export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 
 import Base: asin, atan2, cos, mod, sin
 
@@ -13,6 +13,9 @@ import Base: asin, atan2, cos, mod, sin
 ################################################################################
 #                                  Constants
 ################################################################################
+
+# Julian Day of J2000.0 epoch.
+const JD_J2000 = 2451545.0
 
 # Earth Equatorial radius [m].
 const R0 = 6378137.0;
@@ -52,6 +55,8 @@ Base.showerror(io::IO, e::OrbitInvalidPerigee) =
 ################################################################################
 #                                    Files
 ################################################################################
+
+include("coordinate_transformations.jl")
 
 include("sun_position.jl")
 
