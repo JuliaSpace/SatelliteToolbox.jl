@@ -40,21 +40,25 @@ const SAT_LIGHTING_SUNLIGHT = 0
 const SAT_LIGHTING_PENUMBRA = 1
 const SAT_LIGHTING_UMBRA = 2
 
-#==#
-#
-# @brief Return the satellite lighting conditions given the sun and the
-# satellite vectors.
-#
-# @param[in] r_i Satellite position vector represented in the Inertial
-# coordinate frame [m].
-# @param[in] s_i Sun position vector represented in the
-# Inertial coordinate frame [m].
-#
-# @retval SAT_LIGHTING_SUNLIGHT Satellite is under sunlight.
-# @retval SAT_LIGHTING_PENUMBRA Satellite is at penumbra region.
-# @retval SAT_LIGHTING_UMBRA Satellite is at umbra region.
-#
-#==#
+"""
+### function satellite_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
+
+Return the satellite lighting condition given the Sun and the satellite position
+vectors.
+
+##### Args
+
+* r_i: Satellite position vector represented in the Inertial coordinate frame
+[m].
+* s_i: Sun position vector represented in the Inertial coordinate frame [m].
+
+##### Returns
+
+* **SAT_LIGHTING_SUNLIGHT**: Satellite is under sunlight.
+* **SAT_LIGHTING_PENUMBRA**: Satellite is at penumbra region.
+* **SAT_LIGHTING_UMBRA**: Satellite is at umbra region.
+
+"""
 
 function satellite_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
     # Norme of the sun position vector.

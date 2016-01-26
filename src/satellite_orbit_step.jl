@@ -30,24 +30,28 @@
 
 export satellite_orbit_compute_f
 
-#==#
-#
-# @brief Compute the true anomaly given the mean anomaly.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-# @param[in] m Mean anomaly [rad].
-# @param[in] tol (OPT) Tolerance for the Newton-Raphson method, default 1e-10.
-#
-# @retval SAT_LIGHTING_SUNLIGHT Satellite is under sunlight.
-# @retval SAT_LIGHTING_PENUMBRA Satellite is at penumbra region.
-# @retval SAT_LIGHTING_UMBRA Satellite is at umbra region.
-#
-# @note This function uses the Newton-Raphson method to compute the true
-# anomaly.
-#
-#==#
+"""
+### function satellite_orbit_compute_f(a::Real, e::Real, i::Real, m::Real, tol::Float64 = 1e-10)
+
+Compute the true anomaly given the mean anomaly.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+* m: Mean anomaly [rad].
+* tol: (OPTIONAL) Tolerance for the Newton-Raphson method, *default*: 1e-10.
+
+##### Returns
+
+* The true anomaly [rad].
+
+##### Remarks
+
+This functions uses the Newton-Raphson method to compute the true anomaly.
+
+"""
 
 function satellite_orbit_compute_f(a::Real,
                                    e::Real,

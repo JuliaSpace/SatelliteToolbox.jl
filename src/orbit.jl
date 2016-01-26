@@ -24,14 +24,25 @@
 export compute_RAAN_lt
 export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 
-#==#
-#
-# @brief Compute the RAAN given a date and a local time.
-# @param[in] t0 Launch date [number of days since 01/01/2000].
-# @param[in] asc_node_lt Desired local time for the ascending node [hour].
-# @return The RAAN in the interval [0, 2pi].
-# @remarks The sun position is computed at noon of the day t0.
-#==#
+"""
+### function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
+
+Compute the RAAN given a data and a local time.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* asc_node_lt: Desired local time for the ascending node [hour].
+
+##### Returns
+
+* The RAAN in the interval [0, 2π].
+
+##### Remarks
+
+The sun position is computed at noon of the day t0.
+
+"""
 
 function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
@@ -47,17 +58,22 @@ function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
     RAAN = mod(S_asc_i+alpha, 2*float(pi))
 end
 
-#==#
-#
-# @brief Return perturbation of the right accession of the ascending node.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-#
-# @return The perturbation of the RAAN [rad/s].
-#
-#==#
+"""
+### function dRAAN_J2(a::Real, e::Real, i::Real)
+
+Compute the perturbation of the RAAN using terms up to J2.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+
+##### Returns
+
+* The perturbation of the RAAN (J2) [rad/s].
+
+"""
 
 function dRAAN_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
@@ -75,17 +91,22 @@ function dRAAN_J2(a::Real, e::Real, i::Real)
     -3.0/2.0*R0^2/(p^2)*n0*J2*cos(i)
 end
 
-#==#
-#
-# @brief Return perturbation of the argument of perigee.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-#
-# @return The perturbation of the argument of perigee [rad/s].
-#
-#==#
+"""
+### function dw_J2(a::Real, e::Real, i::Real)
+
+Compute the perturbation of the argument of perigee using terms up to J2.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+
+##### Returns
+
+* The perturbation of the argument of perigee (J2) [rad/s].
+
+"""
 
 function dw_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
@@ -103,17 +124,22 @@ function dw_J2(a::Real, e::Real, i::Real)
     3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
 end
 
-#==#
-#
-# @brief Verify if the orbit is valid.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] b Eccentricity.
-#
-# @RETVAL true The orbit is valid.
-# @RETVAL false The orbit is invalid.
-#
-#==#
+"""
+### function is_orbit_valid(a::Real, e::Real)
+
+Verify if the orbit is valid.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+
+##### Returns
+
+* **TRUE**: The orbit is valid.
+* **FALSE**: The orbit is invalid.
+
+"""
 
 function is_orbit_valid(a::Real, e::Real)
     # Check if the arguments are valid.
@@ -129,16 +155,20 @@ function is_orbit_valid(a::Real, e::Real)
     (a*(1.-e) > R0)
 end
 
-#==#
-#
-# @brief Return the orbit angular velocity neglecting the perturbations
-# (two-body).
-#
-# @param[in] a Semi-major axis [m].
-#
-# @return The unperturbed orbit angular velocity [rad/s].
-#
-#==#
+"""
+### function n_J0(a::Real)
+
+Return the orbit angular velocity neglecting the perturbations (two-body).
+
+##### Args
+
+* a: Semi-major axis [m].
+
+##### Returns
+
+* The unperturbed orbit angular velocity [rad/s].
+
+"""
 
 function n_J0(a::Real)
     # Check if the arguments are valid.
@@ -149,18 +179,22 @@ function n_J0(a::Real)
     sqrt(m0/Float64(a)^3)
 end
 
-#==#
-#
-# @brief Return the orbit angular velocity considering the perturbations (up to
-# J2 terms).
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-#
-# @return The perturbed orbit angular velocity [rad/s].
-#
-#==#
+"""
+### function n_J2(a::Real, e::Real, i::Real)
+
+Return the orbit angular velocity considering the perturbations up to J2 terms.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+
+##### Returns
+
+* The perturbed orbit angular velocity [rad/s].
+
+"""
 
 function n_J2(a::Real, e::Real, i::Real)
     # Check if the perigee is inside Earth.
@@ -179,31 +213,41 @@ function n_J2(a::Real, e::Real, i::Real)
                                    (5.0*cos(i)^2-1.0))
 end
 
-#==#
-#
-# @brief Return the orbit period neglecting the perturbations (two-body).
-#
-# @param[in] a Semi-major axis [m].
-#
-# @return The unperturbed orbit period [s].
-#
-#==#
+"""
+### function t_J0(a::Real)
+
+Return the orbit period neglecting the perturbations (two-body).
+
+##### Args
+
+* a: Semi-major axis [m].
+
+##### Returns
+
+* The unperturbed orbit period [s].
+
+"""
 
 function t_J0(a::Real)
     2.0*pi/n_J0(a)
 end
 
-#==#
-#
-# @brief Return the orbit period considering the perturbations (up to J2 terms).
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-#
-# @return The perturbed orbit period [s].
-#
-#==#
+"""
+### function t_J2(a::Real, e::Real, i::Real)
+
+Return the orbit period considering the perturbations up to J2 terms.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+
+##### Returns
+
+* The perturbed orbit period [s].
+
+"""
 
 function t_J2(a::Real, e::Real, i::Real)
     2.0*pi/n_J2(a, e, i)

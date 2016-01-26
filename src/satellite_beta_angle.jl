@@ -30,20 +30,25 @@ import Rotations: angle2dcm!
 
 export satellite_beta_angle
 
-#==#
-#
-# @brief Compute the beta angle of a satellite.
-#
-# @param[in] t0 Launch date [number of days since 01/01/2000].
-# @param[in] a Semi-major axis of the satellite orbit [m].
-# @param[in] e Orbit eccentricity.
-# @param[in] i Orbit inclination [rad].
-# @param[in] RAAN Right ascension of the ascending node at launch date [rad].
-# @param[in] numDays Number of days in the analysis.
-#
-# @return The beta angle computed for each day in degrees.
-#
-#==#
+"""
+### function satellite_beta_angle(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, numDays::Integer)
+
+Compute the beta angle of a satellite.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days of the analysis.
+
+##### Returns
+
+* The beta angle computed for each day in degrees.
+
+"""
 
 function satellite_beta_angle(t0::Integer,
                               a::Real,

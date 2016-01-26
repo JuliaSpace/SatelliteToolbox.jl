@@ -10,7 +10,7 @@
 #
 # Description
 #
-#    Many auxiliary functions for ground repeating, sun synchronous (GRSS) orbit
+#    Many auxiliary functions for ground repeating, Sun-synchronous (GRSS) orbit
 #    computations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -26,21 +26,28 @@ export adjacent_track_distance_grss, adjacent_track_angle_grss
 export compute_ss_orbit_by_num_rev_per_day
 export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 
-#==#
-#
-# @brief Compute the distance between adjacent ground tracks in a given latitude
-# for a ground repeating, sun synchronous orbit.
-#
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The distance between adjacent ground tracks [m].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
+"""
+### function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
+
+Compute the distance between adjacent ground tracks in at a given latitude for a
+ground repeating, Sun-synchronous orbit.
+
+##### Args
+
+* T: Orbit period [s].
+* i: Inclination [rad].
+* To: Orbit cycle [days].
+* lat: Latitude [rad].
+
+##### Returns
+
+* The distance between adjacent ground tracks at the given latitude [m].
+
+##### Remarks
+
+The functions *does not* check if the orbit is a GRSS orbit.
+
+"""
 
 function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
     # Angle between two adjacent traces.
@@ -54,22 +61,29 @@ function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
 end
 
 
-#==#
-#
-# @brief Compute the distance between adjacent ground tracks in a given latitude
-# for a ground repeating, sun synchronous orbit.
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The distance between adjacent ground tracks [m].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
+"""
+### function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real, lat::Real)
+
+Compute the distance between adjacent ground tracks in at a given latitude for a
+ground repeating, Sun-synchronous orbit.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+* To: Orbit cycle [days].
+* lat: Latitude [rad].
+
+##### Returns
+
+* The distance between adjacent ground tracks at the given latitude [m].
+
+##### Remarks
+
+The functions *does not* check if the orbit is a GRSS orbit.
+
+"""
 
 function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
                                       lat::Real)
@@ -80,24 +94,30 @@ function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
     adjacent_track_distance_grss(T, i, To, lat)
 end
 
+"""
+### function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real, lat::Real)
 
-#==#
-#
-# @brief Compute the angle between two adjacent ground tracks in a given
-# latitude measured on the satellite position for a ground repeating, sun
-# synchronous orbit.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] T Orbit period [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The angle between adjacent ground tracks [rad].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
+Compute the angle between two adjacent ground tracks in a given latitude
+measured on the satellite position for a ground repeating, Sun-synchronous
+orbit.
+
+##### Args
+
+* h: Orbit altitude in the Equator [m].
+* T: Orbit period [s].
+* i: Inclination [rad].
+* To: Orbit cycle [days].
+* lat: Latitude.
+
+##### Returns
+
+* The angle between adjacent ground tracks at the given latitude [rad].
+
+##### Remarks
+
+The functions *does not* check if the orbit is a GRSS orbit.
+
+"""
 
 function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
                                    lat::Real)
@@ -115,24 +135,31 @@ function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
     asin(Rp/b*sin(beta/2.0))
 end
 
-#==#
-#
-# @brief Compute the angle between two adjacent ground tracks in a given
-# latitude measured on the satellite position for a ground repeating, sun
-# synchronous orbit.
-#
-# @param[in] h Orbit altitude in the Equator [m].
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity [s].
-# @param[in] i Inclination [rad].
-# @param[in] To Orbit cycle [days].
-# @param[in] lat Latitude [rad].
-#
-# @return The angle between adjacent ground tracks [rad].
-#
-# @remarks The function does not check if the orbit is a GRSS orbit.
-#
-#==#
+"""
+### function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real, To::Integer, lat::Real)
+
+Compute the angle between two adjacent ground tracks in a given latitude
+measured on the satellite position for a ground repeating, Sun-synchronous
+orbit.
+
+##### Args
+
+* h: Orbit altitude in the Equator [m].
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+* To: Orbit cycle [days].
+* lat: Latitude.
+
+##### Returns
+
+* The angle between adjacent ground tracks at the given latitude [rad].
+
+##### Remarks
+
+The functions *does not* check if the orbit is a GRSS orbit.
+
+"""
 
 function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
                                    To::Integer, lat::Real)
@@ -143,48 +170,60 @@ function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
     adjacent_track_angle_grss(h, T, i, To, lat)
 end
 
-#==#
-#
-# @brief Compute the sun-synchronous orbit given the number of revolutions per
-# day and the eccentricity.
-#
-# @param[in] numRevPD Number of revolutions per day.
-# @param[in] e Eccentricity.
-#
-# @return The semi-major axis [m], the inclination [rad], the residues of the
-# two functions and a boolean variable that indicates if the method converged.
-#
-#==#
+"""
+### function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
+
+Compute the Sun-synchronous orbit given the number of revolutions per day and
+the eccentricity.
+
+##### Args
+
+* numRevPD: Number of revolutions per day.
+* e: Eccentricity.
+
+##### Returns
+
+* The semi-major axis [m].
+* The inclination [rad].
+* The residues of the two functions.
+* A boolean variable that indicates if the numerical algorithm converged.
+
+"""
 
 function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
     compute_ss_orbit_by_ang_vel(numRevPD*2*pi/86400.0, e)
 end
 
-#==#
-#
-# @brief Compute a list of repeating sun-synchronous orbits.
-#
-# @param[in] minRep Minimum repetition time of the orbit [days].
-# @param[in] maxRep Maximum repetition time of the orbit [days].
-# @param[in] minAlt Minimum altitude of the orbits on the list [m].
-# @param[in] maxAlt Maximum altitude of the orbits on the list [m].
-# @param[in] e Eccentricity.
-#
-# @return A matrix containing the orbits found.
-#
-# @remarks
-#
-# 1) If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a
-# orbit is added to the list.
-#
-# 2) The output matrix has the following format:
-#
-# Semi-major axis [m] | Altitude [m] | Period [s] | Int | Num | Den
-# --------------------|--------------|------------|-----|-----|----
-#
-# in which the period is Int + Num/Den.
-#
-#==#
+"""
+### function list_ss_orbits_by_rep_period(minRep::Int, maxRep::Int, minAlt::Real=-1.0, maxAlt::Real=-1.0, e::Real=0.0)
+
+Compute a list of repeating Sun-synchronous orbits.
+
+##### Args
+
+* minRep: Minimum repetition time of the orbit [days].
+* maxRep: Maximum repetition time of the orbit [days].
+* minAlt: Minimum altitude of the orbits on the list [m].
+* maxAlt: Minimum altitude of the orbits on the list [m].
+* e: Eccentricity.
+
+##### Returns
+
+* A matrix containing the orbits found.
+
+##### Remarks
+
+
+1) If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a
+orbit is added to the list.
+2) The output matrix has the following format:
+
+        Semi-major axis [m] | Altitude [m] | Period [s] | Int | Num | Den
+        --------------------|--------------|------------|-----|-----|----
+
+in which the period is Int + Num/Den.
+
+"""
 
 function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
                                       minAlt::Real=-1.0, maxAlt::Real=-1.0,
@@ -258,16 +297,22 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
     ss_orbits
 end
 
-#==#
-#
-# @brief Sort the list of sun-synchronous orbits by height.
-#
-# @param[in] ss_orbits List of sun-synchronous orbits (@see
-# list_ss_orbits_by_rep_period).
-#
-# @return A matrix containing a list of sun-synchronous orbits sorted by height.
-#
-#==#
+
+"""
+### sort_list_ss_orbits_by_height(ss_orbits::Array{Float64, 2})
+
+Sort the list of Sun-synchronous orbits by height.
+
+##### Args
+
+* ss_orbits: List of Sun-synchronous orbits (*see*
+list_ss_orbits_by_rep_period).
+
+##### Returns
+
+* A matrix containing a list of Sun-synchronous orbits sorted by height.
+
+"""
 
 sort_list_ss_orbits_by_height(ss_orbits::Array{Float64, 2}) =
     sortrows(ss_orbits, by=x->x[1])

@@ -35,22 +35,30 @@
 
 export satellite_eclipse_time
 
-#==#
-#
-# @brief Compute the eclipse time of a satellite.
-#
-# @param[in] t0 Launch date [number of days since 01/01/2000].
-# @param[in] a Semi-major axis of the satellite orbit [m].
-# @param[in] e Orbit eccentricity.
-# @param[in] i Orbit inclination [rad].
-# @param[in] w Argument of perigee [rad].
-# @param[in] RAAN Right ascension of the ascending node at launch date [rad].
-# @param[in] numDays Number of days in the analysis.
-# @param[in] relative Compute the eclipse time relative to the nodal period.
-#
-# @return The beta angle computed for each day in degrees.
-#
-#==#
+"""
+### function satellite_eclipse_time(t0::Integer, a::Real, e::Real, i::Real, w::Real, RAAN::Real, numDays::Integer, relative::Bool = false)
+
+Compute the eclipse time of a satellite.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* w: Argument of perigee [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days of the analysis.
+* relative: Compute the eclipse time relative to the nodal period.
+
+##### Returns
+
+* The following table:
+
+        day | Sunlight Time | Penumbra Time | Umbra Time
+       -----+---------------+---------------+------------
+
+"""
 
 function satellite_eclipse_time(t0::Integer,
                                 a::Real,

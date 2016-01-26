@@ -35,42 +35,51 @@ import Rotations: angle2dcm!
 export satellite_sun_radiation_earth_pointing
 export satellite_sun_radiation_earth_pointing_mean
 
-#==#
-#
-# @brief Compute the sun radiation on a surface for an Earth pointing mission.
-#
-# @param[in] t0 Launch date [number of days since 01/01/2000].
-# @param[in] a Semi-major axis of the satellite orbit [m].
-# @param[in] e Orbit eccentricity.
-# @param[in] i Orbit inclination [rad].
-# @param[in] w Argument of perigee [rad].
-# @param[in] RAAN Right ascension of the ascending node at launch date [rad].
-# @param[in] numDays Number of days in the analysis.
-# @param[in] fN_k Function f(s_b) that describes the solar panel normal at each
-# k-th sampling step. s_b is the sun vector represented in the body coordinate
-# frame.
-# @param[in] meanAnomaly (OPTIONAL) If true, compute using angular steps in the
-# mean anomaly instead of in the orbit latitude.
-# @param[in] step (OPTIONAL) Angular propagation step (default = 0.1 deg).
-#
-# @return A matrix containing the sun radiation [W/m^2] for each position in
-# orbit for each day. If the sun angle is larger than 90 deg or if the satellite
-# is in eclipse, then NaN is returned in the matrix.
-#
-# @note The body reference frame is defined as:
-#     _ Z axis points towards the center of Earth;
-#     _ Y axis points towards the negative direction of orbit normal;
-#     _ X axis completes the right-hand reference frame.
-# which is common for Earth pointing satellites.
-#
-# @note If the mean anomaly is used, then the average value of the output is the
-# average sun radiation received by the satellite surface, because every angular
-# steps have a fixed time interval.
-#
-# @note If the mean anomaly is used, then the angle interval is [0, 2pi].
-# Otherwise, the angle interval is [-pi,pi].
-#
-#==#
+"""
+### function satellite_sun_radiation_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
+
+Compute the sun radiation on a surface for an Earth pointing mission.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* w: Argument of perigee [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days in the analysis.
+* fN_k: Function **f(s_b)** that describes the solar panel normal at each k-th
+sampling step. Notice that **s_b** is the Sun vector represented in the body
+coordinate frame.
+* meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
+anomaly instead of in the orbit latitude, *default*: **false**.
+* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+
+##### Returns
+
+* A matrix containing the Sun radiation [W/m²] for each position in orbit for
+each day.
+
+**NOTE**: if the sun angle is larger than 90 deg or if the satellite is in
+eclipse, then NaN is returned in the matrix.
+
+##### Remarks
+
+The body reference frame is defined as:
+
+* **Z axis** points towards the center of Earth;
+* **Y axis** points towards the negative direction of orbit normal;
+* **X axis** completes the right-hand reference frame.
+
+If the **mean anomaly** is used, then the average value of the output is the
+average sun radiation received by the satellite surface, because every angular
+steps have a fixed time interval.
+
+If the **mean anomaly** is used, then the angle interval is [0, 2π]
+Otherwise, the angle interval is [-π,π].
+
+"""
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
                                                 a::Real,
@@ -184,15 +193,34 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     sun_radiation
 end
 
-#==#
-#
-# @brief Compute the mean sun radiation on a surface for an Earth pointing
-# mission.
-#
-# See function `satellite_sun_radiation_earth_pointing` for description of the
-# parameters.
-#
-#==#
+"""
+### function satellite_sun_radiation_earth_pointing_mean(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, step::Float64 = 0.1*pi/180.0)
+
+Compute the mean sun radiation on a surface for an Earth-pointing mission.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* w: Argument of perigee [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days in the analysis.
+* fN_k: Function **f(s_b)** that describes the solar panel normal at each k-th
+sampling step. Notice that **s_b** is the Sun vector represented in the body
+coordinate frame.
+* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+
+##### Returns
+
+* The mean Sun radiation on a surface [W/m²].
+
+##### Remarks
+
+For more details, *see* **satellite_sun_radiation_earth_pointing**.
+
+"""
 
 function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
                                                      a::Real,
@@ -221,41 +249,49 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
     squeeze(mean(sun_radiation, 1), 1)
 end
 
-#==#
-#
-# @brief Compute the sun radiation on a surface for an Earth pointing mission.
-#
-# @param[in] t0 Launch date [number of days since 01/01/2000].
-# @param[in] a Semi-major axis of the satellite orbit [m].
-# @param[in] e Orbit eccentricity.
-# @param[in] i Orbit inclination [rad].
-# @param[in] w Argument of perigee [rad].
-# @param[in] RAAN Right ascension of the ascending node at launch date [rad].
-# @param[in] numDays Number of days in the analysis.
-# @param[in] N Vector normal to the surface represented in the body reference
-# frame.
-# @param[in] meanAnomaly (OPTIONAL) If true, compute using angular steps in the
-# mean anomaly instead of in the orbit latitude.
-# @param[in] step (OPTIONAL) Mean anomaly step (default = 0.1 deg).
-#
-# @return A matrix containing the sun radiation [W/m^2] for each position in
-# orbit for each day. If the sun angle is larger than 90 deg or if the satellite
-# is in eclipse, then NaN is returned in the matrix.
-#
-# @note The body reference frame is defined as:
-#     _ Z axis points towards the center of Earth;
-#     _ Y axis points towards the negative direction of orbit normal;
-#     _ X axis completes the right-hand reference frame.
-# which is common for Earth pointing satellites.
-#
-# @note If the mean anomaly is used, then the average value of the output is the
-# average sun radiation received by the satellite surface, because every angular
-# steps have a fixed time interval.
-#
-# @note If the mean anomaly is used, then the angle interval is [0, 2pi].
-# Otherwise, the angle interval is [-pi,pi].
-#
-#==#
+"""
+### function satellite_sun_radiation_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
+
+Compute the sun radiation on a surface for an Earth pointing mission.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* w: Argument of perigee [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days in the analysis.
+* N: Vector normal to the surface represented in the body reference frame.
+* meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
+anomaly instead of in the orbit latitude, *default*: **false**.
+* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+
+##### Returns
+
+* A matrix containing the Sun radiation [W/m²] for each position in orbit for
+each day.
+
+**NOTE**: if the sun angle is larger than 90 deg or if the satellite is in
+eclipse, then NaN is returned in the matrix.
+
+##### Remarks
+
+The body reference frame is defined as:
+
+* **Z axis** points towards the center of Earth;
+* **Y axis** points towards the negative direction of orbit normal;
+* **X axis** completes the right-hand reference frame.
+
+If the **mean anomaly** is used, then the average value of the output is the
+average sun radiation received by the satellite surface, because every angular
+steps have a fixed time interval.
+
+If the **mean anomaly** is used, then the angle interval is [0, 2π]
+Otherwise, the angle interval is [-π,π].
+
+"""
 
 function satellite_sun_radiation_earth_pointing(t0::Integer,
                                                 a::Real,
@@ -272,15 +308,32 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                                            meanAnomaly, step)
 end
 
-#==#
-#
-# @brief Compute the mean sun radiation on a surface for an Earth pointing
-# mission.
-#
-# See function `satellite_sun_radiation_earth_pointing` for description of the
-# parameters.
-#
-#==#
+"""
+### function satellite_sun_radiation_earth_pointing_mean(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, step::Float64 = 0.1*pi/180.0)
+
+Compute the mean sun radiation on a surface for an Earth-pointing mission.
+
+##### Args
+
+* t0: Launch date [number of days since 01/01/2000].
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* w: Argument of perigee [rad].
+* RAAN: Right ascension of the ascending node at launch date [rad].
+* numDays: Number of days in the analysis.
+* N: Vector normal to the surface represented in the body reference frame.
+* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+
+##### Returns
+
+* The mean Sun radiation on a surface [W/m²].
+
+##### Remarks
+
+For more details, *see* **satellite_sun_radiation_earth_pointing**.
+
+"""
 
 function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
                                                      a::Real,

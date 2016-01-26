@@ -32,18 +32,25 @@ export compute_ss_orbit_by_ang_vel
 export compute_ss_orbit_by_inclination
 export compute_ss_orbit_by_semi_major_axis
 
-#==#
-#
-# @brief Compute the sun-synchronous orbit given the angular velocity and the
-# eccentricity.
-#
-# @param[in] n Angular velocity [rad/s].
-# @param[in] e Eccentricity.
-#
-# @return The semi-major axis [m], the inclination [rad], the residues of the
-# two functions and a boolean variable that indicates if the method converged.
-#
-#==#
+"""
+### function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
+
+Compute the Sun-synchronous orbit given the angular velocity and the
+eccentricity.
+
+##### Args
+
+* n: Angular velocity [rad/s].
+* e: Eccentricity.
+
+##### Returns
+
+* The semi-major axis [m].
+* The inclination [rad].
+* The residues of the two functions.
+* A boolean variable that indicates if the numerical algorithm converged.
+
+"""
 
 function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     # Check if the arguments are valid.
@@ -82,9 +89,9 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     Jf1f2(a, i) = [df1da(a,i) df1di(a,i);
                    df2da(a,i) df2di(a,i);]
 
-    ################################################################################
+    ############################################################################
     # Solve for zeros of f1 and f2 using Newton-Raphson method.
-    ################################################################################
+    ############################################################################
 
     # Maximum number of
 
@@ -121,17 +128,21 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
     a_k, i_k, f1(a_k, i_k), f2(a_k, i_k), converged
 end
 
-#==#
-#
-# @brief Compute the sun-synchronous orbit given the inclination and the
-# eccentricity
-#
-# @param[in] i Inclination [rad].
-# @param[in] e Eccentricity.
-#
-# @return The semi-major axis [m].
-#
-#==#
+"""
+### function compute_ss_orbit_by_inclination(i::Real, e::Real)
+
+Compute the Sun-synchronous orbit give the inclination and the eccentricity.
+
+##### Args
+
+* i: Inclination [rad].
+* e: Eccentricity.
+
+##### Returns
+
+* The semi-major axis of the Sun-synchronous orbit [m].
+
+"""
 
 function compute_ss_orbit_by_inclination(i::Real, e::Real)
     if !( 0. <= e < 1. )
@@ -149,24 +160,29 @@ function compute_ss_orbit_by_inclination(i::Real, e::Real)
 
     # Check if the orbit is valid.
     if ( a*(1.0-e) <  R0 )
-        throw(ErrorException("It was not possible to find a valid sun-synchronous orbit with the inclination given."))
+        throw(ErrorException("It was not possible to find a valid Sun-synchronous orbit with the inclination given."))
     end
 
     # Return.
     a
 end
 
-#==#
-#
-# @brief Compute the sun-synchronous orbit given the semi-major axis and the
-# eccentricity
-#
-# @param[in] a Semi-major axis [m].
-# @param[in] e Eccentricity.
-#
-# @return The inclination [rad].
-#
-#==#
+"""
+### function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
+
+Compute the Sun-synchronous orbit given the semi-major axis and the
+eccentricity.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+
+##### Returns
+
+* The inclination of the Sun-synchronous orbit [rad].
+
+"""
 
 function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
     # Check if the arguments are valid.
@@ -189,7 +205,7 @@ function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
 
     # Check if -1 <= cos_i <= 1.
     if ( (cos_i < -1) || (cos_i > 1) )
-        throw(ErrorException("It was not possible to find a sun-synchronous orbit with the semi-major axis given."))
+        throw(ErrorException("It was not possible to find a Sun-synchronous orbit with the semi-major axis given."))
     end
 
     # Return.

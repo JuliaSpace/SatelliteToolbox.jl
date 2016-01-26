@@ -32,19 +32,25 @@
 export J2000toGMST, JDtoGMST
 
 """
+### function J2000toGMST(J2000::Real)
+
 Compute the Greenwich Mean Sideral Time (GMST).
 
-Inputs
-------
-	J2000: Date in J2000.0 reference (UT1).
+##### Args
 
-Outputs
--------
-	Greenwich mean sideral time [rad].
+* J2000: Date in J2000.0 reference (UT1).
+
+##### Returns
+
+* Greenwich mean sideral time [rad].
+
+##### Remarks
 
 Based on algorithm in [2] (http://www.navipedia.net/index.php/CEP_to_ITRF),
 accessed at 2015-12-01.
+
 """
+
 function J2000toGMST(J2000::Real)
     # Julian UT1 Date at 0h.
     JD_aux    = floor(J2000-0.5)
@@ -69,17 +75,22 @@ function J2000toGMST(J2000::Real)
 end
 
 """
+### function JDtoGMST(JD::Real)
+
 Compute the Greenwich Mean Sideral Time (GMST).
 
-Inputs
-------
-	JD: Julian day.
+##### Inputs
 
-Outputs
--------
-	Greenwich mean sideral time [rad].
+* JD: Julian day.
+
+##### Outputs
+
+* Greenwich mean sideral time [rad].
+
+##### Remarks
 
 Based on algorithm in [1, pp. 188].
+
 """
 function JDtoGMST(JD::Real)
 	J2000toGMST(JD - JD_J2000);

@@ -40,17 +40,22 @@
 
 export sun_position_i
 
-#==#
-#
-# @brief Compute the sun position on the Inertial coordinate frame (J2000).
-#
-# @param[in] day Number of days since 01/01/2000 (J2000.0 epoch).
-# @param[in] time Time of day [s].
-#
-# @return The vector between the origin of the Inertial coordinate frame and
-# the Sun represented in the Celestial coordinate frame [m].
-#
-#==#
+"""
+### function sun_position_i(day::Int, time::Int)
+
+Compute the Sun position represented in the Inertial coordinate frame (J2000).
+
+##### Args
+
+* day: Number of days since 01/01/2000 (J2000.0 epoch).
+* time: Time of day [s].
+
+##### Returns
+
+* The vector between the origin of the Inertial coordinate frame (J2000) and the
+Sun represented in the Inertial coordinate frame (J2000).
+
+"""
 
 function sun_position_i(day::Int, time::Int)
     # Constants

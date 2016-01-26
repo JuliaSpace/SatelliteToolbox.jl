@@ -32,25 +32,31 @@ import Rotations: angle2dcm!
 
 export satellite_position_i
 
-#==#
-#
-# @brief Compute the satellite position on the Inertial coordinate frame.
-#
-# @param[in] a Semi-major axis.
-# @param[in] e Eccentricity.
-# @param[in] i Inclination [rad].
-# @param[in] RAAN Right ascension of the ascending node [rad].
-# @param[in] w Argument of perigee [rad].
-# @param[in] f True anomaly [rad].
-#
-# @return The satellite vector and the versor that is perpendicular to the
-# satellite vector and lies on the orbit plane, both represented in the Inertial
-# coordinate frame.
-#
-# @note The dimension of the satellite vector will be the same of that of the
-# semi-major axis.
-#
-#==#
+"""
+### function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+
+Compute the satellite position on the Inertial coordinate frame.
+
+##### Args
+
+* a: Semi-major axis.
+* e: Eccentricity.
+* i: Inclination [rad].
+* RAAN: Right ascension of the ascending node [rad].
+* w: Argument of perigee [rad].
+* f: True anomaly [rad].
+
+##### Returns
+
+* The satellite position vector represented in the Inertial coordinate frame.
+* The versor perpendicular to the satellite position vector that lies on the
+orbit plane represented in the Inertial coordinate frame.
+
+###### Remarks
+
+The satellite position vector will have the same unit of the semi-major axis.
+
+"""
 
 function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real,
                               w::Real, f::Real)
