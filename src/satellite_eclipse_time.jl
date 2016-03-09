@@ -36,13 +36,13 @@
 export satellite_eclipse_time
 
 """
-### function satellite_eclipse_time(t0::Integer, a::Real, e::Real, i::Real, w::Real, RAAN::Real, numDays::Integer, relative::Bool = false)
+### function satellite_eclipse_time(JD0::Real, a::Real, e::Real, i::Real, w::Real, RAAN::Real, numDays::Integer, relative::Bool = false)
 
 Compute the eclipse time of a satellite.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -60,7 +60,7 @@ Compute the eclipse time of a satellite.
 
 """
 
-function satellite_eclipse_time(t0::Integer,
+function satellite_eclipse_time(JD0::Real,
                                 a::Real,
                                 e::Real,
                                 i::Real,
@@ -115,7 +115,7 @@ function satellite_eclipse_time(t0::Integer,
     # Loop.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(Int(t0+d), 43200)
+        s_i = sun_position_i(JD0+d)
 
         # Compute the new orbit parameters due to perturbations.
         w_d = w + dw*(d*day2sec)

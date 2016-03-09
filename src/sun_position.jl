@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # INPE - Instituto Nacional de Pesquisas Espaciais
 # ETE  - Engenharia e Tecnologia Espacial
@@ -22,6 +22,10 @@
 #
 # Changelog
 #
+# 2016-01-26: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    - The function sun_position_i was changed to receive the Julian Day. The
+#      old function is now marked DEPRECATED.
+#
 # 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    - The sun vector is returned in meters.
 #    - The Celestial Coordinate Frame is now called Inertial coordinate frame
@@ -36,7 +40,7 @@
 # 2014-07-16: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export sun_position_i
 
@@ -55,16 +59,46 @@ Compute the Sun position represented in the Inertial coordinate frame (J2000).
 * The vector between the origin of the Inertial coordinate frame (J2000) and the
 Sun represented in the Inertial coordinate frame (J2000).
 
+##### Remarks
+
+This function was marked **DEPRECATED** at 26 January, 2016. Use the function
+sun_position_i(JD::Real) instead.
+
 """
 
 function sun_position_i(day::Int, time::Int)
+    println("WARNING: The function sun_position_i(day::Int, time::Int) is deprecated!")
+    println("Use the function sun_position_i(JD::Real) instead.\n")
+
+    hour = time/(86400.0)
+    JD = JD_J2000 + day + hour - 0.5
+
+    sun_position_i(JD)
+end
+
+"""
+### function sun_position_i(day::Int, time::Int)
+
+Compute the Sun position represented in the Inertial coordinate frame (J2000).
+
+##### Args
+
+* JD: Julian day.
+
+##### Returns
+
+* The vector between the origin of the Inertial coordinate frame (J2000) and the
+Sun represented in the Inertial coordinate frame (J2000).
+
+"""
+
+function sun_position_i(JD::Real)
     # Constants
     const deg2rad = pi/180
 
-    # Get the Julian date - 2451545.0 (noon, 1 January 2000), which is the input
-    # to the algorithm.
-    hour = time/(86400.0)
-    D = day + hour - 0.5
+    # Compute the days from the noon of 1 January, 2000, which is the input to
+    # the algorithm.
+    D = JD - JD_J2000
 
     # # # # # # # # # # # # # # # #
     # Ecliptic coordinates

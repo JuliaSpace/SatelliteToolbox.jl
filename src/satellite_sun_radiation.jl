@@ -36,13 +36,13 @@ export satellite_sun_radiation_earth_pointing
 export satellite_sun_radiation_earth_pointing_mean
 
 """
-### function satellite_sun_radiation_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_radiation_earth_pointing(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
 
 Compute the sun radiation on a surface for an Earth pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -81,7 +81,7 @@ Otherwise, the angle interval is [-π,π].
 
 """
 
-function satellite_sun_radiation_earth_pointing(t0::Integer,
+function satellite_sun_radiation_earth_pointing(JD0::Real,
                                                 a::Real,
                                                 e::Real,
                                                 i::Real,
@@ -141,7 +141,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
     # Loop for each day.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(Int(t0+d), 43200)
+        s_i = sun_position_i(JD0+d)
         norm_s_i = norm(s_i)
 
         # Compute the new orbit parameters due to perturbations.
@@ -172,10 +172,15 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
 
                 # Vector normal to the solar panel.
                 N_k = fN_k(s_b)
+
+                # Normalize N_k.
+                N_k = N_k/norm(N_k)
+
+                # Compute the sun angle.
                 sun_angle_k = acos(dot(s_b,N_k))
 
                 # If the sun angle is larger than 90 deg, then the surface is
-                # not iluminated. Thus, the angle will be defined as NaN.
+                # not illuminated. Thus, the angle will be defined as NaN.
                 if (sun_angle_k > pi/2)
                     sun_radiation[k, d+1] = NaN
                 else
@@ -184,7 +189,7 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                 end
             else
                 # If the satellite is in eclipse, then the surface is not
-                # iluminated. Thus, the angle will be defined as NaN.
+                # illuminated. Thus, the angle will be defined as NaN.
                 sun_radiation[k,d+1] = NaN
             end
         end
@@ -194,13 +199,13 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
 end
 
 """
-### function satellite_sun_radiation_earth_pointing_mean(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_radiation_earth_pointing_mean(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, step::Float64 = 0.1*pi/180.0)
 
 Compute the mean sun radiation on a surface for an Earth-pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -222,7 +227,7 @@ For more details, *see* **satellite_sun_radiation_earth_pointing**.
 
 """
 
-function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
+function satellite_sun_radiation_earth_pointing_mean(JD0::Real,
                                                      a::Real,
                                                      e::Real,
                                                      i::Real,
@@ -231,7 +236,7 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
                                                      numDays::Integer,
                                                      fN_k::Function,
                                                      step::Float64 = 0.1*pi/180.0)
-    sun_radiation = satellite_sun_radiation_earth_pointing(t0,
+    sun_radiation = satellite_sun_radiation_earth_pointing(JD0,
                                                            a,
                                                            e,
                                                            i,
@@ -250,13 +255,13 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
 end
 
 """
-### function satellite_sun_radiation_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_radiation_earth_pointing(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, meanAnomaly::Bool = false, step::Float64 = 0.1*pi/180.0)
 
 Compute the sun radiation on a surface for an Earth pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -293,7 +298,7 @@ Otherwise, the angle interval is [-π,π].
 
 """
 
-function satellite_sun_radiation_earth_pointing(t0::Integer,
+function satellite_sun_radiation_earth_pointing(JD0::Real,
                                                 a::Real,
                                                 e::Real,
                                                 i::Real,
@@ -304,18 +309,18 @@ function satellite_sun_radiation_earth_pointing(t0::Integer,
                                                 meanAnomaly::Bool = false,
                                                 step::Float64 = 0.1*pi/180.0)
     fN_k(x) = N
-    satellite_sun_radiation_earth_pointing(t0, a, e, i, RAAN, w, numDays, fN_k,
+    satellite_sun_radiation_earth_pointing(JD0, a, e, i, RAAN, w, numDays, fN_k,
                                            meanAnomaly, step)
 end
 
 """
-### function satellite_sun_radiation_earth_pointing_mean(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_radiation_earth_pointing_mean(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, step::Float64 = 0.1*pi/180.0)
 
 Compute the mean sun radiation on a surface for an Earth-pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -335,7 +340,7 @@ For more details, *see* **satellite_sun_radiation_earth_pointing**.
 
 """
 
-function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
+function satellite_sun_radiation_earth_pointing_mean(JD0::Real,
                                                      a::Real,
                                                      e::Real,
                                                      i::Real,
@@ -344,7 +349,7 @@ function satellite_sun_radiation_earth_pointing_mean(t0::Integer,
                                                      numDays::Integer,
                                                      N::Array{Float64,1},
                                                      step::Float64 = 0.1*pi/180.0)
-    sun_radiation = satellite_sun_radiation_earth_pointing(t0,
+    sun_radiation = satellite_sun_radiation_earth_pointing(JD0,
                                                            a,
                                                            e,
                                                            i,

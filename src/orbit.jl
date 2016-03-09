@@ -45,8 +45,33 @@ The sun position is computed at noon of the day t0.
 """
 
 function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
+    println("WARNING: The function compute_RAAN_lt(t0::Int, asc_node_lt::Real) is deprecated!")
+    println("Use the function compute_RAAN_lt(JD::Real, asc_node_lt::Real) instead.\n")
+
+    JD = JD_J2000 + t0
+
+    compute_RAAN_lt(JD, asc_node_lt)
+end
+
+"""
+### function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
+
+Compute the RAAN given a data and a local time.
+
+##### Args
+
+* JD: Julian day.
+* asc_node_lt: Desired local time for the ascending node [hour].
+
+##### Returns
+
+* The RAAN in the interval [0, 2π].
+
+"""
+
+function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
-    Si = sun_position_i(t0, 43200)
+    Si = sun_position_i(JD)
 
     # Get the desired angle between the Sun and the ascending node [deg].
     alpha = (asc_node_lt-12.0)*float(pi)/12.0

@@ -31,13 +31,13 @@ import Rotations: angle2dcm!
 export satellite_beta_angle
 
 """
-### function satellite_beta_angle(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, numDays::Integer)
+### function satellite_beta_angle(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, numDays::Integer)
 
 Compute the beta angle of a satellite.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -50,7 +50,7 @@ Compute the beta angle of a satellite.
 
 """
 
-function satellite_beta_angle(t0::Integer,
+function satellite_beta_angle(JD0::Real,
                               a::Real,
                               e::Real,
                               i::Real,
@@ -93,7 +93,7 @@ function satellite_beta_angle(t0::Integer,
 
         # Compute the Sun position at noon (UT) represented in the Inertial ref.
         # frame.
-        S_i = sun_position_i(Int(t+t0), 43200)
+        S_i = sun_position_i(JD0+t)
         S_i = S_i/norm(S_i)
 
         # Get the angle between N_i and S_i [deg].

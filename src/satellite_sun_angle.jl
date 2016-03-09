@@ -38,13 +38,13 @@ import Rotations: angle2dcm!
 export satellite_sun_angle_earth_pointing
 
 """
-### function satellite_sun_angle_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_angle_earth_pointing(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, fN_k::Function, step::Float64 = 0.1*pi/180.0)
 
 Compute the Sun angle on a surface for an Earth-pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -73,7 +73,7 @@ The body reference frame is defined as:
 
 """
 
-function satellite_sun_angle_earth_pointing(t0::Integer,
+function satellite_sun_angle_earth_pointing(JD0::Real,
                                             a::Real,
                                             e::Real,
                                             i::Real,
@@ -129,7 +129,7 @@ function satellite_sun_angle_earth_pointing(t0::Integer,
     # Loop for each day.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(Int(t0+d), 43200)
+        s_i = sun_position_i(JD0+d)
         norm_s_i = norm(s_i)
 
         # Compute the new orbit parameters due to perturbations.
@@ -175,13 +175,13 @@ function satellite_sun_angle_earth_pointing(t0::Integer,
 end
 
 """
-### function satellite_sun_angle_earth_pointing(t0::Integer, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, step::Float64 = 0.1*pi/180.0)
+### function satellite_sun_angle_earth_pointing(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, numDays::Integer, N::Array{Float64,1}, step::Float64 = 0.1*pi/180.0)
 
 Compute the Sun angle on a surface for an Earth-pointing mission.
 
 ##### Args
 
-* t0: Launch date [number of days since 01/01/2000].
+* JD0: Julian day of the launch date.
 * a: Semi-major axis of the satellite orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
@@ -208,7 +208,7 @@ The body reference frame is defined as:
 
 """
 
-function satellite_sun_angle_earth_pointing(t0::Integer,
+function satellite_sun_angle_earth_pointing(JD0::Real,
                                             a::Real,
                                             e::Real,
                                             i::Real,
@@ -218,5 +218,5 @@ function satellite_sun_angle_earth_pointing(t0::Integer,
                                             N::Array{Float64,1},
                                             step::Float64 = 0.1*pi/180.0)
     fN_k(x) = N
-    satellite_sun_angle_earth_pointing(t0, a, e, i, RAAN, w, numDays, fN_k, step)
+    satellite_sun_angle_earth_pointing(JD0, a, e, i, RAAN, w, numDays, fN_k, step)
 end
