@@ -100,7 +100,7 @@ end
 """
 ### function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
 
-Compute the latitude and longitude of Nadir.
+Compute the latitude and longitude (WGS-84) of Nadir.
 
 ##### Args
 
@@ -166,10 +166,10 @@ TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
 #                 | Latitude [°] | Longitude [°] |
 # +---------------+--------------+---------------+
 # | STK v10.0.0   |  67.95133    | -163.11059    |
-# | This Function |  67.85923    | -163.12144    |
+# | This Function |  67.97856    | -163.12144    |
 # +---------------+--------------+---------------+
-# | Error         |   0.09210    |    0.01085    |
-# |               |  10.25257 km |    1.20761 km |
+# | Error         |   0.02723    |    0.01085    |
+# |               |   3.03123 km |    1.20761 km |
 # +---------------+--------------+---------------+
 #
 # Scenario 03
@@ -187,10 +187,10 @@ TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
 #                 | Latitude [°] | Longitude [°] |
 # +---------------+--------------+---------------+
 # | STK v10.0.0   |  18.98900    |  119.79547    |
-# | This Function |  18.83580    |  119.62307    |
+# | This Function |  18.94671    |  119.62307    |
 # +---------------+--------------+---------------+
-# | Error         |   0.06220    |    0.17240    |
-# |               |   6.92407 km |   19.19141 km |
+# | Error         |   0.04229    |    0.17240    |
+# |               |   4.70770 km |   19.19141 km |
 # +---------------+--------------+---------------+
 #
 # Scenario 04
@@ -208,10 +208,10 @@ TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
 #                 | Latitude [°] | Longitude [°] |
 # +---------------+--------------+---------------+
 # | STK v10.0.0   |  68.09124    | -163.02999    |
-# | This Function |  67.85923    | -163.27545    |
+# | This Function |  67.97856    | -163.27545    |
 # +---------------+--------------+---------------+
-# | Error         |   0.23201    |    0.24546    |
-# |               |  25.82728 km |   27.32436 km |
+# | Error         |   0.11278    |    0.24546    |
+# |               |  12.54348 km |   27.32436 km |
 # +---------------+--------------+---------------+
 #
 ################################################################################
@@ -220,11 +220,8 @@ function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
     # Compute the satellite position in the ECEF frame.
     r_e = satellite_position_e(JD, r_i)
 
-    # Get the longitude in the interval [-π,+π].
-    lon = atan2(r_e[2], r_e[1])
-
-    # Get the latitude in the interval [-π,+π].
-    lat = atan2(r_e[3], sqrt(r_e[1]^2 + r_e[2]^2))
+    # Compute the LLA in WGS-84.
+    lat, lon, h = ECEFtoLLA(r_e)
 
     (lat, lon)
 end

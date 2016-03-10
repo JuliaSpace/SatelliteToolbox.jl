@@ -3,6 +3,7 @@ VERSION >= v"0.4.0-dev+6521" && __precompile__()
 module SatToolbox
 
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
+export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
 import Base: asin, atan2, cos, mod, sin
 
@@ -41,6 +42,13 @@ const au2m = 149597870700.0
 # Sun radiation emitted [J/sec].
 const sunRad = 3.826e26
 
+# WGS-84 Data.
+const a_wgs84  = 6378137.0
+const f_wgs84  = 1/298.257223563
+const b_wgs84  = a_wgs84*(1-f_wgs84)
+const e_wgs84  = sqrt( (a_wgs84^2-b_wgs84^2)/a_wgs84^2 )
+const el_wgs84 = sqrt( (a_wgs84^2-b_wgs84^2)/b_wgs84^2 )
+
 ################################################################################
 #                                  Exceptions
 ################################################################################
@@ -69,6 +77,8 @@ include("payload_optical_analysis.jl")
 include("satellite_orbit_step.jl")
 include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
+include("satellite_position_countries.jl")
+include("satellite_position_groundstations.jl")
 include("satellite_beta_angle.jl")
 include("satellite_eclipse_time.jl")
 
