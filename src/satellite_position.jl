@@ -30,7 +30,72 @@
 
 import Rotations: angle2dcm, angle2dcm!
 
-export satellite_position_latlon, satellite_position_i
+export satellite_position_e, satellite_position_latlon, satellite_position_i
+
+"""
+### function satellite_position_e(JD::Real, r_i::Vector{Real})
+
+Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
+
+##### Args
+
+* JD: Julian day.
+* r_i: Satellite position vector in the Inertial reference frame (J2000).
+
+##### Returns
+
+* The satellite position vector represented in the ECEF frame.
+
+###### Remarks
+
+The computed vector will have the same unit of **r_i**.
+
+"""
+
+function satellite_position_e(JD::Real, r_i::Vector{Float64})
+    # Get the Mean Greenwich sideral time [rad].
+    GMST = JDtoGMST(JD)
+
+    # DCM to convert the Inertial (J2000) reference frame to the ECEF frame.
+    Dei = angle2dcm(GMST, 0.0, 0.0, "ZYX")
+
+    # Position represented in the ECEF frame.
+    r_e = Dei*r_i
+end
+
+"""
+### function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+
+Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
+
+##### Args
+
+* JD: Julian day.
+* a: Semi-major axis.
+* e: Eccentricity.
+* i: Inclination [rad].
+* RAAN: Right ascension of the ascending node [rad].
+* w: Argument of perigee [rad].
+* f: True anomaly [rad].
+
+##### Returns
+
+* The satellite position vector represented in the ECEF frame.
+
+###### Remarks
+
+The satellite position vector will have the same unit of the semi-major axis.
+
+"""
+
+function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
+                               w::Real, f::Real)
+    # Compute the satellite position in the Inertial reference frame.
+    r_i, rt_i = satellite_position_i(a, e, i, RAAN, w, f)
+
+    # Compute the satellite position in the ECEF reference frame.
+    satellite_position_e(JD, r_i)
+end
 
 """
 ### function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
@@ -152,14 +217,8 @@ TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
 ################################################################################
 
 function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
-    # Get the Mean Greenwich sideral time [rad].
-    GMST = JDtoGMST(JD)
-
-    # DCM to convert the Inertial (J2000) reference frame to the ECEF frame.
-    Dei = angle2dcm(GMST, 0.0, 0.0, "ZYX")
-
-    # Position represented in the ECEF frame.
-    r_e = Dei*r_i
+    # Compute the satellite position in the ECEF frame.
+    r_e = satellite_position_e(JD, r_i)
 
     # Get the longitude in the interval [-π,+π].
     lon = atan2(r_e[2], r_e[1])
@@ -191,7 +250,8 @@ Compute the latitude and longitude of Nadir.
 
 """
 
-function satellite_position_latlon(JD::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+function satellite_position_latlon(JD::Real, a::Real, e::Real, i::Real,
+                                   RAAN::Real, w::Real, f::Real)
     # Get the satellite position represented in the Inertial (J2000) coordinate
     # frame.
     (r_i, rt_i) = satellite_position_i(a, e, i, RAAN, w, f)
@@ -203,7 +263,7 @@ end
 """
 ### function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
 
-Compute the satellite position on the Inertial coordinate frame.
+Compute the satellite position in the Inertial coordinate frame.
 
 ##### Args
 
@@ -227,7 +287,7 @@ The satellite position vector will have the same unit of the semi-major axis.
 """
 
 function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real,
-                              w::Real, f::Real)
+                               w::Real, f::Real)
     # Compute the radius from the focus.
     norm_r = a*(1-e^2)/(1+e*cos(f))
 
