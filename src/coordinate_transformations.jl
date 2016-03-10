@@ -65,7 +65,6 @@ function ECEFtoLLA(r_e::Vector{Float64})
     p = sqrt(X^2 + Y^2)
     θ = atan2(Z*a_wgs84, p*b_wgs84)
 
-
     # Compute LLA.
     lon = atan2(Y, X)
     lat = atan2(Z + el_wgs84^2*b_wgs84*sin(θ)^3,
@@ -99,12 +98,12 @@ Based on algorithm in [3].
 
 function LLAtoECEF(lat::Real, lon::Real, h::Real)
     # Radius of curvature [m].
-    N = a_wgs85/sqrt(1 - e_wgs84^2*sin(lat)^2 )
+    N = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
 
     # Compute the position in ECEF frame.
-    [ (         N + h)*cos(lat)*cos(lon);
-      (         N + h)*cos(lat)*sin(lon);
-      ( (b/a)^2*N + h)*sin(lon);]
+    [ (                     N + h)*cos(lat)*cos(lon);
+      (                     N + h)*cos(lat)*sin(lon);
+      ( (b_wgs84/a_wgs84)^2*N + h)*sin(lat);]
 end
 
 """
