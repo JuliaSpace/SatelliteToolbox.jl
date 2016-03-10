@@ -56,8 +56,6 @@ function satellite_check_station(r_e::Vector{Float64},
     dr_e = r_e - rs_e
     cos_beta = ( ( dr_e/norm(dr_e) )'*( rs_e/norm(rs_e) ) )[1]
 
-    display(cos_beta)
-
     if (cos_beta > cos(pi/2-minElev))
         return true
     else
