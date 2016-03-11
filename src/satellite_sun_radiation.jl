@@ -112,7 +112,7 @@ function satellite_sun_radiation_earth_pointing(JD0::Real,
     # Step in time
     tstep = step/n
 
-    # Sun angles.
+    # Sun radiation.
     sun_radiation = zeros(length(ang),numDays)
 
     # Perturbations.
