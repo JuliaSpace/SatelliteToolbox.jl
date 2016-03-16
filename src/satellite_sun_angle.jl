@@ -189,19 +189,19 @@ function satellite_sun_angle_earth_pointing(JD0::Real,
                 # If the sun angle is larger than 90 deg, then the surface is
                 # not illuminated. Thus, the angle will be defined as NaN.
                 if (sun_angle_k > pi/2)
-                    sun_radiation[k, d+1] = NaN
+                    sun_angles[k, d+1] = NaN
                 else
                     sun_angles[k, d+1] = sun_angle_k
                 end
             else
                 # If the satellite is in eclipse, then the surface is not
                 # illuminated. Thus, the angle will be defined as NaN.
-                sun_radiation[k,d+1] = NaN
+                sun_angles[k,d+1] = NaN
             end
         end
     end
 
-    sun_radiation
+    sun_angles
 end
 
 """
