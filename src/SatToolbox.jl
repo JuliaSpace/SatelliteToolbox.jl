@@ -79,6 +79,7 @@ include("satellite_lighting_conditions.jl")
 include("satellite_position.jl")
 include("satellite_position_countries.jl")
 include("satellite_position_groundstations.jl")
+include("satellite_velocity.jl")
 include("satellite_beta_angle.jl")
 include("satellite_eclipse_time.jl")
 
