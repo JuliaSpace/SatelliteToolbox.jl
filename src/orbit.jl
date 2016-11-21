@@ -21,7 +21,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export compute_RAAN_lt
+export compute_RAAN_lt, sim_RAAN_J2
 export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
 
 """
@@ -236,6 +236,47 @@ function n_J2(a::Real, e::Real, i::Real)
     # Orbit period considering the perturbations (up to J2).
     n0 + 3.0*R0^2*J2/(4.0*p^2)*n0*(sqrt(1.0-e^2)*(3.0*cos(i)^2-1.0) +
                                    (5.0*cos(i)^2-1.0))
+end
+
+"""
+### function sim_RAAN_J2(JD0::Real, a::Real, e::Real, i::Real, RAAN_0::Real, numDays::Integer)
+
+Simulate the RAAN of an orbit considering J2 perturbations.
+
+##### Args
+
+* a: Semi-major axis of the satellite orbit [m].
+* e: Orbit eccentricity.
+* i: Orbit inclination [rad].
+* RAAN_0: Initial right ascension of the ascending node [rad].
+* numDays: Number of days of the analysis.
+
+##### Returns
+
+* The RAAN computed for each day in radians (0-2\pi).
+
+"""
+
+function sim_RAAN_J2(a::Real,
+                     e::Real,
+                     i::Real,
+                     RAAN_0::Real,
+                     numDays::Integer)
+
+    # Initialization of variables.
+    days = collect(0:1:numDays-1) # Vector of the days in which the RAAN will be
+                                  # simulated.
+
+    # Output vector.
+    RAAN = Array(Float64, (numDays,1))
+
+    # RAAN rotation rate [rad/day].
+    dOmega = dRAAN_J2(a, e, i)*24.0*3600.0
+
+    # Simulate the RAAN for each day considering just the J2 perturbations.
+    RAAN = mod(RAAN_0 + dOmega.*days,2*pi)
+
+    [days RAAN]
 end
 
 """
