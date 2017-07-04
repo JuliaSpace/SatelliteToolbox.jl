@@ -247,7 +247,7 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
     end
 
     # Matrix to store the available orbits.
-    ss_orbits = Array(Float64, 0, 7)
+    ss_orbits = Array{Float64}(0, 7)
 
     # Integer part of the number of orbits per day.
     intNumOrb = [13., 14., 15., 16., 17.]

@@ -124,7 +124,7 @@ function satellite_sun_radiation_earth_pointing(JD0::Real,
     dw = dw_J2(a, e, i)
 
     # DCM that rotates the Inertial reference frame to the orbit reference frame.
-    Doi = Array(Float64, (3,3))
+    Doi = Array{Float64}(3,3)
 
     # DCM that rotates the orbit reference frame to the body reference frame.
     #

@@ -268,7 +268,7 @@ function sim_RAAN_J2(a::Real,
                                   # simulated.
 
     # Output vector.
-    RAAN = Array(Float64, (numDays,1))
+    RAAN = Array{Float64}(numDays,1)
 
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN_J2(a, e, i)*24.0*3600.0

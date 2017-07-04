@@ -74,13 +74,13 @@ function satellite_beta_angle(JD0::Real,
                                   # in the inertial coordinate frame.
 
     # Output vector.
-    beta = Array(Float64, (numDays,1))
+    beta = Array{Float64}(numDays,1)
 
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN_J2(a, e, i)*24.0*3600.0
 
     # DCM that rotates the orbit reference frame to the Inertial reference frame.
-    Dio = Array(Float64, (3,3))
+    Dio = Array{Float64}(3,3)
 
     # Loop
     for t in days

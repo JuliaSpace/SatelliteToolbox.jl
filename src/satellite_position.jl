@@ -374,7 +374,7 @@ function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real,
 
     # Compute the matrix that rotates from the S coordinate frame to the
     # Inertial coordinate Frame.
-    Dsi = Array(Float64,(3,3))
+    Dsi = Array{Float64}(3,3)
     angle2dcm!(Dsi, RAAN, i, w+f, "ZXZ")
 
     # Compute the satellite vector represented in the Inertial coordinate

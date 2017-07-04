@@ -96,7 +96,7 @@ function satellite_velocity_J0_i(a::Real, e::Real, i::Real, RAAN::Real,
 
     # Compute the matrix that rotates from the q-frame to the Inertial
     # coordinate Frame.
-    Dsi = Array(Float64,(3,3))
+    Dsi = Array{Float64}(3,3)
     angle2dcm!(Dsi, RAAN, i, w, "ZXZ")
 
     # Compute the satellite velocity vector represented in the Inertial
