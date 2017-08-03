@@ -71,16 +71,23 @@ Compute the RAAN given a data and a local time.
 
 function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
-    Si = sun_position_i(JD)
+    s_i = sun_position_i(JD)
 
     # Get the desired angle between the Sun and the ascending node [deg].
     alpha = (asc_node_lt-12.0)*float(pi)/12.0
 
-    # Get the ascension of the Sun in the Inertial ref. frame.
-    S_asc_i = atan2(Si[2],Si[1])
+    # Get the right ascension of the Sun in the Inertial ref. frame. This is the
+    # Sun apparent local time.
+    SALT = atan2(s_i[2],s_i[1])
+
+    # Get the equation of time to compute the Sun mean local time [rad].
+    eot = equation_of_time(JD)
+
+    # Compute the Sun mean local time.
+    SMLT = SALT + eot
 
     # Compute the desired RAAN in the interval 0, 2*pi.
-    RAAN = mod(S_asc_i+alpha, 2*float(pi))
+    RAAN = mod(SMLT+alpha, 2*pi)
 end
 
 """

@@ -67,6 +67,7 @@ Base.showerror(io::IO, e::OrbitInvalidPerigee) =
 include("coordinate_transformations/coordinate_transformations.jl")
 include("coordinate_transformations/position.jl")
 
+include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
 
 include("orbit/orbit.jl")
