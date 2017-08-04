@@ -58,10 +58,10 @@
 export sun_position_i
 
 """
-### function sun_position_i(day::Int, time::Int)
+### function sun_position_i(JD::Real)
 
-Compute the Sun position represented in the Inertial coordinate frame (J2000).
-The algorithm was adapted from [3, p. 277-279].
+Compute the Sun position represented in the Mean Equinox of Date (MOD). The
+algorithm was adapted from [3, p. 277-279].
 
 ##### Args
 
@@ -69,8 +69,7 @@ The algorithm was adapted from [3, p. 277-279].
 
 ##### Returns
 
-* The vector between the origin of the Inertial coordinate frame (J2000) and the
-Sun represented in the Inertial coordinate frame (J2000).
+* The vector between the origin of the MOD and the Sun represented in the MOD.
 
 """
 
