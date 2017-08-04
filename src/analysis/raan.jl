@@ -96,7 +96,7 @@ function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
 end
 
 """
-### function sim_RAAN_J2(JD0::Real, a::Real, e::Real, i::Real, RAAN_0::Real, numDays::Integer)
+### function sim_RAAN_J2(a::Real, e::Real, i::Real, RAAN_0::Real, numDays::Integer)
 
 Simulate the RAAN of an orbit considering J2 perturbations.
 
