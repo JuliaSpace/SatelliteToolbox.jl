@@ -25,6 +25,9 @@
 #
 # Changelog
 #
+# 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    All DEPRECATED functions were removed.
+#
 # 2017-08-03: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    - Update the function `sun_position_i` to use the algorithm in [3], which
 #      was obtained from [4]. This is more accurate than the previous version.
@@ -53,38 +56,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export sun_position_i
-
-"""
-### function sun_position_i(day::Int, time::Int)
-
-Compute the Sun position represented in the Inertial coordinate frame (J2000).
-
-##### Args
-
-* day: Number of days since 01/01/2000 (J2000.0 epoch).
-* time: Time of day [s].
-
-##### Returns
-
-* The vector between the origin of the Inertial coordinate frame (J2000) and the
-Sun represented in the Inertial coordinate frame (J2000).
-
-##### Remarks
-
-This function was marked **DEPRECATED** at 26 January, 2016. Use the function
-sun_position_i(JD::Real) instead.
-
-"""
-
-function sun_position_i(day::Int, time::Int)
-    println("WARNING: The function sun_position_i(day::Int, time::Int) is deprecated!")
-    println("Use the function sun_position_i(JD::Real) instead.\n")
-
-    hour = time/(86400.0)
-    JD = JD_J2000 + day + hour - 0.5
-
-    sun_position_i(JD)
-end
 
 """
 ### function sun_position_i(day::Int, time::Int)

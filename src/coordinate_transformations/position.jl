@@ -16,6 +16,9 @@
 #
 # Changelog
 #
+# 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    All DEPRECATED functions were removed.
+#
 # 2016-07-21: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    WARNING: satellite_position_latlon was renamed to satellite_position_LLA.
 #    The old function is still present, but it is marked as DEPRECATED and must
@@ -102,37 +105,6 @@ function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
     # Compute the satellite position in the ECEF reference frame.
     satellite_position_e(JD, r_i)
 end
-
-"""
-### function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
-
-Compute the latitude and longitude (WGS-84) of Nadir.
-
-##### Args
-
-* JD: Julian day.
-* r_i: Position vector represented in the Inertial (J2000) reference frame.
-
-##### Returns
-
-* The Nadir latitude in the interval [-π,+π] [rad].
-* The Nadir longitude in the interval [-π,+π] [rad].
-
-##### Remarks
-
-This function is marked as DEPRECATED. Please, use satellite_position_LLA
-instead.
-
-"""
-
-function satellite_position_latlon(JD::Real, r_i::Array{Float64,1})
-    warn("The function satellite_position_latlon is DEPRECATED. Please, use satellite_position_LLA instead.")
-
-    lat, lon, h = satellite_position_LLA(JD, r_i)
-
-    (lat, lon)
-end
-
 
 """
 ### function satellite_position_LLA(JD::Real, r_i::Array{Float64,1})
@@ -260,41 +232,6 @@ function satellite_position_LLA(JD::Real, r_i::Array{Float64,1})
 
     # Compute the LLA in WGS-84.
     ECEFtoLLA(r_e)
-end
-
-"""
-### function function satellite_position_latlon(JD::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
-
-Compute the latitude and longitude of Nadir.
-
-##### Args
-
-* a: Semi-major axis.
-* e: Eccentricity.
-* i: Inclination [rad].
-* RAAN: Right ascension of the ascending node [rad].
-* w: Argument of perigee [rad].
-* f: True anomaly [rad].
-
-##### Returns
-
-* The Nadir latitude in the interval [-π,+π] [rad].
-* The Nadir longitude in the interval [0,+2π] [rad].
-
-##### Remarks
-
-This function is marked as DEPRECATED. Please, use satellite_position_LLA
-instead.
-
-"""
-
-function satellite_position_latlon(JD::Real, a::Real, e::Real, i::Real,
-                                   RAAN::Real, w::Real, f::Real)
-    warn("The function satellite_position_latlon is DEPRECATED. Please, use satellite_position_LLA instead.")
-
-    lat, lon, h = satellite_position_LLA(JD, a, e, i, RAAN, w, f)
-
-    (lat, lon)
 end
 
 """
