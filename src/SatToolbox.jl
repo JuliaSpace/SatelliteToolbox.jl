@@ -5,7 +5,7 @@ module SatToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan2, cos, mod, sin
+import Base: asin, atan2, cos, getindex, mod, sin
 
 ################################################################################
 #                                  Structures
@@ -33,6 +33,7 @@ Base.showerror(io::IO, e::OrbitInvalidPerigee) =
 ################################################################################
 
 include("coordinate_transformations/coordinate_transformations.jl")
+include("coordinate_transformations/orbit_elements.jl")
 include("coordinate_transformations/position.jl")
 
 include("sun/equation_of_time.jl")
