@@ -474,9 +474,9 @@ function sgp4(sgp4d::SGP4_Structure, t::Float64)
     sgp4d.e_k = e
     sgp4d.i_k = i_k
     sgp4d.Ω_k = Ω_k
-    sgp4d.ω_k = ω_k
-    sgp4d.M_k = M_k
-    sgp4d.n_k = n_k
+    sgp4d.ω_k = ω
+    sgp4d.M_k = M_p
+    sgp4d.n_k = n
 
     (sgp4d, r, v)
 end
