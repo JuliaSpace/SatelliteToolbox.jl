@@ -224,10 +224,8 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
     # ==============
 
     # For perigee less than 220 km, the `isimp` flag is set and the equations
-    # are truncated to a linear variation in sqrt a and quadratic variation in
-    # mean anomaly. Alto, the C3 term, the delta omega term, and the delta m
-    # term are dropped.
-
+    # are truncated to a linear variation in sqrt(a) and quadratic variation in
+    # mean anomaly. Also, the C5 term, the δω term, and the δM term are dropped.
     isimp = ( (all_0*(1-e_0)/AE) < (220/XKMPER+AE) )
 
     # For perigee below 156 km, the values of S and QOMS2T are altered.
@@ -306,8 +304,6 @@ function sgp4!(sgp4d::SGP4_Structure, t::Float64)
 
     # Secular effects of atmospheric drag and gravitation.
     # ====================================================
-    #
-    # TODO: Drop terms when isimp is true.
 
     M_DF = M_0 + ( 1 + 3*k_2*(-1 + 3θ2)/(2all_0^2*β_0^3) +
                    3k_2^2*(13 - 78θ2 + 137θ4)/(16all_0^4*β_0^7) )*nll_0*Δt
@@ -320,28 +316,48 @@ function sgp4!(sgp4d::SGP4_Structure, t::Float64)
                     3*k_2^2*(4θ - 19θ3)/(2all_0^4*β_0^8) +
                     5*k_4*θ*(3 - 7θ2)/(2all_0^4*β_0^8) )*nll_0*Δt
 
-    δω   = bstar*C3*cos(ω_0)*Δt
-
-    δM   = -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_DF))^3 -
-                                              (1 + η*cos(M_0) )^3 )
-    M_p  = M_DF + δω + δM
-
-    ω    = ω_DF - δω - δM
-
     Ω    = Ω_DF - 21/2*(nll_0*k_2*θ)/(all_0^2*β_0^2)*C1*Δt^2
 
-    e    = e_0 - bstar*C4*Δt - bstar*C5*(sin(M_p) - sin(M_0))
+    # Check  if perigee is below 220 km.
+    if !isimp
+        δω  = bstar*C3*cos(ω_0)*Δt
 
-    a    = all_0*(1 - C1*Δt - D2*Δt^2 - D3*Δt^3 - D4*Δt^4)^2
+        δM  = -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_DF))^3 -
+                                                 (1 + η*cos(M_0) )^3 )
 
-    IL   = M_p + ω + Ω + nll_0*
-           ( (3/2)C1*Δt^2 + (D2 + 2C1^2)*Δt^3 +
-             (1/4)*(3D3 + 12C1*D2 + 10C1^3)*Δt^4 +
-             (1/5)*(3D4 + 12C1*D3 + 6*D2^2 + 30*C1^2*D2 + 15*C1^4)*Δt^5 )
+        M_p = M_DF + δω + δM
 
-    β    = sqrt(1-e_0^2)
+        ω   = ω_DF - δω - δM
 
-    n    = XKE/a^(3/2)
+        e   = e_0 - bstar*C4*Δt - bstar*C5*(sin(M_p) - sin(M_0))
+
+        a   = all_0*(1 - C1*Δt - D2*Δt^2 - D3*Δt^3 - D4*Δt^4)^2
+
+        IL  = M_p + ω + Ω + nll_0*
+              ( (3/2)C1*Δt^2 + (D2 + 2C1^2)*Δt^3 +
+                (1/4)*(3D3 + 12C1*D2 + 10C1^3)*Δt^4 +
+                (1/5)*(3D4 + 12C1*D3 + 6*D2^2 + 30*C1^2*D2 + 15*C1^4)*Δt^5 )
+    else
+        # If so, then
+        #     1. Drop all terms after C1 in `a` and `IL`.
+        #     2. Drop all terms involving C5.
+        #     3. Drop δω.
+        #     4. Drop δM.
+        M_p = M_DF
+
+        ω   = ω_DF
+
+        e   = e_0 - bstar*C4*Δt
+
+        a   = all_0*(1 - C1*Δt)^2
+
+        IL  = M_p + ω + Ω + nll_0*(3/2)C1*Δt^2
+    end
+
+    β = sqrt(1-e_0^2)
+
+    # Compute the angular velocity [rad/min].
+    n = XKE/a^(3/2)
 
     # Keep the angles between [0, 2π].
     Ω  = mod(Ω,  2*pi)
