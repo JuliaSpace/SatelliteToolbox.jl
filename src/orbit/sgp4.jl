@@ -36,7 +36,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export SGP4_GravCte, sgp4_gc_wgs84
-export sgp4_init, sgp4
+export sgp4_init, sgp4!
 
 ################################################################################
 #                             Types and Structures
@@ -293,7 +293,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
        )
 end
 
-function sgp4(sgp4d::SGP4_Structure, t::Float64)
+function sgp4!(sgp4d::SGP4_Structure, t::Float64)
     # Unpack variables.
     t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
     all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30, k_2, k_4,
@@ -478,6 +478,6 @@ function sgp4(sgp4d::SGP4_Structure, t::Float64)
     sgp4d.M_k = M_p
     sgp4d.n_k = n
 
-    (sgp4d, r, v)
+    (r, v)
 end
 
