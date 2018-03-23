@@ -33,7 +33,7 @@ export compute_ss_orbit_by_inclination
 export compute_ss_orbit_by_semi_major_axis
 
 """
-### function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
+### function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
 
 Compute the Sun-synchronous orbit given the angular velocity and the
 eccentricity.
@@ -52,7 +52,7 @@ eccentricity.
 
 """
 
-function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
+function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
     # Check if the arguments are valid.
     if (n <= 0)
         throw(ArgumentError("The angular velocity must be greater than 0."))
@@ -129,7 +129,7 @@ function compute_ss_orbit_by_ang_vel(n::Real, e::Real)
 end
 
 """
-### function compute_ss_orbit_by_inclination(i::Real, e::Real)
+### function compute_ss_orbit_by_inclination(i::Number, e::Number)
 
 Compute the Sun-synchronous orbit give the inclination and the eccentricity.
 
@@ -144,7 +144,7 @@ Compute the Sun-synchronous orbit give the inclination and the eccentricity.
 
 """
 
-function compute_ss_orbit_by_inclination(i::Real, e::Real)
+function compute_ss_orbit_by_inclination(i::Number, e::Number)
     if !( 0. <= e < 1. )
         throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
     end
@@ -168,7 +168,7 @@ function compute_ss_orbit_by_inclination(i::Real, e::Real)
 end
 
 """
-### function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
+### function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
 
 Compute the Sun-synchronous orbit given the semi-major axis and the
 eccentricity.
@@ -184,7 +184,7 @@ eccentricity.
 
 """
 
-function compute_ss_orbit_by_semi_major_axis(a::Real, e::Real)
+function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
     # Check if the arguments are valid.
     if (a*(1.0-e) <= R0)
         throw(ArgumentError("The perigee must be larger than the Earth radius."))

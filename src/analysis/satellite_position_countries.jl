@@ -31,7 +31,7 @@
 export satellite_check_Brazil
 
 """
-### function satellite_check_Brazil(lat::Float64, lon::Float64)
+### function satellite_check_Brazil(lat::Number, lon::Number)
 
 Verify if a point is inside Brazil.
 
@@ -52,7 +52,7 @@ by e-mail at 2016-02-16.
 
 """
 
-function satellite_check_Brazil(lat::Float64, lon::Float64)
+function satellite_check_Brazil(lat::Number, lon::Number)
     # Notes
     # ====
     #

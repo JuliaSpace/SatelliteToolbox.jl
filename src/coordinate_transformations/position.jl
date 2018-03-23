@@ -42,7 +42,7 @@ export satellite_position_e, satellite_position_latlon, satellite_position_LLA,
        satellite_position_i
 
 """
-### function satellite_position_e(JD::Real, r_i::Vector{Real})
+### function satellite_position_e(JD::Number, r_i::Vector)
 
 Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
 
@@ -61,7 +61,7 @@ The computed vector will have the same unit of **r_i**.
 
 """
 
-function satellite_position_e(JD::Real, r_i::Vector{Float64})
+function satellite_position_e(JD::Number, r_i::Vector)
     # Get the Mean Greenwich sideral time [rad].
     GMST = JDtoGMST(JD)
 
@@ -73,7 +73,7 @@ function satellite_position_e(JD::Real, r_i::Vector{Float64})
 end
 
 """
-### function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+### function satellite_position_e(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
 Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
 
@@ -97,8 +97,8 @@ The satellite position vector will have the same unit of the semi-major axis.
 
 """
 
-function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
-                               w::Real, f::Real)
+function satellite_position_e(JD::Number, a::Number, e::Number, i::Number,
+                              RAAN::Number, w::Number, f::Number)
     # Compute the satellite position in the Inertial reference frame.
     r_i, rt_i = satellite_position_i(a, e, i, RAAN, w, f)
 
@@ -107,7 +107,7 @@ function satellite_position_e(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
 end
 
 """
-### function satellite_position_LLA(JD::Real, r_i::Array{Float64,1})
+### function satellite_position_LLA(JD::Number, r_i::Vector)
 
 Compute the latitude, longitude, and altitude (WGS-84) of the satellite.
 
@@ -226,7 +226,7 @@ TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
 #
 ################################################################################
 
-function satellite_position_LLA(JD::Real, r_i::Array{Float64,1})
+function satellite_position_LLA(JD::Number, r_i::Vector)
     # Compute the satellite position in the ECEF frame.
     r_e = satellite_position_e(JD, r_i)
 
@@ -235,7 +235,7 @@ function satellite_position_LLA(JD::Real, r_i::Array{Float64,1})
 end
 
 """
-### function function satellite_position_latlon(JD::Real, a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+### function function satellite_position_latlon(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
 Compute the latitude, longitude, and altitude (WGS-84) of the satellite.
 
@@ -256,8 +256,8 @@ Compute the latitude, longitude, and altitude (WGS-84) of the satellite.
 
 """
 
-function satellite_position_LLA(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
-                                w::Real, f::Real)
+function satellite_position_LLA(JD::Number, a::Number, e::Number, i::Number,
+                                RAAN::Number, w::Number, f::Number)
     # Get the satellite position represented in the Inertial (J2000) coordinate
     # frame.
     (r_i, rt_i) = satellite_position_i(a, e, i, RAAN, w, f)
@@ -267,7 +267,7 @@ function satellite_position_LLA(JD::Real, a::Real, e::Real, i::Real, RAAN::Real,
 end
 
 """
-### function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+### function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
 Compute the satellite position in the Inertial coordinate frame.
 
@@ -292,8 +292,8 @@ The satellite position vector will have the same unit of the semi-major axis.
 
 """
 
-function satellite_position_i(a::Real, e::Real, i::Real, RAAN::Real,
-                               w::Real, f::Real)
+function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number,
+                              w::Number, f::Number)
     # Compute the radius from the focus.
     norm_r = a*(1-e^2)/(1+e*cos(f))
 

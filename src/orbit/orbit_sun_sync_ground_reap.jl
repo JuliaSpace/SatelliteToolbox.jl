@@ -27,7 +27,7 @@ export compute_ss_orbit_by_num_rev_per_day
 export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 
 """
-### function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
+### function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
 
 Compute the distance between adjacent ground tracks in at a given latitude for a
 ground repeating, Sun-synchronous orbit.
@@ -49,7 +49,7 @@ The functions *does not* check if the orbit is a GRSS orbit.
 
 """
 
-function adjacent_track_distance_grss(T::Real, i::Real, To::Real, lat::Real)
+function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
     # Angle between two adjacent traces.
     theta = (T/To)*pi/43200.0
 
@@ -62,7 +62,7 @@ end
 
 
 """
-### function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real, lat::Real)
+### function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int, lat::Number)
 
 Compute the distance between adjacent ground tracks in at a given latitude for a
 ground repeating, Sun-synchronous orbit.
@@ -85,8 +85,8 @@ The functions *does not* check if the orbit is a GRSS orbit.
 
 """
 
-function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
-                                      lat::Real)
+function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int,
+                                      lat::Number)
     # Orbit period.
     T = period(a, e, i, :J2)
 
@@ -95,7 +95,7 @@ function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
 end
 
 """
-### function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real, lat::Real)
+### function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int, lat::Number)
 
 Compute the angle between two adjacent ground tracks in a given latitude
 measured on the satellite position for a ground repeating, Sun-synchronous
@@ -119,8 +119,8 @@ The functions *does not* check if the orbit is a GRSS orbit.
 
 """
 
-function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
-                                   lat::Real)
+function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int,
+                                   lat::Number)
     # Angle between two adjacent traces.
     theta = (T/To)*pi/43200.0
 
@@ -136,7 +136,7 @@ function adjacent_track_angle_grss(h::Real, T::Real, i::Real, To::Real,
 end
 
 """
-### function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real, To::Integer, lat::Real)
+### function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number, To::Int, lat::Number)
 
 Compute the angle between two adjacent ground tracks in a given latitude
 measured on the satellite position for a ground repeating, Sun-synchronous
@@ -161,8 +161,8 @@ The functions *does not* check if the orbit is a GRSS orbit.
 
 """
 
-function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
-                                   To::Integer, lat::Real)
+function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number,
+                                   To::Int, lat::Number)
     # Period (J2).
     T = period(a, e, i, :J2)
 
@@ -171,7 +171,7 @@ function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
 end
 
 """
-### function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
+### function compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
 
 Compute the Sun-synchronous orbit given the number of revolutions per day and
 the eccentricity.
@@ -190,12 +190,12 @@ the eccentricity.
 
 """
 
-function compute_ss_orbit_by_num_rev_per_day(numRevPD::Real, e::Real)
+function compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
     compute_ss_orbit_by_ang_vel(numRevPD*2*pi/86400.0, e)
 end
 
 """
-### function list_ss_orbits_by_rep_period(minRep::Int, maxRep::Int, minAlt::Real=-1.0, maxAlt::Real=-1.0, e::Real=0.0)
+### function list_ss_orbits_by_rep_period(minRep::Int, maxRep::Int, minAlt::Number=-1.0, maxAlt::Number=-1.0, e::Number=0.0)
 
 Compute a list of repeating Sun-synchronous orbits.
 
@@ -225,9 +225,9 @@ in which the period is Int + Num/Den.
 
 """
 
-function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
-                                      minAlt::Real=-1.0, maxAlt::Real=-1.0,
-                                      e::Real=0.0)
+function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
+                                      minAlt::Number=-1.0, maxAlt::Number=-1.0,
+                                      e::Number=0.0)
     numRevPD = 0
     # Check if the arguments are valid.
     if (minRep <= 0)
@@ -299,7 +299,7 @@ end
 
 
 """
-### sort_list_ss_orbits_by_height(ss_orbits::Array{Float64, 2})
+### sort_list_ss_orbits_by_height(ss_orbits::Matrix)
 
 Sort the list of Sun-synchronous orbits by height.
 
@@ -314,5 +314,5 @@ list_ss_orbits_by_rep_period).
 
 """
 
-sort_list_ss_orbits_by_height(ss_orbits::Array{Float64, 2}) =
+sort_list_ss_orbits_by_height(ss_orbits::Matrix) =
     sortrows(ss_orbits, by=x->x[1])

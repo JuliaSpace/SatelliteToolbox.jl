@@ -31,7 +31,7 @@
 export satellite_orbit_compute_f
 
 """
-### function satellite_orbit_compute_f(a::Real, e::Real, i::Real, m::Real, tol::Float64 = 1e-10)
+### function satellite_orbit_compute_f(a::Number, e::Number, i::Number, m::Number, tol::Number = 1e-10)
 
 Compute the true anomaly given the mean anomaly.
 
@@ -53,11 +53,11 @@ This functions uses the Newton-Raphson method to compute the true anomaly.
 
 """
 
-function satellite_orbit_compute_f(a::Real,
-                                   e::Real,
-                                   i::Real,
-                                   m::Real,
-                                   tol::Float64 = 1e-10)
+function satellite_orbit_compute_f(a::Number,
+                                   e::Number,
+                                   i::Number,
+                                   m::Number,
+                                   tol::Number = 1e-10)
 
     # Update the eccentric anomaly using the Newton-Raphson method.
     # =============================================================

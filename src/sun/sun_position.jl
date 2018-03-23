@@ -58,7 +58,7 @@
 export sun_position_i
 
 """
-### function sun_position_i(JD::Real)
+### function sun_position_i(JD::Number)
 
 Compute the Sun position represented in the Mean Equinox of Date (MOD). The
 algorithm was adapted from [3, p. 277-279].
@@ -73,7 +73,7 @@ algorithm was adapted from [3, p. 277-279].
 
 """
 
-function sun_position_i(JD::Real)
+function sun_position_i(JD::Number)
     # Constants
     const deg2rad = pi/180
 

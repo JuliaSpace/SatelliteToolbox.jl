@@ -30,7 +30,7 @@
 export equation_of_time
 
 """
-### function equation_of_time(JD::Real)
+### function equation_of_time(JD::Number)
 
 Compute the difference between the Sun apparent local time and the Sun mean
 local time, which is called Equation of Time. The algorithm was adapted from
@@ -46,7 +46,7 @@ local time, which is called Equation of Time. The algorithm was adapted from
 
 """
 
-function equation_of_time(JD::Real)
+function equation_of_time(JD::Number)
     # Constants
     const deg2rad = pi/180
 

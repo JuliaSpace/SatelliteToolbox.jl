@@ -31,7 +31,7 @@ import Rotations: angle2dcm!
 export satellite_beta_angle
 
 """
-### function satellite_beta_angle(JD0::Real, a::Real, e::Real, i::Real, RAAN::Real, numDays::Integer)
+### function satellite_beta_angle(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, numDays::Integer)
 
 Compute the beta angle of a satellite.
 
@@ -50,11 +50,11 @@ Compute the beta angle of a satellite.
 
 """
 
-function satellite_beta_angle(JD0::Real,
-                              a::Real,
-                              e::Real,
-                              i::Real,
-                              RAAN::Real,
+function satellite_beta_angle(JD0::Number,
+                              a::Number,
+                              e::Number,
+                              i::Number,
+                              RAAN::Number,
                               numDays::Integer)
     # Constants
     rad2deg = 180.0/pi

@@ -41,7 +41,7 @@ const SAT_LIGHTING_PENUMBRA = 1
 const SAT_LIGHTING_UMBRA = 2
 
 """
-### function satellite_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
+### function satellite_lighting_condition(r_i::Vector, s_i::Vector)
 
 Return the satellite lighting condition given the Sun and the satellite position
 vectors.
@@ -60,7 +60,7 @@ vectors.
 
 """
 
-function satellite_lighting_condition{T}(r_i::Vector{T}, s_i::Vector{T})
+function satellite_lighting_condition(r_i::Vector, s_i::Vector)
     # Norme of the sun position vector.
     norm_s_i = norm(s_i)
 

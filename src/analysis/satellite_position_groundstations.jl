@@ -30,7 +30,7 @@
 export satellite_check_station
 
 """
-### function satellite_check_station(r_e::Vector{Float64}, rs_e::Vector{Float64}, minElev::Float64)
+### function satellite_check_station(r_e::Vector, rs_e::Vector, minElev::Number)
 
 Check if the satellite is inside the visibility circle of a ground station.
 
@@ -49,9 +49,7 @@ station.
 
 """
 
-function satellite_check_station(r_e::Vector{Float64},
-                                 rs_e::Vector{Float64},
-                                 minElev::Float64)
+function satellite_check_station(r_e::Vector, rs_e::Vector, minElev::Number)
     # Check if the satellite is within the visibility circle of the station.
     dr_e = r_e - rs_e
     cos_beta = ( ( dr_e/norm(dr_e) )'*( rs_e/norm(rs_e) ) )[1]
@@ -65,7 +63,7 @@ end
 
 
 """
-### function satellite_check_station(r_e::Vector{Float64}, lat_s::Float64, lon_s::Float64, h_s::Float64, minElev::Float64)
+### function satellite_check_station(r_e::Vector, lat_s::Number, lon_s::Number, h_s::Number, minElev::Number)
 
 Check if the satellite is inside the visibility circle of a ground station.
 
@@ -86,11 +84,11 @@ station.
 
 """
 
-function satellite_check_station(r_e::Vector{Float64},
-                                 lat_s::Float64,
-                                 lon_s::Float64,
-                                 h_s::Float64,
-                                 minElev::Float64)
+function satellite_check_station(r_e::Vector,
+                                 lat_s::Number,
+                                 lon_s::Number,
+                                 h_s::Number,
+                                 minElev::Number)
     # Convert the ground station LLA to the ECEF frame.
     rs_e = LLAtoECEF(lat_s, lon_s, h_s)
 

@@ -36,7 +36,7 @@
 export satellite_eclipse_time
 
 """
-### function satellite_eclipse_time(JD0::Real, a::Real, e::Real, i::Real, w::Real, RAAN::Real, numDays::Integer, relative::Bool = false)
+### function satellite_eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, numDays::Integer, relative::Bool = false)
 
 Compute the eclipse time of a satellite.
 
@@ -60,12 +60,12 @@ Compute the eclipse time of a satellite.
 
 """
 
-function satellite_eclipse_time(JD0::Real,
-                                a::Real,
-                                e::Real,
-                                i::Real,
-                                w::Real,
-                                RAAN::Real,
+function satellite_eclipse_time(JD0::Number,
+                                a::Number,
+                                e::Number,
+                                i::Number,
+                                w::Number,
+                                RAAN::Number,
                                 numDays::Integer,
                                 relative::Bool = false)
     # Constants

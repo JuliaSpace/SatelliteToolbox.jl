@@ -134,7 +134,7 @@ sgp4_gc_wgs84 = SGP4_GravCte(
 ################################################################################
 
 """
-### function sgp4_init(spg4_gc::SGP4_GravCte, t_0::Float64, n_0::Float64, e_0::Float64, i_0::Float64, Ω_0::Float64, ω_0::Float64, M_0::Float64, bstar::Float64)
+### function sgp4_init(spg4_gc::SGP4_GravCte, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number)
 
 Initialize the data structure of SGP4 algorithm.
 
@@ -157,14 +157,14 @@ Initialize the data structure of SGP4 algorithm.
 """
 
 function sgp4_init(sgp4_gc::SGP4_GravCte,
-                   t_0::Float64,
-                   n_0::Float64,
-                   e_0::Float64,
-                   i_0::Float64,
-                   Ω_0::Float64,
-                   ω_0::Float64,
-                   M_0::Float64,
-                   bstar::Float64)
+                   t_0::Number,
+                   n_0::Number,
+                   e_0::Number,
+                   i_0::Number,
+                   Ω_0::Number,
+                   ω_0::Number,
+                   M_0::Number,
+                   bstar::Number)
 
     # Unpack the gravitational constants to improve code readability.
     R0, XKE, J2, J3, J4 = sgp4_gc[:]
@@ -291,7 +291,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
        )
 end
 
-function sgp4!(sgp4d::SGP4_Structure, t::Float64)
+function sgp4!(sgp4d::SGP4_Structure, t::Number)
     # Unpack variables.
     t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
     all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30, k_2, k_4,

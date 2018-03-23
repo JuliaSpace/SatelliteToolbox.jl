@@ -37,7 +37,7 @@
 export rv_to_kepler
 
 """
-### function rv_to_kepler(r::Vector{Float64}, v::Vector{Float64})
+### function rv_to_kepler(r::Vector, v::Vector)
 
 Convert a Cartesian representation (position and velocity) to the Keplerian
 elements.
@@ -93,7 +93,7 @@ The algorithm was adapted from [1].
 #
 ################################################################################
 
-function rv_to_kepler(r_i::Vector{Float64}, v_i::Vector{Float64})
+function rv_to_kepler(r_i::Vector, v_i::Vector)
     # Position and velocity vector norms.
     r2 = r_i'*r_i
     v2 = v_i'*v_i
@@ -156,7 +156,7 @@ function rv_to_kepler(r_i::Vector{Float64}, v_i::Vector{Float64})
 end
 
 """
-### function rv_to_kepler(x::Real, y::Real, z::Real, vx::Real, vy::Real, vz::Real)
+### function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
 
 Convert a Cartesian representation (position and velocity) to the Keplerian
 elements.
@@ -182,7 +182,8 @@ elements.
 
 """
 
-function rv_to_kepler(x::Real, y::Real, z::Real, vx::Real, vy::Real, vz::Real)
+function rv_to_kepler(x::Number,  y::Number,  z::Number,
+                      vx::Number, vy::Number, vz::Number)
     # Create the position and velocity vectors.
     r_i = [ x; y; z]
     v_i = [vx;vy;vz]

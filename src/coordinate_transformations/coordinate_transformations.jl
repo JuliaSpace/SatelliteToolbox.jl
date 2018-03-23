@@ -38,7 +38,7 @@ x
 export ECEFtoLLA, LLAtoECEF, J2000toGMST, JDtoGMST
 
 """
-### function ECEFtoLLA(r_e::Vector{Float64})
+### function ECEFtoLLA(r_e::Vector)
 
 Convert the ECEF reference frame into LLA (WGS-84).
 
@@ -56,7 +56,7 @@ Based on algorithm in [3].
 
 """
 
-function ECEFtoLLA(r_e::Vector{Float64})
+function ECEFtoLLA(r_e::Vector)
     # Auxiliary variables.
     X = r_e[1]
     Y = r_e[2]
@@ -76,7 +76,7 @@ function ECEFtoLLA(r_e::Vector{Float64})
 end
 
 """
-### function LLAtoECEF(lat::Real, lon::Real, h::Real)
+### function LLAtoECEF(lat::Number, lon::Number, h::Number)
 
 Convert LLA (WGS-84) into the ECEF reference frame.
 
@@ -96,7 +96,7 @@ Based on algorithm in [3].
 
 """
 
-function LLAtoECEF(lat::Real, lon::Real, h::Real)
+function LLAtoECEF(lat::Number, lon::Number, h::Number)
     # Radius of curvature [m].
     N = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
 
@@ -107,7 +107,7 @@ function LLAtoECEF(lat::Real, lon::Real, h::Real)
 end
 
 """
-### function J2000toGMST(J2000::Real)
+### function J2000toGMST(J2000::Number)
 
 Compute the Greenwich Mean Sideral Time (GMST).
 
@@ -126,7 +126,7 @@ accessed at 2015-12-01.
 
 """
 
-function J2000toGMST(J2000::Real)
+function J2000toGMST(J2000::Number)
     # Julian UT1 Date at 0h.
     JD_aux    = floor(J2000-0.5)
     JD_UT1_0h = (JD_aux <= 0) ? JD_aux + 0.5 : JD_aux - 0.5
@@ -150,7 +150,7 @@ function J2000toGMST(J2000::Real)
 end
 
 """
-### function JDtoGMST(JD::Real)
+### function JDtoGMST(JD::Number)
 
 Compute the Greenwich Mean Sideral Time (GMST).
 
@@ -167,7 +167,7 @@ Compute the Greenwich Mean Sideral Time (GMST).
 Based on algorithm in [1, pp. 188].
 
 """
-function JDtoGMST(JD::Real)
+function JDtoGMST(JD::Number)
 	J2000toGMST(JD - JD_J2000);
 end
 

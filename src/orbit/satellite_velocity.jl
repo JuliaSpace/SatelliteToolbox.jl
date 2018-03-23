@@ -26,7 +26,7 @@ import Rotations: angle2dcm, angle2dcm!
 export satellite_velocity_J0_i
 
 """
-### function satellite_velocity_J0_i(a::Real, e::Real, i::Real, RAAN::Real, w::Real, f::Real)
+### function satellite_velocity_J0_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
 Compute the satellite velocity in the Inertial coordinate frame neglecting all
 the perturbations.
@@ -83,8 +83,8 @@ the perturbations.
 # ed. Microcosm Press. Hawthorn, CA, USA.
 #
 
-function satellite_velocity_J0_i(a::Real, e::Real, i::Real, RAAN::Real,
-                                 w::Real, f::Real)
+function satellite_velocity_J0_i(a::Number, e::Number, i::Number, RAAN::Number,
+                                 w::Number, f::Number)
     # Satellite angular velocity without perturbations.
     n = period(a, e, i, :J0)
 

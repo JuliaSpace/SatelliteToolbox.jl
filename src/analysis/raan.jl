@@ -30,7 +30,7 @@
 export compute_RAAN_lt, sim_RAAN_J2
 
 """
-### function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
+### function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
 
 Compute the RAAN given a data and a local time.
 
@@ -49,7 +49,7 @@ The sun position is computed at noon of the day t0.
 
 """
 
-function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
+function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
     println("WARNING: The function compute_RAAN_lt(t0::Int, asc_node_lt::Real) is deprecated!")
     println("Use the function compute_RAAN_lt(JD::Real, asc_node_lt::Real) instead.\n")
 
@@ -59,7 +59,7 @@ function compute_RAAN_lt(t0::Int, asc_node_lt::Real)
 end
 
 """
-### function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
+### function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 
 Compute the RAAN given a data and a local time.
 
@@ -74,7 +74,7 @@ Compute the RAAN given a data and a local time.
 
 """
 
-function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
+function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
     s_i = sun_position_i(JD)
 
@@ -96,7 +96,7 @@ function compute_RAAN_lt(JD::Real, asc_node_lt::Real)
 end
 
 """
-### function sim_RAAN_J2(a::Real, e::Real, i::Real, RAAN_0::Real, numDays::Integer)
+### function sim_RAAN_J2(a::Number, e::Number, i::Number, RAAN_0::Number, numDays::Integer)
 
 Simulate the RAAN of an orbit considering J2 perturbations.
 
@@ -114,10 +114,10 @@ Simulate the RAAN of an orbit considering J2 perturbations.
 
 """
 
-function sim_RAAN_J2(a::Real,
-                     e::Real,
-                     i::Real,
-                     RAAN_0::Real,
+function sim_RAAN_J2(a::Number,
+                     e::Number,
+                     i::Number,
+                     RAAN_0::Number,
                      numDays::Integer)
 
     # Initialization of variables.
