@@ -88,7 +88,7 @@ The functions *does not* check if the orbit is a GRSS orbit.
 function adjacent_track_distance_grss(a::Real, e::Real, i::Real, To::Real,
                                       lat::Real)
     # Orbit period.
-    T = t_J2(a,e,i)
+    T = period(a, e, i, :J2)
 
     # Compute the distance between adjacent ground tracks.
     adjacent_track_distance_grss(T, i, To, lat)
@@ -164,7 +164,7 @@ The functions *does not* check if the orbit is a GRSS orbit.
 function adjacent_track_angle_grss(h::Real, a::Real, e::Real, i::Real,
                                    To::Integer, lat::Real)
     # Period (J2).
-    T = t_J2(a,e,i)
+    T = period(a, e, i, :J2)
 
     # Compute the minimum half FOV.
     adjacent_track_angle_grss(h, T, i, To, lat)
@@ -283,10 +283,10 @@ function list_ss_orbits_by_rep_period(minRep::Int,       maxRep::Int,
                     if (addOrbit)
                         # Compute the period of the orbit considering
                         # perturbations (J2).
-                        period = t_J2(a, e, i)
+                        T = period(a, e, i, :J2)
 
                         ss_orbits =
-                            vcat(ss_orbits, [a a-R0 i period ino num den])
+                            vcat(ss_orbits, [a a-R0 i T ino num den])
                     end
                 end
             end

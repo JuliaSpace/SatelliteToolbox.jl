@@ -77,7 +77,7 @@ function satellite_beta_angle(JD0::Real,
     beta = Array{Float64}(numDays,1)
 
     # RAAN rotation rate [rad/day].
-    dOmega = dRAAN_J2(a, e, i)*24.0*3600.0
+    dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0
 
     # DCM that rotates the orbit reference frame to the Inertial reference frame.
     Dio = Array{Float64}(3,3)

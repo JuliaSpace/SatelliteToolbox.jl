@@ -107,7 +107,7 @@ function satellite_sun_radiation_earth_pointing(JD0::Real,
     ang = (!meanAnomaly) ? collect(-pi:step:pi) : collect(0:step:2*pi)
 
     # Period of an orbit [rad/s].
-    n = n_J2(a, e, i)
+    n = period(a, e, i, :J2)
 
     # Step in time
     tstep = step/n
@@ -118,10 +118,10 @@ function satellite_sun_radiation_earth_pointing(JD0::Real,
     # Perturbations.
     #
     # RAAN rotation rate [rad/s].
-    dOmega = dRAAN_J2(a, e, i)
+    dOmega = dRAAN(a, e, i, :J2)
 
     # Perturbation of the argument of perigee [rad/s].
-    dw = dw_J2(a, e, i)
+    dw = dArgPer(a, e, i, :J2)
 
     # DCM that rotates the Inertial reference frame to the orbit reference frame.
     Doi = Array{Float64}(3,3)

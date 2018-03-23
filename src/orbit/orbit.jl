@@ -19,78 +19,167 @@
 # 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
 #    Initial version.
 #
+# 2018-03-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    Change API. The functions now receive a symbol that specifies which kind of
+#    perturbations must be considered to compute the values.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export dRAAN_J2, dw_J2, n_J0, n_J2, t_J0, t_J2
+export angvel, dArgPer, dRAAN, period
 
 """
-### function dRAAN_J2(a::Real, e::Real, i::Real)
+### function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
-Compute the perturbation of the RAAN using terms up to J2.
+Compute the angular velocity of an object in an orbit with semi-major axis `a`,
+eccentricity `e`, and inclination `i`, using the perturbation terms specified by
+the symbol `pert`.
+
+`pert` can be:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
 
 ##### Args
 
 * a: Semi-major axis [m].
 * e: Eccentricity.
 * i: Inclination [rad].
+* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
 
 ##### Returns
 
-* The perturbation of the RAAN (J2) [rad/s].
+The angular velocity of an object in the specified orbit [rad/s].
 
 """
 
-function dRAAN_J2(a::Real, e::Real, i::Real)
+function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Check if the perigee is inside Earth.
     if ( !is_orbit_valid(a,e) )
-        throw(OrbitInvalidPerigee(a*(1.0-e)))
+        throw(OrbitInvalidPerigee(a*(1-e)))
     end
 
-    # Semi-lactum rectum.
-    p = a*(1.0-e^2)
-
     # Unperturbed orbit period.
-    n0 = n_J0(a)
+    n0 = sqrt(m0/Float64(a)^3)
 
-    # Perturbation of the right ascension of the ascending node.
-    -3.0/2.0*R0^2/(p^2)*n0*J2*cos(i)
+    # Perturbation computed using a Keplerian orbit.
+    if pert == :J0
+        return n0
+    # Perturbation computed using perturbations terms up to J2.
+    elseif pert == :J2
+        # Semi-lactum rectum.
+        p = a*(1.0-e^2)
+
+        # Orbit period considering the perturbations (up to J2).
+        return n0 + 3.0*R0^2*J2/(4.0*p^2)*n0*(sqrt(1.0-e^2)*(3.0*cos(i)^2-1.0) +
+                                              (5.0*cos(i)^2-1.0))
+    else
+        throw(ArgumentError("The perturbation parameter $pert is not defined."))
+    end
+
 end
 
 """
-### function dw_J2(a::Real, e::Real, i::Real)
+### function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
-Compute the perturbation of the argument of perigee using terms up to J2.
+Compute the time-derivative of the argument of perigee of a orbit with
+semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
+perturbation terms specified by the symbol `pert`.
+
+`pert` can be:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
 
 ##### Args
 
 * a: Semi-major axis [m].
 * e: Eccentricity.
 * i: Inclination [rad].
+* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
 
 ##### Returns
 
-* The perturbation of the argument of perigee (J2) [rad/s].
+The perturbation of the argument of perigee [rad/s].
 
 """
 
-function dw_J2(a::Real, e::Real, i::Real)
+function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Check if the perigee is inside Earth.
     if ( !is_orbit_valid(a,e) )
         throw(OrbitInvalidPerigee(a*(1.0-e)))
     end
 
-    # Semi-lactum rectum.
-    p = a*(1.0-e^2)
+    # Perturbation computed using a Keplerian orbit.
+    if pert == :J0
+        return 0.0
+    # Perturbation computed using perturbations terms up to J2.
+    elseif pert == :J2
+        # Semi-lactum rectum.
+        p = a*(1.0-e^2)
 
-    # Unperturbed orbit period.
-    n0 = n_J0(a)
+        # Unperturbed orbit period.
+        n0 = period(a, e, i, :J0)
 
-    # Perturbation of the argument of perigee.
-    3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
+        # Perturbation of the argument of perigee.
+        return 3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
+    else
+        throw(ArgumentError("The perturbation parameter $pert is not defined."))
+    end
+
 end
 
 """
-### function is_orbit_valid(a::Real, e::Real)
+### function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+
+Compute the time-derivative of the right ascencion of the ascending node of a
+orbit with semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
+perturbation terms specified by the symbol `pert`.
+
+`pert` can be:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+* i: Inclination [rad].
+* pert: Symbol that defines the perturbation (DEFAULT = `:J2`).
+
+##### Returns
+
+The time derivative of the RAAN [rad/s].
+
+"""
+
+function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    # Check if the perigee is inside Earth.
+    if ( !is_orbit_valid(a,e) )
+        throw(OrbitInvalidPerigee(a*(1.0-e)))
+    end
+
+    # Perturbation computed using a Keplerian orbit.
+    if pert == :J0
+        return 0.0
+    # Perturbation computed using perturbations terms up to J2.
+    elseif pert == :J2
+        # Semi-lactum rectum.
+        p = a*(1.0-e^2)
+
+        # Unperturbed orbit period.
+        n0 = period(a, e, i, :J0)
+
+        # Perturbation of the right ascension of the ascending node.
+        return -3.0/2.0*R0^2/(p^2)*n0*J2*cos(i)
+    else
+        throw(ArgumentError("The perturbation parameter $pert is not defined."))
+    end
+end
+
+
+"""
+### function is_orbit_valid(a::Number, e::Number)
 
 Verify if the orbit is valid.
 
@@ -106,7 +195,7 @@ Verify if the orbit is valid.
 
 """
 
-function is_orbit_valid(a::Real, e::Real)
+function is_orbit_valid(a::Number, e::Number)
     # Check if the arguments are valid.
     if ( a < 0. )
         throw(ArgumentError("The semi-major axis must be greater than 0."))
@@ -121,99 +210,31 @@ function is_orbit_valid(a::Real, e::Real)
 end
 
 """
-### function n_J0(a::Real)
+### function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
-Return the orbit angular velocity neglecting the perturbations (two-body).
+Compute the period of an object in an orbit with semi-major axis `a`,
+eccentricity `e`, and inclination `i`, using the perturbation terms specified by
+the symbol `pert`.
 
-##### Args
+`pert` can be:
 
-* a: Semi-major axis [m].
-
-##### Returns
-
-* The unperturbed orbit angular velocity [rad/s].
-
-"""
-
-function n_J0(a::Real)
-    # Check if the arguments are valid.
-    if ( a < 0. )
-        throw(ArgumentError("The semi-major axis must be greater than 0."))
-    end
-
-    sqrt(m0/Float64(a)^3)
-end
-
-"""
-### function n_J2(a::Real, e::Real, i::Real)
-
-Return the orbit angular velocity considering the perturbations up to J2 terms.
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
 
 ##### Args
 
 * a: Semi-major axis [m].
 * e: Eccentricity.
 * i: Inclination [rad].
+* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
 
 ##### Returns
 
-* The perturbed orbit angular velocity [rad/s].
+The orbit period [s].
 
 """
 
-function n_J2(a::Real, e::Real, i::Real)
-    # Check if the perigee is inside Earth.
-    if ( !is_orbit_valid(a,e) )
-        throw(OrbitInvalidPerigee(a*(1-e)))
-    end
-
-    # Semi-lactum rectum.
-    p = a*(1.0-e^2)
-
-    # Unperturbed orbit period.
-    n0 = n_J0(a)
-
-    # Orbit period considering the perturbations (up to J2).
-    n0 + 3.0*R0^2*J2/(4.0*p^2)*n0*(sqrt(1.0-e^2)*(3.0*cos(i)^2-1.0) +
-                                   (5.0*cos(i)^2-1.0))
-end
-
-"""
-### function t_J0(a::Real)
-
-Return the orbit period neglecting the perturbations (two-body).
-
-##### Args
-
-* a: Semi-major axis [m].
-
-##### Returns
-
-* The unperturbed orbit period [s].
-
-"""
-
-function t_J0(a::Real)
-    2.0*pi/n_J0(a)
-end
-
-"""
-### function t_J2(a::Real, e::Real, i::Real)
-
-Return the orbit period considering the perturbations up to J2 terms.
-
-##### Args
-
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-
-##### Returns
-
-* The perturbed orbit period [s].
-
-"""
-
-function t_J2(a::Real, e::Real, i::Real)
-    2.0*pi/n_J2(a, e, i)
+function period(a::Number, e::Number, i::Number, pert::Symbol)
+    n = angvel(a, e, i, pert)
+    2.0*pi/n
 end
