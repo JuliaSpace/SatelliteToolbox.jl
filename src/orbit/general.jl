@@ -10,7 +10,7 @@
 #
 # Description
 #
-#    Many auxiliary functions for orbit computations.
+#    Functions to compute general values related to the orbit.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
