@@ -181,7 +181,7 @@ end
 """
 ### function is_orbit_valid(a::Number, e::Number)
 
-Verify if the orbit is valid.
+Verify if the orbit with semi-major axis `a` and eccentricity `e` is valid.
 
 ##### Args
 

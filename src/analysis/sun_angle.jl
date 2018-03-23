@@ -45,31 +45,30 @@ export satellite_sun_angle_earth_pointing
 """
 ### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Number = 0.1*pi/180.0)
 
-Compute the Sun angle on a surface for an Earth-pointing mission.
+Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
 ##### Args
 
-* JD0: Julian day of the launch date.
-* a: Semi-major axis of the satellite orbit [m].
+* JD0: Initial instant for the analysis [Julian day].
+* a: Semi-major axis of the orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
 * w: Argument of perigee [rad].
-* RAAN: Right ascension of the ascending node at launch date [rad].
-* numDays: Number of days in the analysis.
+* RAAN: Right ascension of the ascending node at `JD0` [rad].
+* numDays: Number of days for the analysis.
 * fN_k: Function **f(s_b)** that describes the solar panel normal at each k-th
-sampling step. Notice that **s_b** is the Sun vector represented in the body
-coordinate frame.
+        sampling step. Notice that **s_b** is the Sun vector represented in the
+        body coordinate frame.
 * meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
-anomaly instead of in the orbit latitude, *default*: **false**.
-* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+               anomaly instead of in the orbit latitude (**DEFAULT**: false).
+* step: (OPTIONAL) Mean anomaly step (**DEFAULT**: 0.1 deg).
 
 ##### Returns
 
-* A matrix containing the sun angle [rad] for each position in orbit for each
-day.
+A matrix containing the sun angle [rad] for each position in orbit for each day.
 
-**NOTE**: if the sun angle is larger than 90 deg or if the satellite is in
-eclipse, then NaN is returned in the matrix.
+**NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
+eclipse, then `NaN` is returned in the matrix.
 
 ##### Remarks
 
@@ -83,8 +82,8 @@ If the **mean anomaly** is used, then the average value of the output is the
 average sun radiation received by the satellite surface, because every angular
 steps have a fixed time interval.
 
-If the **mean anomaly** is used, then the angle interval is [0, 2π]
-Otherwise, the angle interval is [-π,π].
+If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
+the angle interval is [-π,π].
 
 """
 
@@ -207,28 +206,28 @@ end
 """
 ### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::Vector, step::Number = 0.1*pi/180.0)
 
-Compute the Sun angle on a surface for an Earth-pointing mission.
+Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
 ##### Args
 
-* JD0: Julian day of the launch date.
-* a: Semi-major axis of the satellite orbit [m].
+* JD0: Initial instant for the analysis [Julian day].
+* a: Semi-major axis of the orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
 * w: Argument of perigee [rad].
-* RAAN: Right ascension of the ascending node at launch date [rad].
-* numDays: Number of days in the analysis.
+* RAAN: Right ascension of the ascending node at `JD0` [rad].
+* numDays: Number of days for the analysis.
 * N: Vector normal to the surface represented in the body reference frame.
 * meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
-anomaly instead of in the orbit latitude, *default*: **false**.
-* step: (OPTIONAL) Mean anomaly step, *default*: 0.1 deg.
+               anomaly instead of in the orbit latitude (**DEFAULT**: false).
+* step: (OPTIONAL) Mean anomaly step (**DEFAULT**: 0.1 deg).
 
 ##### Returns
 
-* A matrix containing the sun angle for each position in orbit for each day.
+A matrix containing the Sun angle for each position in orbit for each day.
 
-**NOTE**: if the sun angle is larger than 90 deg or if the satellite is in
-eclipse, then NaN is returned in the matrix.
+**NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
+eclipse, then `NaN` is returned in the matrix.
 
 ##### Remarks
 
@@ -242,8 +241,8 @@ If the **mean anomaly** is used, then the average value of the output is the
 average sun radiation received by the satellite surface, because every angular
 steps have a fixed time interval.
 
-If the **mean anomaly** is used, then the angle interval is [0, 2π]
-Otherwise, the angle interval is [-π,π].
+If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
+the angle interval is [-π,π].
 
 """
 

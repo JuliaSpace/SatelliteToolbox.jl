@@ -40,15 +40,17 @@ export ECEFtoLLA, LLAtoECEF, J2000toGMST, JDtoGMST
 """
 ### function ECEFtoLLA(r_e::Vector)
 
-Convert the ECEF reference frame into LLA (WGS-84).
+Convert the vector `r_e` in the ECEF reference frame into LLA (WGS-84).
 
-##### Inputs
+##### Args
 
 * r_e: Position vector represented in the ECEF reference frame.
 
-##### Outputs
+##### Returns
 
-* The position vector represented in the ECEF reference frame.
+* Latitude [rad].
+* Longitude [rad].
+* Altitude [m].
 
 ##### Remarks
 
@@ -78,17 +80,18 @@ end
 """
 ### function LLAtoECEF(lat::Number, lon::Number, h::Number)
 
-Convert LLA (WGS-84) into the ECEF reference frame.
+Convert the latitude `lat`, longitude `lon`, and altitude `h` (WGS-84) into the
+ECEF reference frame.
 
-##### Inputs
+##### Args
 
 * lat: Latitude in WGS-84 [rad].
 * lon: Longitude in WGS-84 [rad].
 * h: Altitude in WGS-84 [rad].
 
-##### Outputs
+##### Returns
 
-* The position vector represented in the ECEF reference frame.
+The converted vector represented in the ECEF reference frame.
 
 ##### Remarks
 
@@ -109,11 +112,12 @@ end
 """
 ### function J2000toGMST(J2000::Number)
 
-Compute the Greenwich Mean Sideral Time (GMST).
+Compute the Greenwich Mean Sideral Time (GMST) given the instant `J2000`
+represented in J2000.0 reference frame (UT1).
 
 ##### Args
 
-* J2000: Date in J2000.0 reference (UT1).
+* J2000: Instant in J2000.0 reference (UT1).
 
 ##### Returns
 
@@ -152,13 +156,13 @@ end
 """
 ### function JDtoGMST(JD::Number)
 
-Compute the Greenwich Mean Sideral Time (GMST).
+Compute the Greenwich Mean Sideral Time (GMST) for a Julian Day `JD`.
 
-##### Inputs
+##### Args
 
 * JD: Julian day.
 
-##### Outputs
+##### Returns
 
 * Greenwich mean sideral time [rad].
 
@@ -170,5 +174,4 @@ Based on algorithm in [1, pp. 188].
 function JDtoGMST(JD::Number)
 	J2000toGMST(JD - JD_J2000);
 end
-
 

@@ -39,13 +39,13 @@ export rv_to_kepler
 """
 ### function rv_to_kepler(r::Vector, v::Vector)
 
-Convert a Cartesian representation (position and velocity) to the Keplerian
-elements.
+Convert a Cartesian representation (position vector `r` and velocity vector `v`)
+to the Keplerian elements.
 
 ##### Args
 
-* r_i: Position vector in an inertial reference frame [m].
-* v_i: Velocity vector in an inertial reference frame [m].
+* r: Position vector in an inertial reference frame [m].
+* v: Velocity vector in an inertial reference frame [m].
 
 ##### Returns
 
@@ -158,8 +158,8 @@ end
 """
 ### function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
 
-Convert a Cartesian representation (position and velocity) to the Keplerian
-elements.
+Convert a Cartesian representation (position vector `[x;y;z]` and velocity
+vector `[vx;vy;vz]`) to the Keplerian elements.
 
 ##### Args
 

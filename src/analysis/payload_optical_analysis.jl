@@ -38,7 +38,7 @@ to cover the entire Equator within the revisit interval.
 
 ##### Returns
 
-* The minimum half FOV [rad].
+The minimum half FOV [rad].
 
 """
 
@@ -62,7 +62,7 @@ to cover the entire Equator within the revisit interval.
 
 ##### Returns
 
-* The minimum half FOV [rad].
+The minimum half FOV [rad].
 
 """
 
@@ -84,7 +84,7 @@ cover the entire Equator within the revisit interval.
 
 ##### Returns
 
-* The minimum swath [m].
+The minimum swath [m].
 
 """
 
@@ -107,7 +107,7 @@ cover the entire Equator within the revisit interval.
 
 ##### Returns
 
-* The minimum swath [m].
+The minimum swath [m].
 
 """
 
@@ -127,7 +127,7 @@ Compute the swath width given the orbit altitude and the half FOV.
 
 ##### Returns
 
-* The swath width [m].
+The swath width [m].
 
 """
 
@@ -136,5 +136,4 @@ function swath_width(h::Real, HalfFOV::Real)
     alpha = pi - gamma - HalfFOV
     S = R0*alpha
 end
-
 

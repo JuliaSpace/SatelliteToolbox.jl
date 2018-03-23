@@ -35,8 +35,8 @@ export compute_ss_orbit_by_semi_major_axis
 """
 ### function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
 
-Compute the Sun-synchronous orbit given the angular velocity and the
-eccentricity.
+Compute the Sun-synchronous orbit given the angular velocity `n` and the
+eccentricity `e`.
 
 ##### Args
 
@@ -131,7 +131,8 @@ end
 """
 ### function compute_ss_orbit_by_inclination(i::Number, e::Number)
 
-Compute the Sun-synchronous orbit give the inclination and the eccentricity.
+Compute the Sun-synchronous orbit given the inclination `i` and the eccentricity
+`e`.
 
 ##### Args
 
@@ -140,7 +141,7 @@ Compute the Sun-synchronous orbit give the inclination and the eccentricity.
 
 ##### Returns
 
-* The semi-major axis of the Sun-synchronous orbit [m].
+The semi-major axis of the Sun-synchronous orbit [m].
 
 """
 
@@ -170,8 +171,8 @@ end
 """
 ### function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
 
-Compute the Sun-synchronous orbit given the semi-major axis and the
-eccentricity.
+Compute the Sun-synchronous orbit given the semi-major axis `a` and the
+eccentricity `e`.
 
 ##### Args
 
@@ -180,7 +181,7 @@ eccentricity.
 
 ##### Returns
 
-* The inclination of the Sun-synchronous orbit [rad].
+The inclination of the Sun-synchronous orbit [rad].
 
 """
 

@@ -60,8 +60,8 @@ export sun_position_i
 """
 ### function sun_position_i(JD::Number)
 
-Compute the Sun position represented in the Mean Equinox of Date (MOD). The
-algorithm was adapted from [3, p. 277-279].
+Compute the Sun position represented in the Mean Equinox of Date (MOD) at the
+Julian Day `JD`. The algorithm was adapted from [3, p. 277-279].
 
 ##### Args
 
@@ -69,7 +69,7 @@ algorithm was adapted from [3, p. 277-279].
 
 ##### Returns
 
-* The vector between the origin of the MOD and the Sun represented in the MOD.
+The vector between the origin of the MOD and the Sun represented in the MOD.
 
 """
 

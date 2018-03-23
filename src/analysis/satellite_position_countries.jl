@@ -33,7 +33,8 @@ export satellite_check_Brazil
 """
 ### function satellite_check_Brazil(lat::Number, lon::Number)
 
-Verify if a point is inside Brazil.
+Verify if a point described by latitude `lat` and longitude `lon` is inside
+Brazil.
 
 ##### Args
 

@@ -28,8 +28,9 @@ export satellite_velocity_J0_i
 """
 ### function satellite_velocity_J0_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
-Compute the satellite velocity in the Inertial coordinate frame neglecting all
-the perturbations.
+Compute the satellite velocity in the Inertial coordinate frame given the
+orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f` neglecting all the
+perturbations.
 
 ##### Args
 
@@ -44,7 +45,7 @@ the perturbations.
 ##### Returns
 
 * The satellite velocity vector represented in the Inertial coordinate frame
-[m/s].
+  [m/s].
 
 """
 

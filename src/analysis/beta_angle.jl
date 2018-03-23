@@ -37,16 +37,16 @@ Compute the beta angle of a satellite.
 
 ##### Args
 
-* JD0: Julian day of the launch date.
-* a: Semi-major axis of the satellite orbit [m].
+* JD0: Initial instant for the analysis [Julian day].
+* a: Semi-major axis of the orbit [m].
 * e: Orbit eccentricity.
 * i: Orbit inclination [rad].
-* RAAN: Right ascension of the ascending node at launch date [rad].
+* RAAN: Right ascension of the ascending node at `JD0` [rad].
 * numDays: Number of days of the analysis.
 
 ##### Returns
 
-* The beta angle computed for each day in degrees.
+The beta angle computed for each day in degrees.
 
 """
 

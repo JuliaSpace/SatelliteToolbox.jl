@@ -44,7 +44,8 @@ export satellite_position_e, satellite_position_latlon, satellite_position_LLA,
 """
 ### function satellite_position_e(JD::Number, r_i::Vector)
 
-Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
+Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame at
+the Julian day `JD` given the position vector in the inertial frame `r_i`.
 
 ##### Args
 
@@ -53,11 +54,11 @@ Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
 
 ##### Returns
 
-* The satellite position vector represented in the ECEF frame.
+The satellite position vector represented in the ECEF frame.
 
 ###### Remarks
 
-The computed vector will have the same unit of **r_i**.
+The computed vector will have the same unit of `r_i`.
 
 """
 
@@ -75,7 +76,9 @@ end
 """
 ### function satellite_position_e(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
-Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
+Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame at
+the Julian day `JD` given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and
+`f`.
 
 ##### Args
 
@@ -89,7 +92,7 @@ Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame.
 
 ##### Returns
 
-* The satellite position vector represented in the ECEF frame.
+The satellite position vector represented in the ECEF frame.
 
 ###### Remarks
 
@@ -109,7 +112,8 @@ end
 """
 ### function satellite_position_LLA(JD::Number, r_i::Vector)
 
-Compute the latitude, longitude, and altitude (WGS-84) of the satellite.
+Compute the latitude, longitude, and altitude (WGS-84) of the satellite at the
+Julian Day `JD` given the position vector in the inertial frame `r_i`.
 
 ##### Args
 
@@ -237,7 +241,8 @@ end
 """
 ### function function satellite_position_latlon(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
-Compute the latitude, longitude, and altitude (WGS-84) of the satellite.
+Compute the latitude, longitude, and altitude (WGS-84) of the satellite at the
+Julian Day `JD` given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
 
 ##### Args
 
@@ -269,7 +274,8 @@ end
 """
 ### function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
-Compute the satellite position in the Inertial coordinate frame.
+Compute the satellite position in the Inertial coordinate frame given the
+orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
 
 ##### Args
 
@@ -284,7 +290,7 @@ Compute the satellite position in the Inertial coordinate frame.
 
 * The satellite position vector represented in the Inertial coordinate frame.
 * The versor perpendicular to the satellite position vector that lies on the
-orbit plane represented in the Inertial coordinate frame.
+  orbit plane represented in the Inertial coordinate frame.
 
 ###### Remarks
 
