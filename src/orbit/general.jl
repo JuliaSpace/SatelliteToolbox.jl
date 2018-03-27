@@ -118,7 +118,7 @@ function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
         p = a*(1.0-e^2)
 
         # Unperturbed orbit period.
-        n0 = period(a, e, i, :J0)
+        n0 = angvel(a, e, i, :J0)
 
         # Perturbation of the argument of perigee.
         return 3.0*R0^2*J2/(4.0*p^2)*n0*(5.0*cos(i)^2-1.0)
@@ -168,7 +168,7 @@ function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
         p = a*(1.0-e^2)
 
         # Unperturbed orbit period.
-        n0 = period(a, e, i, :J0)
+        n0 = angvel(a, e, i, :J0)
 
         # Perturbation of the right ascension of the ascending node.
         return -3.0/2.0*R0^2/(p^2)*n0*J2*cos(i)
