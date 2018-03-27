@@ -131,7 +131,7 @@ end
 """
 ### function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
-Compute the time-derivative of the right ascencion of the ascending node of a
+Compute the time-derivative of the right ascension of the ascending node of an
 orbit with semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
 perturbation terms specified by the symbol `pert`.
 
