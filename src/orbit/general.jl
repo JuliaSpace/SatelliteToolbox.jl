@@ -234,7 +234,7 @@ The orbit period [s].
 
 """
 
-function period(a::Number, e::Number, i::Number, pert::Symbol)
+function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     n = angvel(a, e, i, pert)
     2.0*pi/n
 end
