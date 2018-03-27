@@ -87,7 +87,7 @@ perturbations.
 function satellite_velocity_J0_i(a::Number, e::Number, i::Number, RAAN::Number,
                                  w::Number, f::Number)
     # Satellite angular velocity without perturbations.
-    n = period(a, e, i, :J0)
+    n = angvel(a, e, i, :J0)
 
     # Compute the velocity in the q-frame, defined as:
     #   - The X axis points towards the perigee;
