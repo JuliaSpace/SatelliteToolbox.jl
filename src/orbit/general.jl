@@ -81,7 +81,7 @@ end
 """
 ### function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
-Compute the time-derivative of the argument of perigee of a orbit with
+Compute the time-derivative of the argument of perigee of an orbit with
 semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
 perturbation terms specified by the symbol `pert`.
 
