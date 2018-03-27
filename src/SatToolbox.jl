@@ -43,7 +43,7 @@ include("orbit/general.jl")
 include("orbit/orbit_aux.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
-include("orbit/satellite_velocity.jl")
+include("orbit/orbit_vel.jl")
 include("orbit/propagators/sgp4.jl")
 
 include("analysis/beta_angle.jl")
