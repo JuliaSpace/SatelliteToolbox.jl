@@ -21,13 +21,6 @@ include("constants.jl")
 #                                  Exceptions
 ################################################################################
 
-# Exception: The perigee is inside the Earth.
-type OrbitInvalidPerigee <: Exception
-    R_p::Real
-end
-Base.showerror(io::IO, e::OrbitInvalidPerigee) =
-    print(io, "The orbit perigee (", e.R_p, " m) is inside Earth!")
-
 ################################################################################
 #                                    Files
 ################################################################################

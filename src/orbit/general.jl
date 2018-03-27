@@ -16,6 +16,13 @@
 #
 # Changelog
 #
+# 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#    Add the structure Orbit that specifies the satellite orbit. All the general
+#    functions supports it.
+#
+#    Add macro to verify if an orbit is valid. This simplifies the verifications
+#    in the functions.
+#
 # 2018-03-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    Change API. The functions now receive a symbol that specifies which kind of
 #    perturbations must be considered to compute the values.
@@ -44,6 +51,44 @@ mutable struct Orbit
     ω::Number  # Argument of perigee [rad].
     f::Number  # True anomaly [rad].
 end
+
+################################################################################
+#                                    Macros
+################################################################################
+
+"""
+### macro check_orbit(a, e)
+
+Verify if the orbit with semi-major axis `a` and eccentricity `e` is valid. This
+macro throws an exception if the orbit is not valid.
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Eccentricity.
+
+"""
+
+macro check_orbit(a, e)
+    quote
+        # Check if the arguments are valid.
+        if $(esc(a)) < 0
+            throw(ArgumentError("The semi-major axis must be greater than 0."))
+        end
+
+        if !( 0 <= $(esc(e)) < 1 )
+            throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
+        end
+
+        # Compute the orbit perigee and check if it is inside Earth.
+        perigee = $(esc(a))*(1-$(esc(e)))
+
+        if perigee < R0
+            throw(ArgumentError("The orbit perigee ($perigee m) is inside Earth!"))
+        end
+    end
+end
+
 
 ################################################################################
 #                                  Functions
@@ -106,10 +151,8 @@ The angular velocity of an object in the specified orbit [rad/s].
 """
 
 function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the perigee is inside Earth.
-    if ( !is_orbit_valid(a,e) )
-        throw(OrbitInvalidPerigee(a*(1-e)))
-    end
+    # Check if the orbit is valid.
+    @check_orbit(a,e)
 
     # Unperturbed orbit period.
     n0 = sqrt(m0/Float64(a)^3)
@@ -183,10 +226,8 @@ The perturbation of the argument of perigee [rad/s].
 """
 
 function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the perigee is inside Earth.
-    if ( !is_orbit_valid(a,e) )
-        throw(OrbitInvalidPerigee(a*(1.0-e)))
-    end
+    # Check if the orbit is valid.
+    @check_orbit(a,e)
 
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
@@ -259,10 +300,8 @@ The time derivative of the RAAN [rad/s].
 """
 
 function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the perigee is inside Earth.
-    if ( !is_orbit_valid(a,e) )
-        throw(OrbitInvalidPerigee(a*(1.0-e)))
-    end
+    # Check if the orbit is valid.
+    @check_orbit(a,e)
 
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
@@ -306,38 +345,6 @@ The time derivative of the RAAN [rad/s].
 
 function dRAAN(orb::Orbit, pert::Symbol = :J2)
     dRAAN(orb.a, orb.e, orb.i, pert)
-end
-
-
-"""
-### function is_orbit_valid(a::Number, e::Number)
-
-Verify if the orbit with semi-major axis `a` and eccentricity `e` is valid.
-
-##### Args
-
-* a: Semi-major axis [m].
-* e: Eccentricity.
-
-##### Returns
-
-* **TRUE**: The orbit is valid.
-* **FALSE**: The orbit is invalid.
-
-"""
-
-function is_orbit_valid(a::Number, e::Number)
-    # Check if the arguments are valid.
-    if ( a < 0. )
-        throw(ArgumentError("The semi-major axis must be greater than 0."))
-    end
-
-    if !( 0. <= e < 1. )
-        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-    end
-
-    # Check if the perigee is inside Earth.
-    (a*(1.-e) > R0)
 end
 
 """

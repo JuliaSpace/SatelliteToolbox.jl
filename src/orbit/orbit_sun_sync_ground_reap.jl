@@ -270,7 +270,11 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                         compute_ss_orbit_by_num_rev_per_day(numRevPD, e)
 
                     # Check if the orbit is valid.
-                    (!is_orbit_valid(a, e)) && continue
+                    try
+                        @check_orbit(a,e)
+                    catch
+                        continue
+                    end
 
                     # Check if the altitude interval must be verified.
                     if (minAlt > 0) && (maxAlt > 0)
