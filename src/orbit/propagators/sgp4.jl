@@ -105,6 +105,7 @@ type SGP4_Structure
     sgp4_gc::SGP4_GravCte
 end
 
+# Serialization of the arguments in SGP4_Structure.
 function getindex(sgp4d::SGP4_Structure, ::Colon)
 
     sgp4d.t_0, sgp4d.n_0, sgp4d.e_0, sgp4d.i_0, sgp4d.Ω_0, sgp4d.ω_0, sgp4d.M_0,
@@ -140,8 +141,8 @@ Initialize the data structure of SGP4 algorithm.
 
 ##### Args
 
-* spg4_gc: SPG4 gravitational constants.
-* t_0: Epoch of the orbital elements.
+* spg4_gc: SPG4 gravitational constants (see `SGP4_GravCte`).
+* t_0: Epoch of the orbital elements [min].
 * n_0: SGP type "mean" mean motion at epoch [rad/min].
 * e_0: "Mean" eccentricity at epoch.
 * i_0: "Mean" inclination at epoch [rad].
@@ -152,7 +153,7 @@ Initialize the data structure of SGP4 algorithm.
 
 ##### Returns
 
-* The structure `SGP4_Structure` with the intialized parameters.
+The structure `SGP4_Structure` with the intialized parameters.
 
 """
 
@@ -290,6 +291,24 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
 
        )
 end
+
+"""
+### function sgp4!(sgp4d::SGP4_Structure, t::Number)
+
+Propagate the orbit defined in `sgp4d` until the time `t`. Notice that the
+values in `sgp4d` will be modified.
+
+##### Args
+
+* sgp4d: SPG4 structure (see `SGP4_Structure`).
+* t: Time that the elements will be propagated [min].
+
+##### Returns
+
+* The position vector at time `t` [km].
+* The velocity vector at time `t` [km/s].
+
+"""
 
 function sgp4!(sgp4d::SGP4_Structure, t::Number)
     # Unpack variables.
