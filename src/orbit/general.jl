@@ -16,12 +16,12 @@
 #
 # Changelog
 #
-# 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
-#
 # 2018-03-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    Change API. The functions now receive a symbol that specifies which kind of
 #    perturbations must be considered to compute the values.
+#
+# 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
+#    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
