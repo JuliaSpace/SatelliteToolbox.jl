@@ -305,8 +305,8 @@ values in `sgp4d` will be modified.
 
 ##### Returns
 
-* The position vector at time `t` [km].
-* The velocity vector at time `t` [km/s].
+* The position vector represented in TEME frame at time `t` [km].
+* The velocity vector represented in TEME frame at time `t` [km/s].
 
 """
 

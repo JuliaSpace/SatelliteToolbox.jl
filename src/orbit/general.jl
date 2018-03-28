@@ -53,6 +53,10 @@ mutable struct Orbit
     f::Number  # True anomaly [rad].
 end
 
+function copy(orb::Orbit)
+    Orbit(orb.t, orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f)
+end
+
 ################################################################################
 #                                    Macros
 ################################################################################
