@@ -72,7 +72,37 @@ This algorithm was adapted from [1] and [3, p. 37-38].
 #                                 TEST RESULTS
 ################################################################################
 #
-# TODO: This algorithm needs more tests!
+# This function was tested using the example in [1, pp. 119-120].
+#
+# Scenario
+# ========
+#
+#    p    = 11067.790 km
+#    e    = 0.83285
+#    i    = 87.87°
+#    RAAN = 227.89°
+#    w    = 53.38°
+#    f    = 92.335°
+#    a    = p/(1-e^2)
+#
+#
+#                    +----------+----------+-----------+
+#                    | X [km/s] | Y [km/s] | Z [km/s]  |
+# +------------------+----------+----------+-----------+
+# | Algorithm in [1] | 4.902276 | 5.533124 | -1.975709 |
+# +------------------+----------+----------+-----------+
+# | This function    | 4.902279 | 5.533140 | -1.975710 |
+# +------------------+----------+----------+-----------+
+# | Difference       | 0.000003 | 0.000016 |  0.000001 |
+# +------------------+----------+----------+-----------+
+#
+# References
+# ==========
+#
+# [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications. 4th
+# ed. Microcosm Press. Hawthorn, CA, USA.
+#
+# TODO: The position part of the algorithm must be tested.
 #
 ################################################################################
 
