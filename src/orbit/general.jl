@@ -151,9 +151,6 @@ The angular velocity of an object in the specified orbit [rad/s].
 """
 
 function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the orbit is valid.
-    @check_orbit(a,e)
-
     # Unperturbed orbit period.
     n0 = sqrt(m0/Float64(a)^3)
 
@@ -226,9 +223,6 @@ The perturbation of the argument of perigee [rad/s].
 """
 
 function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the orbit is valid.
-    @check_orbit(a,e)
-
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
@@ -300,9 +294,6 @@ The time derivative of the RAAN [rad/s].
 """
 
 function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    # Check if the orbit is valid.
-    @check_orbit(a,e)
-
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
