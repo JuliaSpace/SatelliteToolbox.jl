@@ -25,6 +25,9 @@
 #    [2] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
 #        and Applications. Microcosm Press.
 #
+#    [3] Kuga, H. K., Carrara, V., Rao, K. R (2005). Introdução à Mecânica
+#        Orbital. 2ª ed. Instituto Nacional de Pesquisas Espaciais.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
@@ -34,7 +37,86 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export kepler_to_rv
 export rv_to_kepler
+
+"""
+### function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+
+Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
+representation (position vector `r` and velocity vector `v`)
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Excentricity.
+* i: Inclination [rad].
+* Ω: Right ascension of the ascending node [rad].
+* ω: Argument of perigee [rad].
+* f: True anomaly [rad].
+
+##### Returns
+
+* The position vector represented in the inertial reference frame [m].
+* The velocity vector represented in the inertial reference frame [m].
+
+##### References
+
+This algorithm was adapted from [1] and [3, p. 37-38].
+
+"""
+
+################################################################################
+#                                 TEST RESULTS
+################################################################################
+#
+# TODO: This algorithm needs more tests!
+#
+################################################################################
+
+function kepler_to_rv(a::Number,
+                      e::Number,
+                      i::Number,
+                      Ω::Number,
+                      ω::Number,
+                      f::Number)
+    # Check eccentricity.
+    if !(0 <= e < 1)
+        throw(ArgumentError("Eccentricity must be in the interval [0,1)."))
+    end
+
+    # Auxiliary variables.
+    sin_f     = sin(f)
+    cos_f     = cos(f)
+    sqrt_1_e2 = sqrt(1-e^2)
+
+    # Compute the geocentric distance.
+    r = a*(1-e^2)/(1+e*cos_f)
+
+    # Compute the position vector in the orbit plane, defined as:
+    #   - The X axis points towards the perigee;
+    #   - The Z axis is perpendicular to the orbital plane (right-hand);
+    #   - The Y axis completes a right-hand coordinate system.
+    r_o = r*[cos(f);
+             sin(f);
+               0   ;]
+
+    # Compute the velocity vector in the orbit plane.
+    n = angvel(a, e, i, :J0)
+    v_o = n*a/sqrt(1-e^2)*[  sin(-f);
+                           e+cos(+f);
+                               0    ;]
+
+    # Compute the matrix that rotates the orbit reference frame into the
+    # inertial reference frame.
+    Dio = angle2dcm(-ω, -i, -Ω, "ZXZ")
+
+    # Compute the position and velocity represented in the inertial frame.
+    r_i = Dio*r_o
+    v_i = Dio*v_o
+
+    (r_i, v_i)
+end
 
 """
 ### function rv_to_kepler(r::Vector, v::Vector)
