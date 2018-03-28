@@ -5,7 +5,7 @@ module SatToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan2, copy, cos, getindex, mod, sin
+import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin
 
 ################################################################################
 #                                  Structures
