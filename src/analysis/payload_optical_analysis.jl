@@ -10,14 +10,14 @@
 #
 # Description
 #
-#    Many functions to perform a preliminary analysis of an optical payload.
+#   Many functions to perform a preliminary analysis of an optical payload.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

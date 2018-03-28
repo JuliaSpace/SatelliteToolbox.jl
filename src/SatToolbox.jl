@@ -25,9 +25,15 @@ include("constants.jl")
 #                                    Files
 ################################################################################
 
-include("coordinate_transformations/coordinate_transformations.jl")
-include("coordinate_transformations/orbit_elements.jl")
-include("coordinate_transformations/position.jl")
+include("analysis/beta_angle.jl")
+include("analysis/eclipse_time.jl")
+include("analysis/lighting_conditions.jl")
+include("analysis/raan.jl")
+include("analysis/payload_optical_analysis.jl")
+include("analysis/satellite_position_countries.jl")
+include("analysis/satellite_position_groundstations.jl")
+include("analysis/sun_angle.jl")
+include("analysis/sun_radiation.jl")
 
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
@@ -38,14 +44,9 @@ include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
 include("orbit/propagators/sgp4.jl")
 
-include("analysis/beta_angle.jl")
-include("analysis/eclipse_time.jl")
-include("analysis/lighting_conditions.jl")
-include("analysis/raan.jl")
-include("analysis/payload_optical_analysis.jl")
-include("analysis/satellite_position_countries.jl")
-include("analysis/satellite_position_groundstations.jl")
-include("analysis/sun_angle.jl")
-include("analysis/sun_radiation.jl")
+include("transformations/coordinates.jl")
+include("transformations/gmst.jl")
+include("transformations/orbit_elements.jl")
+include("transformations/position.jl")
 
 end # module

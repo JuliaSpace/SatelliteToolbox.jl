@@ -15,11 +15,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# References
-#
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Changelog
 #
 # 2016-02-02: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>

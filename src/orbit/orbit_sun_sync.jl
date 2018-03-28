@@ -10,21 +10,21 @@
 #
 # Description
 #
-#    Many auxiliary functions for sun synchronous orbit computations.
+#   Many auxiliary functions for sun synchronous orbit computations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    The function `minimum_swath_grss` no longer return the minimum Half-FOV.
-#    This functionality was moved to the function `minimum_half_fov`.
+#   The function `minimum_swath_grss` no longer return the minimum Half-FOV.
+#   This functionality was moved to the function `minimum_half_fov`.
 #
-#    Move the functions related to ground repeating, sun synchronous orbits to
-#    the file "orbit_sun_sync_ground_reap.jl".
+#   Move the functions related to ground repeating, sun synchronous orbits to
+#   the file "orbit_sun_sync_ground_reap.jl".
 #
 # 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

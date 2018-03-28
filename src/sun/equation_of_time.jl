@@ -10,20 +10,21 @@
 #
 # Description
 #
-#    Compute the equation of time.
+#   Compute the equation of time.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# References:
-#    [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
-#        Microcosm Press, Hawthorne, CA.
+# References
+#
+#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+#       Microcosm Press, Hawthorne, CA.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2017-08-03: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#     Initial version.
+#    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

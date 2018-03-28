@@ -10,30 +10,30 @@
 #
 # Description
 #
-#    Conversions related to the orbit elements.
+#   Conversions related to the orbit elements.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
 #
-#     [1] Schwarz, R (2014). Memorandum No. 2: Cartesian State Vectors to
-#         Keplerian Orbit Elements. Available at www.rene-schwarz.com
+#   [1] Schwarz, R (2014). Memorandum No. 2: Cartesian State Vectors to
+#       Keplerian Orbit Elements. Available at www.rene-schwarz.com
 #
-#         https://downloads.rene-schwarz.com/dc/category/18
-#         (Accessed on 2017-08-09).
+#       https://downloads.rene-schwarz.com/dc/category/18
+#       (Accessed on 2017-08-09).
 #
-#    [2] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
-#        and Applications. Microcosm Press.
+#   [2] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
+#       and Applications. Microcosm Press.
 #
-#    [3] Kuga, H. K., Carrara, V., Rao, K. R (2005). Introdução à Mecânica
-#        Orbital. 2ª ed. Instituto Nacional de Pesquisas Espaciais.
+#   [3] Kuga, H. K., Carrara, V., Rao, K. R (2005). Introdução à Mecânica
+#       Orbital. 2ª ed. Instituto Nacional de Pesquisas Espaciais.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2017-08-09: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#     Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

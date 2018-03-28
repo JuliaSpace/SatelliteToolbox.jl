@@ -10,28 +10,28 @@
 #
 # Description
 #
-#    SGP4 orbit propagator model.
+#   SGP4 orbit propagator model.
 #
-#    This is a independent implementation of the algorithm presented in [1].
-#    Notice that the readability of the code was the major concern about the
-#    implementation here. Algorithms with better performance can be found at
-#    Vallado's repository in:
+#   This is a independent implementation of the algorithm presented in [1].
+#   Notice that the readability of the code was the major concern about the
+#   implementation here. Algorithms with better performance can be found at
+#   Vallado's repository in:
 #
-#        https://celestrak.com/software/vallado-sw.asp
+#       https://celestrak.com/software/vallado-sw.asp
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
 #
-#     [1] Hoots, F. R., Roehrich, R. L (1980). Models for Propagation of NORAD
-#         Elements Set. Spacetrack Report No. 3.
+#   [1] Hoots, F. R., Roehrich, R. L (1980). Models for Propagation of NORAD
+#       Elements Set. Spacetrack Report No. 3.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2017-08-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#     Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

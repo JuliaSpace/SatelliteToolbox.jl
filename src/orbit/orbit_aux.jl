@@ -10,21 +10,21 @@
 #
 # Description
 #
-#    Propagate the satellite orbit.
+#   Propagate the satellite orbit.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# References:
+# References
 #
-#    [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
-#        and Applications. Microcosm Press.
+#   [1] Vallado, D. A., McClain, W. D (2013). Fundamentals of Astrodynamics
+#       and Applications. Microcosm Press.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2014-12-08: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

@@ -10,20 +10,15 @@
 #
 # Description
 #
-#    Functions related to the analysis of the Right Ascension of the Ascending
-#    Node (RAAN).
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# References
-#
+#   Functions related to the analysis of the Right Ascension of the Ascending
+#   Node (RAAN).
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

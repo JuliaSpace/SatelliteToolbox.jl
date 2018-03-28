@@ -10,19 +10,19 @@
 #
 # Description
 #
-#    Compute the beta angle of a satellite.
+#   Compute the beta angle of a satellite.
 #
-#    The algorithm was based on:
+#   The algorithm was based on:
 #
-#          Mortari, D., Wilkins, M. P., and Bruccoleri, C.
-#          On Sun-Synchronous Orbits and Associated Constellations
+#       Mortari, D., Wilkins, M. P., and Bruccoleri, C.  On Sun-Synchronous
+#       Orbits and Associated Constellations
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2015-01-20: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

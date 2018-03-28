@@ -10,25 +10,25 @@
 #
 # Description
 #
-#    Functions to compute general values related to the orbit.
+#   Functions to compute general values related to the orbit.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
 #
 # 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#    Add the structure Orbit that specifies the satellite orbit. All the general
-#    functions supports it.
+#   Add the structure Orbit that specifies the satellite orbit. All the general
+#   functions supports it.
 #
-#    Add macro to verify if an orbit is valid. This simplifies the verifications
-#    in the functions.
+#   Add macro to verify if an orbit is valid. This simplifies the verifications
+#   in the functions.
 #
 # 2018-03-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#    Change API. The functions now receive a symbol that specifies which kind of
-#    perturbations must be considered to compute the values.
+#   Change API. The functions now receive a symbol that specifies which kind of
+#   perturbations must be considered to compute the values.
 #
 # 2014-12-18: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#    Initial version.
+#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
