@@ -39,6 +39,7 @@ include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
 
 include("orbit/general.jl")
+include("orbit/anomalies.jl")
 include("orbit/orbit_aux.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
