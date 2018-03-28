@@ -120,7 +120,6 @@ function kepler_to_rv(a::Number,
     # Auxiliary variables.
     sin_f     = sin(f)
     cos_f     = cos(f)
-    sqrt_1_e2 = sqrt(1-e^2)
 
     # Compute the geocentric distance.
     r = a*(1-e^2)/(1+e*cos_f)
@@ -129,15 +128,15 @@ function kepler_to_rv(a::Number,
     #   - The X axis points towards the perigee;
     #   - The Z axis is perpendicular to the orbital plane (right-hand);
     #   - The Y axis completes a right-hand coordinate system.
-    r_o = r*[cos(f);
-             sin(f);
-               0   ;]
+    r_o = r*[cos_f;
+             sin_f;
+               0  ;]
 
-    # Compute the velocity vector in the orbit plane.
+    # Compute the velocity vector in the orbit plane without perturbations.
     n = angvel(a, e, i, :J0)
-    v_o = n*a/sqrt(1-e^2)*[  sin(-f);
-                           e+cos(+f);
-                               0    ;]
+    v_o = n*a/sqrt(1-e^2)*[ -sin_f;
+                           e+cos_f;
+                               0  ;]
 
     # Compute the matrix that rotates the orbit reference frame into the
     # inertial reference frame.
