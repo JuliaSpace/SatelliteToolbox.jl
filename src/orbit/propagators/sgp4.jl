@@ -105,6 +105,11 @@ type SGP4_Structure
     sgp4_gc::SGP4_GravCte
 end
 
+# Copy for SGP4_Structure.
+function Base.copy(m::SGP4_Structure)
+    SGP4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
+end
+
 # Deepcopy for SGP4_Structure.
 function Base.deepcopy(m::SGP4_Structure)
     SGP4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
