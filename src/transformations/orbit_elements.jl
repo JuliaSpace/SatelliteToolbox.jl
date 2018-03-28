@@ -162,13 +162,7 @@ to the Keplerian elements.
 
 ##### Returns
 
-* The Keplerian elements in this order:
-    - Semi-major axis [km].
-    - Eccentricity.
-    - Inclination [rad].
-    - Right ascension of the ascending node [rad].
-    - Argument of perigee [rad].
-    - True anomaly [rad].
+An instance of the structure `Orbit` with the Keplerian elements [SI units].
 
 ##### References
 
@@ -265,7 +259,7 @@ function rv_to_kepler(r_i::Vector, v_i::Vector)
     # Return the Keplerian elements.
     # ==============================
 
-    (a,ecc,i,Ω,ω,v)
+    Orbit(0.0,a,ecc,i,Ω,ω,v)
 end
 
 """
