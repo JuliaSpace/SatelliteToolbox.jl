@@ -41,6 +41,40 @@ export angvel, dArgPer, dRAAN, period
 ################################################################################
 
 """
+This structure contains the same elements of the TLE with the same units.
+
+"""
+
+struct TLE
+    name::String            # Name of the satellite.
+
+    # First line
+    # ==========
+    sat_num::Int            # Satellite number.
+    classification::Char    # Classification ('U', 'C', or 'S').
+    int_designator::String  # International designator.
+    epoch_year::Int         # Epoch year (two digits).
+    epoch_day::Float64      # Epoch day (day + fraction of the day).
+    dn_o2::Float64          # 1st time derivative of mean motion / 2 [rev/day²].
+    ddn_o6::Float64         # 2nd time derivative of mean motion / 6 [rev/day³].
+    bstar::Float64          # B* drag term.
+    elem_set_number::Int    # Element set number.
+    checksum_l1::Int        # Checksum of the line 1 (modulo 10).
+
+    # Second line
+    # ===========
+
+    i::Float64              # Inclination [deg].
+    Ω::Float64              # Right ascension of the ascending node [deg].
+    e::Float64              # Eccentricity.
+    ω::Float64              # Argument of perigee [deg].
+    M::Float64              # Mean anomaly [deg].
+    n::Float64              # Mean motion [rev/day].
+    rev_num::Int            # Revolution number at epoch [rev].
+    checksum_l2             # Checksum of the line 2 (modulo 10).
+end
+
+"""
 This structure defines the orbit in terms of the Keplerian elements.
 """
 mutable struct Orbit

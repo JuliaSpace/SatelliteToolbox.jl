@@ -43,6 +43,7 @@ include("orbit/anomalies.jl")
 include("orbit/orbit_aux.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
+include("orbit/tle.jl")
 include("orbit/propagators/sgp4.jl")
 include("orbit/propagators/sgp4_api.jl")
 
