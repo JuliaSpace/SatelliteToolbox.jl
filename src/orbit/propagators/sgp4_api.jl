@@ -233,7 +233,7 @@ at the last propagation instant.
 ##### Args
 
 * orbp: Propagator structure (see `OrbitPropagatorSGP4`).
-* t: Time instants in which the orbit will be propagated [s].
+* t: Time instants from orbit epoch in which the orbit will be propagated [s].
 
 ##### Returns
 
@@ -258,7 +258,7 @@ function propagate!(orbp::OrbitPropagatorSGP4, t::Vector)
 
     for k in t
         # Propagate the orbit.
-        (r_teme_k, v_teme_k) = sgp4!(sgp4d, k/60)
+        (r_teme_k, v_teme_k) = sgp4!(sgp4d, sgp4d.t_0 + k/60)
 
         # Convert km to m.
         r_teme_k *= 1000
