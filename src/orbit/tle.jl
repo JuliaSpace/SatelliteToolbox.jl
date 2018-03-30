@@ -270,7 +270,7 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
             # Eccentricity
             # ============
-            e = @parse_value(Float64, line[27:33], line_num)
+            e = @parse_value(Float64, "." * line[27:33], line_num)
 
             # Argument of perigee
             # ===================
