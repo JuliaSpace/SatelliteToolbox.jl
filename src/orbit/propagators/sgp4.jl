@@ -383,7 +383,7 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
         IL  = M_p + ω + Ω + nll_0*(3/2)C1*Δt^2
     end
 
-    β = sqrt(1-e_0^2)
+    β = sqrt(1-e^2)
 
     # Compute the angular velocity [rad/min].
     n = XKE/a^(3/2)
