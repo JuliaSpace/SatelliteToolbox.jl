@@ -185,6 +185,40 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 end
 
 """
+### function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)
+
+Initialize the SGP4 orbit propagator using the initial orbit specified in the
+TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds since
+the beginning of the year (see `TLE.epoch_day`).
+
+##### Args
+
+* tle: TLE that will be used to initialize the propagator.
+* sgp4_gc: (OPTIONAL) Gravitational constants (**DEFAULT** = `sgp4_gc_wgs84`).
+
+##### Returns
+
+A new instance of the structure `OrbitPropagatorSGP4` that stores the
+information of the orbit propagator.
+
+"""
+
+function init_orbit_propagator(::Type{Val{:sgp4}},
+                               tle::TLE,
+                               sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+    init_orbit_propagator(Val{:sgp4},
+                          tle.epoch_day*24*60*60,
+                          tle.n*2*pi/(24*60*60),
+                          tle.e,
+                          tle.i*pi/180,
+                          tle.Ω*pi/180,
+                          tle.ω*pi/180,
+                          tle.M*pi/180,
+                          tle.bstar,
+                          sgp4_gc)
+end
+
+"""
 ### function step!(orbp::OrbitPropagatorSGP4, Δt::Number)
 
 Propagate the orbit in `orbp` by `Δt` s using the SGP4 propagator. The new
