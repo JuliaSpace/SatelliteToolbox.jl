@@ -174,7 +174,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
                                sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
     init_orbit_propagator(Val{:sgp4},
                           orb_0.t,
-                          angvel(orb, :J2),
+                          angvel(orb_0, :J2),
                           orb_0.e,
                           orb_0.i,
                           orb_0.Ω,
