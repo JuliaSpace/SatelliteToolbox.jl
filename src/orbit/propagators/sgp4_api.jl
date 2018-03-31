@@ -95,7 +95,7 @@ Notice that the orbit elements **must be** represented in TEME frame.
 * orb_0: Initial orbital elements (see `Orbit`).
 
 * t_0: Initial orbit epoch [s].
-* n_0: Initial angular velocity [rad/min].
+* n_0: Initial angular velocity [rad/s].
 * e_0: Initial eccentricity.
 * i_0: Initial inclination [rad]
 * Ω_0: Initial right ascension of the ascending node [rad].

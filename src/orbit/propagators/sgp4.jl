@@ -165,14 +165,14 @@ Initialize the data structure of SGP4 algorithm.
 * n_0: SGP type "mean" mean motion at epoch [rad/min].
 * e_0: "Mean" eccentricity at epoch.
 * i_0: "Mean" inclination at epoch [rad].
-* Ω_0: "Mean" longigute of the ascending node at epoch [rad].
+* Ω_0: "Mean" longitude of the ascending node at epoch [rad].
 * ω_0: "Mean" argument of perigee at epoch [rad].
-* M_0: "Mean" mean anomally at epoch [rad].
+* M_0: "Mean" mean anomaly at epoch [rad].
 * bstar: Drag parameter (B*).
 
 ##### Returns
 
-The structure `SGP4_Structure` with the intialized parameters.
+The structure `SGP4_Structure` with the initialized parameters.
 
 """
 
