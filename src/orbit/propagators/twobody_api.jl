@@ -80,7 +80,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
     # Create the `Orbit` structure.
     orb_0 = Orbit(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
 
-    # Create and return the orbit propagator strucutre.
+    # Create and return the orbit propagator structure.
     OrbitPropagatorTwoBody(orb_0, tbd)
 end
 
