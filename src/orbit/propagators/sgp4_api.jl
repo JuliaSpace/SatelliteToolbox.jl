@@ -299,7 +299,7 @@ function propagate!(orbp::OrbitPropagatorSGP4, t::Vector)
         v_teme_k *= 1000
 
         # Update the elements in the `orb` structure.
-        @update_orb!(orbp, k)
+        @update_orb!(orbp, sgp4d.t_0*60 + k)
 
         push!(result_orb, copy(orb))
         push!(result_r,   r_teme_k)
