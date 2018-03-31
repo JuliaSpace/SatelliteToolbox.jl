@@ -46,6 +46,8 @@ include("orbit/orbit_sun_sync_ground_reap.jl")
 include("orbit/tle.jl")
 include("orbit/propagators/sgp4.jl")
 include("orbit/propagators/sgp4_api.jl")
+include("orbit/propagators/twobody.jl")
+include("orbit/propagators/twobody_api.jl")
 
 include("transformations/coordinates.jl")
 include("transformations/gmst.jl")
