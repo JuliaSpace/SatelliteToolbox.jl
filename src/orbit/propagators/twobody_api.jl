@@ -40,11 +40,11 @@ end
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:two_body}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ_0::Number = m0)
+### function init_orbit_propagator(::Type{Val{:two_body}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::Number = m0)
 
 Initialize the Two Body orbit propagator using the initial orbit specified by
 the elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
-gravitational parameters of the central body `μ_0`.
+gravitational parameters of the central body `μ`.
 
 ##### Args
 
@@ -55,7 +55,7 @@ gravitational parameters of the central body `μ_0`.
 * Ω_0: Initial right ascension of the ascending node [rad].
 * ω_0: Initial argument of perigee [rad].
 * M_0: Initial mean anomaly [rad].
-* μ_0: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
        (**DEFAULT** = `m0`).
 
 ##### Returns
@@ -73,9 +73,9 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                                Ω_0::Number,
                                ω_0::Number,
                                M_0::Number,
-                               μ_0::Number = m0)
+                               μ::Number = m0)
     # Create the new Two Body propagator structure.
-    tbd = twobody_init(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ_0)
+    tbd = twobody_init(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ)
 
     # Create the `Orbit` structure.
     orb_0 = Orbit(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
@@ -85,15 +85,15 @@ function init_orbit_propagator(::Type{Val{:twobody}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ_0::Number = m0)
+### function init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)
 
 Initialize the Two Body orbit propagator using the initial orbit specified in
-`orb_0`, and the standard gravitational parameters of the central body `μ_0`.
+`orb_0`, and the standard gravitational parameters of the central body `μ`.
 
 ##### Args
 
 * orb_0: Initial orbital elements (see `Orbit`).
-* μ_0: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
        (**DEFAULT** = `m0`).
 
 ##### Returns
@@ -104,7 +104,7 @@ information of the orbit propagator.
 """
 function init_orbit_propagator(::Type{Val{:twobody}},
                                orb_0::Orbit,
-                               μ_0::Number = m0)
+                               μ::Number = m0)
     init_orbit_propagator(Val{:twobody},
                           orb_0.t,
                           angvel(orb_0, :J0),
@@ -113,11 +113,11 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                           orb_0.Ω,
                           orb_0.ω,
                           f_to_M(orb_0.e, orb_0.f),
-                          μ_0)
+                          μ)
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ_0::Number = m0)
+### function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
 
 Initialize the Two Body orbit propagator using the initial orbit specified in
 the TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds
@@ -126,7 +126,7 @@ since the beginning of the year (see `TLE.epoch_day`).
 ##### Args
 
 * tle: TLE that will be used to initialize the propagator.
-* μ_0: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
        (**DEFAULT** = `m0`).
 
 ##### Returns
@@ -138,7 +138,7 @@ information of the orbit propagator.
 
 function init_orbit_propagator(::Type{Val{:twobody}},
                                tle::TLE,
-                               μ_0::Number = m0)
+                               μ::Number = m0)
     init_orbit_propagator(Val{:twobody},
                           tle.epoch_day*24*60*60,
                           tle.n*2*pi/(24*60*60),
@@ -147,7 +147,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                           tle.Ω*pi/180,
                           tle.ω*pi/180,
                           tle.M*pi/180,
-                          μ_0)
+                          μ)
 end
 
 """

@@ -55,7 +55,7 @@ type TwoBody_Structure
     M_k::Float64
     f_k::Float64
     # Standard gravitational parameter of the central body [m^3/s^2].
-    μ_0::Float64
+    μ::Float64
 end
 
 # Copy for TwoBody_Structure.
@@ -70,7 +70,7 @@ function Base.copy(m::TwoBody_Structure)
                       m.a,
                       m.M_k,
                       m.f_k,
-                      m.μ_0)
+                      m.μ)
 end
 
 ################################################################################
@@ -91,7 +91,7 @@ Initialize the data structure of Two Body orbit propagator algorithm.
 * Ω_0: Initial right ascension of the ascending node [rad].
 * ω_0: Initial argument of perigee [rad].
 * M_0: Initial mean anomaly.
-* μ_0: Standard gravitational parameter of the central body [m^3/s^2].
+* μ: Standard gravitational parameter of the central body [m^3/s^2].
 
 ##### Returns
 
@@ -106,20 +106,20 @@ function twobody_init(t_0::Number,
                       Ω_0::Number,
                       ω_0::Number,
                       M_0::Number,
-                      μ_0::Number)
+                      μ::Number)
     # The propagator is only defined for 0 <= e < 1.
     if !(0 <= e_0 < 1)
         throw(ArgumentError("The Two Body propagator only supports eccentricities in the interval [0,1)"))
     end
 
     # Compute the semi-major axis using the angular velocity.
-    a = (μ_0/n_0^2)^(1/3)
+    a = (μ/n_0^2)^(1/3)
 
     # Compute the true anomaly.
     f = M_to_f(e_0, M_0)
 
     # Create and return the Two Body orbit propagator structure.
-    TwoBody_Structure(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, a, M_0, f, μ_0)
+    TwoBody_Structure(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, a, M_0, f, μ)
 end
 
 """
