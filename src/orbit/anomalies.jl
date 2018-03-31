@@ -14,6 +14,13 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
+# References
+#
+#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+#       Microcosm Press, Hawthorn, CA, USA.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
 # Changelog
 #
 # 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
@@ -52,8 +59,13 @@ function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
     # Compute the eccentric anomaly using the Newton-Raphson method.
     # ==============================================================
 
+    # Make sure that M is in the interval [0,2π].
+    M = mod(M,2*pi)
+
     # Initial guess.
-    E = M
+    #
+    # See [1, p. 75].
+    E = (M > pi) ? M - e : M + e
 
     sin_E = sin(E)
     cos_E = cos(E)
