@@ -56,7 +56,7 @@ gravitational parameters of the central body `μ`.
 * ω_0: Initial argument of perigee [rad].
 * M_0: Initial mean anomaly [rad].
 * μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-       (**DEFAULT** = `m0`).
+     (**DEFAULT** = `m0`).
 
 ##### Returns
 
@@ -80,7 +80,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
     # Create the `Orbit` structure.
     orb_0 = Orbit(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
 
-    # Create and return the orbit propagator structure.
+    # Create and return the orbit propagator strucutre.
     OrbitPropagatorTwoBody(orb_0, tbd)
 end
 
@@ -94,7 +94,7 @@ Initialize the Two Body orbit propagator using the initial orbit specified in
 
 * orb_0: Initial orbital elements (see `Orbit`).
 * μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-       (**DEFAULT** = `m0`).
+     (**DEFAULT** = `m0`).
 
 ##### Returns
 
@@ -127,7 +127,7 @@ since the beginning of the year (see `TLE.epoch_day`).
 
 * tle: TLE that will be used to initialize the propagator.
 * μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-       (**DEFAULT** = `m0`).
+     (**DEFAULT** = `m0`).
 
 ##### Returns
 
@@ -203,7 +203,7 @@ elements at the last propagation instant.
 
 * orbp: Propagator structure (see `OrbitPropagatorTwoBody`).
 * t: Time instants from orbit epoch in which the orbit will be propagated
-[s].
+     [s].
 
 ##### Returns
 
@@ -283,5 +283,4 @@ end
 #   presented in [1].
 #
 ################################################################################
-
 
