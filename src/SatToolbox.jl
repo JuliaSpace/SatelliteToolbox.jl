@@ -5,7 +5,7 @@ module SatToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin
+import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin, show
 
 ################################################################################
 #                                  Structures
@@ -44,6 +44,8 @@ include("orbit/orbit_aux.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
 include("orbit/tle.jl")
+include("orbit/propagators/j2.jl")
+include("orbit/propagators/j2_api.jl")
 include("orbit/propagators/sgp4.jl")
 include("orbit/propagators/sgp4_api.jl")
 include("orbit/propagators/twobody.jl")

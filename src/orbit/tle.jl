@@ -324,3 +324,58 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
     tles
 end
+
+"""
+### function print_tle(io::IO, tle::TLE)
+
+Print the TLE `tle` in the IO `io`.
+
+##### Args
+
+* io: IO to print the TLE.
+* tle: TLE to be printed.
+* color: If true, then the text will be printed with colors.
+
+"""
+
+function print_tle(io::IO, tle::TLE, color::Bool = true)
+    # Colors will be printed only for STDOUT.
+    b = (color) ? "\x1b[1m"         : ""
+    d = (color) ? "\x1b[0m"         : ""
+    g = (color) ? "\x1b[1m\x1b[32m" : ""
+    y = (color) ? "\x1b[1m\x1b[33m" : ""
+
+    # Print the TLE information.
+    print(io, "                             $(g)TLE$(d)\n")
+    print(io, "$(y)    ==========================================================$(d)\n")
+    print(io, "$(b)                            Name: $(d)"); @printf(io, "%s\n", tle.name)
+    print(io, "$(b)                Satellite number: $(d)"); @printf(io, "%d\n", tle.sat_num)
+    print(io, "$(b)        International designator: $(d)"); @printf(io, "%s\n", tle.int_designator)
+    print(io, "$(b)                    Epoch (Year): $(d)"); @printf(io, "%d\n", tle.epoch_year)
+    print(io, "$(b)                     Epoch (Day): $(d)"); @printf(io, "%12.8f\n", tle.epoch_day)
+    print(io, "$(b)              Element set number: $(d)"); @printf(io, "%d\n", tle.elem_set_number)
+    print(io, "$(b)                     Inclination: $(d)"); @printf(io, "%12.8f deg\n", tle.i)
+    print(io, "$(b)                            RAAN: $(d)"); @printf(io, "%12.8f deg\n", tle.Ω)
+    print(io, "$(b)             Argument of perigee: $(d)"); @printf(io, "%12.8f deg\n", tle.ω)
+    print(io, "$(b)                    Mean anomaly: $(d)"); @printf(io, "%12.8f deg\n", tle.M)
+    print(io, "$(b)                 Mean motion (n): $(d)"); @printf(io, "%12.8f deg\n", tle.n)
+    print(io, "$(b)               Revolution number: $(d)"); @printf(io, "%d\n", tle.rev_num)
+    print(io, "\n")
+    print(io, "$(b)                              B*: $(d)"); @printf(io, "%f 1/[er]\n", tle.bstar)
+    print(io, "\n")
+    print(io, "$(b)                        1   d\n$(d)")
+    print(io, "$(b)                       ---.--- n: $(d)"); @printf(io, "%f rev/day²\n", tle.dn_o2)
+    print(io, "$(b)                        2  dt\n$(d)")
+    print(io, "\n")
+    print(io, "$(b)                        1   d²\n$(d)")
+    print(io, "$(b)                       ---.--- n: $(d)"); @printf(io, "%f rev/day³\n", tle.ddn_o6)
+    print(io, "$(b)                        6  dt²\n$(d)")
+    print(io, "$(y)    ==========================================================$(d)\n")
+
+    nothing
+end
+
+# Overload show function for TLE.
+function Base.show(io::IO, tle::TLE)
+    print_tle(io,tle)
+end
