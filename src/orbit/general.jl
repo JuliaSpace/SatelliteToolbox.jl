@@ -32,7 +32,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export Orbit
+export Orbit, TLE
 export @check_orbit
 export angvel, dArgPer, dRAAN, period
 
