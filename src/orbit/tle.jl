@@ -156,16 +156,34 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
     line_num = 0
 
+    skip_line_read = false
+
     while !eof(file)
-        # Read the current line, strip white spaces, and skip if it is blank.
-        line = strip(readline(file))
-        line_num += 1
-        (isempty(line)) && continue
+        # Read the current line, strip white spaces, and skip if it is blank or
+        # is a comment.
+        if !skip_line_read
+            line = strip(readline(file))
+            line_num += 1
+            (isempty(line))  && continue
+            (line[1] == '#') && continue
+        else
+            skip_line_read = false
+        end
 
         # Check the state of the reading.
         if state == :name
-            # If the line is not blank, then it must be the name of the
-            # satellite.
+            # Check if the line seems to be the first line of the TLE. In this
+            # case, maybe the user has not provided a name. Then, change the
+            # state to `:l1`, and skip the line reading in the next loop.
+            if (line[1:2] == "1 ") && (length(line) == 69)
+                name = "UNDEFINED"
+                state = :l1
+                skip_line_read  = true
+                continue
+            end
+
+            # Otherwise, if the line is not blank, then it must be the name of
+            # the satellite.
             #
             # NOTE: The name should not be bigger than 24 characters. However,
             # we will not check this here.
@@ -230,7 +248,7 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
             # Ephemeris type
             # ==============
-            (line[63] != '0') && warn("Ephemeris type should be 0!")
+            (line[63] != '0') && warn("Warning in TLE file (line $line_num): Ephemeris type should be 0!")
 
             # Element number
             # ==============
@@ -258,6 +276,14 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
             if (verify_checksum) && (checksum_l2 != checksum_line)
                 throw(ErrorException("The TLE file is not valid (error in line $line_num): Expected checksum: $checksum_line, line checksum: $checksum_l2."))
+            end
+
+            # Check satellite number with the one in the first line.
+            # ======================================================
+            sat_num_l2 = @parse_value(Int, line[3:7], line_num)
+
+            if sat_num_l2 != sat_num
+                throw(ErrorException("The TLE file is not valid (error in line $line_num): Satellite number in line 2 is not equal to that in line 1."))
             end
 
             # Inclination
