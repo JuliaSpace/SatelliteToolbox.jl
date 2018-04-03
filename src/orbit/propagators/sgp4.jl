@@ -26,6 +26,9 @@
 #   [1] Hoots, F. R., Roehrich, R. L (1980). Models for Propagation of NORAD
 #       Elements Set. Spacetrack Report No. 3.
 #
+#   [2] Vallado, D. A., Crawford, P., Hujsak, R., Kelso, T. S (2006). Revisiting
+#       Spacetrack Report #3: Rev1. AIAA.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
@@ -238,7 +241,15 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
     δ_0 = 3/2*k_2/a_0^2*aux
 
     nll_0 = n_0/(1 + δ_0)
-    all_0 = a_0/(1 - δ_0)
+
+    # Vallado's implementation of SGP4 [2] compute the semi-major axis
+    # considering the new angular velocity, which is called `no_unkozai`. In the
+    # original SGP4 technical report [1], the semi-major axis was computed
+    # considering:
+    #
+    #   all_0 = a_0/(1 - δ_0)
+    #
+    all_0 = (XKE/nll_0)^(2/3)
 
     # Initialization
     # ==============
@@ -267,20 +278,26 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
     β_0  = sqrt(1-e_0^2)
     η    = all_0*e_0*ξ
 
-    aux1 = (1-η^2)^(-7/2)
+    # Vallado's implementation of SGP4 [2] considers the absolute value of
+    # (1-η^2) here and in the C2 and C4 computation. Notice that, if (1-η^2) <
+    # 0, then aux1 cannot be computed. The original SGP4 technical report [1]
+    # does not mention anything about this.
+
+    aux0 = abs(1-η^2)
+    aux1 = aux0^(-7/2)
     aux2 = ξ^4*all_0*β_0^2*aux1
 
     C2 = QOMS2T*ξ^4*nll_0*aux1*
          ( all_0*( 1 + (3/2)η^2 + 4e_0*η + e_0*η^3) +
-           3/2*(k_2*ξ)/(1-η^2)*(-1/2 + (3/2)θ2)*(8 + 24η^2 + 3η^4) )
+           3/2*(k_2*ξ)/aux0*(-1/2 + (3/2)θ2)*(8 + 24η^2 + 3η^4) )
 
     C1 = bstar*C2
 
-    C3 = QOMS2T*ξ^5*A_30*nll_0*AE*sin_i_0/(k_2*e_0)
+    C3 = (e_0 > 1e-4) ? QOMS2T*ξ^5*A_30*nll_0*AE*sin_i_0/(k_2*e_0) : 0
 
     C4 = 2nll_0*QOMS2T*aux2*
          ( 2η*(1+e_0*η) + (1/2)e_0 + (1/2)η^3 -
-           2*k_2*ξ/(all_0*(1-η^2))*
+           2*k_2*ξ/(all_0*aux0)*
                 (3*(1-3θ2)*(1 + (3/2)η^2 - 2*e_0*η - (1/2)e_0*η^3) +
                 3/4*(1-θ2)*(2η^2 - e_0*η - e_0*η^3)*cos(2*ω_0)))
 
@@ -290,7 +307,9 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
 
     D3 = 4/3*all_0*ξ^2*( 17all_0 +   s)*C1^3
 
-    D4 = 2/3*all_0*ξ^3*(221all_0 + 31s)*C1^4
+    # Vallado's implementation of SGP4 [2] uses all_0^2, instead of only all_0
+    # that is seen in the original SGP4 Technical Report [1].
+    D4 = 2/3*all_0^2*ξ^3*(221all_0 + 31s)*C1^4
 
     # The current orbital parameters are obtained from the TLE.
     a_k = all_0
@@ -360,8 +379,9 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
     if !isimp
         δω  = bstar*C3*cos(ω_0)*Δt
 
-        δM  = -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_DF))^3 -
-                                                 (1 + η*cos(M_0) )^3 )
+        δM  = (e_0 > 1e-4) ?
+            -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_DF))^3 -
+                                               (1 + η*cos(M_0) )^3 ) : 0
 
         M_p = M_DF + δω + δM
 
@@ -392,6 +412,11 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
         IL  = M_p + ω + Ω + nll_0*(3/2)C1*Δt^2
     end
 
+    # Vallado's code does not let the eccentricity to be smaller than 1e-6.
+    #
+    # TODO: Verify why this is necessary. I did not find any reason for that.
+    (e < 1e-6) && (e = 1e-6)
+
     β = sqrt(1-e^2)
 
     # Compute the angular velocity [rad/min].
@@ -407,6 +432,8 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
 
     a_xN = e*cos(ω)
 
+    # TODO: Vallado's implementation of SGP4 uses another equation here.
+    # However, both produces the same result. Verify which one is better.
     a_yNL = A_30*sin_i_0/(4*k_2*a*β^2)
 
     a_yN = e*sin(ω) + a_yNL
