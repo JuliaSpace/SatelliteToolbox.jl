@@ -55,24 +55,6 @@ The eccentric anomaly in the interval [0,2π].
 
 """
 
-################################################################################
-#                                 Test Results
-################################################################################
-#
-# Scenario 01
-# ===========
-#
-# Example 2-1: Using Kepler's Equation [1, p. 66-67].
-#
-#   M = 235.4°, e = 0.4 ===> E = 220.512074767522º
-#
-# Using this function, the following result was obtained:
-#
-#   julia> M_to_E(0.4,235.4*pi/180)*180/pi
-#   220.51207476752163
-#
-################################################################################
-
 function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
     # Compute the eccentric anomaly using the Newton-Raphson method.
     # ==============================================================

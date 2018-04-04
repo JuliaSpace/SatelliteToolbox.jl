@@ -32,17 +32,15 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-println("===================================================================")
-println("                            SGP4 Tests")
-println("===================================================================")
+println("$(c)SGP4 Tests$d")
+println("$(c)----------$d")
 println("")
 
 ################################################################################
 #                                   Test 01
 ################################################################################
 
-println("Test 01 - Tests from the paper AIAA 2006-6753")
-println("=============================================")
+println("    $(b)Test 01 - Tests from the paper AIAA 2006-6753$d")
 println("")
 
 # Read all TLEs that will be used to test.
@@ -58,7 +56,8 @@ st_sgp4_result = []
 SGP4_results = []
 
 for tle in tles_test_01
-    println("Testing the following TLE:")
+    println("    Testing the following TLE:")
+    println("")
     println(tle)
 
     filename = @sprintf("./aiaa-2006-6753/sgp4_tle_%d_result.txt", tle.sat_num)
@@ -86,7 +85,6 @@ for tle in tles_test_01
         @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-9
     end
 
-    println("Test passed!")
-    println("------------------------------------------------------------------")
+    println("    $(b)Test passed!$d")
     println("")
 end
