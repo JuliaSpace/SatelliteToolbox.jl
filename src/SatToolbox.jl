@@ -25,6 +25,8 @@ include("constants.jl")
 #                                    Files
 ################################################################################
 
+include("./aux/legendre.jl")
+
 include("analysis/beta_angle.jl")
 include("analysis/eclipse_time.jl")
 include("analysis/lighting_conditions.jl")
