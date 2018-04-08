@@ -46,12 +46,12 @@ export sgp4_init, sgp4!
 ################################################################################
 
 # Gravitational constants for SGP4.
-immutable SGP4_GravCte
-    R0   # Earth equatorial radius [km].
-    XKE  # sqrt(GM) [er/min]^(3/2).
-    J2   # The second gravitational zonal harmonic of the Earth.
-    J3   # The third  gravitational zonal harmonic of the Earth.
-    J4   # The fourth gravitational zonal harmonic of the Earth.
+struct SGP4_GravCte{T<:Real}
+    R0::T   # Earth equatorial radius [km].
+    XKE::T  # sqrt(GM) [er/min]^(3/2).
+    J2::T   # The second gravitational zonal harmonic of the Earth.
+    J3::T   # The third  gravitational zonal harmonic of the Earth.
+    J4::T   # The fourth gravitational zonal harmonic of the Earth.
 end
 
 # Serialization of the arguments in SGP4_GravCte.
@@ -60,52 +60,52 @@ function getindex(sgp4_gc::SGP4_GravCte, ::Colon)
 end
 
 # SPG4 structure.
-type SGP4_Structure
+type SGP4_Structure{T<:Real}
     # TLE parameters.
-    t_0::Float64
-    n_0::Float64
-    e_0::Float64
-    i_0::Float64
-    Ω_0::Float64
-    ω_0::Float64
-    M_0::Float64
-    bstar::Float64
+    t_0::T
+    n_0::T
+    e_0::T
+    i_0::T
+    Ω_0::T
+    ω_0::T
+    M_0::T
+    bstar::T
     # Current parameters.
-    a_k::Float64
-    e_k::Float64
-    i_k::Float64
-    Ω_k::Float64
-    ω_k::Float64
-    M_k::Float64
-    n_k::Float64
+    a_k::T
+    e_k::T
+    i_k::T
+    Ω_k::T
+    ω_k::T
+    M_k::T
+    n_k::T
     # Parameters related with the orbit.
-    all_0::Float64
-    nll_0::Float64
+    all_0::T
+    nll_0::T
     # Useful constants to decrease the computational burden.
-    AE::Float64
-    QOMS2T::Float64
-    β_0::Float64
-    ξ::Float64
-    η::Float64
-    sin_i_0::Float64
-    θ::Float64
-    θ2::Float64
-    θ3::Float64
-    θ4::Float64
-    A_30::Float64
-    k_2::Float64
-    k_4::Float64
-    C1::Float64
-    C3::Float64
-    C4::Float64
-    C5::Float64
-    D2::Float64
-    D3::Float64
-    D4::Float64
+    AE::T
+    QOMS2T::T
+    β_0::T
+    ξ::T
+    η::T
+    sin_i_0::T
+    θ::T
+    θ2::T
+    θ3::T
+    θ4::T
+    A_30::T
+    k_2::T
+    k_4::T
+    C1::T
+    C3::T
+    C4::T
+    C5::T
+    D2::T
+    D3::T
+    D4::T
     # Others.
     isimp::Bool
     # SGP4 gravitational constants.
-    sgp4_gc::SGP4_GravCte
+    sgp4_gc::SGP4_GravCte{T}
 end
 
 # Copy for SGP4_Structure.
@@ -157,7 +157,7 @@ sgp4_gc_wgs72 = SGP4_GravCte(
 ################################################################################
 
 """
-### function sgp4_init(spg4_gc::SGP4_GravCte, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number)
+### function sgp4_init(spg4_gc::SGP4_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
 
 Initialize the data structure of SGP4 algorithm.
 
@@ -179,7 +179,7 @@ The structure `SGP4_Structure` with the initialized parameters.
 
 """
 
-function sgp4_init(sgp4_gc::SGP4_GravCte,
+function sgp4_init(sgp4_gc::SGP4_GravCte{T},
                    t_0::Number,
                    n_0::Number,
                    e_0::Number,
@@ -187,7 +187,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
                    Ω_0::Number,
                    ω_0::Number,
                    M_0::Number,
-                   bstar::Number)
+                   bstar::Number) where T
 
     # Unpack the gravitational constants to improve code readability.
     R0, XKE, J2, J3, J4 = sgp4_gc[:]
@@ -198,7 +198,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
     # Note: [er] = Earth radii.
 
     # Distance units / Earth radii.
-    AE = 1.0
+    AE = T(1)
 
     k_2  = +1/2*J2*AE^2
     k_4  = -3/8*J4*AE^4
@@ -264,7 +264,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
 
     if perigee < 156
         if perigee < 98
-            s = 20.0/XKMPER + AE
+            s = 20/XKMPER + AE
         # Perigee between 98km and 156km.
         else
             s = all_0*(1-e_0) - s + AE
@@ -293,7 +293,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
 
     C1 = bstar*C2
 
-    C3 = (e_0 > 1e-4) ? QOMS2T*ξ^5*A_30*nll_0*AE*sin_i_0/(k_2*e_0) : 0
+    C3 = (e_0 > 1e-4) ? QOMS2T*ξ^5*A_30*nll_0*AE*sin_i_0/(k_2*e_0) : T(0)
 
     C4 = 2nll_0*QOMS2T*aux2*
          ( 2η*(1+e_0*η) + (1/2)e_0 + (1/2)η^3 -
@@ -331,7 +331,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte,
 end
 
 """
-### function sgp4!(sgp4d::SGP4_Structure, t::Number)
+### function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `sgp4d` until the time `t`. Notice that the
 values in `sgp4d` will be modified.
@@ -348,7 +348,7 @@ values in `sgp4d` will be modified.
 
 """
 
-function sgp4!(sgp4d::SGP4_Structure, t::Number)
+function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Unpack variables.
     t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
     all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30, k_2, k_4,
@@ -381,7 +381,7 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
 
         δM  = (e_0 > 1e-4) ?
             -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_DF))^3 -
-                                               (1 + η*cos(M_0) )^3 ) : 0
+                                               (1 + η*cos(M_0) )^3 ) : T(0)
 
         M_p = M_DF + δω + δM
 
@@ -415,7 +415,7 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
     # Vallado's code does not let the eccentricity to be smaller than 1e-6.
     #
     # TODO: Verify why this is necessary. I did not find any reason for that.
-    (e < 1e-6) && (e = 1e-6)
+    (e < 1e-6) && (e = T(1e-6))
 
     β = sqrt(1-e^2)
 
@@ -451,8 +451,8 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
 
     # Define the following variables that will be modified inside the loop so
     # that we can use them after the loop.
-    sin_E_ω = 0.0
-    cos_E_ω = 0.0
+    sin_E_ω = T(0)
+    cos_E_ω = T(0)
 
     for k = 1:10
         sin_E_ω = sin(E_ω)
@@ -542,13 +542,13 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
 
     N = [ +cos_Ω_k;
           +sin_Ω_k;
-          +0.0 ]
+          +T(0) ]
 
-    U = M*sin_u_k + N*cos_u_k
-    V = M*cos_u_k - N*sin_u_k
+    Uv = M*sin_u_k + N*cos_u_k
+    Vv = M*cos_u_k - N*sin_u_k
 
-    r = r_k*U*R0
-    v = (dot_r_k*U + r_dot_f_k*V)*R0/60.0
+    r_TEME = r_k*Uv*R0
+    v_TEME = (dot_r_k*Uv + r_dot_f_k*Vv)*R0/60
 
     # Update the variables.
     sgp4d.a_k = a
@@ -559,6 +559,6 @@ function sgp4!(sgp4d::SGP4_Structure, t::Number)
     sgp4d.M_k = M_p
     sgp4d.n_k = n
 
-    (r, v)
+    (r_TEME, v_TEME)
 end
 

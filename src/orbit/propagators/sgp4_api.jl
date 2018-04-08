@@ -37,12 +37,12 @@ Structure that holds the information related to the SGP4 propagator.
 
 """
 
-mutable struct OrbitPropagatorSGP4
+mutable struct OrbitPropagatorSGP4{T}
     orb::Orbit
 
     # SGP4 related fields.
-    sgp4_gc::SGP4_GravCte
-    sgp4d::SGP4_Structure
+    sgp4_gc::SGP4_GravCte{T}
+    sgp4d::SGP4_Structure{T}
 end
 
 ################################################################################
@@ -238,7 +238,7 @@ parameters will be written in `orbp`.
 
 """
 
-function step!(orbp::OrbitPropagatorSGP4, Δt::Number)
+function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     # Auxiliary variables.
     orb   = orbp.orb
     sgp4d = orbp.sgp4d
@@ -280,7 +280,7 @@ at the last propagation instant.
 
 """
 
-function propagate!(orbp::OrbitPropagatorSGP4, t::Vector)
+function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
     # Auxiliary variables.
     orb   = orbp.orb
     sgp4d = orbp.sgp4d
