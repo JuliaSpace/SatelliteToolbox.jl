@@ -23,6 +23,9 @@
 #
 #       For more info.: http://mitgcm.org/~mlosch/geoidcookbook/node11.html
 #
+#   [2] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+#       Microcosm Press, Hawthorn, CA, USA.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
@@ -62,9 +65,9 @@ function denormalize_legendre(P_nm::Number, n::Number, m::Number)
 end
 
 """
-### function legendre!(P::Matrix, ϕ_gc)
+### function legendre!(P::Matrix, ϕ::Number)
 
-Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ_gc)]`.
+Compute the fully normalized associated Legendre function `P_n,m[sin(ϕ)]`.
 The maximum degree and order that will be computed are given by the dimensions
 of matrix `P`.  Notice, however, that `P` must be a square matrix.
 
@@ -73,15 +76,27 @@ The result will be stored at matrix `P`.
 ##### Args
 
 * P: Matrix that will store the computed associated Legendre function.
-* ϕ_gc: Angle.
+* ϕ: Angle [rad].
 
 ##### Remarks
 
-This algorithm was based on [1].
+This algorithm was based on [1]. Our definition of fully normalized associated
+Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
 
+                _                     -
+               |        (l+m)!         |      k = 1 if m  = 0
+    K_nm = sqrt| --------------------- |,     k = 2 if m != 0
+               |  (l-1)! . k . (2l+1)  |
+                -                     -
+
+           _
+    P_nm = P_nm * K_nm,
+
+          _
+    where P_nm is the fully normalized Legendre associated function.
 """
 
-function legendre!(P::Matrix, ϕ_gc::Number)
+function legendre!(P::Matrix, ϕ::Number)
     (rows, cols) = size(P)
 
     # Check if the matrix P is a square matrix.
@@ -91,18 +106,16 @@ function legendre!(P::Matrix, ϕ_gc::Number)
     (rows < 2) && throw(ArgumentError("P must have at least 2 rows."))
 
     # Auxiliary variables to improve code performance.
-    c = cos(ϕ_gc)
-    s = sin(ϕ_gc)
+    c = cos(ϕ)
+    s = sin(ϕ)
 
     # Starting values.
     P[0+1,0+1] = 1
-    P[1+1,0+1] = s
+    P[1+1,0+1] = sqrt(3)*s
     P[1+1,1+1] = sqrt(3)*c
 
     for n = 2:rows-1
-        P[n+1,0+1] = ( (2n-1)*s*P[n-1+1,0+1] - (n-1)*P[n-2+1,0+1] )/n
-
-        for m = 1:n-1
+        for m = 0:n-1
             a_nm = sqrt( ( (2n-1)*(2n+1) ) / ( (n-m)*(n+m) ) )
             b_nm = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( (n-m)*(n+m)*(2n-3) ) )
             P[n+1,m+1] = a_nm*s*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
@@ -115,26 +128,43 @@ function legendre!(P::Matrix, ϕ_gc::Number)
 end
 
 """
-### function legendre(ϕ_gc::Number, n_max::Number)
+### function legendre(ϕ::Number, n_max::Number)
 
-Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ_gc)]`.
+Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
 ##### Args
 
-* ϕ_gc: Angle.
+* ϕ: Angle [rad].
 * n_max: The maximum degree that will be computed.
 
 ##### Returns
 
-A square matrix with the Legendre associated functions `P_n,m[cos(ϕ_gc)]`.
+A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
+
+##### Remarks
+
+This algorithm was based on [1]. Our definition of fully normalized associated
+Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
+
+                _                     -
+               |        (l+m)!         |      k = 1 if m  = 0
+    K_nm = sqrt| --------------------- |,     k = 2 if m != 0
+               |  (l-1)! . k . (2l+1)  |
+                -                     -
+
+           _
+    P_nm = P_nm * K_nm,
+
+          _
+    where P_nm is the fully normalized Legendre associated function.
 
 """
 
-function legendre(ϕ_gc::Number, n_max::Number)
+function legendre(ϕ::Number, n_max::Number)
     (n_max < 1) && throw(ArgumentError("n_max must be at least 1."))
 
     P = zeros(n_max+1, n_max+1)
-    legendre!(P, ϕ_gc)
+    legendre!(P, ϕ)
     P
 end
