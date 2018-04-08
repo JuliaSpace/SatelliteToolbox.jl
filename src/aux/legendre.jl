@@ -83,17 +83,17 @@ The result will be stored at matrix `P`.
 This algorithm was based on [1]. Our definition of fully normalized associated
 Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
 
-                _                     -
-               |        (l+m)!         |      k = 1 if m  = 0
-    K_nm = sqrt| --------------------- |,     k = 2 if m != 0
-               |  (l-1)! . k . (2l+1)  |
-                -                     -
+                 _                     -
+                |        (l+m)!         |      k = 1 if m  = 0
+    K_n,m = sqrt| --------------------- |,     k = 2 if m != 0
+                |  (l-1)! . k . (2l+1)  |
+                 -                     -
 
-           _
-    P_nm = P_nm * K_nm,
+            _
+    P_n,m = P_n,m * K_n,m,
 
           _
-    where P_nm is the fully normalized Legendre associated function.
+    where P_n,m is the fully normalized Legendre associated function.
 """
 
 function legendre!(P::Matrix, ϕ::Number)
@@ -130,7 +130,7 @@ end
 """
 ### function legendre(ϕ::Number, n_max::Number)
 
-Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
+Compute the fully normalized associated Legendre function `P_n,m[sin(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
 ##### Args
@@ -140,24 +140,24 @@ The maximum degree that will be computed is `n_max`.
 
 ##### Returns
 
-A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
+A square matrix with the Legendre associated functions `P_n,m[sin(ϕ)]`.
 
 ##### Remarks
 
 This algorithm was based on [1]. Our definition of fully normalized associated
 Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
 
-                _                     -
-               |        (l+m)!         |      k = 1 if m  = 0
-    K_nm = sqrt| --------------------- |,     k = 2 if m != 0
-               |  (l-1)! . k . (2l+1)  |
-                -                     -
+                 _                     -
+                |        (l+m)!         |      k = 1 if m  = 0
+    K_n,m = sqrt| --------------------- |,     k = 2 if m != 0
+                |  (l-1)! . k . (2l+1)  |
+                 -                     -
 
-           _
-    P_nm = P_nm * K_nm,
+            _
+    P_n,m = P_n,m * K_n,m,
 
           _
-    where P_nm is the fully normalized Legendre associated function.
+    where P_n,m is the fully normalized Legendre associated function.
 
 """
 
