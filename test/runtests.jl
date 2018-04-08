@@ -29,6 +29,8 @@ println("                    $g Testing Orbit Propagators$d")
 println("$y===================================================================$d")
 println("")
 
+include("./twobody_tests.jl")
+
 cd("./sgp4_tests/")
 include("./sgp4_tests/sgp4_test.jl")
 cd("../")
