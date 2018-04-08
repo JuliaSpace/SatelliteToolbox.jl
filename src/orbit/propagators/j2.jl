@@ -28,6 +28,9 @@
 #
 # Changelog
 #
+# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Restrict types in the structures, which led to a huge performance gain.
+#
 # 2017-08-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
@@ -60,10 +63,10 @@
 ################################################################################
 
 # Gravitational constants for J2 orbit propagator.
-immutable J2_GravCte
-    R0::Number   # Earth equatorial radius [m].
-    μm::Number   # sqrt(GM) [er/s]^(3/2).
-    J2::Number   # The second gravitational zonal harmonic of the Earth.
+immutable J2_GravCte{T}
+    R0::T   # Earth equatorial radius [m].
+    μm::T   # sqrt(GM) [er/s]^(3/2).
+    J2::T   # The second gravitational zonal harmonic of the Earth.
 end
 
 # Serialization of the arguments in J2_GravCtr.
@@ -72,35 +75,35 @@ function getindex(j2_gc::J2_GravCte, ::Colon)
 end
 
 # J2 orbit propagator structure.
+type J2_Structure{T}
     # Orbit parameters.
-type J2_Structure
-    t_0::Float64
-    a_0::Float64
-    n_0::Float64
-    e_0::Float64
-    i_0::Float64
-    Ω_0::Float64
-    ω_0::Float64
-    M_0::Float64
+    t_0::T
+    a_0::T
+    n_0::T
+    e_0::T
+    i_0::T
+    Ω_0::T
+    ω_0::T
+    M_0::T
     # Drag parameters.
-    dn_o2::Float64   # First time derivative of mean motion [rad/s²].
-    ddn_o6::Float64  # Second time derivative of mean motion [rad/s³].
+    dn_o2::T   # First time derivative of mean motion [rad/s²].
+    ddn_o6::T  # Second time derivative of mean motion [rad/s³].
     # Current parameters.
-    a_k::Float64
-    e_k::Float64
-    i_k::Float64
-    Ω_k::Float64
-    ω_k::Float64
-    M_k::Float64
-    n_k::Float64
-    f_k::Float64
+    a_k::T
+    e_k::T
+    i_k::T
+    Ω_k::T
+    ω_k::T
+    M_k::T
+    n_k::T
+    f_k::T
     # Useful constants to decrease the computational burden.
-    C1::Float64
-    C2::Float64
-    C3::Float64
-    C4::Float64
+    C1::T
+    C2::T
+    C3::T
+    C4::T
     # J2 orbit propagator gravitational constants.
-    j2_gc::J2_GravCte
+    j2_gc::J2_GravCte{T}
 end
 
 # Copy for J2_Structure
@@ -145,7 +148,7 @@ j2_gc_wgs72 = J2_GravCte(
 ################################################################################
 
 """
-### function j2_init(j2_gc::J2_GravCte, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number)
+### function j2_init(j2_gc::J2_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
@@ -168,7 +171,7 @@ The structure `J2_Structure` with the initialized parameters.
 
 """
 
-function j2_init(j2_gc::J2_GravCte,
+function j2_init(j2_gc::J2_GravCte{T},
                  t_0::Number,
                  n_0::Number,
                  e_0::Number,
@@ -177,7 +180,7 @@ function j2_init(j2_gc::J2_GravCte,
                  ω_0::Number,
                  M_0::Number,
                  dn_o2::Number,
-                 ddn_o6::Number)
+                 ddn_o6::Number) where T
     # Unpack the gravitational constants to improve code readability.
     R0, μm, J2 = j2_gc[:]
 
@@ -207,7 +210,6 @@ function j2_init(j2_gc::J2_GravCte,
     # Newton-Raphson algorithm.
     #
     # Notice that we will allow, at most, 20 iterations.
-    k = 0
     for k = 1:20
         res = f(a_0)
         a_0 = a_0 - res/df(a_0)
@@ -230,7 +232,7 @@ function j2_init(j2_gc::J2_GravCte,
     C4 = 3/4*n_0*J2/p_0^2
 
     # Create the output structure with the data.
-    J2_Structure(
+    J2_Structure{T}(
 
         t_0, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6, a_0, e_0, i_0,
         Ω_0, ω_0, M_0, n_0, f_0, C1, C2, C3, C4, j2_gc
@@ -239,7 +241,7 @@ function j2_init(j2_gc::J2_GravCte,
 end
 
 """
-### function j2!(j2d::J2_Structure, t::Number)
+### function j2!(j2d::J2_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `j2d` until the time `t`. Notice that the values
 in `j2d` will be modified.
@@ -263,7 +265,7 @@ perturbation theory requires an inertial frame with true equator.
 
 """
 
-function j2!(j2d::J2_Structure, t::Number)
+function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Unpack the variables.
     t_0, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6, a_k, e_k, i_k, Ω_k,
     ω_k, M_k, n_k, f_k, C1, C2, C3, C4, j2_gc = j2d[:]
@@ -283,7 +285,7 @@ function j2!(j2d::J2_Structure, t::Number)
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
-    (e_k < 0) && (e_k = 0)
+    (e_k < 0) && (e_k = T(0))
 
     # Compute the position and velocity vectors given the orbital elements.
     (r_i_k, v_i_k) = kepler_to_rv(a_k*R0, e_k, i_k, Ω_k, ω_k, f_k)
