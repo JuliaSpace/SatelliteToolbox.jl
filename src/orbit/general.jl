@@ -77,14 +77,14 @@ end
 """
 This structure defines the orbit in terms of the Keplerian elements.
 """
-mutable struct Orbit
-    t::Number  # Orbit epoch.
-    a::Number  # Semi-major axis [m].
-    e::Number  # Eccentricity.
-    i::Number  # Inclination [rad].
-    Ω::Number  # Right ascension of the ascending node [rad].
-    ω::Number  # Argument of perigee [rad].
-    f::Number  # True anomaly [rad].
+mutable struct Orbit{T1,T2,T3,T4,T5,T6,T7}
+    t::T1  # Orbit epoch.
+    a::T2  # Semi-major axis [m].
+    e::T3  # Eccentricity.
+    i::T4  # Inclination [rad].
+    Ω::T5  # Right ascension of the ascending node [rad].
+    ω::T6  # Argument of perigee [rad].
+    f::T7  # True anomaly [rad].
 end
 
 function copy(orb::Orbit)

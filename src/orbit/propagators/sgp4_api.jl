@@ -41,7 +41,7 @@ Structure that holds the information related to the SGP4 propagator.
 """
 
 mutable struct OrbitPropagatorSGP4{T}
-    orb::Orbit
+    orb::Orbit{T,T,T,T,T,T,T}
 
     # SGP4 related fields.
     sgp4_gc::SGP4_GravCte{T}
@@ -85,7 +85,7 @@ end
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:sgp4}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+### function init_orbit_propagator(::Type{Val{:sgp4}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 
 Initialize the SGP4 orbit propagator using the initial orbit specified by the
 elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, the B* parameter
@@ -123,7 +123,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
                                ω_0::Number,
                                M_0::Number,
                                bstar::Number,
-                               sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+                               sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
     # Create the new SGP4 structure.
     sgp4d = sgp4_init(sgp4_gc,
                       t_0/60.0,
@@ -136,13 +136,13 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
                       bstar)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit(t_0,
-                  sgp4d.a_k*sgp4_gc_wgs84.R0,
-                  e_0,
-                  i_0,
-                  Ω_0,
-                  ω_0,
-                  M_to_f(e_0, M_0))
+    orb_0 = Orbit{T,T,T,T,T,T,T}(t_0,
+                                 sgp4d.a_k*sgp4_gc_wgs84.R0,
+                                 e_0,
+                                 i_0,
+                                 Ω_0,
+                                 ω_0,
+                                 M_to_f(e_0, M_0))
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)
