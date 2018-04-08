@@ -100,6 +100,15 @@ function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
     # Tangent of the geocentric latitude.
     tan_ϕ = tan(ϕ_gc)
 
+    # Sine and cosine of the geocentric longitude.
+    #
+    # This values were be used in the algorithm to decrease the computational
+    # burden.
+    sin_λ   = sin(1*λ_gc)
+    cos_λ   = cos(1*λ_gc)
+    sin_2λ  = sin(2*λ_gc)
+    cos_2λ  = cos(2*λ_gc)
+
     # First derivative of the non-spherical portion of the grav. potential.
     # ====================================================================
     dUr = 0.0  # Derivative w.r.t. the radius.
@@ -117,13 +126,25 @@ function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
         aux_dUϕ = 0.0
         aux_dUλ = 0.0
 
+        # Sine and cosine with m = 0.
+        #
+        # This values will be used to update recursively `sin(m*λ_gc)` and
+        # `cos(m*λ_gc`), reducing the computational burden.
+        sin_mλ   = 0.0       # sin( 0*λ_gc)
+        sin_m_1λ = -sin_λ    # sin(-1*λ_gc)
+        sin_m_2λ = -sin_2λ   # sin(-2*λ_gc)
+        cos_mλ   = 1.0       # cos( 0*λ_gc)
+        cos_m_1λ = cos_λ     # cos(-1*λ_gc)
+        cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
+
         for m = 0:n
-            sin_mλ = sin(m*λ_gc)
-            cos_mλ = cos(m*λ_gc)
+            # Compute recursively `sin(m*λ_gc)` and `cos(m*λ_gc)`.
+            sin_mλ = 2*cos_λ*sin_m_1λ-sin_m_2λ
+            cos_mλ = 2*cos_λ*cos_m_1λ-cos_m_2λ
 
             CcSs_nm = C[n+1,m+1]*cos_mλ + S[n+1,m+1]*sin_mλ
 
-            aux_dUr +=  P[n+1,m+1]*CcSs_nm
+            aux_dUr +=   P[n+1,m+1]*CcSs_nm
             aux_dUλ += m*P[n+1,m+1]*(S[n+1,m+1]*cos_mλ - C[n+1,m+1]*sin_mλ)
 
             if n == m
@@ -139,6 +160,12 @@ function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
 
                 aux_dUϕ += (norm_coef*P[n+1,m+1+1]-m*tan_ϕ*P[n+1,m+1])*CcSs_nm
             end
+
+            # Update the values for the next step.
+            sin_m_2λ = sin_m_1λ
+            sin_m_1λ = sin_mλ
+            cos_m_2λ = cos_m_1λ
+            cos_m_1λ = cos_mλ
         end
 
         dUr += rn*(n+1)*aux_dUr
