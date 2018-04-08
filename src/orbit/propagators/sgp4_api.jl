@@ -16,6 +16,9 @@
 #
 # Changelog
 #
+# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Restrict types in the structures, which led to a huge performance gain.
+#
 # 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    Initial version.
 #
@@ -219,7 +222,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 end
 
 """
-### function step!(orbp::OrbitPropagatorSGP4, Δt::Number)
+### function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
 
 Propagate the orbit in `orbp` by `Δt` s using the SGP4 propagator. The new
 parameters will be written in `orbp`.
@@ -258,7 +261,7 @@ function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
 end
 
 """
-### function propagate!(orbp::OrbitPropagatorSGP4, t::Vector)
+### function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the SGP4 propagator. The structure `orbp` will contain the orbit elements

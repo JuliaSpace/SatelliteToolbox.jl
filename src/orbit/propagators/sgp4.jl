@@ -33,6 +33,9 @@
 #
 # Changelog
 #
+# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Restrict types in the structures, which led to a huge performance gain.
+#
 # 2017-08-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
