@@ -39,11 +39,11 @@ Structure to store the EGM coefficients.
 
 """
 
-struct EGM_Coefs
-    C::Matrix
-    S::Matrix
-    μ::Number
-    R0::Number
+struct EGM_Coefs{T1,T2,T3}
+    C::Matrix{T1}
+    S::Matrix{T1}
+    μ::T2
+    R0::T3
 end
 
 # Serialization of the arguments in EGM_Coefs.
@@ -75,7 +75,9 @@ frame).
 
 """
 
-function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
+function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
+                   r::Vector,
+                   n_max::Number) where {T1,T2,T3}
     # Unpack EGM coefficients.
     C, S, μ, R0 = egm_coefs[:]
 
@@ -111,9 +113,9 @@ function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
 
     # First derivative of the non-spherical portion of the grav. potential.
     # ====================================================================
-    dUr = 0.0  # Derivative w.r.t. the radius.
-    dUϕ = 0.0  # Derivative w.r.t. the geocentric latitude.
-    dUλ = 0.0  # Derivative w.r.t. the geocentric longitude.
+    dUr = T1(0)  # Derivative w.r.t. the radius.
+    dUϕ = T1(0)  # Derivative w.r.t. the geocentric latitude.
+    dUλ = T1(0)  # Derivative w.r.t. the geocentric longitude.
 
     # Compute the associated Legendre functions `P_n,m[sin(ϕ_gc)]`.
     P = legendre(ϕ_gc, n_max)
@@ -122,18 +124,18 @@ function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
     for n = 2:n_max
         rn = (R0/r_gc)^n
 
-        aux_dUr = 0.0
-        aux_dUϕ = 0.0
-        aux_dUλ = 0.0
+        aux_dUr = T1(0)
+        aux_dUϕ = T1(0)
+        aux_dUλ = T1(0)
 
         # Sine and cosine with m = 0.
         #
         # This values will be used to update recursively `sin(m*λ_gc)` and
         # `cos(m*λ_gc`), reducing the computational burden.
-        sin_mλ   = 0.0       # sin( 0*λ_gc)
+        sin_mλ   = T1(0)     # sin( 0*λ_gc)
         sin_m_1λ = -sin_λ    # sin(-1*λ_gc)
         sin_m_2λ = -sin_2λ   # sin(-2*λ_gc)
-        cos_mλ   = 1.0       # cos( 0*λ_gc)
+        cos_mλ   = T1(1)     # cos( 0*λ_gc)
         cos_m_1λ = cos_λ     # cos(-1*λ_gc)
         cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
 
@@ -246,7 +248,7 @@ function compute_U(egm_coefs::EGM_Coefs,
 end
 
 """
-### function read_egm_coefs(filename::String)
+### function read_egm_coefs(filename::String, μ::Number, R0::Number)
 
 Read the file `filename` with the EGM coefficients and create the structure
 `EGM_Coefs` with them.
