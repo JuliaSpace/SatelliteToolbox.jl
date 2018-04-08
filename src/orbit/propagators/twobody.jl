@@ -27,6 +27,9 @@
 #
 # Changelog
 #
+# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Restrict types in the structures, which led to a huge performance gain.
+#
 # 2018-03-30: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
@@ -40,22 +43,22 @@ export twobody_init, twobody!
 ################################################################################
 
 # Two Body orbit propagator structure.
-type TwoBody_Structure
+type TwoBody_Structure{T}
     # Initial parameters.
-    t_0::Float64
-    n_0::Float64
-    e_0::Float64
-    i_0::Float64
-    Ω_0::Float64
-    ω_0::Float64
-    M_0::Float64
+    t_0::T
+    n_0::T
+    e_0::T
+    i_0::T
+    Ω_0::T
+    ω_0::T
+    M_0::T
     # Auxiliary parameters.
-    a::Float64
+    a::T
     # Current parameters.
-    M_k::Float64
-    f_k::Float64
+    M_k::T
+    f_k::T
     # Standard gravitational parameter of the central body [m^3/s^2].
-    μ::Float64
+    μ::T
 end
 
 # Copy for TwoBody_Structure.
@@ -78,7 +81,7 @@ end
 ################################################################################
 
 """
-### function twobody_init(t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number)
+### function twobody_init(t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T) where T
 
 Initialize the data structure of Two Body orbit propagator algorithm.
 
@@ -106,7 +109,7 @@ function twobody_init(t_0::Number,
                       Ω_0::Number,
                       ω_0::Number,
                       M_0::Number,
-                      μ::Number)
+                      μ::T) where T
     # The propagator is only defined for 0 <= e < 1.
     if !(0 <= e_0 < 1)
         throw(ArgumentError("The Two Body propagator only supports eccentricities in the interval [0,1)"))
@@ -119,7 +122,7 @@ function twobody_init(t_0::Number,
     f = M_to_f(e_0, M_0)
 
     # Create and return the Two Body orbit propagator structure.
-    TwoBody_Structure(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, a, M_0, f, μ)
+    TwoBody_Structure{T}(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, a, M_0, f, μ)
 end
 
 """

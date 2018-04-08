@@ -16,6 +16,9 @@
 #
 # Changelog
 #
+# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Restrict types in the structures, which led to a huge performance gain.
+#
 # 2018-03-30: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #    Initial version.
 #
@@ -28,11 +31,11 @@ export step!, propagate!
 #                             Types and Structures
 ################################################################################
 
-mutable struct OrbitPropagatorTwoBody
-    orb::Orbit
+mutable struct OrbitPropagatorTwoBody{T}
+    orb::Orbit{T,T,T,T,T,T,T}
 
     # Two Body orbit propagator related fields.
-    tbd::TwoBody_Structure
+    tbd::TwoBody_Structure{T}
 end
 
 ################################################################################
@@ -40,7 +43,7 @@ end
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:two_body}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::Number = m0)
+### function init_orbit_propagator(::Type{Val{:twobody}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
 Initialize the Two Body orbit propagator using the initial orbit specified by
 the elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
@@ -73,12 +76,12 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                                Ω_0::Number,
                                ω_0::Number,
                                M_0::Number,
-                               μ::Number = m0)
+                               μ::T = m0) where T
     # Create the new Two Body propagator structure.
     tbd = twobody_init(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
+    orb_0 = Orbit{T,T,T,T,T,T,T}(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
 
     # Create and return the orbit propagator strucutre.
     OrbitPropagatorTwoBody(orb_0, tbd)
