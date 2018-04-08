@@ -69,11 +69,11 @@ function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
     const maxIt = 30
 
     # Auxiliary variables.
-    sqrt_m0 = sqrt(m0)
-    sqrt_e2 = sqrt(1-e^2)
+    sqrt_m0::Float64 = sqrt(m0)
+    sqrt_e2::Float64 = sqrt(1-e^2)
 
     # Auxiliary constant to compute the functions.
-    K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
+    K1::Float64 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
 
     # Declare the functions that must solved for 0.
     f1(a, i) = ne + 2.0*K1*a^(-3.5)*cos(i)
@@ -96,8 +96,8 @@ function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
     # Maximum number of
 
     # Initial guess based on the unperturbed model.
-    a_k = (m0/n^2)^(1/3)
-    i_k = acos( -ne*a_k^(3.5)/(2*K1) )
+    a_k::Float64 = (m0/n^2)^(1/3)
+    i_k::Float64 = acos( -ne*a_k^(3.5)/(2*K1) )
 
     # Loop
     it = 0;
@@ -108,7 +108,7 @@ function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
         i_k_1 = i_k
 
         # Compute the Jacobian.
-        J_k_1 = Jf1f2(a_k_1, i_k_1)
+        J_k_1::Matrix{Float64} = Jf1f2(a_k_1, i_k_1)
 
         # Compute the new estimate.
         (a_k, i_k) = [a_k_1; i_k_1] - inv(J_k_1)*[f1(a_k_1, i_k_1); f2(a_k_1, i_k_1)];
