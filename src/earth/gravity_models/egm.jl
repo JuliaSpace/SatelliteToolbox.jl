@@ -40,8 +40,8 @@ Structure to store the EGM coefficients.
 """
 
 struct EGM_Coefs
-    C::SparseMatrixCSC
-    S::SparseMatrixCSC
+    C::Matrix
+    S::Matrix
     μ::Number
     R0::Number
 end
@@ -249,13 +249,17 @@ This must be changed to a format understandable by Julia:
 function read_egm_coefs(filename::String, μ::Number, R0::Number)
     raw = readdlm(filename)
 
+    # The file will be parsed using Sparse matrices because it is much easier.
+    # Perhaps, there is a method with better performance, but this function is
+    # called only once per execution.
     I = map(x->Int(x)+1, raw[:,1])
     J = map(x->Int(x)+1, raw[:,2])
 
     C = sparse(I, J, raw[:,3])
     S = sparse(I, J, raw[:,4])
 
-    EGM_Coefs(C,S,μ,R0)
+    # Create the `EGM_Coefs` structure converting sparse to dense matrices.
+    EGM_Coefs(full(C),full(S),μ,R0)
 end
 
 """
