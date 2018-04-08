@@ -37,6 +37,8 @@ include("analysis/satellite_position_groundstations.jl")
 include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
+include("earth/gravity_models/egm.jl")
+
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
 
