@@ -32,14 +32,14 @@
 export J2000toGMST, JDtoGMST
 
 """
-### function J2000toGMST(J2000::Number)
+### function J2000toGMST(J2000_UT1::Number)
 
 Compute the Greenwich Mean Sideral Time (GMST) given the instant `J2000` in
 J2000.0 reference [UT1].
 
 ##### Args
 
-* J2000: Instant in J2000.0 reference [UT1].
+* J2000_UT1: Instant in J2000.0 reference [UT1].
 
 ##### Returns
 
@@ -52,37 +52,30 @@ accessed at 2015-12-01.
 
 """
 
-function J2000toGMST(J2000::Number)
-    # Julian UT1 Date at 0h.
-    JD_aux    = floor(J2000-0.5)
-    JD_UT1_0h = (JD_aux <= 0) ? JD_aux + 0.5 : JD_aux - 0.5
-
-    # UT1 in the Julian day [s].
-    UT1 = (J2000 - JD_UT1_0h)*86400
-
+function J2000toGMST(J2000_UT1::Number)
 	# Julian centuries elapsed from the epoch J2000.0.
-	T_UT1 = JD_UT1_0h/36525;
+	T_UT1 = J2000_UT1/36525
 
-	# Greenwich Mean Sideral Time at 0h [s].
-    GMST_0h = 24110.54841 + 8640184.812866*T_UT1
-		  	              + 0.093104*T_UT1^2
-						  - 6.2e-6*T_UT1^3;
+	# Greenwich Mean Sideral Time at T_UT1 [s].
+    θ_GMST = 67310.54841 + (876600*3600 + 8640184.812866)*T_UT1
+                         + 0.093104*T_UT1^2
+                         - 6.2e-6*T_UT1^3
 
-    # Greenwich Mean Sideral Time at T_UT1 [s].
-    GMST = GMST_0h + 1.002737909350795*UT1
+    # Reduce to the interval [0, 86400]s.
+    θ_GMST = mod(θ_GMST, 86400)
 
-	# Greenwich Mean Sideral Time at provided date [rad].
-    mod(GMST*pi/43200, 2*pi);
+    # Convert to radian and return.
+    θ_GMST*pi/43200
 end
 
 """
-### function JDtoGMST(JD::Number)
+### function JDtoGMST(JD_UT1::Number)
 
 Compute the Greenwich Mean Sideral Time (GMST) for a Julian Day `JD` [UT1].
 
 ##### Args
 
-* JD: Julian day [UT1].
+* JD_UT1: Julian day [UT1].
 
 ##### Returns
 
@@ -93,7 +86,7 @@ Compute the Greenwich Mean Sideral Time (GMST) for a Julian Day `JD` [UT1].
 Based on algorithm in [1, pp. 188].
 
 """
-function JDtoGMST(JD::Number)
-	J2000toGMST(JD - JD_J2000);
+function JDtoGMST(JD_UT1::Number)
+	J2000toGMST(JD_UT1 - JD_J2000)
 end
 
