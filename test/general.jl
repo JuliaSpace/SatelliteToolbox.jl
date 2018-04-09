@@ -28,11 +28,11 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-# File: ./src/anomalies.jl
-# ========================
+# File: ./src/orbit/anomalies.jl
+# ==============================
 
-println("$(c)Testing functions in file: ./src/anomalies.jl$d")
-println("$(c)---------------------------------------------$d")
+println("$(c)Testing functions in file: ./src/orbit/anomalies.jl$d")
+println("$(c)---------------------------------------------------$d")
 println("")
 
 # Function M_to_E
