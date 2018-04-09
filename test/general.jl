@@ -63,3 +63,44 @@ E = M_to_E(0.4, 235.4*pi/180)*180/pi
 
 println("        $(b)Test passed!$d")
 println("")
+
+# File: ./src/transformation/gmst.jl
+# ==================================
+
+println("$(c)Testing functions in file: ./src/orbit/gmst.jl$d")
+println("$(c)----------------------------------------------$d")
+println("")
+
+# Function JDtoGMST
+# -----------------
+
+println("    Testing function JDtoGMST...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-5: Finding GMST and LST (Method 1) [1, p. 188].
+#
+# Considering the Julian Day [UT1] 2448855.009722, the Greenwich Mean Sideral
+# Time was computed as 152.578787810°.
+#
+# Using SatToolbox, the following was obtained:
+#
+#   julia> JDtoGMST(2448855.009722)*180/pi
+#   152.5787055241565
+#
+# NOTE: The difference was also found by replicating the algorithm in MATLAB.
+#
+################################################################################
+
+θ_GMST = JDtoGMST(2448855.009722)*180/pi
+
+@test θ_GMST ≈ 152.578787810 atol = 1e-4
+
+println("        $(b)Test passed!$d")
+println("")
+
