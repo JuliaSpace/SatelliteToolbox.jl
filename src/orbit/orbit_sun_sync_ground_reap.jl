@@ -230,7 +230,6 @@ is added to the list.
 function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                                       minAlt::Number=-1.0, maxAlt::Number=-1.0,
                                       e::Number=0.0)
-    numRevPD = 0
     # Check if the arguments are valid.
     if (minRep <= 0)
         throw(ArgumentError("The minimum repetition time must be greater than 0."))
