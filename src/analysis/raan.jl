@@ -123,14 +123,11 @@ function sim_RAAN_J2(a::Number,
     days = collect(0:1:numDays-1) # Vector of the days in which the RAAN will be
                                   # simulated.
 
-    # Output vector.
-    RAAN = Array{Float64}(numDays,1)
-
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0
 
     # Simulate the RAAN for each day considering just the J2 perturbations.
-    RAAN = mod(RAAN_0 + dOmega.*days,2*pi)
+    RAAN = mod.(RAAN_0 + dOmega.*days,2*pi)
 
     [days RAAN]
 end
