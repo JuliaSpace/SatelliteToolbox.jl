@@ -91,7 +91,7 @@ println("    Testing function JDtoGMST...")
 # Using SatToolbox, the following was obtained:
 #
 #   julia> JDtoGMST(2448855.009722)*180/pi
-#   152.5787055241565
+#   152.57870762832462
 #
 # NOTE: The difference was also found by replicating the algorithm in MATLAB.
 #
