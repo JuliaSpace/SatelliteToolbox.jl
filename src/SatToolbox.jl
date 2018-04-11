@@ -56,6 +56,7 @@ include("orbit/propagators/twobody.jl")
 include("orbit/propagators/twobody_api.jl")
 
 include("transformations/coordinates.jl")
+include("transformations/eop.jl")
 include("transformations/gmst.jl")
 include("transformations/orbit_elements.jl")
 include("transformations/position.jl")
