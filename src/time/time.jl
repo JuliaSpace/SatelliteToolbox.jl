@@ -1,0 +1,122 @@
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# INPE - Instituto Nacional de Pesquisas Espaciais
+# ETE  - Engenharia e Tecnologia Espacial
+# DSE  - Divisão de Sistemas Espaciais
+#
+# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Description
+#
+#   Functions related Data and Time conversion.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# References
+#
+#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+#       Microcosm Press, Hawthorn, CA, USA.
+#
+#   [2] https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Remarks
+#
+# Information about the Julian Day obtained from [2] (Accessed on 2018-04-11).
+# ============================================================================
+#
+# The Julian Day Count is a uniform count of days from a remote epoch in the
+# past (-4712 January 1, 12 hours Greenwich Mean Time (Julian proleptic
+# Calendar) = 4713 BCE January 1, 12 hours GMT (Julian proleptic Calendar) =
+# 4714 BCE November 24, 12 hours GMT (Gregorian proleptic Calendar)). At this
+# instant, the Julian Day Number is 0. It is convenient for astronomers to use
+# since it is not necessary to worry about odd numbers of days in a month,
+# leap years, etc. Once you have the Julian Day Number of a particular date
+# in history, it is easy to calculate time elapsed between it and any other
+# Julian Day Number.
+#
+# The Julian Day Count has nothing to do with the Julian Calendar introduced by
+# Julius Caesar. It is named for Julius Scaliger, the father of Josephus Justus
+# Scaliger, who invented the concept. It can also be thought of as a logical
+# follow-on to the old Egyptian civil calendar, which also used years of
+# constant lengths.
+#
+# Scaliger chose the particular date in the remote past because it was before
+# recorded history and because in that year, three important cycles coincided
+# with their first year of the cycle: The 19-year Metonic Cycle, the 15-year
+# Indiction Cycle (a Roman Taxation Cycle) and the 28-year Solar Cycle (the
+# length of time for the old Julian Calendar to repeat exactly).
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Changelog
+#
+# 2018-04-09: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Initial version.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+
+export DateToJD
+
+################################################################################
+#                                  Functions
+################################################################################
+
+"""
+### function DateToJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+
+Convert a data represented using the Gregorian Calendar (Year = `y`, Month =
+`M`, Day = `D`, Hour = `h`, minute = `m`, and second = `s`) to Julian Day.
+
+##### Args
+
+* Y: Year in Gregorian Calendar.
+* M: Month in Gregorian Calendar (`1` => **January**, `2` => **February**, ...).
+* D: Day in Gregorian Calendar.
+* h: Hour (0 - 24).
+* m: Minutes.
+* s: Seconds.
+
+##### Returns
+
+The Julian Day.
+
+##### Remarks
+
+The algorithm was obtained from [2] (Accessed on 2018-04-11).
+
+"""
+
+function DateToJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+    # Check the input.
+    ( (M < 1) || (M > 13) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
+    ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
+    ( (h < 0) || (h > 24) ) && throw(ArgumentError("Invalid hour. It must be an integer between 0 and 24."))
+    ( (m < 0) || (m > 60) ) && throw(ArgumentError("Invalid minute. It must be an integer between 0 and 60."))
+    ( (s < 0) || (s > 60) ) && throw(ArgumentError("Invalid second. It must be an integer between 0 and 60."))
+
+    # TODO: Check if the days are consistent with the months and the leap year.
+
+    # If the month is January / February, then consider it as the 13rd / 14th
+    # month of the last year.
+    if (m == 1) || (m == 2)
+        y -= 1
+        m += 12
+    end
+
+    a = div(Y,100)
+    b = div(a,4)
+    c = 2-a+b
+    e = floor(Int,365.25*(Y+4716))
+    f = floor(Int,30.6001*(M+1))
+
+    # Compute the Julian Day considering the time of day.
+    #
+    # Notice that the algorithm in [2] always return the Julian day at 00:00
+    # GMT.
+    c+D+e+f-1524.5 + ((h*60 + m)*60 + s)/86400
+end
+
