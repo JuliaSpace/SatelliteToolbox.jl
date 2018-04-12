@@ -21,6 +21,8 @@
 #
 #   [2] https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
 #
+#   [3] https://support.microsoft.com/en-us/help/214019/method-to-determine-whether-a-year-is-a-leap-year
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Remarks
@@ -60,6 +62,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export DatetoJD, JDtoDate
+export is_leap_year
 
 ################################################################################
 #                                  Functions
@@ -118,6 +121,46 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     # Notice that the algorithm in [2] always return the Julian day at 00:00
     # GMT.
     c+D+e+f-1524.5 + ((h*60 + m)*60 + s)/86400
+end
+
+"""
+### function is_leap_year(year::Int)
+
+Check if the year `year` is a leap year.
+
+##### Args
+
+* year: Year, must be > 0.
+
+##### Returns
+
+* **TRUE**: `year` is a leap year.
+* **FALSE**: `year` is not a leap year.
+
+##### Remarks
+
+This algorithm was based on [3].
+
+"""
+
+function is_leap_year(year::Int)
+    # Check if `year` is positive. This algorithm does not handle negative
+    # years.
+    (year < 0) && throw(ArgumentError("The year must be positive."))
+
+    if (year % 4) == 0
+        if (year % 100) == 0
+            if (year % 400) == 0
+                return true
+            else
+                return false
+            end
+        else
+            return true
+        end
+    else
+        return false
+    end
 end
 
 """
