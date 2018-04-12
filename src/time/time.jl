@@ -140,7 +140,13 @@ Convert a date represented in Julian Day `JD` to Gregorian Calendar.
 
 ##### Remarks
 
-The algorithm was obtained from [2] (Accessed on 2018-04-11).
+The algorithm was obtained from [2] (Accessed on 2018-04-11). In [2], there is
+the following warning:
+
+> Note: This method will not give dates accurately on the Gregorian Proleptic
+> Calendar, i.e., the calendar you get by extending the Gregorian calendar
+> backwards to years earlier than 1582. using the Gregorian leap year rules.
+> In particular, the method fails if Y<400.
 
 """
 
