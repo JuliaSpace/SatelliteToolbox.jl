@@ -95,7 +95,7 @@ The algorithm was obtained from [2] (Accessed on 2018-04-11).
 
 function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     # Check the input.
-    ( (M < 1) || (M > 13) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
+    ( (M < 1) || (M > 12) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
     ( (h < 0) || (h > 23) ) && throw(ArgumentError("Invalid hour. It must be an integer between 0 and 23."))
     ( (m < 0) || (m > 59) ) && throw(ArgumentError("Invalid minute. It must be an integer between 0 and 59."))
