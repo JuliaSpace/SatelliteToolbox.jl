@@ -59,16 +59,16 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export DateToJD
+export DatetoJD, JDtoDate
 
 ################################################################################
 #                                  Functions
 ################################################################################
 
 """
-### function DateToJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+### function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
 
-Convert a data represented using the Gregorian Calendar (Year = `y`, Month =
+Convert a date represented using the Gregorian Calendar (Year = `y`, Month =
 `M`, Day = `D`, Hour = `h`, minute = `m`, and second = `s`) to Julian Day.
 
 ##### Args
@@ -90,7 +90,7 @@ The algorithm was obtained from [2] (Accessed on 2018-04-11).
 
 """
 
-function DateToJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     # Check the input.
     ( (M < 1) || (M > 13) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
@@ -120,3 +120,60 @@ function DateToJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     c+D+e+f-1524.5 + ((h*60 + m)*60 + s)/86400
 end
 
+"""
+### function JDtoDate(JD::Number)
+
+Convert a date represented in Julian Day `JD` to Gregorian Calendar.
+
+##### Args
+
+* JD: Julian Day.
+
+##### Returns
+
+* Year.
+* Month (`1` => **January**, `2` => **February**, ...).
+* Day.
+* Hour (0 - 24).
+* Minute (0 - 59).
+* Second (0 - 59) (**NOTE**: The seconds are computed and then rounded).
+
+##### Remarks
+
+The algorithm was obtained from [2] (Accessed on 2018-04-11).
+
+"""
+
+function JDtoDate(JD::Number)
+    Q = JD + 0.5
+    Z = floor(Int, Q)
+    W = div(Z - 1867216.25,36524.25)
+    X = div(W,4)
+    A = Z+1+W-X
+    B = A+1524
+    C = div(B-122.1,365.25)
+    D = floor(Int,365.25*C)
+    E = div(B-D,30.6001)
+    F = floor(Int,30.6001*E)
+
+    # In this case, `dayf` will have the fractional part of the day.
+    dayf   = B-D-F+(Q-Z)
+    monthf = (E-1 < 12) ? E-1 : E-13
+    yearf  = ( (monthf == 1) || (monthf == 2) ) ? C-4715 : C-4716
+
+    # Get the hour, minute, and second from the day.
+    hf = (dayf % 1)*24
+    mf = (hf   % 1)*60
+    sf = (mf   % 1)*60
+
+    # Transform everything in integers.
+    year  = floor(Int, yearf)
+    month = floor(Int, monthf)
+    day   = floor(Int, dayf)
+    h     = floor(Int, hf)
+    m     = floor(Int, mf)
+    s     = round(Int, sf)
+
+    # Return.
+    (year, month, day, h, m, s)
+end
