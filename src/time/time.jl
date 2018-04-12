@@ -133,6 +133,50 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
 end
 
 """
+### function DatetoJD(date::Date)
+
+Convert the date `date` to Julian Day.
+
+##### Args
+
+* date: Date to be converted.
+
+##### Returns
+
+The Julian Day.
+
+"""
+
+function DatetoJD(date::Date)
+    return DatetoJD(Dates.year(date), Dates.month(date), Dates.day(date),
+                    0, 0, 0)
+end
+
+"""
+### function DatetoJD(dateTime::DateTime)
+
+Convert the date and time `dateTime` to Julian Day.
+
+##### Args
+
+* dateTime: Date and time to be converted.
+
+##### Returns
+
+The Julian Day.
+
+"""
+
+function DatetoJD(dateTime::DateTime)
+    return DatetoJD(Dates.year(dateTime),
+                    Dates.month(dateTime),
+                    Dates.day(dateTime),
+                    Dates.hour(dateTime),
+                    Dates.minute(dateTime),
+                    Dates.second(dateTime))
+end
+
+"""
 ### function is_leap_year(year::Int)
 
 Check if the year `year` is a leap year.
@@ -234,4 +278,46 @@ function JDtoDate(JD::Number)
 
     # Return.
     (year, month, day, h, m, s)
+end
+
+"""
+### function JDtoDate(::Type{Date}, JD::Number)
+
+Convert a date represented in Julian Day `JD` to Gregorian Calendar and return
+using Julia structure `Date`. Notice that the hours, minutes, and seconds will
+be neglected because the structure `Date` does not handle them.
+
+##### Args
+
+* JD: Julian Day.
+
+##### Returns
+
+Julia structure `Date` with the converted Julian Day.
+
+"""
+
+function JDtoDate(::Type{Date}, JD::Number)
+    (Y, M, D, ~, ~, ~) = JDtoDate(JD)
+    Date(Y,M,D)
+end
+
+"""
+### function JDtoDate(::Type{DateTime}, JD::Number)
+
+Convert a date represented in Julian Day `JD` to Gregorian Calendar and return
+using Julia structure `DateTime`.
+
+##### Args
+
+* JD: Julian Day.
+
+##### Returns
+
+Julia structure `DateTime` with the converted Julian Day.
+
+"""
+
+function JDtoDate(::Type{DateTime}, JD::Number)
+    DateTime(JDtoDate(JD)...)
 end
