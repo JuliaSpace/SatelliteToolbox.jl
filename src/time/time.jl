@@ -101,7 +101,16 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     ( (m < 0) || (m > 59) ) && throw(ArgumentError("Invalid minute. It must be an integer between 0 and 59."))
     ( (s < 0) || (s > 59) ) && throw(ArgumentError("Invalid second. It must be an integer between 0 and 59."))
 
-    # TODO: Check if the days are consistent with the months and the leap year.
+    # Check if the date is valid in terms of number of days in a month.
+    if M == 2
+        if is_leap_year(Y)
+            (D > 29) && throw(ArgumentError("Wrong day number given the year and the month."))
+        else
+            (D > 28) && throw(ArgumentError("Wrong day number given the year and the month."))
+        end
+    elseif M in [4, 6, 9, 11]
+        (D > 30) && throw(ArgumentError("Wrong day number given the year and the month."))
+    end
 
     # If the month is January / February, then consider it as the 13rd / 14th
     # month of the last year.
