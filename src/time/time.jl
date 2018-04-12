@@ -94,9 +94,9 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
     # Check the input.
     ( (M < 1) || (M > 13) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
-    ( (h < 0) || (h > 24) ) && throw(ArgumentError("Invalid hour. It must be an integer between 0 and 24."))
-    ( (m < 0) || (m > 60) ) && throw(ArgumentError("Invalid minute. It must be an integer between 0 and 60."))
-    ( (s < 0) || (s > 60) ) && throw(ArgumentError("Invalid second. It must be an integer between 0 and 60."))
+    ( (h < 0) || (h > 23) ) && throw(ArgumentError("Invalid hour. It must be an integer between 0 and 23."))
+    ( (m < 0) || (m > 59) ) && throw(ArgumentError("Invalid minute. It must be an integer between 0 and 59."))
+    ( (s < 0) || (s > 59) ) && throw(ArgumentError("Invalid second. It must be an integer between 0 and 59."))
 
     # TODO: Check if the days are consistent with the months and the leap year.
 
