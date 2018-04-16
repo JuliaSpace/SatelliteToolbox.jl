@@ -10,7 +10,7 @@
 #
 # Description
 #
-#   General tests.
+#   Tests related to orbit functions.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
