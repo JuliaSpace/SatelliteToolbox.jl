@@ -113,9 +113,9 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
 
     # If the month is January / February, then consider it as the 13rd / 14th
     # month of the last year.
-    if (m == 1) || (m == 2)
-        y -= 1
-        m += 12
+    if (M == 1) || (M == 2)
+        Y -= 1
+        M += 12
     end
 
     a = div(Y,100)
