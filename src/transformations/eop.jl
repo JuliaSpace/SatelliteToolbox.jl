@@ -30,8 +30,86 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 using HTTP
+using Interpolations
 
+export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_eop_iau_1980, get_eop_iau_2000A
+
+################################################################################
+#                                    Types
+################################################################################
+
+"""
+EOP Data for IAU 1980. The fields are described as follows:
+
+* x, y: Polar motion with respect to the crust [arcsec].
+* UT1_UTC: Irregularities of the rotation angle [s].
+* LOD: Length of day offset [s].
+* dPsi, dEps: Celestial pole offsets referred to the model IAU1980 [arcsec].
+* *_err: Errors in the components [same unit as the component].
+
+##### Remarks
+
+Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
+if one want to obtain, for example, the X component of the polar motion with
+respect to the crust at 19 June 2018, the following can be used:
+
+    x[DatestoJD(2018,19,06,0,0,0)]
+
+"""
+
+struct EOPData_IAU1980{T}
+    x::T
+    y::T
+    UT1_UTC::T
+    LOD::T
+    dPsi::T
+    dEps::T
+
+    # Errors
+    x_err::T
+    y_err::T
+    UT1_UTC_err::T
+    LOD_err::T
+    dPsi_err::T
+    dEps_err::T
+end
+
+"""
+EOP Data for IAU 2000A. The files are described as follows:
+
+* x, y: Polar motion with respect to the crust [arcsec].
+* UT1_UTC: Irregularities of the rotation angle [s].
+* LOD: Length of day offset [s].
+* dX, dY: Celestial pole offsets referred to the model IAU2000A [arcsec].
+* *_err: Errors in the components [same unit as the component].
+
+##### Remarks
+
+Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
+if one want to obtain, for example, the X component of the polar motion with
+respect to the crust at 19 June 2018, the following can be used:
+
+    x[DatestoJD(2018,19,06,0,0,0)]
+
+"""
+
+struct EOPData_IAU2000A{T}
+    x::T
+    y::T
+    UT1_UTC::T
+    LOD::T
+    dX::T
+    dY::T
+
+    # Errors
+    x_err::T
+    y_err::T
+    UT1_UTC_err::T
+    LOD_err::T
+    dX_err::T
+    dY_err::T
+end
 
 """
 ### function get_iers_eop(data_type::Symbol = :IAU2000A)
@@ -49,7 +127,9 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 
 ##### Returns
 
-A matrix with the IERS EOP C4 data.
+A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
+with the interpolations of the EOP parameters. Notice that the interpolation
+indexing is set to the Julian Day.
 
 """
 
@@ -75,7 +155,14 @@ Get the IERS EOP C04 IAU1980 data from the URL `url`.
 
 ##### Returns
 
-A matrix with the IERS EOP C4 IAU1980 data.
+The structure `EOPData_IAU1980` with the interpolations of the EOP parameters.
+Notice that the interpolation indexing is set to the Julian Day.
+
+###### Remarks
+
+For every field in `EOPData_IAU1980` to interpolation between two points in the
+grid is linear. If extrapolation is needed, then if will use the nearest value
+(flat extrapolation).
 
 """
 
@@ -90,7 +177,26 @@ function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/
         error("The fetched data does not have the correct dimension. Please, check the URL.")
     end
 
-    eop
+    # Create the EOP Data structure by creating the interpolations.
+    #
+    # The interpolation will be linear between two points in the grid. The
+    # extrapolation will be flat, considering the nearest point.
+	knots = (eop[:,4]+2400000.5,)
+
+    EOPData_IAU1980(
+        extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 8], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 9], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,10], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,11], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,12], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,13], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,14], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,15], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
+    )
 end
 
 """
@@ -105,7 +211,14 @@ Get the IERS EOP C04 IAU2000A data from the URL `url`.
 
 ##### Returns
 
-A matrix with the IERS EOP C4 IAU2000A data.
+The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
+Notice that the interpolation indexing is set to the Julian Day.
+
+###### Remarks
+
+For every field in `EOPData_IAU2000A` to interpolation between two points in the
+grid is linear. If extrapolation is needed, then if will use the nearest value
+(flat extrapolation).
 
 """
 
@@ -120,5 +233,24 @@ function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-
         error("The fetched data does not have the correct dimension. Please, check the URL.")
     end
 
-    eop
+    # Create the EOP Data structure by creating the interpolations.
+    #
+    # The interpolation will be linear between two points in the grid. The
+    # extrapolation will be flat, considering the nearest point.
+	knots = (eop[:,4]+2400000.5,)
+
+    EOPData_IAU2000A(
+        extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 8], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:, 9], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,10], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,11], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,12], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,13], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,14], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,15], Gridded(Linear())), Flat()),
+        extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
+    )
 end
