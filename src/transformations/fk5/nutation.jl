@@ -19,6 +19,9 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] Vallado, D. A (06-Feb-2018). Consolidated Errata of Fundamentals of
+#       Astrodynamics and Applications 4th Ed.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
@@ -214,31 +217,33 @@ function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
 
     # Evaluate the Delaunay parameters associated with the Moon and the Sun
     # in the interval [0,2π]°.
+    #
+    # The parameters here were updated as stated in the errata [2].
     const r = 360
 
-    M_m = 134.96340251 + (1325r + 198.8675605)*T_TT +
-                         0.0088553*T_TT^2 +
-                         1.4343e-5*T_TT^3
+    M_m = 134.96298139 + (1325r + 198.8673981)*T_TT +
+                         0.0086972*T_TT^2 +
+                         1.78e-5*T_TT^3
     M_m = mod(M_m, 360)*pi/180
 
-    M_s = 357.52910918 + (99r + 359.0502911)*T_TT -
-                         0.0001537*T_TT^2 +
-                         3.8e-8*T_TT^3
+    M_s = 357.52772333 + (99r + 359.0503400)*T_TT -
+                         0.0001603*T_TT^2 -
+                         3.3e-6*T_TT^3
     M_s = mod(M_s, 360)*pi/180
 
-    u_Mm = 93.27209062 + (1342r + 82.0174577)*T_TT -
-                         0.0035420*T_TT^2 -
-                         2.88e-7*T_TT^3
+    u_Mm = 93.27191028 + (1342r + 82.0175381)*T_TT -
+                         0.0036825*T_TT^2 +
+                         3.1e-6*T_TT^3
     u_Mm = mod(u_Mm, 360)*pi/180
 
-    D_s = 297.85019547 + (1236r + 307.1114469)*T_TT -
-                         0.0017696*T_TT^2 +
-                         1.831e-6*T_TT^3
+    D_s = 297.85036306 + (1236r + 307.1114800)*T_TT -
+                         0.0019142*T_TT^2 +
+                         5.3e-6*T_TT^3
     D_s = mod(D_s, 360)*pi/180
 
-    Ω_m = 125.04455501 - (5r + 134.1361851)*T_TT +
-                         0.0020756*T_TT^2 +
-                         2.139e-6*T_TT^3
+    Ω_m = 125.04452222 - (5r + 134.1362608)*T_TT +
+                         0.0020708*T_TT^2 +
+                         2.2e-6*T_TT^3
     Ω_m = mod(Ω_m, 360)*pi/180
 
     # Nutation in longitude and obliquity
