@@ -94,7 +94,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TOD frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 The True of Date (TOD) frame is rotated into the Mean of Date (MOD) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -175,7 +175,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the MOD frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 The Mean of Date (MOD) frame is rotated into the True of Date (TOD) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -225,7 +225,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the MOD frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 The Mean of Date (MOD) frame is rotated into the Geocentric Celestial Reference
 Frame (GCRF) considering the IAU 1976 Precession model.
@@ -276,7 +276,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the GCRF frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 The Geocentric Celestial Reference Frame (GCRF) is rotated into the Mean of Date
 (MOD) frame considering the IAU 1976 Precession model.
@@ -332,7 +332,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TOD frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 If the EOP correction data is not used, then the GCRF is what is usually called
 the J2000 reference frame.
@@ -370,7 +370,7 @@ function rTODtoGCRF_fk5(::Type{Quaternion},
 end
 
 """
-### function rTODtoGCRF_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+### function rGCRFtoTOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the True of Date (TOD) frame at the Julian Day (Terrestrial Time) `JD_TT`.
@@ -397,7 +397,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the GCRF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-###### Remarks
+##### Remarks
 
 If the EOP correction data is not used, then the GCRF is what is usually called
 the J2000 reference frame.
