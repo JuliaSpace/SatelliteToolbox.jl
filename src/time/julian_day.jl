@@ -68,7 +68,7 @@ export DatetoJD, JDtoDate
 ################################################################################
 
 """
-### function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+### function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
 
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month =
 `M`, Day = `D`, Hour = `h`, minute = `m`, and second = `s`) to Julian Day.
@@ -92,7 +92,7 @@ The algorithm was obtained from [2] (Accessed on 2018-04-11).
 
 """
 
-function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Int)
+function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
     # Check the input.
     ( (M < 1) || (M > 12) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
@@ -176,22 +176,36 @@ function DatetoJD(dateTime::DateTime)
 end
 
 """
-### function JDtoDate(JD::Number)
+### function JDtoDate([T,] JD::Number)
 
-Convert a date represented in Julian Day `JD` to Gregorian Calendar.
+Convert a date represented in Julian Day `JD` to Gregorian Calendar. The
+optional parameter `T` defines the return type.
 
 ##### Args
 
+* T: (OPTIONAL) Defines the return type of the functions (**DEFAULT** = `none`).
 * JD: Julian Day.
 
 ##### Returns
+
+If `T` is omitted or `Int`, then a tuple with the following data will be
+returned:
 
 * Year.
 * Month (`1` => **January**, `2` => **February**, ...).
 * Day.
 * Hour (0 - 24).
 * Minute (0 - 59).
-* Second (0 - 59) (**NOTE**: The seconds are computed and then rounded).
+* Second (0 - 59).
+
+Notice that if `T` is `Int`, then the seconds field will be Integer. Otherwise,
+it will be floating point.
+
+If `T` is `Date`, then it will return the Julia structure `Date`. Notice that
+the hours, minutes, and seconds will be neglected because the structure `Date`
+does not handle them.
+
+If `T` is `DateTime`, then it will return the Julia structure `DateTime`.
 
 ##### Remarks
 
@@ -233,49 +247,22 @@ function JDtoDate(JD::Number)
     day   = floor(Int, dayf)
     h     = floor(Int, hf)
     m     = floor(Int, mf)
-    s     = round(Int, sf)
+    s     = sf
 
     # Return.
     (year, month, day, h, m, s)
 end
 
-"""
-### function JDtoDate(::Type{Date}, JD::Number)
+function JDtoDate(::Type{Int}, JD::Number)
+    (year, month, day, h, m, s) = JDtoDate(JD)
 
-Convert a date represented in Julian Day `JD` to Gregorian Calendar and return
-using Julia structure `Date`. Notice that the hours, minutes, and seconds will
-be neglected because the structure `Date` does not handle them.
-
-##### Args
-
-* JD: Julian Day.
-
-##### Returns
-
-Julia structure `Date` with the converted Julian Day.
-
-"""
+    (year, month, day, h, m, round(Int,s))
+end
 
 function JDtoDate(::Type{Date}, JD::Number)
     (Y, M, D, ~, ~, ~) = JDtoDate(JD)
     Date(Y,M,D)
 end
-
-"""
-### function JDtoDate(::Type{DateTime}, JD::Number)
-
-Convert a date represented in Julian Day `JD` to Gregorian Calendar and return
-using Julia structure `DateTime`.
-
-##### Args
-
-* JD: Julian Day.
-
-##### Returns
-
-Julia structure `DateTime` with the converted Julian Day.
-
-"""
 
 function JDtoDate(::Type{DateTime}, JD::Number)
     DateTime(JDtoDate(JD)...)
