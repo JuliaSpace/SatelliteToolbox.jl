@@ -1,4 +1,5 @@
 using SatToolbox
+using Rotations
 using Base.Test
 
 # Colors
