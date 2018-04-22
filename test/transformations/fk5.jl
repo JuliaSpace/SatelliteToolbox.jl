@@ -655,6 +655,142 @@ v_mod = vect(conj(q_J2000_MOD)*v_j2000*q_J2000_MOD)
 println("        $(b)Test passed!$d")
 println("")
 
+# Functions rPEFtoGCRF_fk5 and rGCRFtoPEF_fk5
+# -------------------------------------------
+
+println("    Testing functions rPEFtoGCRF_fk5 and rGCRFtoPEF_fk5...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   JD_TT = 2453101.828154745
+#   δΔϵ   = -0.003875"
+#   δΔψ   = -0.052195"
+#   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+# one gets the following data:
+#
+#   r_gcrf = 5102.50895790  i + 6123.01140070   j + 6378.13692820   k [km]
+#
+# Furthermore, using:
+#
+#   JD_TT = 2453101.828154745
+#   δΔϵ   = 0"
+#   δΔψ   = 0"
+#   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+# one gets the following data:
+#
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# NOTE: The velocity cannot be easily tested because it is necessary to account
+# for the Earth rotation when converting from/to PEF.
+#
+################################################################################
+
+JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+
+# rPEFtoGCRF_fk5
+# ==============
+
+r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
+
+D_GCRF_PEF = rPEFtoGCRF_fk5(JD_UT1,
+                            2453101.828154745,
+                            -0.003875*pi/(180*3600),
+                            -0.052195*pi/(180*3600))
+
+r_gcrf = D_GCRF_PEF*r_pef
+
+@test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
+@test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
+@test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+
+q_GCRF_PEF = rPEFtoGCRF_fk5(Quaternion,
+                            JD_UT1,
+                            2453101.828154745,
+                            -0.003875*pi/(180*3600),
+                            -0.052195*pi/(180*3600))
+
+r_gcrf = vect(conj(q_GCRF_PEF)*r_pef*q_GCRF_PEF)
+
+@test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
+@test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
+@test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+
+D_J2000_PEF = rPEFtoGCRF_fk5(JD_UT1, 2453101.828154745)
+
+r_j2000 = D_J2000_PEF*r_pef
+
+@test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+@test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+@test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+q_J2000_PEF = rPEFtoGCRF_fk5(Quaternion, JD_UT1, 2453101.828154745)
+
+r_j2000 = vect(conj(q_J2000_PEF)*r_pef*q_J2000_PEF)
+
+@test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+@test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+@test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+# rGCRFtoPEF_fk5
+# ==============
+
+r_gcrf = [5102.50895790; 6123.01140070; 6378.13692820]
+
+D_PEF_GCRF = rGCRFtoPEF_fk5(JD_UT1,
+                            2453101.828154745,
+                            -0.003875*pi/(180*3600),
+                            -0.052195*pi/(180*3600))
+
+r_pef = D_PEF_GCRF*r_gcrf
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+q_PEF_GCRF = rGCRFtoPEF_fk5(Quaternion,
+                            JD_UT1,
+                            2453101.828154745,
+                            -0.003875*pi/(180*3600),
+                            -0.052195*pi/(180*3600))
+
+r_pef = vect(conj(q_PEF_GCRF)*r_gcrf*q_PEF_GCRF)
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+D_PEF_J2000 = rGCRFtoPEF_fk5(JD_UT1, 2453101.828154745)
+
+r_pef = D_PEF_J2000*r_j2000
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+q_PEF_J2000 = rGCRFtoPEF_fk5(Quaternion, JD_UT1, 2453101.828154745)
+
+r_pef = vect(conj(q_PEF_J2000)*r_j2000*q_PEF_J2000)
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+println("        $(b)Test passed!$d")
+println("")
+
 # Functions rTODtoGCRF_fk5 and rGCRFtoTOD_fk5
 # -------------------------------------------
 
