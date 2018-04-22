@@ -139,6 +139,184 @@ println("$(c)Testing functions in file: ./src/transformations/fk5/fk5.jl$d")
 println("$(c)-----------------------------------------------------------$d")
 println("")
 
+# Functions rPEFtoTOD_fk5 and rTODtoPEF_fk5
+# -----------------------------------------
+
+println("    Testing functions rPEFtoTOD_fk5 and rTODtoPEF_fk5...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+#   JD_TT  = 2453101.828154745
+#   LOD    = 0.0015563 s
+#   δΔψ    = -0.052195"
+#   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#   v_pef  =    -3.2256327470 i -    2.8724425110 j +    5.5319312880 k [km/s]
+#
+# one gets the following data:
+#
+#   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
+#
+# Furthermore, using:
+#
+#   JD_TT = 2453101.828154745
+#   δΔψ   = 0"
+#   r_pef = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#   v_pef =    -3.2256327470 i -    2.8724425110 j +    5.5319312880 k [km/s]
+#
+# one gets the following data:
+#
+#   r_tod = 5094.51478040   i + 6127.36646120   j + 6380.34453280   k [km]
+#   v_tod =   -4.7460885670 i +    0.7860772220 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+LOD    = 0.0015563
+w      = 7.292115146706979e-5*(1-LOD/86400)
+
+# rPEFtoTOD_fk5
+# =============
+
+r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
+v_pef  = [-3.2256327470; -2.8724425110; +5.5319312880]
+
+D_TOD_PEF = rPEFtoTOD_fk5(JD_UT1, 2453101.828154745, -0.052195*pi/(180*3600))
+
+r_tod = D_TOD_PEF*r_pef
+v_tod = D_TOD_PEF*(v_pef + [0;0;w] × r_pef)
+
+@test r_tod[1] ≈ +5094.51620300 atol=1e-7
+@test r_tod[2] ≈ +6127.36527840 atol=1e-7
+@test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_tod[1] ≈ -4.7460883850  atol=1e-9
+@test v_tod[2] ≈ +0.7860783240  atol=1e-9
+@test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+q_TOD_PEF = rPEFtoTOD_fk5(Quaternion,
+                          JD_UT1,
+                          2453101.828154745,
+                          -0.052195*pi/(180*3600))
+
+r_tod = vect(conj(q_TOD_PEF)*r_pef*q_TOD_PEF)
+v_tod = vect(conj(q_TOD_PEF)*(v_pef + [0;0;w] × r_pef)*q_TOD_PEF)
+
+@test r_tod[1] ≈ +5094.51620300 atol=1e-7
+@test r_tod[2] ≈ +6127.36527840 atol=1e-7
+@test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_tod[1] ≈ -4.7460883850  atol=1e-9
+@test v_tod[2] ≈ +0.7860783240  atol=1e-9
+@test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+D_TOD_PEF = rPEFtoTOD_fk5(JD_UT1, 2453101.828154745)
+
+r_tod = D_TOD_PEF*r_pef
+v_tod = D_TOD_PEF*(v_pef + [0;0;w] × r_pef)
+
+@test r_tod[1] ≈ +5094.51478040 atol=1e-7
+@test r_tod[2] ≈ +6127.36646120 atol=1e-7
+@test r_tod[3] ≈ +6380.34453280 atol=1e-7
+
+@test v_tod[1] ≈ -4.7460885670  atol=1e-9
+@test v_tod[2] ≈ +0.7860772220  atol=1e-9
+@test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+q_TOD_PEF = rPEFtoTOD_fk5(Quaternion,
+                          JD_UT1,
+                          2453101.828154745)
+
+r_tod = vect(conj(q_TOD_PEF)*r_pef*q_TOD_PEF)
+v_tod = vect(conj(q_TOD_PEF)*(v_pef + [0;0;w] × r_pef)*q_TOD_PEF)
+
+@test r_tod[1] ≈ +5094.51478040 atol=1e-7
+@test r_tod[2] ≈ +6127.36646120 atol=1e-7
+@test r_tod[3] ≈ +6380.34453280 atol=1e-7
+
+@test v_tod[1] ≈ -4.7460885670  atol=1e-9
+@test v_tod[2] ≈ +0.7860772220  atol=1e-9
+@test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+# rTODtoPEF_fk5
+# =============
+
+r_tod = [5094.51620300; 6127.36527840; 6380.34453270]
+v_tod = [-4.7460883850; 0.7860783240; 5.5319312880]
+
+D_PEF_TOD = rTODtoPEF_fk5(JD_UT1, 2453101.828154745, -0.052195*pi/(180*3600))
+
+r_pef = D_PEF_TOD*r_tod
+v_pef = D_PEF_TOD*v_tod - [0;0;w] × r_pef
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+q_PEF_TOD = rTODtoPEF_fk5(Quaternion,
+                          JD_UT1,
+                          2453101.828154745,
+                          -0.052195*pi/(180*3600))
+
+r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
+v_pef = vect(conj(q_PEF_TOD)*v_tod*q_PEF_TOD) - [0;0;w] × r_pef
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+r_tod = [5094.51478040; 6127.36646120; 6380.34453280]
+v_tod = [-4.7460885670; 0.7860772220; 5.5319312880]
+
+D_PEF_TOD = rTODtoPEF_fk5(JD_UT1, 2453101.828154745)
+
+r_pef = D_PEF_TOD*r_tod
+v_pef = D_PEF_TOD*v_tod - [0;0;w] × r_pef
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+q_PEF_TOD = rTODtoPEF_fk5(Quaternion,
+                          JD_UT1,
+                          2453101.828154745)
+
+r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
+v_pef = vect(conj(q_PEF_TOD)*v_tod*q_PEF_TOD) - [0;0;w] × r_pef
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+println("        $(b)Test passed!$d")
+println("")
+
 # Functions rTODtoMOD_fk5 and rMODtoTOD_fk5
 # -----------------------------------------
 

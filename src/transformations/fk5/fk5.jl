@@ -19,6 +19,10 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] Gontier, A. M., Capitaine, N (1991). High-Accuracy Equation of Equinoxes
+#       and VLBI Astrometric Modelling. Radio Interferometry: Theory, Techniques
+#       and Applications, IAU Coll. 131, ASP Conference Series, Vol. 19.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Changelog
@@ -30,6 +34,7 @@
 
 using Rotations
 
+export rPEFtoTOD_fk5,  rTODtoPEF_fk5
 export rTODtoMOD_fk5,  rMODtoTOD_fk5
 export rMODtoGCRF_fk5, rGCRFtoMOD_fk5
 
@@ -62,6 +67,191 @@ export rTODtoGCRF_fk5, rGCRFtoTOD_fk5
 ################################################################################
 #                               Single Rotations
 ################################################################################
+
+#                                 PEF <=> TOD
+# ==============================================================================
+
+"""
+### function rPEFtoTOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+
+Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
+True of Date (TOD) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`. This
+algorithm uses the IAU-76/FK5 theory. Notice that one can provide correction for
+the nutation in longitude (`δΔψ`) that are usually obtained from IERS EOP Data
+(see `get_iers_eop`).
+
+The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
+(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+the nutation in the longitude. Notice that the Julian Day in UT1 and in
+Terrestrial Time must be equivalent, i.e. must be related to the same instant.
+This function **does not** check this.
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* JD_UT1: Julian Day [UT1].
+* JD_TT: Julian Day [Terrestrial Time].
+* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
+            (**DEFAULT** = 0).
+
+##### Returns
+
+The rotation that aligns the PEF frame with the TOD frame. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The Pseudo-Earth Fixed (PEF) frame is rotated into the True of Date (TOD) frame
+considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
+added if one wants to make the rotation consistent with the Geocentric Celestial
+Reference Systems (GCRS).
+
+"""
+
+rPEFtoTOD_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
+    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)
+
+function rPEFtoTOD_fk5(::Type{Matrix},
+                       JD_UT1::Number,
+                       JD_TT::Number,
+                       δΔψ_1980::Number = 0)
+    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
+    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+
+    # Add the corrections to the nutation in obliquity and longitude.
+    Δψ_1980 += δΔψ_1980
+
+    # Evaluate the Delaunay parameters associated with the Moon in the interval
+    # [0,2π]°.
+    #
+    # The parameters here were updated as stated in the errata [2].
+    T_TT = (JD_TT - JD_J2000)/36525
+    r    = 360
+    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
+                          0.0020708*T_TT^2 +
+                          2.2e-6*T_TT^3
+    Ω_m  = mod(Ω_m, 360)*pi/180
+
+    # Compute the equation of Equinoxes.
+    #
+    # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
+    Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
+        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
+
+    # Compute the Mean Greenwich Sidereal Time.
+    θ_gmst = JDtoGMST(JD_UT1)
+
+    # Compute the Greenwich Apparent Sidereal Time (GAST).
+    #
+    # TODO: Should GAST be moved to a new function as the GMST?
+    θ_gast = θ_gmst + Eq_equinox1982
+
+    # Compute the rotation matrix.
+    create_rotation_matrix(-θ_gast, 'Z')
+end
+
+function rPEFtoTOD_fk5(::Type{Quaternion},
+                       JD_UT1::Number,
+                       JD_TT::Number,
+                       δΔψ_1980::Number = 0)
+    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
+    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+
+    # Add the corrections to the nutation in obliquity and longitude.
+    Δψ_1980 += δΔψ_1980
+
+    # Evaluate the Delaunay parameters associated with the Moon in the interval
+    # [0,2π]°.
+    #
+    # The parameters here were updated as stated in the errata [2].
+    T_TT = (JD_TT - JD_J2000)/36525
+    r    = 360
+    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
+                          0.0020708*T_TT^2 +
+                          2.2e-6*T_TT^3
+    Ω_m  = mod(Ω_m, 360)*pi/180
+
+    # Compute the equation of Equinoxes.
+    #
+    # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
+    Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
+        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
+
+    # Compute the Mean Greenwich Sidereal Time.
+    θ_gmst = JDtoGMST(JD_UT1)
+
+    # Compute the Greenwich Apparent Sidereal Time (GAST).
+    #
+    # TODO: Should GAST be moved to a new function as the GMST?
+    θ_gast = θ_gmst + Eq_equinox1982
+
+    # Compute the quaternion.
+    Quaternion([cos(θ_gast/2); 0; 0; -sin(θ_gast/2)])
+end
+
+"""
+### function rTODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+
+Compute the rotation that aligns the True of Date (TOD) frame with the
+Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`.
+This algorithm uses the IAU-76/FK5 theory. Notice that one can provide
+correction for the nutation in longitude (`δΔψ`) that are usually obtained from
+IERS EOP Data (see `get_iers_eop`).
+
+The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
+(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+the nutation in the longitude. Notice that the Julian Day in UT1 and in
+Terrestrial Time must be equivalent, i.e. must be related to the same instant.
+This function **does not** check this.
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* JD_UT1: Julian Day [UT1].
+* JD_TT: Julian Day [Terrestrial Time].
+* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
+            (**DEFAULT** = 0).
+
+##### Returns
+
+The rotation that aligns the TOD frame with the PEF frame. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The True of Date (TOD) frame is rotated into the Pseudo-Earth Fixed (PEF) frame
+considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
+added if one wants to make the rotation consistent with the Geocentric Celestial
+Reference Systems (GCRS).
+
+"""
+
+rTODtoPEF_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
+    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)'
+
+function rTODtoPEF_fk5(::Type{Matrix},
+                       JD_UT1::Number,
+                       JD_TT::Number,
+                       δΔψ_1980::Number = 0)
+    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)'
+end
+
+function rTODtoPEF_fk5(::Type{Quaternion},
+                       JD_UT1::Number,
+                       JD_TT::Number,
+                       δΔψ_1980::Number = 0)
+    conj(rPEFtoTOD_fk5(Quaternion, JD_UT1, JD_TT, δΔψ_1980))
+end
 
 #                                 TOD <=> MOD
 # ==============================================================================
