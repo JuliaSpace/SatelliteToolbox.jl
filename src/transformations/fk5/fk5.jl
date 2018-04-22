@@ -76,10 +76,10 @@ export rTODtoGCRF_fk5, rGCRFtoTOD_fk5
 ### function rPEFtoTOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
-True of Date (TOD) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`. This
-algorithm uses the IAU-76/FK5 theory. Notice that one can provide correction for
-the nutation in longitude (`δΔψ`) that are usually obtained from IERS EOP Data
-(see `get_iers_eop`).
+True of Date (TOD) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
+(Terrestrial Time). This algorithm uses the IAU-76/FK5 theory. Notice that one
+can provide correction for the nutation in longitude (`δΔψ`) that are usually
+obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
 (see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
@@ -121,7 +121,7 @@ function rPEFtoTOD_fk5(::Type{Matrix},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔψ_1980::Number = 0)
-    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
+    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
@@ -199,10 +199,10 @@ end
 ### function rTODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the
-Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`.
-This algorithm uses the IAU-76/FK5 theory. Notice that one can provide
-correction for the nutation in longitude (`δΔψ`) that are usually obtained from
-IERS EOP Data (see `get_iers_eop`).
+Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
+(Terrestrial Time). This algorithm uses the IAU-76/FK5 theory. Notice that one
+can provide correction for the nutation in longitude (`δΔψ`) that are usually
+obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
 (see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
@@ -301,7 +301,7 @@ function rTODtoMOD_fk5(::Type{Matrix},
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
 
-    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
+    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
@@ -319,7 +319,7 @@ function rTODtoMOD_fk5(::Type{Quaternion},
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
-    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
+    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
