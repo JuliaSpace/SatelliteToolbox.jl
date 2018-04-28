@@ -139,6 +139,91 @@ println("$(c)Testing functions in file: ./src/transformations/fk5/fk5.jl$d")
 println("$(c)-----------------------------------------------------------$d")
 println("")
 
+# Functions rITRFtoPEF_fk5 and rPEFtoITRF_fk5
+# -------------------------------------------
+
+println("    Testing functions rITRFtoPEF_fk5 and rPEFtoITRF_fk5...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   x_p = -0.140682"
+#   y_p = +0.333309"
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#   v_itrf =    -3.225636520  i -    2.872451450  j +    5.531924446  k [km/s]
+#
+# one gets the following data:
+#
+#   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#   v_pef  =    -3.2256327470 i -    2.8724425110 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+x_p = -0.140682*pi/(180*3600)
+y_p = +0.333309*pi/(180*3600)
+
+# rITRFtoPEF_fk5
+# ==============
+
+r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
+v_itrf = [-3.225636520; -2.872451450; +5.531924446]
+
+D_PEF_ITRF = rITRFtoPEF_fk5(x_p, y_p)
+
+r_pef = D_PEF_ITRF*r_itrf
+v_pef = D_PEF_ITRF*v_itrf
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+q_PEF_ITRF = rITRFtoPEF_fk5(Quaternion, x_p, y_p)
+
+r_pef = vect(conj(q_PEF_ITRF)*r_itrf*q_PEF_ITRF)
+v_pef = vect(conj(q_PEF_ITRF)*v_itrf*q_PEF_ITRF)
+
+@test r_pef[1] ≈ -1033.47503130 atol=1e-7
+@test r_pef[2] ≈ +7901.30558560 atol=1e-7
+@test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+@test v_pef[1] ≈ -3.2256327470  atol=1e-9
+@test v_pef[2] ≈ -2.8724425110  atol=1e-9
+@test v_pef[3] ≈ +5.5319312880  atol=1e-9
+
+# rPEFtoITRF_fk5
+# ==============
+
+r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
+v_pef  = [-3.2256327470; -2.8724425110; +5.5319312880]
+
+D_ITRF_PEF = rPEFtoITRF_fk5(x_p, y_p)
+
+r_itrf = D_ITRF_PEF*r_pef
+v_itrf = D_ITRF_PEF*v_pef
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+@test v_itrf[1] ≈ -3.225636520  atol=1e-9
+@test v_itrf[2] ≈ -2.872451450  atol=1e-9
+@test v_itrf[3] ≈ +5.531924446  atol=1e-9
+
+println("        $(b)Test passed!$d")
+println("")
+
 # Functions rPEFtoTOD_fk5 and rTODtoPEF_fk5
 # -----------------------------------------
 

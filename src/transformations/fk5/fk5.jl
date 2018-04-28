@@ -34,6 +34,7 @@
 
 using Rotations
 
+export rITRFtoPEF_fk5, rPEFtoITRF_fk5
 export rPEFtoTOD_fk5,  rTODtoPEF_fk5
 export rTODtoMOD_fk5,  rMODtoTOD_fk5
 export rMODtoGCRF_fk5, rGCRFtoMOD_fk5
@@ -68,6 +69,120 @@ export rTODtoGCRF_fk5, rGCRFtoTOD_fk5
 ################################################################################
 #                               Single Rotations
 ################################################################################
+
+#                                 ITRF <=> PEF
+# ==============================================================================
+
+"""
+### function rITRFtoPEF_fk5([T,] x_p::Number, y_p::Number)
+
+Compute the rotation that aligns the International Terrestrial Reference Frame
+(ITRF) with the Pseudo-Earth Fixed (PEF) frame considering the polar motion
+represented by the angles `x_p` and `y_p` that is obtained from IERS EOP Data
+(see `get_iers_eop`).
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* x_p: Polar motion displacement about X-axis, which is the IERS Reference
+       Meridian direction (positive south along the 0˚ longitude meridian)
+       [rad].
+* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+
+##### Returns
+
+The rotation that aligns the ITRF frame with the PEF frame. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The ITRF is defined based on the International Reference Pole (IRP), which is
+the location of the terrestrial pole agreed by international committees [1]. The
+Pseudo-Earth Fixed, on the other hand, is defined based on the Earth axis of
+rotation, or the Celestial Intermediate Pole (CIP). Hence, PEF XY-plane contains
+the True Equator. Furthermore, since the recovered latitude and longitude are
+sensitive to the CIP, then it should be computed considering the PEF frame.
+
+"""
+
+rITRFtoPEF_fk5(x_p::Number, y_p::Number) = rITRFtoPEF_fk5(Matrix, x_p, y_p)
+
+function rITRFtoPEF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
+    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
+    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
+    # a displacement in Y is a rotation in X.
+    [  1    0  -x_p;
+       0    1  +y_p;
+     +x_p -y_p   1 ;]
+end
+
+function rITRFtoPEF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
+    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
+    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
+    # a displacement in Y is a rotation in X.
+    q = Quaternion([1; +y_p/2; +x_p/2; 0])
+    q/norm(q)
+end
+
+"""
+### function rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
+
+Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) with the
+International Terrestrial Reference Frame (ITRF) considering the polar motion
+represented by the angles `x_p` and `y_p` that is obtained from IERS EOP Data
+(see `get_iers_eop`).
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* x_p: Polar motion rotation about X-axis, which is the IERS Reference Meridian
+       direction (positive south along the 0˚ longitude meridian). [rad].
+* y_p: Polar motion rotation about Y-axis (90˚ W or 270˚ E meridian) [rad].
+
+##### Returns
+
+The rotation that aligns the PEF frame with the ITRF. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The ITRF is defined based on the International Reference Pole (IRP), which is
+the location of the terrestrial pole agreed by international committees [1]. The
+Pseudo-Earth Fixed, on the other hand, is defined based on the Earth axis of
+rotation, or the Celestial Intermediate Pole (CIP). Hence, PEF XY-plane contains
+the True Equator. Furthermore, since the recovered latitude and longitude are
+sensitive to the CIP, then it should be computed considering the PEF frame.
+
+"""
+
+rPEFtoITRF_fk5(x_p::Number, y_p::Number) = rPEFtoITRF_fk5(Matrix, x_p, y_p)
+
+function rPEFtoITRF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
+    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
+    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
+    # a displacement in Y is a rotation in X.
+    [  1    0  +x_p;
+       0    1  -y_p;
+     -x_p +y_p   1 ;]
+end
+
+function rPEFtoITRF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
+    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
+    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
+    # a displacement in Y is a rotation in X.
+    q = Quaternion([1; -y_p/2; -x_p/2; 0])
+    q/norm(q)
+end
 
 #                                 PEF <=> TOD
 # ==============================================================================
