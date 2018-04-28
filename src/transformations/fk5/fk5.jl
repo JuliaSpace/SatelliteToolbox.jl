@@ -39,6 +39,7 @@ export rPEFtoTOD_fk5,  rTODtoPEF_fk5
 export rTODtoMOD_fk5,  rMODtoTOD_fk5
 export rMODtoGCRF_fk5, rGCRFtoMOD_fk5
 
+export rITRFtoGCRF_fk5, rGCRFtoITRF_fk5
 export rPEFtoGCRF_fk5, rGCRFtoPEF_fk5
 export rTODtoGCRF_fk5, rGCRFtoTOD_fk5
 
@@ -606,6 +607,185 @@ end
 ################################################################################
 #                              Multiple Rotations
 ################################################################################
+
+#                                ITRF <=> GCRF
+# ==============================================================================
+
+"""
+### function rITRFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+
+Compute the rotation that aligns the International Terrestrial Reference Frame
+(ITRF) with the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1)
+and `JD_TT` (Terrestrial Time), and considering the IERS EOP Data `x_p`, `y_p`,
+`δΔϵ_1980`, and `δΔψ_1980` (see `get_iers_eop`). This algorithm uses the
+IAU-76/FK5 theory.
+
+The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
+(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+the nutation in the longitude. Notice that the Julian Day in UT1 and in
+Terrestrial Time must be equivalent, i.e. must be related to the same instant.
+This function **does not** check this.
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* JD_UT1: Julian Day [UT1].
+* JD_TT: Julian Day [Terrestrial Time].
+* x_p: Polar motion displacement about X-axis, which is the IERS Reference
+       Meridian direction (positive south along the 0˚ longitude meridian)
+       [rad].
+* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+            (**DEFAULT** = 0).
+* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
+            (**DEFAULT** = 0).
+
+##### Returns
+
+The rotation that aligns the ITRF frame with the GCRF frame. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
+this is the only way available to compute the conversion ITRF <=> PEF (the
+models are highly imprecise since the motion is still not very well understood
+[1]). However, the EOP data related to the nutation of the obliquity
+(`δΔϵ_1980`) and the nutation of the longitude (`δΔψ_1980`) can be omitted. In
+this case, the GCRF frame is what is usually called J2000 reference frame.
+
+"""
+
+rITRFtoGCRF_fk5(JD_UT1::Number,
+                JD_TT::Number,
+                x_p::Number,
+                y_p::Number,
+                δΔϵ_1980::Number = 0,
+                δΔψ_1980::Number = 0) =
+    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+
+function rITRFtoGCRF_fk5(::Type{Matrix},
+                         JD_UT1::Number,
+                         JD_TT::Number,
+                         x_p::Number,
+                         y_p::Number,
+                         δΔϵ_1980::Number = 0,
+                         δΔψ_1980::Number = 0)
+    # Compute the rotation ITRF => PEF.
+    D_PEF_ITRF = rITRFtoPEF_fk5(Matrix, x_p, y_p)
+
+    # Compute the rotation PEF => GCRF.
+    D_GCRF_PEF = rPEFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+
+    # Return the full rotation.
+    D_GCRF_PEF*D_PEF_ITRF
+end
+
+function rITRFtoGCRF_fk5(::Type{Quaternion},
+                         JD_UT1::Number,
+                         JD_TT::Number,
+                         x_p::Number,
+                         y_p::Number,
+                         δΔϵ_1980::Number = 0,
+                         δΔψ_1980::Number = 0)
+    # Compute the rotation ITRF => PEF.
+    q_PEF_ITRF = rITRFtoPEF_fk5(Quaternion, x_p, y_p)
+
+    # Compute the rotation PEF => GCRF.
+    q_GCRF_PEF = rPEFtoGCRF_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+
+    # Return the full rotation.
+    q_PEF_ITRF*q_GCRF_PEF
+end
+
+"""
+### function rGCRFtoITRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+
+Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
+International Terrestrial Reference Frame (ITRF) at the Julian Day `JD_UT1`
+(UT1) and `JD_TT` (Terrestrial Time), and considering the IERS EOP Data `x_p`,
+`y_p`, `δΔϵ_1980`, and `δΔψ_1980` (see `get_iers_eop`). This algorithm uses the
+IAU-76/FK5 theory.
+
+The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
+(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+the nutation in the longitude. Notice that the Julian Day in UT1 and in
+Terrestrial Time must be equivalent, i.e. must be related to the same instant.
+This function **does not** check this.
+
+The rotation type is described by the optional variable `T`. If it is `Matrix`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`Matrix`.
+
+##### Args
+
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* JD_UT1: Julian Day [UT1].
+* JD_TT: Julian Day [Terrestrial Time].
+* x_p: Polar motion displacement about X-axis, which is the IERS Reference
+       Meridian direction (positive south along the 0˚ longitude meridian)
+       [rad].
+* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+            (**DEFAULT** = 0).
+* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
+            (**DEFAULT** = 0).
+
+##### Returns
+
+The rotation that aligns the GCRF frame with the ITRF frame. The rotation
+representation is selected by the optional parameter `T`.
+
+##### Remarks
+
+The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
+this is the only way available to compute the conversion ITRF <=> PEF (the
+models are highly imprecise since the motion is still not very well understood
+[1]). However, the EOP data related to the nutation of the obliquity
+(`δΔϵ_1980`) and the nutation of the longitude (`δΔψ_1980`) can be omitted. In
+this case, the GCRF frame is what is usually called J2000 reference frame.
+
+"""
+
+rGCRFtoITRF_fk5(JD_UT1::Number,
+                JD_TT::Number,
+                x_p::Number,
+                y_p::Number,
+                δΔϵ_1980::Number = 0,
+                δΔψ_1980::Number = 0) =
+    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
+
+function rGCRFtoITRF_fk5(::Type{Matrix},
+                         JD_UT1::Number,
+                         JD_TT::Number,
+                         x_p::Number,
+                         y_p::Number,
+                         δΔϵ_1980::Number = 0,
+                         δΔψ_1980::Number = 0)
+    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
+end
+
+function rGCRFtoITRF_fk5(::Type{Quaternion},
+                         JD_UT1::Number,
+                         JD_TT::Number,
+                         x_p::Number,
+                         y_p::Number,
+                         δΔϵ_1980::Number = 0,
+                         δΔψ_1980::Number = 0)
+    conj(rITRFtoGCRF_fk5(Quaternion,
+                         JD_UT1,
+                         JD_TT,
+                         x_p,
+                         y_p,
+                         δΔϵ_1980,
+                         δΔψ_1980))
+end
 
 #                                 PEF <=> GCRF
 # ==============================================================================

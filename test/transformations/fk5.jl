@@ -740,6 +740,146 @@ v_mod = vect(conj(q_J2000_MOD)*v_j2000*q_J2000_MOD)
 println("        $(b)Test passed!$d")
 println("")
 
+# Functions rITRFtoGCRF_fk5 and rGCRFtoITRF_fk5
+# ---------------------------------------------
+
+println("    Testing functions rITRFtoGCRF_fk5 and rGCRFtoITRF_fk5...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+#   JD_TT  = 2453101.828154745
+#   δΔϵ    = -0.003875"
+#   δΔψ    = -0.052195"
+#   x_p    = -0.140682"
+#   y_p    = +0.333309"
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+# one gets the following data:
+#
+#   r_gcrf = 5102.50895790  i + 6123.01140070   j + 6378.13692820   k [km]
+#
+# Furthermore, using:
+#
+#   JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+#   JD_TT  = 2453101.828154745
+#   x_p    = -0.140682"
+#   y_p    = +0.333309"
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+# one gets the following data:
+#
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+################################################################################
+
+JD_UT1   = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+JD_TT    = 2453101.828154745
+δΔϵ_1980 = -0.003875*pi/(180*3600)
+δΔψ_1980 = -0.052195*pi/(180*3600)
+x_p      = -0.140682*pi/(180*3600)
+y_p      = +0.333309*pi/(180*3600)
+
+# rITRFtoGCRF_fk5
+# ===============
+
+r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
+
+D_GCRF_ITRF = rITRFtoGCRF_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+
+r_gcrf = D_GCRF_ITRF*r_itrf
+
+@test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
+@test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
+@test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+
+q_GCRF_ITRF = rITRFtoGCRF_fk5(Quaternion,
+                              JD_UT1,
+                              JD_TT,
+                              x_p,
+                              y_p,
+                              δΔϵ_1980,
+                              δΔψ_1980)
+
+r_gcrf = vect(conj(q_GCRF_ITRF)*r_itrf*q_GCRF_ITRF)
+
+@test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
+@test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
+@test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+
+D_GCRF_ITRF = rITRFtoGCRF_fk5(JD_UT1, JD_TT, x_p, y_p)
+
+r_j2000 = D_GCRF_ITRF*r_itrf
+
+@test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+@test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+@test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+q_J2000_ITRF = rITRFtoGCRF_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
+
+r_j2000 = vect(conj(q_J2000_ITRF)*r_itrf*q_J2000_ITRF)
+
+@test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+@test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+@test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+# rGCRFtoITRF_fk5
+# ===============
+
+r_gcrf = [5102.50895790; 6123.01140070; 6378.13692820]
+
+D_ITRF_GCRF = rGCRFtoITRF_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+
+r_itrf = D_ITRF_GCRF*r_gcrf
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+q_ITRF_GCRF = rGCRFtoITRF_fk5(Quaternion,
+                              JD_UT1,
+                              JD_TT,
+                              x_p,
+                              y_p,
+                              δΔϵ_1980,
+                              δΔψ_1980)
+
+r_itrf = vect(conj(q_ITRF_GCRF)*r_gcrf*q_ITRF_GCRF)
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+D_ITRF_J2000 = rGCRFtoITRF_fk5(JD_UT1, JD_TT, x_p, y_p)
+
+r_itrf = D_ITRF_J2000*r_j2000
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+q_ITRF_J2000 = rGCRFtoITRF_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
+
+r_itrf = vect(conj(q_ITRF_J2000)*r_j2000*q_ITRF_J2000)
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+println("        $(b)Test passed!$d")
+println("")
+
 # Functions rPEFtoGCRF_fk5 and rGCRFtoPEF_fk5
 # -------------------------------------------
 
