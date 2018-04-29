@@ -36,8 +36,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm, angle2dcm!
-
 export satellite_position_e, satellite_position_latlon, satellite_position_LLA,
        satellite_position_i
 

@@ -26,8 +26,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm!
-
 export satellite_beta_angle
 
 """

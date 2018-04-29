@@ -37,8 +37,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm, angle2dcm!
-
 export kepler_to_rv
 export rv_to_kepler
 

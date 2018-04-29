@@ -1,5 +1,5 @@
 using SatToolbox
-using Rotations
+using ReferenceFrameRotations
 using Base.Test
 
 # Colors

@@ -7,6 +7,8 @@ export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
 import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin, show
 
+importall ReferenceFrameRotations
+
 ################################################################################
 #                                  Structures
 ################################################################################

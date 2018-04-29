@@ -38,8 +38,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm!
-
 export satellite_sun_angle_earth_pointing
 
 """

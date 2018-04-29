@@ -30,8 +30,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-import Rotations: angle2dcm!
-
 export satellite_sun_radiation_earth_pointing
 export satellite_sun_radiation_earth_pointing_mean
 

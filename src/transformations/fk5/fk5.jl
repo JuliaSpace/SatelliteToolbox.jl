@@ -32,8 +32,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-using Rotations
-
 export rITRFtoPEF_fk5, rPEFtoITRF_fk5
 export rPEFtoTOD_fk5,  rTODtoPEF_fk5
 export rTODtoMOD_fk5,  rMODtoTOD_fk5
