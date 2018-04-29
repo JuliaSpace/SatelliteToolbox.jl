@@ -135,7 +135,7 @@ The Julian Day in UT1.
 
 """
 
-JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number) = JD_UTC + ΔUT1
+JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number) = JD_UTC + ΔUT1/86400
 
 """
 ### function JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number)
@@ -154,7 +154,7 @@ The Julian Day in UT1.
 
 """
 
-JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number) = JD_UT1 - ΔUT1
+JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number) = JD_UT1 - ΔUT1/86400
 
 """
 ### function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
