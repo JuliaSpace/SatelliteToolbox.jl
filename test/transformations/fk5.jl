@@ -218,9 +218,23 @@ v_pef  = [-3.2256327470; -2.8724425110; +5.5319312880]
 ## ---
 
 D_ITRF_PEF = rPEFtoITRF_fk5(x_p, y_p)
-
 r_itrf = D_ITRF_PEF*r_pef
 v_itrf = D_ITRF_PEF*v_pef
+
+@test r_itrf[1] ≈ -1033.4793830 atol=1e-7
+@test r_itrf[2] ≈ +7901.2952754 atol=1e-7
+@test r_itrf[3] ≈ +6380.3565958 atol=1e-7
+
+@test v_itrf[1] ≈ -3.225636520  atol=1e-9
+@test v_itrf[2] ≈ -2.872451450  atol=1e-9
+@test v_itrf[3] ≈ +5.531924446  atol=1e-9
+
+## Quaternion
+## ----------
+
+q_ITRF_PEF = rPEFtoITRF_fk5(Quaternion, x_p, y_p)
+r_itrf = vect(conj(q_ITRF_PEF)*r_pef*q_ITRF_PEF)
+v_itrf = vect(conj(q_ITRF_PEF)*v_pef*q_ITRF_PEF)
 
 @test r_itrf[1] ≈ -1033.4793830 atol=1e-7
 @test r_itrf[2] ≈ +7901.2952754 atol=1e-7
