@@ -207,6 +207,114 @@ JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
 println("        $(b)Test passed!$d")
 println("")
 
+# Functions JD_TTtoUTC and JD_UTCtoTT
+# -----------------------------------
+
+println("    Testing function JD_TTtoUTC and JD_UTCtoTT...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-7: Calculating Dynamical Time [1].
+#
+# The following date:
+#
+#   Mountain Standard Time Zone: May 14, 2004, 10:43
+#
+# is converted into:
+#
+#   TT: May 14, 2004, 16:44:04.1840
+#
+# Scenario 02
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction [1].
+#
+# The following UTC date:
+#
+#   UTC: April 6, 2004, 07:51:28.386009
+#
+# is converted into:
+#
+#   JD [TT]: 2453101.828154745
+#
+################################################################################
+
+## Scenario 01
+## ===========
+
+## JD_UTCtoTT
+## ----------
+
+# At the mentioned date, Mountain Standard Time is 6h behind UTC.
+JD_UTC = DatetoJD(2004, 5, 14, 10+6, 43, 0)
+JD_TT  = JD_UTCtoTT(JD_UTC)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_TT)
+
+@test year   == 2004
+@test month  == 5
+@test day    == 14
+@test hour   == 16
+@test minute == 44
+@test second  ≈ 04.1840 atol=1e-4
+
+## JD_TTtoUTC
+## ----------
+
+JD_TT  = DatetoJD(2004, 5, 14, 16, 44, 04.1840)
+JD_UTC = JD_TTtoUTC(JD_TT)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+
+@test year   == 2004
+@test month  == 5
+@test day    == 14
+@test hour   == 10+6
+
+# TODO: Fix this rounding problem.
+if minute == 42
+    @test minute == 42
+    @test second  ≈ 60.0000 atol=1e-4
+else
+    @test minute == 43
+    @test second  ≈ 0.0000 atol=1e-4
+end
+
+## Scenario 02
+## ===========
+
+## JD_UTCtoTT
+## ----------
+
+# At the mentioned date, Mountain Standard Time is 6h behind UTC.
+JD_UTC = DatetoJD(2004, 4, 6, 07, 51, 28.386009)
+JD_TT  = JD_UTCtoTT(JD_UTC)
+
+@test JD_TT ≈ 2453101.828154745 atol=1e-9
+
+## JD_TTtoUTC
+## ----------
+
+JD_TT  = 2453101.828154745
+JD_UTC = JD_TTtoUTC(JD_TT)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+
+@test year   == 2004
+@test month  == 4
+@test day    == 6
+@test hour   == 07
+@test minute == 51
+@test second  ≈ 28.386009 atol=1e-4
+
+println("        $(b)Test passed!$d")
+println("")
+
 # File: ./src/time/julian_day.jl
 # ==============================
 
