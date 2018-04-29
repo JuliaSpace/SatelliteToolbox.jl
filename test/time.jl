@@ -35,8 +35,8 @@ println("$(c)Testing functions in file: ./src/time/time.jl$d")
 println("$(c)---------------------------------------------$d")
 println("")
 
-# get_ΔAT
-# =======
+# Function get_ΔAT
+# ----------------
 
 println("    Testing function get_ΔAT...")
 
@@ -96,6 +96,9 @@ end
 println("        $(b)Test passed!$d")
 println("")
 
+# Functions JD_UT1toUTC and JD_UTCtoUT1
+# -------------------------------------
+
 println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
 
 ################################################################################
@@ -130,13 +133,13 @@ println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
 #
 ################################################################################
 
-# Scenario 01
-# ===========
+## Scenario 01
+## ===========
 
 ΔUT1 = -0.463326
 
-# JD_UTCtoUT1
-# -----------
+## JD_UTCtoUT1
+## -----------
 
 # At the mentioned date, Mountain Standard Time is 6h behind UTC.
 JD_UTC = DatetoJD(2004, 5, 14, 10+6, 43, 0)
@@ -151,8 +154,8 @@ JD_UT1 = JD_UTCtoUT1(JD_UTC, ΔUT1)
 @test minute == 42
 @test second  ≈ 59.5367 atol=1e-4
 
-# JD_UT1toUTC
-# -----------
+## JD_UT1toUTC
+## -----------
 
 JD_UT1 = DatetoJD(2004, 5, 14, 16, 42, 59.5367)
 JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
@@ -166,13 +169,13 @@ JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
 @test minute == 43
 @test second  ≈ 0.0000 atol=1e-4
 
-# Scenario 02
-# ===========
+## Scenario 02
+## ===========
 
 ΔUT1 = -0.4399619
 
-# JD_UTCtoUT1
-# -----------
+## JD_UTCtoUT1
+## -----------
 
 JD_UTC = DatetoJD(2004, 4, 6, 07, 51, 28.386009)
 JD_UT1 = JD_UTCtoUT1(JD_UTC, ΔUT1)
@@ -186,8 +189,8 @@ JD_UT1 = JD_UTCtoUT1(JD_UTC, ΔUT1)
 @test minute == 51
 @test second  ≈ 27.946047 atol=1e-4
 
-# JD_UT1toUTC
-# -----------
+## JD_UT1toUTC
+## -----------
 
 JD_UT1 = DatetoJD(2004, 4, 6, 07, 51, 27.946047)
 JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
@@ -263,6 +266,9 @@ println("    Testing function DatetoJD...")
 
 println("        $(b)Test passed!$d")
 println("")
+
+# Function JDtoDate
+# -----------------
 
 println("    Testing function JDtoDate...")
 
