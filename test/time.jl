@@ -35,6 +35,9 @@ println("$(c)Testing functions in file: ./src/time/time.jl$d")
 println("$(c)---------------------------------------------$d")
 println("")
 
+# get_ΔAT
+# =======
+
 println("    Testing function get_ΔAT...")
 
 # Leap seconds values obtained from [2].
@@ -89,6 +92,114 @@ for i = 1:size(leap_secs,1)
     (i == 1) && continue
     @test get_ΔAT(DatetoJD(year,month,day,0,0,0)-1/86400) == ΔAT-1
 end
+
+println("        $(b)Test passed!$d")
+println("")
+
+println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-7: Calculating Dynamical Time [1].
+#
+# The following date:
+#
+#   Mountain Standard Time Zone: May 14, 2004, 10:43
+#
+# is converted into the following using ΔUT1 = -0.463326 s:
+#
+#   UT1: May 14, 2004, 16:42:59.5367
+#
+# Scenario 02
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction [1].
+#
+# The following UTC date:
+#
+#   UTC: April 6, 2004, 07:51:28.386009
+#
+# is converted into the following using ΔUT1 = -0.4399619 s:
+#
+#   UT1: April 6, 2004, 07:51:27.946047
+#
+################################################################################
+
+# Scenario 01
+# ===========
+
+ΔUT1 = -0.463326
+
+# JD_UTCtoUT1
+# -----------
+
+# At the mentioned date, Mountain Standard Time is 6h behind UTC.
+JD_UTC = DatetoJD(2004, 5, 14, 10+6, 43, 0)
+JD_UT1 = JD_UTCtoUT1(JD_UTC, ΔUT1)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UT1)
+
+@test year   == 2004
+@test month  == 5
+@test day    == 14
+@test hour   == 16
+@test minute == 42
+@test second  ≈ 59.5367 atol=1e-4
+
+# JD_UT1toUTC
+# -----------
+
+JD_UT1 = DatetoJD(2004, 5, 14, 16, 42, 59.5367)
+JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+
+@test year   == 2004
+@test month  == 5
+@test day    == 14
+@test hour   == 10+6
+@test minute == 43
+@test second  ≈ 0.0000 atol=1e-4
+
+# Scenario 02
+# ===========
+
+ΔUT1 = -0.4399619
+
+# JD_UTCtoUT1
+# -----------
+
+JD_UTC = DatetoJD(2004, 4, 6, 07, 51, 28.386009)
+JD_UT1 = JD_UTCtoUT1(JD_UTC, ΔUT1)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UT1)
+
+@test year   == 2004
+@test month  == 4
+@test day    == 6
+@test hour   == 7
+@test minute == 51
+@test second  ≈ 27.946047 atol=1e-4
+
+# JD_UT1toUTC
+# -----------
+
+JD_UT1 = DatetoJD(2004, 4, 6, 07, 51, 27.946047)
+JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
+
+(year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+
+@test year   == 2004
+@test month  == 4
+@test day    == 6
+@test hour   == 7
+@test minute == 51
+@test second  ≈ 28.386009 atol=1e-4
 
 println("        $(b)Test passed!$d")
 println("")
