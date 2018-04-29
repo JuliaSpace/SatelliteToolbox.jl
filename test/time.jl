@@ -114,7 +114,7 @@ println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
 #
 #   Mountain Standard Time Zone: May 14, 2004, 10:43
 #
-# is converted into the following using ΔUT1 = -0.463326 s:
+# is converted into the following one using ΔUT1 = -0.463326 s:
 #
 #   UT1: May 14, 2004, 16:42:59.5367
 #
@@ -127,7 +127,7 @@ println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
 #
 #   UTC: April 6, 2004, 07:51:28.386009
 #
-# is converted into the following using ΔUT1 = -0.4399619 s:
+# is converted into the following one using ΔUT1 = -0.4399619 s:
 #
 #   UT1: April 6, 2004, 07:51:27.946047
 #
