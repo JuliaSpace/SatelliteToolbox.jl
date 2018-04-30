@@ -118,7 +118,9 @@ function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
     dUλ = T1(0)  # Derivative w.r.t. the geocentric longitude.
 
     # Compute the associated Legendre functions `P_n,m[sin(ϕ_gc)]`.
-    P = legendre(ϕ_gc, n_max)
+    #
+    # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
+    P = legendre(ϕ_gc-pi/2, n_max)
 
     # Compute the derivatives.
     for n = 2:n_max
@@ -229,7 +231,7 @@ function compute_U(egm_coefs::EGM_Coefs,
     U = 1.0
 
     # Compute the associated Legendre functions.
-    P = legendre(ϕ_gc, 360)
+    P = legendre(ϕ_gc-pi/2, 360)
 
     for n = 2:n_max
         aux_U = 0.0
