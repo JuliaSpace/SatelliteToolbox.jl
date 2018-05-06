@@ -110,11 +110,11 @@ The optional parameter `N` can be used to select the normalization. The
 following values are valid:
 
 * `Val{:full}`: Compute the fully normalized associated Legendre function (see
-  `legendre_fully_normalized!`).
+  `legendre_fully_normalized`).
 * `Val{:schmidt}`: Compute the Schmidt quasi-normalized associated Legendre
-  function (see `legendre_schmidt_quasi_normalized!`).
+  function (see `legendre_schmidt_quasi_normalized`).
 * `Val{:conv}`: Compute the conventional associated Legendre function (see
-  `legendre_conventional!`).
+  `legendre_conventional`).
 
 If `N` is omitted, then the full normalization will be used.
 
