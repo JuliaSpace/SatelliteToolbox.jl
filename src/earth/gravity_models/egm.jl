@@ -120,7 +120,7 @@ function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
     # Compute the associated Legendre functions `P_n,m[sin(ϕ_gc)]`.
     #
     # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
-    P = legendre(ϕ_gc-pi/2, n_max)
+    P = legendre(Val{:full}, ϕ_gc-pi/2, n_max, false)
 
     # Compute the derivatives.
     for n = 2:n_max
