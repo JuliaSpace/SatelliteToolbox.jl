@@ -18,7 +18,7 @@
 #
 #   [1] Holmes, S. A. and W. E. Featherstone, 2002. A unified approach to the
 #       Clenshaw summation and the recursive computation of very high degree and
-#       order normalised associated Legendre functions Journal of Geodesy,
+#       order normalised associated Legendre functions. Journal of Geodesy,
 #       76(5), pp. 279-299.
 #
 #       For more info.: http://mitgcm.org/~mlosch/geoidcookbook/node11.html
@@ -111,19 +111,11 @@ If `N` is omitted, then the full normalization will be used.
 legendre!(P::Matrix, ϕ::Number, ph_term::Bool = false) =
     legendre_fully_normalized!(P, ϕ, ph_term)
 
-function legendre!(::Type{Val{:full}},
-                   P::Matrix,
-                   ϕ::Number,
-                   ph_term::Bool = false)
+legendre!(::Type{Val{:full}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
     legendre_fully_normalized!(P, ϕ, ph_term)
-end
 
-function legendre!(::Type{Val{:schmidt}},
-                   P::Matrix,
-                   ϕ::Number,
-                   ph_term::Bool = false)
+legendre!(::Type{Val{:schmidt}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
     legendre_schmidt_quasi_normalized!(P, ϕ, ph_term)
-end
 
 """
 ### function legendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
@@ -158,19 +150,15 @@ A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 legendre(ϕ::Number, n_max::Number, ph_term::Bool = false) =
     legendre_fully_normalized(ϕ, n_max, ph_term)
 
-function legendre(::Type{Val{:full}},
-                  ϕ::Number,
-                  n_max::Number,
-                  ph_term::Bool = false)
+legendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
     legendre_fully_normalized(ϕ, n_max, ph_term)
-end
 
-function legendre(::Type{Val{:schmidt}},
-                  ϕ::Number,
-                  n_max::Number,
-                  ph_term::Bool = false)
+legendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
     legendre_schmidt_quasi_normalized(ϕ, n_max, ph_term)
-end
+
+################################################################################
+#                Fully Normalized Associated Legendre Functions
+################################################################################
 
 """
 ### function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
@@ -286,6 +274,10 @@ function legendre_fully_normalized(ϕ::Number,
     legendre_fully_normalized!(P, ϕ, ph_term)
     P
 end
+
+################################################################################
+#            Schmidt Quasi-Normalized Associated Legendre Functions
+################################################################################
 
 """
 ### function legendre_schmidt_quasi_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
