@@ -425,17 +425,17 @@ function legendre_conventional!(P::Matrix,
     P[1+1,0+1] = +c
     P[1+1,1+1] = -s
 
-    (ph_term) && (P[1+1,1+1] *= -1)
+    (!ph_term) && (P[1+1,1+1] *= -1)
 
     for n = 2:rows-1
         for m = 0:n-1
             aux = (n-m)*(n-m)
-            a_nm = sqrt( ( (2n-1)*(2n-1) ) / aux )
-            b_nm = sqrt( ( (n+m-1)*(n-m-1) ) / aux )
+            a_nm = sqrt( (2n-1)*(2n-1) / aux )
+            b_nm = sqrt( (n+m-1)*(n+m-1) / aux )
             P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
         end
 
-        if ph_term
+        if !ph_term
             P[n+1,n+1] = +s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
         else
             P[n+1,n+1] = -s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
