@@ -191,15 +191,15 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
     (rows < 2) && throw(ArgumentError("P must have at least 2 rows."))
 
     # Auxiliary variables to improve code performance.
-    s = sin(ϕ)
     c = cos(ϕ)
+    s = sqrt(1-c^2)
 
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +sqrt(3)*c
     P[1+1,1+1] = -sqrt(3)*s
 
-    (ph_term) && (P[1+1,1+1] *= -1)
+    (!ph_term) && (P[1+1,1+1] *= -1)
 
     for n = 2:rows-1
         for m = 0:n-1
@@ -208,7 +208,7 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
             P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
         end
 
-        if ph_term
+        if !ph_term
             P[n+1,n+1] = +s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
         else
             P[n+1,n+1] = -s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
@@ -313,15 +313,15 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
     (rows < 2) && throw(ArgumentError("P must have at least 2 rows."))
 
     # Auxiliary variables to improve code performance.
-    s = sin(ϕ)
     c = cos(ϕ)
+    s = sqrt(1-c^2)
 
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +c
     P[1+1,1+1] = -s
 
-    (ph_term) && (P[1+1,1+1] *= -1)
+    (!ph_term) && (P[1+1,1+1] *= -1)
 
     for n = 2:rows-1
         for m = 0:n-1
@@ -331,7 +331,7 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
             P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
         end
 
-        if ph_term
+        if !ph_term
             P[n+1,n+1] = +s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
         else
             P[n+1,n+1] = -s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
@@ -420,8 +420,8 @@ function legendre_conventional!(P::Matrix,
     (rows < 2) && throw(ArgumentError("P must have at least 2 rows."))
 
     # Auxiliary variables to improve code performance.
-    s = sin(ϕ)
     c = cos(ϕ)
+    s = sqrt(1-c^2)
 
     # Starting values.
     P[0+1,0+1] = 1
