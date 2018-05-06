@@ -141,6 +141,9 @@ legendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
 legendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
     legendre_schmidt_quasi_normalized(ϕ, n_max, ph_term)
 
+legendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
+    legendre_conventional(ϕ, n_max, ph_term)
+
 ################################################################################
 #                Fully Normalized Associated Legendre Functions
 ################################################################################
