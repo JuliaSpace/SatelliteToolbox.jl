@@ -10,7 +10,7 @@
 #
 # Description
 #
-#    SatToolbox orbit propagator API for SGP4 algorithm.
+#    SatelliteToolbox orbit propagator API for SGP4 algorithm.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

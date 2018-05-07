@@ -348,7 +348,7 @@ println("    Testing function DatetoJD...")
 #   ║ 2013-10-19 22:00:00 ║ 2456585.416667 ║
 #   ╚═════════════════════╩════════════════╝
 #
-# Data obtained from SatToolbox:
+# Data obtained from SatelliteToolbox:
 #
 #   ╔═════════════════════╦════════════════╗
 #   ║    Gregorian Day    ║   Julian Day   ║
@@ -401,7 +401,7 @@ println("    Testing function JDtoDate...")
 #   ║ 2013-10-19 22:00:00 ║ 2456585.416667 ║
 #   ╚═════════════════════╩════════════════╝
 #
-# Data obtained from SatToolbox:
+# Data obtained from SatelliteToolbox:
 #
 #   ╔═════════════════════╦════════════════╗
 #   ║    Gregorian Day    ║   Julian Day   ║

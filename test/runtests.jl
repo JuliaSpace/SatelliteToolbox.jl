@@ -1,4 +1,4 @@
-using SatToolbox
+using SatelliteToolbox
 using ReferenceFrameRotations
 using Base.Test
 

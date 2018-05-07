@@ -88,7 +88,7 @@ println("    Testing function JDtoGMST...")
 # Considering the Julian Day [UT1] 2448855.009722, the Greenwich Mean Sideral
 # Time was computed as 152.578787810°.
 #
-# Using SatToolbox, the following was obtained:
+# Using SatelliteToolbox, the following was obtained:
 #
 #   julia> JDtoGMST(2448855.009722)*180/pi
 #   152.57870762832462

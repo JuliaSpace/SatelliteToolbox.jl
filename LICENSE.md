@@ -1,4 +1,4 @@
-The SatToolbox.jl package is licensed under the MIT "Expat" License:
+The SatelliteToolbox.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2014: Ronan Arraes Jardim Chagas.
 >

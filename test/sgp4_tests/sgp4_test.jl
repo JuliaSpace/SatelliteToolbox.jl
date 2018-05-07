@@ -14,7 +14,7 @@
 #
 #   Notice that only the tests related to the SGP4 in [1] are considered,
 #   because the SDP4 (orbit propagator for deep space) are not available yet in
-#   SatToolbox.
+#   SatelliteToolbox.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

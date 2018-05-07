@@ -10,7 +10,7 @@
 #
 # Description
 #
-#    SatToolbox orbit propagator API for J2 orbit propagator algorithm.
+#    SatelliteToolbox orbit propagator API for J2 orbit propagator algorithm.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

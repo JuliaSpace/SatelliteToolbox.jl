@@ -10,7 +10,8 @@
 #
 # Description
 #
-#    SatToolbox orbit propagator API for Two Body orbit propagator algorithm.
+#    SatelliteToolbox orbit propagator API for Two Body orbit propagator
+#    algorithm.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

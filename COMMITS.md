@@ -1,6 +1,7 @@
 # Commits
 
-This file describe rules that must be applied to commit code to SatToolbox.
+This file describe rules that must be applied to commit code to
+**SatelliteToolbox**.
 
 Notice that this document is **under construction**.
 

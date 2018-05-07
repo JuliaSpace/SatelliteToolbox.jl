@@ -56,7 +56,7 @@ println("    Testing function nutation_fk5...")
 #   Δϵ_1980 =   0.0020316˚
 #   Δψ_1980 =  -0.0034108˚
 #
-# SatToolbox provides the following results:
+# SatelliteToolbox provides the following results:
 #
 #   julia> (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(2453101.828154745)
 #   (0.40908312815877673, 3.5458763448549555e-5, -5.953027070867465e-5)
@@ -109,7 +109,7 @@ println("    Testing function precession_fk5...")
 #   Θ = 0.0237306˚
 #   z = 0.0273059˚
 #
-# SatToolbox provides the following results:
+# SatelliteToolbox provides the following results:
 #
 #   julia> (ζ,Θ,z) = precession_fk5(2453101.828154745)
 #   julia> ζ*180/pi

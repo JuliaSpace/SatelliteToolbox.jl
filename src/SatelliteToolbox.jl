@@ -1,6 +1,6 @@
 VERSION >= v"0.4.0-dev+6521" && __precompile__()
 
-module SatToolbox
+module SatelliteToolbox
 
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84

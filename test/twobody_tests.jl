@@ -52,8 +52,8 @@ println("")
 #       rf_ijk = - 4219.7527 i + 4363.0292 j - 3958.7666 k [km]
 #       vf_ijk = - 3.689866  i - 1.916735  j - 6.112511  k [km/s]
 #
-#   Using the SatToolbox Two Body orbit propagator, the following result was
-#   obtained:
+#   Using the SatelliteToolbox Two Body orbit propagator, the following result
+#   was obtained:
 #
 #       julia> orb = rv_to_kepler(1131340, -2282343, 6672423, -5643.05, 4303.33, 2428.79)
 #       julia> orbp = init_orbit_propagator(Val{:twobody}, orb)
