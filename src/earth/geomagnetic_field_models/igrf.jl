@@ -97,7 +97,7 @@ function igrf12(date::Number,
 
     # Convert latitude / longitude to colatitude and east-longitude.
     θ = pi/2 - λ
-    ϕ = (Ω >= 0) ? Ω : pi - Ω
+    ϕ = (Ω >= 0) ? Ω : 2pi + Ω
 
     # The input variable `r` is in [m], but all the algorithm requires it to be
     # in [km].
