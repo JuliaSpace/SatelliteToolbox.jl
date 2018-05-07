@@ -28,6 +28,7 @@ include("constants.jl")
 ################################################################################
 
 include("./aux/legendre.jl")
+include("./aux/dlegendre.jl")
 
 include("analysis/beta_angle.jl")
 include("analysis/eclipse_time.jl")
