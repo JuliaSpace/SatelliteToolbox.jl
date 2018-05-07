@@ -10,7 +10,8 @@
 #
 # Description
 #
-#    Coordinate transformations.
+#    Coordinate transformations related with the geodetic and geocentric
+#    coordinates.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
