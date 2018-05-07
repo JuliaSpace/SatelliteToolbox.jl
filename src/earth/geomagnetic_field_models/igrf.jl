@@ -18,6 +18,7 @@
 #
 #   [1] https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
 #   [2] https://www.ngdc.noaa.gov/IAGA/vmod/igrf12.f
+#   [3] https://www.mathworks.com/matlabcentral/fileexchange/34388-international-geomagnetic-reference-field--igrf--model
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -36,7 +37,7 @@ export igrf12syn
 ################################################################################
 
 """
-### function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}})
+### function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}])
 
 **IGRF v12 Model**
 
@@ -48,8 +49,8 @@ coordinates: latitude `λ`, longitude `Ω`, and distance from the Earth center
 
 * date: Year A.D.
 * r: Distance from the Earth center [m].
-* θ: Latitude (-π/2,+π/2) [rad].
-* ϕ: Longitude (-π,+π) [rad].
+* λ: Geocentric latitude (-π/2,+π/2) [rad].
+* Ω: Geocentric longitude (-π,+π) [rad].
 
 ##### Returns
 
@@ -67,6 +68,9 @@ more readable code than the original one in FORTRAN, because it uses features
 available in julia language.
 
 """
+
+igrf12(date::Number, r::Number, λ::Number, Ω::Number) =
+    igrf12(date, r, λ, Ω, Val{:geocentric})
 
 function igrf12(date::Number,
                 r::Number,
@@ -271,6 +275,61 @@ function igrf12(date::Number,
     z = dVr
 
     B_gc = [x;y;z]
+end
+
+"""
+### function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}})
+
+**IGRF v12 Model**
+
+Compute the geomagnetic field vector [nT] at the date `date`, and **geodetic**
+coordinates: latitude `λ`, longitude `Ω`, and altitude above the reference
+ellipsoid `h`.
+
+##### Args
+
+* date: Year A.D.
+* h: Altitude above the reference elipsoid [m].
+* λ: Geodetic latitude (-π/2,+π/2) [rad].
+* Ω: Geodetic longitude (-π,+π) [rad].
+
+##### Returns
+
+The geomagnetic field vector represented in the geodetic reference frame [nT].
+
+##### Remarks
+
+The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
+that a warning message is printed for dates grated than 2020.
+
+##### Disclaimer
+
+This function is an independent implementation of the IGRF model. It contains a
+more readable code than the original one in FORTRAN, because it uses features
+available in julia language.
+
+"""
+
+# TODO: This method has a small error (≈ 0.01 nT) compared with the `igrf12syn`.
+# However, the result is exactly the same as the MATLAB function in [3]. Hence,
+# this does not seem to be an error in the conversion from geodetic to
+# geocentric coordinates. This is probably caused by a numerical error. Further
+# verification is necessary.
+
+function igrf12(date::Number,
+                h::Number,
+                λ::Number,
+                Ω::Number,
+                ::Type{Val{:geodetic}})
+    # Convert the geodetic coordinates to geocentric coordinates.
+    (λ_gc, r) = GeodetictoGeocentric(λ, h)
+
+    # Compute the geomagnetic field in geocentric coordinates.
+    B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric})
+
+    # Convert to geodetic coordinates.
+    D_gd_gc = angle2dcm(λ_gc - λ, 0., 0., "YXZ")
+    B_gd    = D_gd_gc*B_gc
 end
 
 """
