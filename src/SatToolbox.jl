@@ -41,6 +41,9 @@ include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
 include("earth/gravity_models/egm.jl")
+include("earth/geomagnetic_field_models/igrf.jl")
+include("earth/geomagnetic_field_models/igrf12_coefs.jl")
+include("earth/geomagnetic_field_models/igrf12syn_coefs.jl")
 
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
