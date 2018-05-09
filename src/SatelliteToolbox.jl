@@ -27,6 +27,7 @@ include("constants.jl")
 #                                    Files
 ################################################################################
 
+include("./aux/compose_rotations.jl")
 include("./aux/legendre.jl")
 include("./aux/dlegendre.jl")
 
