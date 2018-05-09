@@ -38,8 +38,7 @@ export rTODtoMOD_fk5,  rMODtoTOD_fk5
 export rMODtoGCRF_fk5, rGCRFtoMOD_fk5
 
 export rITRFtoGCRF_fk5, rGCRFtoITRF_fk5
-export rPEFtoGCRF_fk5, rGCRFtoPEF_fk5
-export rTODtoGCRF_fk5, rGCRFtoTOD_fk5
+export rPEFtoMOD_fk5,   rMODtoPEF_fk5
 
 ################################################################################
 #                            IAU-76/FK5 Reductions
@@ -606,6 +605,13 @@ end
 #                              Multiple Rotations
 ################################################################################
 
+# The functions with multiple rotations must be added only in two cases:
+#
+#   * ITRF <=> GCRF (Full rotation between ECI and ECEF).
+#   * When the it will decrease the computational burden compared to
+#     calling the functions with the single rotations.
+#
+
 #                                ITRF <=> GCRF
 # ==============================================================================
 
@@ -677,11 +683,14 @@ function rITRFtoGCRF_fk5(::Type{Matrix},
     # Compute the rotation ITRF => PEF.
     D_PEF_ITRF = rITRFtoPEF_fk5(Matrix, x_p, y_p)
 
-    # Compute the rotation PEF => GCRF.
-    D_GCRF_PEF = rPEFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    # Compute the rotation PEF => MOD.
+    D_MOD_PEF = rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+
+    # Compute the rotation MOD => GCRF.
+    D_GCRF_MOD = rMODtoGCRF_fk5(Matrix, JD_TT)
 
     # Return the full rotation.
-    D_GCRF_PEF*D_PEF_ITRF
+    D_GCRF_MOD*D_MOD_PEF*D_PEF_ITRF
 end
 
 function rITRFtoGCRF_fk5(::Type{Quaternion},
@@ -695,10 +704,13 @@ function rITRFtoGCRF_fk5(::Type{Quaternion},
     q_PEF_ITRF = rITRFtoPEF_fk5(Quaternion, x_p, y_p)
 
     # Compute the rotation PEF => GCRF.
-    q_GCRF_PEF = rPEFtoGCRF_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    q_MOD_PEF = rPEFtoMOD_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+
+    # Compute the rotation MOD => GCRF.
+    q_GCRF_MOD = rMODtoGCRF_fk5(Quaternion, JD_TT)
 
     # Return the full rotation.
-    q_PEF_ITRF*q_GCRF_PEF
+    q_PEF_ITRF*q_MOD_PEF*q_GCRF_MOD
 end
 
 """
@@ -785,18 +797,17 @@ function rGCRFtoITRF_fk5(::Type{Quaternion},
                          δΔψ_1980))
 end
 
-#                                 PEF <=> GCRF
+#                                 PEF <=> MOD
 # ==============================================================================
 
 """
-### function rPEFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+### function rPEFtoMOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
-Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_UT1` (UT1) and
-`JD_TT` (Terrestrial Time). This algorithm uses the IAU-76/FK5 theory. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ`) and in
-longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+Mean of Date (MOD) at the Julian Day `JD_UT1` (UT1) and `JD_TT` (Terrestrial
+Time). This algorithm uses the IAU-76/FK5 theory. Notice that one can provide
+corrections for the nutation in obliquity (`δΔϵ`) and in longitude (`δΔψ`) that
+are usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
 (see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
@@ -821,22 +832,18 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Returns
 
-The rotation that aligns the PEF frame with the GCRF frame. The rotation
+The rotation that aligns the PEF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
-
-If the EOP correction data is not used, then the GCRF is what is usually called
-the J2000 reference frame.
-
 """
-rPEFtoGCRF_fk5(JD_UT1::Number,
-               JD_TT::Number,
-               δΔϵ_1980::Number = 0,
-               δΔψ_1980::Number = 0) =
-    rPEFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rPEFtoGCRF_fk5(::Type{Matrix},
+rPEFtoMOD_fk5(JD_UT1::Number,
+              JD_TT::Number,
+              δΔϵ_1980::Number = 0,
+              δΔψ_1980::Number = 0) =
+    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+
+function rPEFtoMOD_fk5(::Type{Matrix},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
@@ -888,14 +895,10 @@ function rPEFtoGCRF_fk5(::Type{Matrix},
     # Compute the rotation TOD => MOD.
     D_MOD_TOD = angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, "XZX")
 
-    # Compute the rotation MOD => GCRF.
-    D_GCRF_MOD = rMODtoGCRF_fk5(Matrix, JD_TT)
-
-    # Return the full rotation.
-    D_GCRF_MOD*D_MOD_TOD*D_TOD_PEF
+    D_MOD_TOD*D_TOD_PEF
 end
 
-function rPEFtoGCRF_fk5(::Type{Quaternion},
+function rPEFtoMOD_fk5(::Type{Quaternion},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
@@ -950,22 +953,18 @@ function rPEFtoGCRF_fk5(::Type{Quaternion},
     q3_x      = Quaternion([cos(mϵ_1980/2); -sin(mϵ_1980/2); 0;        0      ])
     q_MOD_TOD = q1_x*q2_z*q3_x
 
-    # Compute the rotation MOD => GCRF.
-    q_GCRF_MOD = rMODtoGCRF_fk5(Quaternion, JD_TT)
-
     # Return the full rotation.
-    q_TOD_PEF*q_MOD_TOD*q_GCRF_MOD
+    q_TOD_PEF*q_MOD_TOD
 end
 
 """
-### function rGCRFtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+### function rMODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
-Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
-with the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and
-`JD_TT` (Terrestrial Time). This algorithm uses the IAU-76/FK5 theory. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ`) and in
-longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
+Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
+(Terrestrial Time). This algorithm uses the IAU-76/FK5 theory. Notice that one
+can provide corrections for the nutation in obliquity (`δΔϵ`) and in longitude
+(`δΔψ`) that are usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
 (see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
@@ -990,154 +989,29 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Returns
 
-The rotation that aligns the GCRF frame with the PEF frame. The rotation
+The rotation that aligns the MOD frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
-
-##### Remarks
-
-If the EOP correction data is not used, then the GCRF is what is usually called
-the J2000 reference frame.
 
 """
 
-rGCRFtoPEF_fk5(JD_UT1::Number,
-               JD_TT::Number,
-               δΔϵ_1980::Number = 0,
-               δΔψ_1980::Number = 0) =
-    rPEFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
+rMODtoPEF_fk5(JD_UT1::Number,
+              JD_TT::Number,
+              δΔϵ_1980::Number = 0,
+              δΔψ_1980::Number = 0) =
+    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
 
-function rGCRFtoPEF_fk5(::Type{Matrix},
+function rMODtoPEF_fk5(::Type{Matrix},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
-    rPEFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
 end
 
-function rGCRFtoPEF_fk5(::Type{Quaternion},
+function rMODtoPEF_fk5(::Type{Quaternion},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
-    conj(rPEFtoGCRF_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
-end
-
-#                                 TOD <=> GCRF
-# ==============================================================================
-
-"""
-### function rTODtoGCRF_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
-
-Compute the rotation that aligns the True of Date (TOD) frame with the
-Geocentric Celestial Reference Frame (GCRF) at the Julian Day (Terrestrial Time)
-`JD_TT`. This algorithm uses the IAU-76/FK5 theory. Notice that one can provide
-corrections for the nutation in obliquity (`δΔϵ`) and in longitude (`δΔψ`) that
-are usually obtained from IERS EOP Data (see `get_iers_eop`).
-
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
-then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
-will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
-
-##### Args
-
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
-
-##### Returns
-
-The rotation that aligns the TOD frame with the GCRF frame. The rotation
-representation is selected by the optional parameter `T`.
-
-##### Remarks
-
-If the EOP correction data is not used, then the GCRF is what is usually called
-the J2000 reference frame.
-
-"""
-rTODtoGCRF_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoGCRF_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)
-
-function rTODtoGCRF_fk5(::Type{Matrix},
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    # Compute the rotation TOD => MOD.
-    D_MOD_TOD  = rTODtoMOD_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)
-
-    # Compute the rotation MOD => GCRF.
-    D_GCRF_MOD = rMODtoGCRF_fk5(Matrix, JD_TT)
-
-    # Return the full rotation.
-    D_GCRF_MOD*D_MOD_TOD
-end
-
-function rTODtoGCRF_fk5(::Type{Quaternion},
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    # Compute the rotation TOD => MOD.
-    q_MOD_TOD  = rTODtoMOD_fk5(Quaternion, JD_TT, δΔϵ_1980, δΔψ_1980)
-
-    # Compute the rotation MOD => GCRF.
-    q_GCRF_MOD = rMODtoGCRF_fk5(Quaternion, JD_TT)
-
-    # Return the full rotation.
-    q_MOD_TOD*q_GCRF_MOD
-end
-
-"""
-### function rGCRFtoTOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
-
-Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
-with the True of Date (TOD) frame at the Julian Day (Terrestrial Time) `JD_TT`.
-This algorithm uses the IAU-76/FK5 theory. Notice that one can provide
-corrections for the nutation in obliquity (`δΔϵ`) and in longitude (`δΔψ`) that
-are usually obtained from IERS EOP Data (see `get_iers_eop`).
-
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
-then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
-will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
-
-##### Args
-
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
-
-##### Returns
-
-The rotation that aligns the GCRF frame with the TOD frame. The rotation
-representation is selected by the optional parameter `T`.
-
-##### Remarks
-
-If the EOP correction data is not used, then the GCRF is what is usually called
-the J2000 reference frame.
-
-"""
-
-rGCRFtoTOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoGCRF_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)'
-
-function rGCRFtoTOD_fk5(::Type{Matrix},
-                        JD_TT::Number,
-                        δΔϵ_1980::Number = 0,
-                        δΔψ_1980::Number = 0)
-    rTODtoGCRF_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)'
-end
-
-function rGCRFtoTOD_fk5(::Type{Quaternion},
-                        JD_TT::Number,
-                        δΔϵ_1980::Number = 0,
-                        δΔψ_1980::Number = 0)
-    conj(rTODtoGCRF_fk5(Quaternion, JD_TT, δΔϵ_1980, δΔψ_1980))
+    conj(rPEFtoMOD_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
 end
