@@ -10,6 +10,9 @@ import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin, show
 importall ReferenceFrameRotations
 importall StaticArrays
 
+# Re-exporting symbols from ReferenceFrameRotations.jl.
+export DCM, Quaternion
+
 ################################################################################
 #                                  Structures
 ################################################################################

@@ -79,14 +79,14 @@ Compute the rotation that aligns the International Terrestrial Reference Frame
 represented by the angles `x_p` and `y_p` that is obtained from IERS EOP Data
 (see `get_iers_eop`).
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * x_p: Polar motion displacement about X-axis, which is the IERS Reference
        Meridian direction (positive south along the 0˚ longitude meridian)
        [rad].
@@ -108,24 +108,13 @@ sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
 
-rITRFtoPEF_fk5(x_p::Number, y_p::Number) = rITRFtoPEF_fk5(Matrix, x_p, y_p)
+rITRFtoPEF_fk5(x_p::Number, y_p::Number) = rITRFtoPEF_fk5(DCM, x_p, y_p)
 
-function rITRFtoPEF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
+rITRFtoPEF_fk5(T::Type, x_p::Number, y_p::Number) =
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    DCM(   1,    0,  -x_p,
-           0,    1,  +y_p,
-         +x_p, -y_p,   1 )'
-end
-
-function rITRFtoPEF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
-    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
-    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
-    # a displacement in Y is a rotation in X.
-    q = Quaternion([1; +y_p/2; +x_p/2; 0])
-    q/norm(q)
-end
+    smallangle2rot(T, +y_p, +x_p, 0)
 
 """
 ### function rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
@@ -135,14 +124,14 @@ International Terrestrial Reference Frame (ITRF) considering the polar motion
 represented by the angles `x_p` and `y_p` that is obtained from IERS EOP Data
 (see `get_iers_eop`).
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * x_p: Polar motion rotation about X-axis, which is the IERS Reference Meridian
        direction (positive south along the 0˚ longitude meridian). [rad].
 * y_p: Polar motion rotation about Y-axis (90˚ W or 270˚ E meridian) [rad].
@@ -163,24 +152,13 @@ sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
 
-rPEFtoITRF_fk5(x_p::Number, y_p::Number) = rPEFtoITRF_fk5(Matrix, x_p, y_p)
+rPEFtoITRF_fk5(x_p::Number, y_p::Number) = rPEFtoITRF_fk5(DCM, x_p, y_p)
 
-function rPEFtoITRF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
+rPEFtoITRF_fk5(T::Type, x_p::Number, y_p::Number) =
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    DCM(  1,    0,  +x_p,
-          0,    1,  -y_p,
-        -x_p, +y_p,   1 )'
-end
-
-function rPEFtoITRF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
-    # Notice that `x_p` and `y_p` are displacements in X and Y directions and
-    # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
-    # a displacement in Y is a rotation in X.
-    q = Quaternion([1; -y_p/2; -x_p/2; 0])
-    q/norm(q)
-end
+    smallangle2rot(T, -y_p, -x_p, 0)
 
 #                                 PEF <=> TOD
 # ==============================================================================
@@ -200,14 +178,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
@@ -228,9 +206,9 @@ Reference Systems (GCRS).
 """
 
 rPEFtoTOD_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)
+    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
 
-function rPEFtoTOD_fk5(::Type{Matrix},
+function rPEFtoTOD_fk5(T::Type,
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔψ_1980::Number = 0)
@@ -266,46 +244,7 @@ function rPEFtoTOD_fk5(::Type{Matrix},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation matrix.
-    create_rotation_matrix(-θ_gast, :Z)
-end
-
-function rPEFtoTOD_fk5(::Type{Quaternion},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔψ_1980::Number = 0)
-    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
-
-    # Add the corrections to the nutation in obliquity and longitude.
-    Δψ_1980 += δΔψ_1980
-
-    # Evaluate the Delaunay parameters associated with the Moon in the interval
-    # [0,2π]°.
-    #
-    # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000)/36525
-    r    = 360
-    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
-                          0.0020708*T_TT^2 +
-                          2.2e-6*T_TT^3
-    Ω_m  = mod(Ω_m, 360)*pi/180
-
-    # Compute the equation of Equinoxes.
-    #
-    # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
-    Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
-        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
-
-    # Compute the Mean Greenwich Sidereal Time.
-    θ_gmst = JDtoGMST(JD_UT1)
-
-    # Compute the Greenwich Apparent Sidereal Time (GAST).
-    #
-    # TODO: Should GAST be moved to a new function as the GMST?
-    θ_gast = θ_gmst + Eq_equinox1982
-
-    # Compute the quaternion.
-    Quaternion(cos(θ_gast/2), 0, 0, -sin(θ_gast/2))
+    angle2rot(T, -θ_gast, 0, 0, :ZYX)
 end
 
 """
@@ -323,14 +262,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
@@ -351,13 +290,13 @@ Reference Systems (GCRS).
 """
 
 rTODtoPEF_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)'
+    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)'
 
-function rTODtoPEF_fk5(::Type{Matrix},
+function rTODtoPEF_fk5(::Type{DCM},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔψ_1980::Number = 0)
-    rPEFtoTOD_fk5(Matrix, JD_UT1, JD_TT, δΔψ_1980)'
+    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)'
 end
 
 function rTODtoPEF_fk5(::Type{Quaternion},
@@ -379,14 +318,14 @@ uses the IAU-76/FK5 theory. Notice that one can provide corrections for the
 nutation in obliquity (`δΔϵ`) and in longitude (`δΔψ`) that are usually obtained
 from IERS EOP Data (see `get_iers_eop`).
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
             (**DEFAULT** = 0).
@@ -407,9 +346,9 @@ Reference Systems (GCRS).
 
 """
 rTODtoMOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoMOD_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)
+    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rTODtoMOD_fk5(::Type{Matrix},
+function rTODtoMOD_fk5(T::Type,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
@@ -424,31 +363,8 @@ function rTODtoMOD_fk5(::Type{Matrix},
     # Compute the obliquity.
     ϵ_1980 = mϵ_1980 + Δϵ_1980
 
-    # Compute and return the Direction Cosine Matrix.
-    angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
-end
-
-function rTODtoMOD_fk5(::Type{Quaternion},
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
-
-    # Add the corrections to the nutation in obliquity and longitude.
-    Δϵ_1980 += δΔϵ_1980
-    Δψ_1980 += δΔψ_1980
-
-    # Compute the obliquity.
-    ϵ_1980 = mϵ_1980 + Δϵ_1980
-
-    # Compute the three rotations using Quaternions.
-    q1_x = Quaternion( cos(ϵ_1980/2),   sin(ϵ_1980/2), 0,        0      )
-    q2_z = Quaternion(cos(Δψ_1980/2),        0,        0, sin(Δψ_1980/2))
-    q3_x = Quaternion(cos(mϵ_1980/2), -sin(mϵ_1980/2), 0,        0      )
-
-    # Return the complete quaternion.
-    q1_x*q2_z*q3_x
+    # Compute and return the Direction Cosine DCM.
+    angle2rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 end
 
 """
@@ -460,14 +376,14 @@ uses the IAU-76/FK5 theory. Notice that one can provide corrections for the
 nutation in obliquity (`δΔϵ`) and in longitude (`δΔψ`) that are usually obtained
 from IERS EOP Data (see `get_iers_eop`).
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
             (**DEFAULT** = 0).
@@ -488,13 +404,13 @@ Reference Systems (GCRS).
 
 """
 rMODtoTOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoMOD_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)'
 
-function rMODtoTOD_fk5(::Type{Matrix},
+function rMODtoTOD_fk5(::Type{DCM},
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
-    rTODtoMOD_fk5(Matrix, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)'
 end
 
 function rMODtoTOD_fk5(::Type{Quaternion},
@@ -514,14 +430,14 @@ Compute the rotation that aligns the Mean of Date (MOD) frame with the
 Geocentric Celestial Reference Frame (GCRF) at the Julian Day (Terrestrial Time)
 `JD_TT`. This algorithm uses the IAU-76/FK5 theory.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `DCM`).
 * JD_TT: Julian Day [Terrestrial Time].
 
 ##### Returns
@@ -539,23 +455,11 @@ the EOP corrections, then the GCRF obtained by this rotation is what is usually
 called the J2000 reference frame.
 
 """
-rMODtoGCRF_fk5(JD_TT::Number) = rMODtoGCRF_fk5(Matrix,JD_TT)
+rMODtoGCRF_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)
 
-function rMODtoGCRF_fk5(::Type{Matrix},JD_TT::Number)
+function rMODtoGCRF_fk5(T::Type, JD_TT::Number)
     (ζ,Θ,z) = precession_fk5(JD_TT)
-    angle2dcm(z, -Θ, ζ, :ZYZ)
-end
-
-function rMODtoGCRF_fk5(::Type{Quaternion},JD_TT::Number)
-    (ζ,Θ,z) = precession_fk5(JD_TT)
-
-    # Compute the three rotations using Quaternions.
-    q1_z = Quaternion(cos(z/2), 0,     0    , sin(z/2))
-    q2_y = Quaternion(cos(Θ/2), 0, -sin(Θ/2),    0    )
-    q3_z = Quaternion(cos(ζ/2), 0,     0    , sin(ζ/2))
-
-    # Return the complete quaternion.
-    q1_z*q2_y*q3_z
+    angle2rot(T, z, -Θ, ζ, :ZYZ)
 end
 
 """
@@ -565,14 +469,14 @@ Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the Mean of Date (MOD) frame at the Julian Day (Terrestrial Time) `JD_TT`.
 This algorithm uses the IAU-76/FK5 theory.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `DCM`).
 * JD_TT: Julian Day [Terrestrial Time].
 
 ##### Returns
@@ -591,10 +495,10 @@ the J2000 reference frame.
 
 """
 
-rGCRFtoMOD_fk5(JD_TT::Number) = rMODtoGCRF_fk5(Matrix,JD_TT)'
+rGCRFtoMOD_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)'
 
-function rGCRFtoMOD_fk5(::Type{Matrix},JD_TT::Number)
-    rMODtoGCRF_fk5(Matrix, JD_TT)'
+function rGCRFtoMOD_fk5(::Type{DCM},JD_TT::Number)
+    rMODtoGCRF_fk5(DCM, JD_TT)'
 end
 
 function rGCRFtoMOD_fk5(::Type{Quaternion},JD_TT::Number)
@@ -630,14 +534,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * x_p: Polar motion displacement about X-axis, which is the IERS Reference
@@ -671,9 +575,9 @@ rITRFtoGCRF_fk5(JD_UT1::Number,
                 y_p::Number,
                 δΔϵ_1980::Number = 0,
                 δΔψ_1980::Number = 0) =
-    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 
-function rITRFtoGCRF_fk5(::Type{Matrix},
+function rITRFtoGCRF_fk5(T::Type,
                          JD_UT1::Number,
                          JD_TT::Number,
                          x_p::Number,
@@ -681,36 +585,16 @@ function rITRFtoGCRF_fk5(::Type{Matrix},
                          δΔϵ_1980::Number = 0,
                          δΔψ_1980::Number = 0)
     # Compute the rotation ITRF => PEF.
-    D_PEF_ITRF = rITRFtoPEF_fk5(Matrix, x_p, y_p)
+    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
 
     # Compute the rotation PEF => MOD.
-    D_MOD_PEF = rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_PEF = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compute the rotation MOD => GCRF.
-    D_GCRF_MOD = rMODtoGCRF_fk5(Matrix, JD_TT)
+    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
 
     # Return the full rotation.
-    D_GCRF_MOD*D_MOD_PEF*D_PEF_ITRF
-end
-
-function rITRFtoGCRF_fk5(::Type{Quaternion},
-                         JD_UT1::Number,
-                         JD_TT::Number,
-                         x_p::Number,
-                         y_p::Number,
-                         δΔϵ_1980::Number = 0,
-                         δΔψ_1980::Number = 0)
-    # Compute the rotation ITRF => PEF.
-    q_PEF_ITRF = rITRFtoPEF_fk5(Quaternion, x_p, y_p)
-
-    # Compute the rotation PEF => GCRF.
-    q_MOD_PEF = rPEFtoMOD_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-
-    # Compute the rotation MOD => GCRF.
-    q_GCRF_MOD = rMODtoGCRF_fk5(Quaternion, JD_TT)
-
-    # Return the full rotation.
-    q_PEF_ITRF*q_MOD_PEF*q_GCRF_MOD
+    compose_rotation(r_PEF_ITRF, r_MOD_PEF, r_GCRF_MOD)
 end
 
 """
@@ -728,14 +612,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * x_p: Polar motion displacement about X-axis, which is the IERS Reference
@@ -769,16 +653,16 @@ rGCRFtoITRF_fk5(JD_UT1::Number,
                 y_p::Number,
                 δΔϵ_1980::Number = 0,
                 δΔψ_1980::Number = 0) =
-    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
+    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
 
-function rGCRFtoITRF_fk5(::Type{Matrix},
+function rGCRFtoITRF_fk5(::Type{DCM},
                          JD_UT1::Number,
                          JD_TT::Number,
                          x_p::Number,
                          y_p::Number,
                          δΔϵ_1980::Number = 0,
                          δΔψ_1980::Number = 0)
-    rITRFtoGCRF_fk5(Matrix, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
+    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
 end
 
 function rGCRFtoITRF_fk5(::Type{Quaternion},
@@ -815,14 +699,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
@@ -841,9 +725,9 @@ rPEFtoMOD_fk5(JD_UT1::Number,
               JD_TT::Number,
               δΔϵ_1980::Number = 0,
               δΔψ_1980::Number = 0) =
-    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rPEFtoMOD_fk5(::Type{Matrix},
+function rPEFtoMOD_fk5(T::Type,
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
@@ -890,71 +774,12 @@ function rPEFtoMOD_fk5(::Type{Matrix},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation PEF => TOD.
-    D_TOD_PEF = create_rotation_matrix(-θ_gast, :Z)
+    r_TOD_PEF = angle2rot(T, -θ_gast, 0, 0, :ZYX)
 
     # Compute the rotation TOD => MOD.
-    D_MOD_TOD = angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    r_MOD_TOD = angle2rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
-    D_MOD_TOD*D_TOD_PEF
-end
-
-function rPEFtoMOD_fk5(::Type{Quaternion},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-
-    # Notice that, in this case, we will not use `rPEFtoTOD` and `rTODtoMOD`
-    # because this would call the function `nutation` twice, leading to a huge
-    # performance drop. Hence, the code of those two functions is almost
-    # entirely rewritten here.
-
-    # Compute the nutation in the Juliay Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
-
-    # Add the corrections to the nutation in obliquity and longitude.
-    Δϵ_1980 += δΔϵ_1980
-    Δψ_1980 += δΔψ_1980
-
-    # Compute the obliquity.
-    ϵ_1980 = mϵ_1980 + Δϵ_1980
-
-    # Evaluate the Delaunay parameters associated with the Moon in the interval
-    # [0,2π]°.
-    #
-    # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000)/36525
-    r    = 360
-    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
-                          0.0020708*T_TT^2 +
-                          2.2e-6*T_TT^3
-    Ω_m  = mod(Ω_m, 360)*pi/180
-
-    # Compute the equation of Equinoxes.
-    #
-    # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
-    Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
-        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
-
-    # Compute the Mean Greenwich Sidereal Time.
-    θ_gmst = JDtoGMST(JD_UT1)
-
-    # Compute the Greenwich Apparent Sidereal Time (GAST).
-    #
-    # TODO: Should GAST be moved to a new function as the GMST?
-    θ_gast = θ_gmst + Eq_equinox1982
-
-    # Compute the rotation PEF => TOD.
-    q_TOD_PEF = Quaternion(cos(θ_gast/2), 0, 0, -sin(θ_gast/2))
-
-    # Compute the rotation TOD => MOD.
-    q1_x      = Quaternion( cos(ϵ_1980/2),   sin(ϵ_1980/2), 0,        0      )
-    q2_z      = Quaternion(cos(Δψ_1980/2),        0       , 0, sin(Δψ_1980/2))
-    q3_x      = Quaternion(cos(mϵ_1980/2), -sin(mϵ_1980/2), 0,        0      )
-    q_MOD_TOD = q1_x*q2_z*q3_x
-
-    # Return the full rotation.
-    q_TOD_PEF*q_MOD_TOD
+    compose_rotation(r_TOD_PEF, r_MOD_TOD)
 end
 
 """
@@ -972,14 +797,14 @@ the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
 
-The rotation type is described by the optional variable `T`. If it is `Matrix`,
+The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
-`Matrix`.
+`DCM`.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `Matrix`).
+* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
 * JD_UT1: Julian Day [UT1].
 * JD_TT: Julian Day [Terrestrial Time].
 * δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
@@ -998,14 +823,14 @@ rMODtoPEF_fk5(JD_UT1::Number,
               JD_TT::Number,
               δΔϵ_1980::Number = 0,
               δΔψ_1980::Number = 0) =
-    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
 
-function rMODtoPEF_fk5(::Type{Matrix},
+function rMODtoPEF_fk5(::Type{DCM},
                        JD_UT1::Number,
                        JD_TT::Number,
                        δΔϵ_1980::Number = 0,
                        δΔψ_1980::Number = 0)
-    rPEFtoMOD_fk5(Matrix, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
 end
 
 function rMODtoPEF_fk5(::Type{Quaternion},
