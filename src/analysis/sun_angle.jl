@@ -127,9 +127,6 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
     # Perturbation of the argument of perigee [rad/s].
     dw = dArgPer(a, e, i, :J2)
 
-    # DCM that rotates the Inertial reference frame to the orbit reference frame.
-    Doi = Array{Float64}(3,3)
-
     # DCM that rotates the orbit reference frame to the body reference frame.
     #
     # In this case, the body reference frame is defined as:
@@ -138,9 +135,9 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
     #     _ X axis completes the right-hand reference frame.
     # which is common for Earth pointing satellites.
 
-    Dbo = [ 0.0 1.0  0.0;
-            0.0 0.0 -1.0;
-           -1.0 0.0  0.0];
+    Dbo = DCM([ 0.0 1.0  0.0;
+                0.0 0.0 -1.0;
+               -1.0 0.0  0.0])
 
     # Loop for each day.
     for d in days
@@ -171,7 +168,7 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
             if (lighting == SAT_LIGHTING_SUNLIGHT)
                 # Convert the sun vector from the Inertial coordinate frame to
                 # the body coordinate frame.
-                angle2dcm!(Doi, RAAN_d, i, w_d+f, "ZXZ")
+                Doi = angle2dcm(RAAN_d, i, w_d+f, :ZXZ)
                 s_b = Dbo*Doi*(s_i/norm_s_i)
 
                 # Vector normal to the solar panel.
@@ -202,7 +199,7 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
 end
 
 """
-### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::Vector, step::Number = 0.1*pi/180.0)
+### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::AbstractVector, step::Number = 0.1*pi/180.0)
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
@@ -251,7 +248,7 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
                                             RAAN::Number,
                                             w::Number,
                                             numDays::Integer,
-                                            N::Vector,
+                                            N::AbstractVector,
                                             meanAnomaly::Bool = false,
                                             step::Number = 0.1*pi/180.0)
     fN_k(x) = N

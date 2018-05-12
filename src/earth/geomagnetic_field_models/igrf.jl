@@ -328,7 +328,7 @@ function igrf12(date::Number,
     B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric})
 
     # Convert to geodetic coordinates.
-    D_gd_gc = angle2dcm(λ_gc - λ, 0., 0., "YXZ")
+    D_gd_gc = angle2dcm(λ_gc - λ, 0., 0., :YXZ)
     B_gd    = D_gd_gc*B_gc
 end
 

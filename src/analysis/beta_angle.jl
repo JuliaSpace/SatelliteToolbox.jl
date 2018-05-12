@@ -77,17 +77,14 @@ function satellite_beta_angle(JD0::Number,
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0
 
-    # DCM that rotates the orbit reference frame to the Inertial reference frame.
-    Dio = Array{Float64}(3,3)
-
     # Loop
     for t in days
         # Compute the RAAN at the day d.
         RAAN_d = RAAN + dOmega*t
 
         # Compute the versor N represented in the Inertial ref. frame.
-        angle2dcm!(Dio, -i, -RAAN_d, 0.0, "XZX")
-        N_i = Dio*[0;0;1]
+        Dio = angle2dcm(-i, -RAAN_d, 0.0, :XZX)
+        N_i = Dio*SVector{3}(0,0,1)
 
         # Compute the Sun position at noon (UT) represented in the Inertial ref.
         # frame.

@@ -126,19 +126,15 @@ function kepler_to_rv(a::Number,
     #   - The X axis points towards the perigee;
     #   - The Z axis is perpendicular to the orbital plane (right-hand);
     #   - The Y axis completes a right-hand coordinate system.
-    r_o = r*[cos_f;
-             sin_f;
-               0  ;]
+    r_o = SVector{3}(r*cos_f, r*sin_f, 0)
 
     # Compute the velocity vector in the orbit plane without perturbations.
     n = angvel(a, e, i, :J0)
-    v_o = n*a/sqrt(1-e^2)*[ -sin_f;
-                           e+cos_f;
-                               0  ;]
+    v_o = n*a/sqrt(1-e^2)*SVector{3}(-sin_f, e+cos_f, 0)
 
     # Compute the matrix that rotates the orbit reference frame into the
     # inertial reference frame.
-    Dio = angle2dcm(-ω, -i, -Ω, "ZXZ")
+    Dio = angle2dcm(-ω, -i, -Ω, :ZXZ)
 
     # Compute the position and velocity represented in the inertial frame.
     r_i = Dio*r_o
@@ -198,7 +194,7 @@ The algorithm was adapted from [1].
 #
 ################################################################################
 
-function rv_to_kepler(r_i::Vector, v_i::Vector)
+function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
     # Position and velocity vector norms.
     r2 = r_i'*r_i
     v2 = v_i'*v_i
@@ -290,8 +286,8 @@ vector `[vx;vy;vz]`) to the Keplerian elements.
 function rv_to_kepler(x::Number,  y::Number,  z::Number,
                       vx::Number, vy::Number, vz::Number)
     # Create the position and velocity vectors.
-    r_i = [ x; y; z]
-    v_i = [vx;vy;vz]
+    r_i = SVector{3}( x, y, z)
+    v_i = SVector{3}(vx,vy,vz)
 
     # Compute the Keplerian orbit elements.
     rv_to_kepler(r_i,v_i)

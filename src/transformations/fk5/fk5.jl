@@ -114,9 +114,9 @@ function rITRFtoPEF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    [  1    0  -x_p;
-       0    1  +y_p;
-     +x_p -y_p   1 ;]
+    DCM(   1,    0,  -x_p,
+           0,    1,  +y_p,
+         +x_p, -y_p,   1 )'
 end
 
 function rITRFtoPEF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
@@ -169,9 +169,9 @@ function rPEFtoITRF_fk5(::Type{Matrix}, x_p::Number, y_p::Number)
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    [  1    0  +x_p;
-       0    1  -y_p;
-     -x_p +y_p   1 ;]
+    DCM(  1,    0,  +x_p,
+          0,    1,  -y_p,
+        -x_p, +y_p,   1 )'
 end
 
 function rPEFtoITRF_fk5(::Type{Quaternion}, x_p::Number, y_p::Number)
@@ -266,7 +266,7 @@ function rPEFtoTOD_fk5(::Type{Matrix},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation matrix.
-    create_rotation_matrix(-θ_gast, 'Z')
+    create_rotation_matrix(-θ_gast, :Z)
 end
 
 function rPEFtoTOD_fk5(::Type{Quaternion},
@@ -305,7 +305,7 @@ function rPEFtoTOD_fk5(::Type{Quaternion},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the quaternion.
-    Quaternion([cos(θ_gast/2); 0; 0; -sin(θ_gast/2)])
+    Quaternion(cos(θ_gast/2), 0, 0, -sin(θ_gast/2))
 end
 
 """
@@ -425,7 +425,7 @@ function rTODtoMOD_fk5(::Type{Matrix},
     ϵ_1980 = mϵ_1980 + Δϵ_1980
 
     # Compute and return the Direction Cosine Matrix.
-    angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, "XZX")
+    angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 end
 
 function rTODtoMOD_fk5(::Type{Quaternion},
@@ -443,9 +443,9 @@ function rTODtoMOD_fk5(::Type{Quaternion},
     ϵ_1980 = mϵ_1980 + Δϵ_1980
 
     # Compute the three rotations using Quaternions.
-    q1_x = Quaternion([ cos(ϵ_1980/2);   sin(ϵ_1980/2); 0;        0      ])
-    q2_z = Quaternion([cos(Δψ_1980/2);        0;        0; sin(Δψ_1980/2)])
-    q3_x = Quaternion([cos(mϵ_1980/2); -sin(mϵ_1980/2); 0;        0      ])
+    q1_x = Quaternion( cos(ϵ_1980/2),   sin(ϵ_1980/2), 0,        0      )
+    q2_z = Quaternion(cos(Δψ_1980/2),        0,        0, sin(Δψ_1980/2))
+    q3_x = Quaternion(cos(mϵ_1980/2), -sin(mϵ_1980/2), 0,        0      )
 
     # Return the complete quaternion.
     q1_x*q2_z*q3_x
@@ -543,16 +543,16 @@ rMODtoGCRF_fk5(JD_TT::Number) = rMODtoGCRF_fk5(Matrix,JD_TT)
 
 function rMODtoGCRF_fk5(::Type{Matrix},JD_TT::Number)
     (ζ,Θ,z) = precession_fk5(JD_TT)
-    angle2dcm(z,-Θ,ζ,"ZYZ")
+    angle2dcm(z, -Θ, ζ, :ZYZ)
 end
 
 function rMODtoGCRF_fk5(::Type{Quaternion},JD_TT::Number)
     (ζ,Θ,z) = precession_fk5(JD_TT)
 
     # Compute the three rotations using Quaternions.
-    q1_z = Quaternion([cos(z/2); 0;     0    ; sin(z/2)])
-    q2_y = Quaternion([cos(Θ/2); 0; -sin(Θ/2);    0    ])
-    q3_z = Quaternion([cos(ζ/2); 0;     0    ; sin(ζ/2)])
+    q1_z = Quaternion(cos(z/2), 0,     0    , sin(z/2))
+    q2_y = Quaternion(cos(Θ/2), 0, -sin(Θ/2),    0    )
+    q3_z = Quaternion(cos(ζ/2), 0,     0    , sin(ζ/2))
 
     # Return the complete quaternion.
     q1_z*q2_y*q3_z
@@ -890,10 +890,10 @@ function rPEFtoMOD_fk5(::Type{Matrix},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation PEF => TOD.
-    D_TOD_PEF = create_rotation_matrix(-θ_gast, 'Z')
+    D_TOD_PEF = create_rotation_matrix(-θ_gast, :Z)
 
     # Compute the rotation TOD => MOD.
-    D_MOD_TOD = angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, "XZX")
+    D_MOD_TOD = angle2dcm(ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
     D_MOD_TOD*D_TOD_PEF
 end
@@ -945,12 +945,12 @@ function rPEFtoMOD_fk5(::Type{Quaternion},
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation PEF => TOD.
-    q_TOD_PEF = Quaternion([cos(θ_gast/2); 0; 0; -sin(θ_gast/2)])
+    q_TOD_PEF = Quaternion(cos(θ_gast/2), 0, 0, -sin(θ_gast/2))
 
     # Compute the rotation TOD => MOD.
-    q1_x      = Quaternion([ cos(ϵ_1980/2);   sin(ϵ_1980/2); 0;        0      ])
-    q2_z      = Quaternion([cos(Δψ_1980/2);        0;        0; sin(Δψ_1980/2)])
-    q3_x      = Quaternion([cos(mϵ_1980/2); -sin(mϵ_1980/2); 0;        0      ])
+    q1_x      = Quaternion( cos(ϵ_1980/2),   sin(ϵ_1980/2), 0,        0      )
+    q2_z      = Quaternion(cos(Δψ_1980/2),        0       , 0, sin(Δψ_1980/2))
+    q3_x      = Quaternion(cos(mϵ_1980/2), -sin(mϵ_1980/2), 0,        0      )
     q_MOD_TOD = q1_x*q2_z*q3_x
 
     # Return the full rotation.

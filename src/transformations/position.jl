@@ -65,7 +65,7 @@ function satellite_position_e(JD::Number, r_i::Vector)
     GMST = JDtoGMST(JD)
 
     # DCM to convert the Inertial (J2000) reference frame to the ECEF frame.
-    Dei = angle2dcm(GMST, 0.0, 0.0, "ZYX")
+    Dei = angle2dcm(GMST, 0.0, 0.0, :ZYX)
 
     # Position represented in the ECEF frame.
     r_e = Dei*r_i
@@ -307,23 +307,22 @@ function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number,
     #     - The Y axis completes a right-hand coordinate system.
     #
     # Thus, the satellite vector represented in the s coordinate frame is:
-    r_s = [1;0;0]*norm_r
+    r_s = SVector{3}(1,0,0)*norm_r
 
     # rt is the versor perpendicular to the r vector that lies on the orbit
     # plane.
-    rt_s = [0;1;0]
+    rt_s = SVector{3}(0,1,0)
 
     # Compute the matrix that rotates from the S coordinate frame to the
     # Inertial coordinate Frame.
-    Dsi = Array{Float64}(3,3)
-    angle2dcm!(Dsi, RAAN, i, w+f, "ZXZ")
+    Dis = angle2dcm(RAAN, i, w+f, :ZXZ)'
 
     # Compute the satellite vector represented in the Inertial coordinate
     # frame.
-    r_i = Dsi'*r_s
+    r_i = Dis*r_s
 
     # Compute versor rt represented in the Inertial coordinate frame.
-    rt_i = Dsi'*rt_s
+    rt_i = Dis*rt_s
 
     # Return.
     return r_i, rt_i
