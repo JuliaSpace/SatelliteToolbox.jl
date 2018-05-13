@@ -31,14 +31,8 @@
 # File: ./src/orbit/anomalies.jl
 # ==============================
 
-println("$(c)Testing functions in file: ./src/orbit/anomalies.jl$d")
-println("$(c)---------------------------------------------------$d")
-println("")
-
 # Function M_to_E
 # ---------------
-
-println("    Testing function M_to_E...")
 
 ################################################################################
 #                                 Test Results
@@ -58,23 +52,16 @@ println("    Testing function M_to_E...")
 #
 ################################################################################
 
-E = M_to_E(0.4, 235.4*pi/180)*180/pi
-@test E ≈ 220.512074767522 atol=1e-12
-
-println("        $(b)Test passed!$d")
-println("")
+@testset "Function M_to_E" begin
+    E = M_to_E(0.4, 235.4*pi/180)*180/pi
+    @test E ≈ 220.512074767522 atol=1e-12
+end
 
 # File: ./src/transformation/gmst.jl
 # ==================================
 
-println("$(c)Testing functions in file: ./src/orbit/gmst.jl$d")
-println("$(c)----------------------------------------------$d")
-println("")
-
 # Function JDtoGMST
 # -----------------
-
-println("    Testing function JDtoGMST...")
 
 ################################################################################
 #                                 Test Results
@@ -97,10 +84,7 @@ println("    Testing function JDtoGMST...")
 #
 ################################################################################
 
-θ_GMST = JDtoGMST(2448855.009722)*180/pi
-
-@test θ_GMST ≈ 152.578787810 atol = 1e-4
-
-println("        $(b)Test passed!$d")
-println("")
-
+@testset "Function JDtoGMST" begin
+    θ_GMST = JDtoGMST(2448855.009722)*180/pi
+    @test θ_GMST ≈ 152.578787810 atol = 1e-4
+end

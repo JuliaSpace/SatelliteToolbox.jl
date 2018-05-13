@@ -1,6 +1,7 @@
 using SatelliteToolbox
 using ReferenceFrameRotations
-using Base.Test
+using Compat.Test
+using TestSetExtensions
 
 # Colors
 
@@ -10,50 +11,28 @@ g = "\x1b[1m\x1b[32m"
 y = "\x1b[1m\x1b[33m"
 c = "\x1b[1m\x1b[36m"
 
-################################################################################
-#                                General Tests
-################################################################################
-
-println("$y===================================================================$d")
-println("                          $g General Tests$d")
-println("$y===================================================================$d")
+@testset "General orbit functions" begin
+    include("./orbit/general.jl")
+end
 println("")
 
-include("./orbit.jl")
-
-################################################################################
-#                              Orbit Propagators
-################################################################################
-
-println("$y===================================================================$d")
-println("                    $g Testing Orbit Propagators$d")
-println("$y===================================================================$d")
+@testset "Orbit propagators" begin
+    cd("./orbit/propagators/")
+    include("./orbit/propagators/twobody.jl")
+    include("./orbit/propagators/sgp4.jl")
+    cd("../../")
+end
 println("")
 
-include("./twobody_tests.jl")
-
-cd("./sgp4_tests/")
-include("./sgp4_tests/sgp4_test.jl")
-cd("../")
-
-################################################################################
-#                            Transformations Tests
-################################################################################
-
-println("$y===================================================================$d")
-println("            $g Testing Coordinate Frame Transformations$d")
-println("$y===================================================================$d")
+@testset "Coordinate transformations" begin
+    cd("./transformations/fk5/")
+    include("./transformations/fk5/fk5.jl")
+    cd("../../")
+end
 println("")
 
-include("./transformations/fk5.jl")
-
-################################################################################
-#                                  Time Tests
-################################################################################
-
-println("$y===================================================================$d")
-println("               $g Testing Functions Related with Time$d")
-println("$y===================================================================$d")
+@testset "Functions related with time" begin
+    include("./time/time.jl")
+end
 println("")
 
-include("./time.jl")

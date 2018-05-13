@@ -31,14 +31,8 @@
 # File: ./src/time/time.jl
 # ========================
 
-println("$(c)Testing functions in file: ./src/time/time.jl$d")
-println("$(c)---------------------------------------------$d")
-println("")
-
 # Function get_ΔAT
 # ----------------
-
-println("    Testing function get_ΔAT...")
 
 # Leap seconds values obtained from [2].
 leap_secs = [2272060800	10	1 "Jan" 1972;
@@ -93,13 +87,8 @@ for i = 1:size(leap_secs,1)
     @test get_ΔAT(DatetoJD(year,month,day,0,0,0)-1/86400) == ΔAT-1
 end
 
-println("        $(b)Test passed!$d")
-println("")
-
 # Functions JD_UT1toUTC and JD_UTCtoUT1
 # -------------------------------------
-
-println("    Testing function JD_UT1toUTC and JD_UTCtoUT1...")
 
 ################################################################################
 #                                 Test Results
@@ -204,13 +193,8 @@ JD_UTC = JD_UT1toUTC(JD_UT1, ΔUT1)
 @test minute == 51
 @test second  ≈ 28.386009 atol=1e-4
 
-println("        $(b)Test passed!$d")
-println("")
-
 # Functions JD_TTtoUTC and JD_UTCtoTT
 # -----------------------------------
-
-println("    Testing function JD_TTtoUTC and JD_UTCtoTT...")
 
 ################################################################################
 #                                 Test Results
@@ -312,20 +296,11 @@ JD_UTC = JD_TTtoUTC(JD_TT)
 @test minute == 51
 @test second  ≈ 28.386009 atol=1e-4
 
-println("        $(b)Test passed!$d")
-println("")
-
 # File: ./src/time/julian_day.jl
 # ==============================
 
-println("$(c)Testing functions in file: ./src/time/julian_day.jl$d")
-println("$(c)---------------------------------------------------$d")
-println("")
-
 # Function JDtoGMST
 # -----------------
-
-println("    Testing function DatetoJD...")
 
 ################################################################################
 #                                 Test Results
@@ -372,13 +347,8 @@ println("    Testing function DatetoJD...")
 @test DatetoJD(2000,01,01,00,00,00) ≈ 2451544.500000 atol=1e-6
 @test DatetoJD(2013,10,19,22,00,00) ≈ 2456585.416667 atol=1e-6
 
-println("        $(b)Test passed!$d")
-println("")
-
 # Function JDtoDate
 # -----------------
-
-println("    Testing function JDtoDate...")
 
 ################################################################################
 #                                 Test Results
@@ -424,6 +394,3 @@ println("    Testing function JDtoDate...")
 @test JDtoDate(Int,2415020.500000) == (1900,01,01,00,00,00)
 @test JDtoDate(Int,2451544.500000) == (2000,01,01,00,00,00)
 @test JDtoDate(Int,2456585.416667) == (2013,10,19,22,00,00)
-
-println("        $(b)Test passed!$d")
-println("")

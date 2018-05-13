@@ -28,10 +28,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-println("$(c)Two Body Orbit Propagator Tests$d")
-println("$(c)-------------------------------$d")
-println("")
-
 ################################################################################
 #                                 Test Results
 ################################################################################
@@ -68,21 +64,18 @@ println("")
 #
 ################################################################################
 
-println("    Testing Example 2-4 in [1, p. 94-95].")
+@testset "Two Body orbit propagator" begin
+    orb = rv_to_kepler(1131340, -2282343, 6672423, -5643.05, 4303.33, 2428.79)
+    orbp = init_orbit_propagator(Val{:twobody}, orb)
+    (o,r,v) = step!(orbp,40*60)
 
-orb = rv_to_kepler(1131340, -2282343, 6672423, -5643.05, 4303.33, 2428.79)
-orbp = init_orbit_propagator(Val{:twobody}, orb)
-(o,r,v) = step!(orbp,40*60)
+    # Testing position.
+    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
+    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
+    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
 
-# Testing position.
-@test r[1]/1000 ≈ -4219.7527 atol=1e-3
-@test r[2]/1000 ≈ +4363.0292 atol=1e-3
-@test r[3]/1000 ≈ -3958.7666 atol=1e-3
-
-# Testing velocity.
-@test v[1]/1000 ≈ +3.689866 atol=1e-6
-@test v[2]/1000 ≈ -1.916735 atol=1e-6
-@test v[3]/1000 ≈ -6.112511 atol=1e-6
-
-println("        $(b)Test passed!$d")
-println("")
+    # Testing velocity.
+    @test v[1]/1000 ≈ +3.689866 atol=1e-6
+    @test v[2]/1000 ≈ -1.916735 atol=1e-6
+    @test v[3]/1000 ≈ -6.112511 atol=1e-6
+end

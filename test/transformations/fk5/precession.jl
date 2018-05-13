@@ -1,0 +1,73 @@
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# INPE - Instituto Nacional de Pesquisas Espaciais
+# ETE  - Engenharia e Tecnologia Espacial
+# DSE  - Divisão de Sistemas Espaciais
+#
+# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Description
+#
+#   Tests related to IAU-76/FK5 precession algorithm.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# References
+#
+#   [1] Vallado, D. A., Crawford, P., Hujsak, R., Kelso, T. S (2006). Revisiting
+#       Spacetrack Report #3: Rev1. AIAA.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Changelog
+#
+# 2018-04-18: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Initial version.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+
+# File: ./src/transformations/fk5/precession.jl
+# =============================================
+
+# Function precession_fk5
+# -----------------------
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# In this example, using JD_TT = 2453101.828154745, one gets the following data
+# related to the precession:
+#
+#   ζ = 0.0273055˚
+#   Θ = 0.0237306˚
+#   z = 0.0273059˚
+#
+# SatelliteToolbox provides the following results:
+#
+#   julia> (ζ,Θ,z) = precession_fk5(2453101.828154745)
+#   julia> ζ*180/pi
+#   0.027305539219877804
+#
+#   julia> Θ*180/pi
+#   0.023730619896279084
+#
+#   julia> z*180/pi
+#   0.02730593931829398
+#
+################################################################################
+
+@testset "Precession" begin
+    (ζ,Θ,z) = precession_fk5(2453101.828154745)
+
+    @test ζ*180/pi ≈ 0.0273055 atol=1e-7
+    @test Θ*180/pi ≈ 0.0237306 atol=1e-7
+    @test z*180/pi ≈ 0.0273059 atol=1e-7
+end
