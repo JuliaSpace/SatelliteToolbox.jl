@@ -16,8 +16,8 @@
 #
 # References
 #
-#   [1] Vallado, D. A., Crawford, P., Hujsak, R., Kelso, T. S (2006). Revisiting
-#       Spacetrack Report #3: Rev1. AIAA.
+#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+#       Microcosm Press, Hawthorn, CA, USA.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
