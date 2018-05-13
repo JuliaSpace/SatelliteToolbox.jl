@@ -60,7 +60,7 @@ include("./precession.jl")
 #
 ################################################################################
 
-@testset "Function rITRFtoPEF_fk5 and rPEFtoITRF_fk5" begin
+@testset "Functions rITRFtoPEF_fk5 and rPEFtoITRF_fk5" begin
     x_p = -0.140682*pi/(180*3600)
     y_p = +0.333309*pi/(180*3600)
 
