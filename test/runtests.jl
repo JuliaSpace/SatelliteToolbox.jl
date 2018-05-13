@@ -28,6 +28,9 @@ println("")
     cd("./transformations/fk5/")
     include("./transformations/fk5/fk5.jl")
     cd("../../")
+    cd("./transformations/")
+    include("./transformations/ecef_to_eci.jl")
+    cd("../")
 end
 println("")
 
