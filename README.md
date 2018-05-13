@@ -19,7 +19,7 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 ## Documentation
 
 A complete documentation of this package is not available yet. However, the
-functions is extensively documented using the julia documentation system, which
+functions are extensively documented using the julia documentation system, which
 can be accessed by typing `?` followed by the function name in REPL.
 
 ## Status
