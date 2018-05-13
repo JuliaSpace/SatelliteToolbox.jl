@@ -16,6 +16,11 @@
 #
 # Changelog
 #
+# 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   The functions related to Geodetic coordinates and ECEF frames were removed
+#   because they must be updated to use the correct reference frames. This will
+#   be done in the future.
+#
 # 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   All DEPRECATED functions were removed.
 #
@@ -36,244 +41,16 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export satellite_position_e, satellite_position_latlon, satellite_position_LLA,
-       satellite_position_i
-
-"""
-### function satellite_position_e(JD::Number, r_i::Vector)
-
-Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame at
-the Julian day `JD` given the position vector in the inertial frame `r_i`.
-
-##### Args
-
-* JD: Julian day.
-* r_i: Satellite position vector in the Inertial reference frame (J2000).
-
-##### Returns
-
-The satellite position vector represented in the ECEF frame.
-
-###### Remarks
-
-The computed vector will have the same unit of `r_i`.
-
-"""
-
-function satellite_position_e(JD::Number, r_i::Vector)
-    # Get the Mean Greenwich sideral time [rad].
-    GMST = JDtoGMST(JD)
-
-    # DCM to convert the Inertial (J2000) reference frame to the ECEF frame.
-    Dei = angle2dcm(GMST, 0.0, 0.0, :ZYX)
-
-    # Position represented in the ECEF frame.
-    r_e = Dei*r_i
-end
-
-"""
-### function satellite_position_e(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
-
-Compute the satellite position in the Earth-Centered-Earth-Fixed (ECEF) frame at
-the Julian day `JD` given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and
-`f`.
-
-##### Args
-
-* JD: Julian day.
-* a: Semi-major axis.
-* e: Eccentricity.
-* i: Inclination [rad].
-* RAAN: Right ascension of the ascending node [rad].
-* w: Argument of perigee [rad].
-* f: True anomaly [rad].
-
-##### Returns
-
-The satellite position vector represented in the ECEF frame.
-
-###### Remarks
-
-The satellite position vector will have the same unit of the semi-major axis.
-
-"""
-
-function satellite_position_e(JD::Number, a::Number, e::Number, i::Number,
-                              RAAN::Number, w::Number, f::Number)
-    # Compute the satellite position in the Inertial reference frame.
-    r_i, rt_i = satellite_position_i(a, e, i, RAAN, w, f)
-
-    # Compute the satellite position in the ECEF reference frame.
-    satellite_position_e(JD, r_i)
-end
-
-"""
-### function satellite_position_LLA(JD::Number, r_i::Vector)
-
-Compute the latitude, longitude, and altitude (WGS-84) of the satellite at the
-Julian Day `JD` given the position vector in the inertial frame `r_i`.
-
-##### Args
-
-* JD: Julian day.
-* r_i: Position vector represented in the Inertial (J2000) reference frame.
-
-##### Returns
-
-* The Nadir latitude in the interval [-π,+π] [rad].
-* The Nadir longitude in the interval [-π,+π] [rad].
-* The altitude of the satellite [m].
-
-##### Remarks
-
-TODO: This function uses the Greenwich Mean Sideral time. The accuracy can be
-      increased if it uses the Greenwich Apparent Sideral Time.
-
-"""
-
-################################################################################
-#                                 TEST RESULTS
-################################################################################
-#
-# This function was extensively tested against STK v10.0.0 to verify its
-# accuracy. Notice that minor discrepancy is expected since STK is using the
-# Greenwich Apparent Sideral Time whereas we are using here the Greenwich Mean
-# Sideral time for the sake of simplification.
-#
-# In the following the comparison between this algorithm and STK can be found.
-#
-# Scenario 01
-# ===========
-#
-# Day:                 01-Jan-2000 12:00 (JD = 2451545.0)
-# Semi-major axis:     7000.00 km
-# Eccentricity:        0.0
-# Inclination:         90.0°
-# RAAN:                0.0°
-# Argument of Perigee: 0.0°
-# True anomaly:        0.0°
-#
-#                 +--------------+---------------+
-#                 | Latitude [°] | Longitude [°] |
-# +---------------+--------------+---------------+
-# | STK v10.0.0   |   0.00000    |   79.53922    |
-# | This Function |   0.00000    |   79.53938    |
-# +---------------+--------------+---------------+
-# | Error         |   0.00000    |   -0.00016    |
-# |               |              |   17.81111 m  |
-# +---------------+--------------+---------------+
-#
-# Scenario 02
-# ===========
-#
-# Day:                 22-Set-2000 10:30 (JD = 2451809.93750)
-# Semi-major axis:     9500.00 km
-# Eccentricity:        0.25
-# Inclination:         75.6°
-# RAAN:                215.1°
-# Argument of Perigee: 97.00°
-# True anomaly:        10.0°
-#
-#                 +--------------+---------------+
-#                 | Latitude [°] | Longitude [°] |
-# +---------------+--------------+---------------+
-# | STK v10.0.0   |  67.95133    | -163.11059    |
-# | This Function |  67.97856    | -163.12144    |
-# +---------------+--------------+---------------+
-# | Error         |   0.02723    |    0.01085    |
-# |               |   3.03123 km |    1.20761 km |
-# +---------------+--------------+---------------+
-#
-# Scenario 03
-# ===========
-#
-# Day:                 19-Jun-2015 18:00 (JD = 2457193.25)
-# Semi-major axis:     7131.00 km
-# Eccentricity:        0.05
-# Inclination:         19.6°
-# RAAN:                190.6°
-# Argument of Perigee: 99.75°
-# True anomaly:        6.0°
-#
-#                 +--------------+---------------+
-#                 | Latitude [°] | Longitude [°] |
-# +---------------+--------------+---------------+
-# | STK v10.0.0   |  18.98900    |  119.79547    |
-# | This Function |  18.94671    |  119.62307    |
-# +---------------+--------------+---------------+
-# | Error         |   0.04229    |    0.17240    |
-# |               |   4.70770 km |   19.19141 km |
-# +---------------+--------------+---------------+
-#
-# Scenario 04
-# ===========
-#
-# Day:                 22-Set-2020 10:30 (JD = 2459114.93750)
-# Semi-major axis:     9500.00 km
-# Eccentricity:        0.25
-# Inclination:         75.6°
-# RAAN:                215.1°
-# Argument of Perigee: 97.00°
-# True anomaly:        10.0°
-#
-#                 +--------------+---------------+
-#                 | Latitude [°] | Longitude [°] |
-# +---------------+--------------+---------------+
-# | STK v10.0.0   |  68.09124    | -163.02999    |
-# | This Function |  67.97856    | -163.27545    |
-# +---------------+--------------+---------------+
-# | Error         |   0.11278    |    0.24546    |
-# |               |  12.54348 km |   27.32436 km |
-# +---------------+--------------+---------------+
-#
-################################################################################
-
-function satellite_position_LLA(JD::Number, r_i::Vector)
-    # Compute the satellite position in the ECEF frame.
-    r_e = satellite_position_e(JD, r_i)
-
-    # Compute the LLA in WGS-84.
-    ECEFtoLLA(r_e)
-end
-
-"""
-### function function satellite_position_latlon(JD::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
-
-Compute the latitude, longitude, and altitude (WGS-84) of the satellite at the
-Julian Day `JD` given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
-
-##### Args
-
-* a: Semi-major axis.
-* e: Eccentricity.
-* i: Inclination [rad].
-* RAAN: Right ascension of the ascending node [rad].
-* w: Argument of perigee [rad].
-* f: True anomaly [rad].
-
-##### Returns
-
-* The Nadir latitude in the interval [-π,+π] [rad].
-* The Nadir longitude in the interval [0,+2π] [rad].
-* The altitude of the satellite [m].
-
-"""
-
-function satellite_position_LLA(JD::Number, a::Number, e::Number, i::Number,
-                                RAAN::Number, w::Number, f::Number)
-    # Get the satellite position represented in the Inertial (J2000) coordinate
-    # frame.
-    (r_i, rt_i) = satellite_position_i(a, e, i, RAAN, w, f)
-
-    # Compute the latitude and longitude of Nadir.
-    satellite_position_LLA(JD, r_i)
-end
+export satellite_position_i
 
 """
 ### function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
-Compute the satellite position in the Inertial coordinate frame given the
-orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
+Compute the satellite position in the Earth-Centered Inertial (ECI) reference
+frame given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
+
+Notice that the ECI frame used will be the same as the frame of the orbital
+elements.
 
 ##### Args
 
@@ -286,9 +63,9 @@ orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
 
 ##### Returns
 
-* The satellite position vector represented in the Inertial coordinate frame.
-* The versor perpendicular to the satellite position vector that lies on the
-  orbit plane represented in the Inertial coordinate frame.
+* The satellite position vector represented in the ECI reference frame.
+* The unit vector perpendicular to the satellite position vector that lies on
+  the orbit plane represented in the ECI reference frame.
 
 ###### Remarks
 
@@ -321,7 +98,7 @@ function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number,
     # frame.
     r_i = Dis*r_s
 
-    # Compute versor rt represented in the Inertial coordinate frame.
+    # Compute unit vector `rt` represented in the Inertial coordinate frame.
     rt_i = Dis*rt_s
 
     # Return.
