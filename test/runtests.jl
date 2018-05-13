@@ -30,6 +30,7 @@ println("")
     cd("../../")
     cd("./transformations/")
     include("./transformations/ecef_to_eci.jl")
+    include("./transformations/eci_to_ecef.jl")
     cd("../")
 end
 println("")
