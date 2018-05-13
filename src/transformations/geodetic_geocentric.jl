@@ -31,6 +31,9 @@
 #
 # Changelog
 #
+# 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   The `LLA` in function names was changed to `Geodetic`.
+#
 # 2018-05-07: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Add function to convert from geodetic to geocentric latitude.
 #
@@ -39,21 +42,22 @@
 #   organization.
 #
 # 2016-03-10: Ronan Arraes Jardim Chagsa <ronan.arraes@inpe.br>
-#   Add code to convert from LLA (WGS-84) to ECEF reference frame.
+#   Add code to convert from Geodetic (WGS-84) to ECEF reference frame.
 #
 # 2015-11-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export ECEFtoLLA, LLAtoECEF
+export ECEFtoGeodetic, GeodetictoECEF
 
 export GeodetictoGeocentric
 
 """
-### function ECEFtoLLA(r_e::Vector)
+### function ECEFtoGeodetic(r_e::Vector)
 
-Convert the vector `r_e` in the ECEF reference frame into LLA (WGS-84).
+Convert the vector `r_e` represented in the Earth-Centered, Earth-Fixed (ECEF)
+reference frame into Geodetic coordinates (WGS-84).
 
 ##### Args
 
@@ -71,7 +75,7 @@ Based on algorithm in [3].
 
 """
 
-function ECEFtoLLA(r_e::Vector)
+function ECEFtoGeodetic(r_e::Vector)
     # Auxiliary variables.
     X = r_e[1]
     Y = r_e[2]
@@ -80,7 +84,7 @@ function ECEFtoLLA(r_e::Vector)
     p = sqrt(X^2 + Y^2)
     θ = atan2(Z*a_wgs84, p*b_wgs84)
 
-    # Compute LLA.
+    # Compute Geodetic.
     lon = atan2(Y, X)
     lat = atan2(Z + el_wgs84^2*b_wgs84*sin(θ)^3,
                 p -  e_wgs84^2*a_wgs84*cos(θ)^3)
@@ -91,10 +95,10 @@ function ECEFtoLLA(r_e::Vector)
 end
 
 """
-### function LLAtoECEF(lat::Number, lon::Number, h::Number)
+### function GeodetictoECEF(lat::Number, lon::Number, h::Number)
 
 Convert the latitude `lat`, longitude `lon`, and altitude `h` (WGS-84) into the
-ECEF reference frame.
+Earth-Centered, Earth-Fixed (ECEF) reference frame.
 
 ##### Args
 
@@ -112,7 +116,7 @@ Based on algorithm in [3].
 
 """
 
-function LLAtoECEF(lat::Number, lon::Number, h::Number)
+function GeodetictoECEF(lat::Number, lon::Number, h::Number)
     # Radius of curvature [m].
     N = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
 

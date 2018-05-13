@@ -94,7 +94,7 @@ function satellite_check_station(r_e::Vector,
                                  h_s::Number,
                                  minElev::Number)
     # Convert the ground station LLA to the ECEF frame.
-    rs_e = LLAtoECEF(lat_s, lon_s, h_s)
+    rs_e = GeodetictoECEF(lat_s, lon_s, h_s)
 
     satellite_check_station(r_e, rs_e, minElev)
 end
