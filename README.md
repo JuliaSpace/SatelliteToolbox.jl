@@ -1,7 +1,7 @@
 # SatelliteToolbox
 
-[![Build Status](https://travis-ci.org/ronisbr/SatelliteToolbox.jl.svg?branch=master)](https://travis-ci.org/ronisbr/SatelliteToolbox.jl)
-[![Coverage Status](https://coveralls.io/repos/github/ronisbr/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/ronisbr/SatelliteToolbox.jl?branch=master)
+[![Build Status](https://travis-ci.org/SatelliteToolbox/SatelliteToolbox.jl.svg?branch=master)](https://travis-ci.org/SatelliteToolbox/SatelliteToolbox.jl)
+[![Coverage Status](https://coveralls.io/repos/github/SatelliteToolbox/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/SatelliteToolbox/SatelliteToolbox.jl?branch=master)
 
 This package contains several functions to build simulations related with
 satellites. It is used on a daily basis on projects at the [Brazilian National

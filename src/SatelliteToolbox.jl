@@ -10,8 +10,9 @@ import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin, show
 importall ReferenceFrameRotations
 importall StaticArrays
 
+DCM{T} = SMatrix{3,3,T}
 # Re-exporting symbols from ReferenceFrameRotations.jl.
-export DCM, Quaternion
+export Quaternion
 
 ################################################################################
 #                                  Structures

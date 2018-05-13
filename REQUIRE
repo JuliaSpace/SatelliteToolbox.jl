@@ -1,5 +1,5 @@
 julia 0.6
 HTTP
 Interpolations
-ReferenceFrameRotations 0.2.0
+ReferenceFrameRotations
 StaticArrays

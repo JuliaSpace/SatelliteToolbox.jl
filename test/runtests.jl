@@ -1,7 +1,7 @@
+VERSION >= v"0.7.0-DEV.2036" && using Test
+VERSION <  v"0.7.0-DEV.2036" && using Base.Test
 using SatelliteToolbox
 using ReferenceFrameRotations
-using Compat.Test
-using TestSetExtensions
 
 # Colors
 
@@ -36,7 +36,7 @@ end
 println("")
 
 @testset "Functions related with time" begin
-    include("./time/time.jl")
+     include("./time/time.jl")
 end
 println("")
 
