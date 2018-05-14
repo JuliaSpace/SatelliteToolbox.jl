@@ -39,27 +39,8 @@ export TwoBody_Structure
 export twobody_init, twobody!
 
 ################################################################################
-#                             Types and Structures
+#                                  Overloads
 ################################################################################
-
-# Two Body orbit propagator structure.
-type TwoBody_Structure{T}
-    # Initial parameters.
-    t_0::T
-    n_0::T
-    e_0::T
-    i_0::T
-    Ω_0::T
-    ω_0::T
-    M_0::T
-    # Auxiliary parameters.
-    a::T
-    # Current parameters.
-    M_k::T
-    f_k::T
-    # Standard gravitational parameter of the central body [m^3/s^2].
-    μ::T
-end
 
 # Copy for TwoBody_Structure.
 function Base.copy(m::TwoBody_Structure)

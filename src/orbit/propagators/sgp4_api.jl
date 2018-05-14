@@ -24,28 +24,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export OrbitPropagatorSGP4
 export init_orbit_propagator, step!, propagate!
-
-################################################################################
-#                             Types and Structures
-################################################################################
-
-"""
-Structure that holds the information related to the SGP4 propagator.
-
-* orb: Current orbit (see `Orbit`).
-* sgp4_gc: Gravitational contents of the SGP4 algorithm (see `SGP4_GravCte`).
-* sgp4d: Structure that stores the SGP4 data (see `SGP4_Structure`).
-
-"""
-mutable struct OrbitPropagatorSGP4{T}
-    orb::Orbit{T,T,T,T,T,T,T}
-
-    # SGP4 related fields.
-    sgp4_gc::SGP4_GravCte{T}
-    sgp4d::SGP4_Structure{T}
-end
 
 ################################################################################
 #                                    Macros

@@ -24,19 +24,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export OrbitPropagatorJ2
 export init_orbit_propagator, step!, propagate!
-
-################################################################################
-#                             Types and Structures
-################################################################################
-
-mutable struct OrbitPropagatorJ2{T}
-    orb::Orbit{T,T,T,T,T,T,T}
-
-    # J2 orbit propagator related fields.
-    j2d::J2_Structure{T}
-end
 
 ################################################################################
 #                                  Functions

@@ -41,74 +41,16 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export SGP4_GravCte, sgp4_gc_wgs72, sgp4_gc_wgs84
+export sgp4_gc_wgs72, sgp4_gc_wgs84
 export sgp4_init, sgp4!
 
 ################################################################################
-#                             Types and Structures
+#                                  Overloads
 ################################################################################
-
-# Gravitational constants for SGP4.
-struct SGP4_GravCte{T<:Real}
-    R0::T   # Earth equatorial radius [km].
-    XKE::T  # sqrt(GM) [er/min]^(3/2).
-    J2::T   # The second gravitational zonal harmonic of the Earth.
-    J3::T   # The third  gravitational zonal harmonic of the Earth.
-    J4::T   # The fourth gravitational zonal harmonic of the Earth.
-end
 
 # Serialization of the arguments in SGP4_GravCte.
 function getindex(sgp4_gc::SGP4_GravCte, ::Colon)
     sgp4_gc.R0, sgp4_gc.XKE, sgp4_gc.J2, sgp4_gc.J3, sgp4_gc.J4
-end
-
-# SPG4 structure.
-type SGP4_Structure{T<:Real}
-    # TLE parameters.
-    t_0::T
-    n_0::T
-    e_0::T
-    i_0::T
-    Ω_0::T
-    ω_0::T
-    M_0::T
-    bstar::T
-    # Current parameters.
-    a_k::T
-    e_k::T
-    i_k::T
-    Ω_k::T
-    ω_k::T
-    M_k::T
-    n_k::T
-    # Parameters related with the orbit.
-    all_0::T
-    nll_0::T
-    # Useful constants to decrease the computational burden.
-    AE::T
-    QOMS2T::T
-    β_0::T
-    ξ::T
-    η::T
-    sin_i_0::T
-    θ::T
-    θ2::T
-    θ3::T
-    θ4::T
-    A_30::T
-    k_2::T
-    k_4::T
-    C1::T
-    C3::T
-    C4::T
-    C5::T
-    D2::T
-    D3::T
-    D4::T
-    # Others.
-    isimp::Bool
-    # SGP4 gravitational constants.
-    sgp4_gc::SGP4_GravCte{T}
 end
 
 # Copy for SGP4_Structure.

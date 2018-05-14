@@ -25,19 +25,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export OrbitPropagatorTwoBody
 export step!, propagate!
-
-################################################################################
-#                             Types and Structures
-################################################################################
-
-mutable struct OrbitPropagatorTwoBody{T}
-    orb::Orbit{T,T,T,T,T,T,T}
-
-    # Two Body orbit propagator related fields.
-    tbd::TwoBody_Structure{T}
-end
 
 ################################################################################
 #                                  Functions

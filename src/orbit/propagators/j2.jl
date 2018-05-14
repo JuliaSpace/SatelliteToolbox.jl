@@ -59,51 +59,12 @@
 ################################################################################
 
 ################################################################################
-#                             Types and Structures
+#                                  Overloads
 ################################################################################
-
-# Gravitational constants for J2 orbit propagator.
-immutable J2_GravCte{T}
-    R0::T   # Earth equatorial radius [m].
-    μm::T   # sqrt(GM) [er/s]^(3/2).
-    J2::T   # The second gravitational zonal harmonic of the Earth.
-end
 
 # Serialization of the arguments in J2_GravCtr.
 function getindex(j2_gc::J2_GravCte, ::Colon)
     j2_gc.R0, j2_gc.μm, j2_gc.J2
-end
-
-# J2 orbit propagator structure.
-type J2_Structure{T}
-    # Orbit parameters.
-    t_0::T
-    a_0::T
-    n_0::T
-    e_0::T
-    i_0::T
-    Ω_0::T
-    ω_0::T
-    M_0::T
-    # Drag parameters.
-    dn_o2::T   # First time derivative of mean motion [rad/s²].
-    ddn_o6::T  # Second time derivative of mean motion [rad/s³].
-    # Current parameters.
-    a_k::T
-    e_k::T
-    i_k::T
-    Ω_k::T
-    ω_k::T
-    M_k::T
-    n_k::T
-    f_k::T
-    # Useful constants to decrease the computational burden.
-    C1::T
-    C2::T
-    C3::T
-    C4::T
-    # J2 orbit propagator gravitational constants.
-    j2_gc::J2_GravCte{T}
 end
 
 # Copy for J2_Structure

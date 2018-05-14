@@ -31,19 +31,8 @@
 export read_egm_coefs, EGM_Coefs, compute_g, compute_U
 
 ################################################################################
-#                                    Types
+#                                  Overloads
 ################################################################################
-
-"""
-Structure to store the EGM coefficients.
-
-"""
-struct EGM_Coefs{T1,T2,T3}
-    C::Matrix{T1}
-    S::Matrix{T1}
-    μ::T2
-    R0::T3
-end
 
 # Serialization of the arguments in EGM_Coefs.
 function getindex(egm_coefs::EGM_Coefs, ::Colon)
