@@ -59,7 +59,6 @@ The following table:
        -----+---------------+---------------+------------
 
 """
-
 function satellite_eclipse_time(JD0::Number,
                                 a::Number,
                                 e::Number,

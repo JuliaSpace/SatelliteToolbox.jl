@@ -47,7 +47,6 @@ This function was based on the algorithm sent by Renato Branco to Ronan Arraes
 by e-mail at 2016-02-16.
 
 """
-
 function satellite_check_Brazil(lat::Number, lon::Number)
     # Notes
     # ====

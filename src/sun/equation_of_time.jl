@@ -46,7 +46,6 @@ algorithm was adapted from [1, p. 178, 277-279].
 The equation of time [rad].
 
 """
-
 function equation_of_time(JD::Number)
     # Constants
     const deg2rad = pi/180
@@ -77,4 +76,3 @@ function equation_of_time(JD::Number)
 
     eot*deg2rad
 end
-

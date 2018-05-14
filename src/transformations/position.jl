@@ -72,7 +72,6 @@ elements.
 The satellite position vector will have the same unit of the semi-major axis.
 
 """
-
 function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number,
                               w::Number, f::Number)
     # Compute the radius from the focus.

@@ -78,7 +78,6 @@ If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
 the angle interval is [-π,π].
 
 """
-
 function satellite_sun_radiation_earth_pointing(JD0::Number,
                                                 a::Number,
                                                 e::Number,
@@ -224,7 +223,6 @@ The mean Sun radiation on a surface [W/m²].
 For more details, see **satellite_sun_radiation_earth_pointing**.
 
 """
-
 function satellite_sun_radiation_earth_pointing_mean(JD0::Number,
                                                      a::Number,
                                                      e::Number,
@@ -295,7 +293,6 @@ If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
 the angle interval is [-π,π].
 
 """
-
 function satellite_sun_radiation_earth_pointing(JD0::Number,
                                                 a::Number,
                                                 e::Number,
@@ -340,7 +337,6 @@ The mean Sun radiation on a surface [W/m²].
 For more details, see **satellite_sun_radiation_earth_pointing**.
 
 """
-
 function satellite_sun_radiation_earth_pointing_mean(JD0::Number,
                                                      a::Number,
                                                      e::Number,

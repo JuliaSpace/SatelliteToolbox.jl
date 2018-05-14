@@ -74,7 +74,6 @@ reference frame into Geodetic coordinates (WGS-84).
 Based on algorithm in [3].
 
 """
-
 function ECEFtoGeodetic(r_e::Vector)
     # Auxiliary variables.
     X = r_e[1]
@@ -115,7 +114,6 @@ The converted vector represented in the ECEF reference frame.
 Based on algorithm in [3].
 
 """
-
 function GeodetictoECEF(lat::Number, lon::Number, h::Number)
     # Radius of curvature [m].
     N = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
@@ -148,7 +146,6 @@ the same in both geocentric and geodetic coordinates.
 Based on algorithm in [4, p. 3].
 
 """
-
 function GeodetictoGeocentric(ϕ_gd::Number, h::Number)
     # Auxiliary variables to decrease computational burden.
     sin_ϕ_gd  = sin(ϕ_gd)

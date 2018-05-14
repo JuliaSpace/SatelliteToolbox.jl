@@ -170,7 +170,6 @@ Initialize the data structure of J2 orbit propagator algorithm.
 The structure `J2_Structure` with the initialized parameters.
 
 """
-
 function j2_init(j2_gc::J2_GravCte{T},
                  t_0::Number,
                  n_0::Number,
@@ -264,7 +263,6 @@ from a TLE, then the inertial frame will be TEME. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 
 """
-
 function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Unpack the variables.
     t_0, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6, a_k, e_k, i_k, Ω_k,
@@ -303,4 +301,3 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     # reference frame.
     (r_i_k, v_i_k)
 end
-

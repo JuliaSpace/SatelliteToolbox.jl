@@ -81,7 +81,6 @@ If `N` is omitted, then the full normalization will be used.
            (**DEFAULT** = `false`).
 
 """
-
 dlegendre!(dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false) =
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
@@ -147,7 +146,6 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-
 dlegendre(ϕ::Number, P::Matrix, ph_term::Bool) =
     dlegendre_fully_normalized(ϕ, P, ph_term)
 
@@ -198,7 +196,6 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-
 dlegendre(ϕ::Number, n_max::Number, ph_term::Bool = false) =
     dlegendre_fully_normalized(ϕ, n_max, ph_term)
 
@@ -258,7 +255,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 function dlegendre_fully_normalized!(dP::Matrix,
                                      ϕ::Number,
                                      P::Matrix,
@@ -383,7 +379,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 function dlegendre_fully_normalized(ϕ::Number, P::Matrix, ph_term = false)
     dP = zeros(P)
     dlegendre_fully_normalized!(dP,ϕ,P,ph_term)
@@ -465,7 +460,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 dlegendre_schmidt_quasi_normalized!(dP::Matrix,
                                     ϕ::Number,
                                     P::Matrix,
@@ -510,7 +504,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 function dlegendre_schmidt_quasi_normalized(ϕ::Number,
                                             P::Matrix,
                                             ph_term = false)
@@ -544,7 +537,6 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-
 function dlegendre_schmidt_quasi_normalized(ϕ::Number,
                                             n_max::Number,
                                             ph_term::Bool = false)
@@ -593,7 +585,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 function dlegendre_conventional!(dP::Matrix,
                                  ϕ::Number,
                                  P::Matrix,
@@ -682,7 +673,6 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-
 function dlegendre_conventional(ϕ::Number, P::Matrix, ph_term = false)
     dP = zeros(P)
     dlegendre_conventional!(dP, ϕ, P, ph_term)
@@ -714,7 +704,6 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-
 function dlegendre_conventional(ϕ::Number,
                                 n_max::Number,
                                 ph_term::Bool = false)

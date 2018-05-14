@@ -101,7 +101,6 @@ Initialize the data structure of Two Body orbit propagator algorithm.
 The structure `TwoBody_Structure` with the initialized parameters.
 
 """
-
 function twobody_init(t_0::Number,
                       n_0::Number,
                       e_0::Number,
@@ -148,7 +147,6 @@ was used to generate the orbit parameters. If the orbit parameters are obtained
 from a TLE, then the inertial frame will be TEME.
 
 """
-
 function twobody!(tbd::TwoBody_Structure, t::Number)
     # Time elapsed since epoch.
     Δt = t - tbd.t_0
@@ -167,4 +165,3 @@ function twobody!(tbd::TwoBody_Structure, t::Number)
     # reference frame.
     (r_i_k, v_i_k)
 end
-

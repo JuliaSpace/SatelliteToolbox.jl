@@ -51,7 +51,6 @@ Based on algorithm in [2] (http://www.navipedia.net/index.php/CEP_to_ITRF),
 accessed at 2015-12-01.
 
 """
-
 function J2000toGMST(J2000_UT1::Number)
 	# Julian centuries elapsed from the epoch J2000.0.
 	T_UT1 = J2000_UT1/36525
@@ -89,4 +88,3 @@ Based on algorithm in [1, pp. 188].
 function JDtoGMST(JD_UT1::Number)
 	J2000toGMST(JD_UT1 - JD_J2000)
 end
-

@@ -38,7 +38,6 @@ export read_egm_coefs, EGM_Coefs, compute_g, compute_U
 Structure to store the EGM coefficients.
 
 """
-
 struct EGM_Coefs{T1,T2,T3}
     C::Matrix{T1}
     S::Matrix{T1}
@@ -74,7 +73,6 @@ A vector with the gravity acceleration represented in ITRF (Earth body-fixed
 frame).
 
 """
-
 function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
                    r::Vector,
                    n_max::Number) where {T1,T2,T3}
@@ -214,7 +212,6 @@ harmonics will be `n_max`.
 The gravitational potential at specified location [J/kg].
 
 """
-
 function compute_U(egm_coefs::EGM_Coefs,
                    ϕ_gc::Number,
                    λ_gc::Number,
@@ -276,7 +273,6 @@ This must be changed to a format understandable by Julia:
     -0.484169317366974e-03
 
 """
-
 function read_egm_coefs(filename::String, μ::Number, R0::Number)
     raw = readdlm(filename)
 
@@ -311,7 +307,6 @@ specify which EGM version must be used. The possible values are:
 A structure `EGM_Coefs` with the coefficients.
 
 """
-
 function read_egm_coefs(egm_version::Symbol = :EGM2008)
     dir = @__DIR__
 

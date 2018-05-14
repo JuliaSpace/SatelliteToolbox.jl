@@ -68,7 +68,6 @@ A new instance of the structure `OrbitPropagatorTwoBody` that stores the
 information of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:twobody}},
                                t_0::Number,
                                n_0::Number,
@@ -139,7 +138,6 @@ A new instance of the structure `OrbitPropagatorTwoBody` that stores the
 information of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:twobody}},
                                tle::TLE,
                                μ::Number = m0)
@@ -179,7 +177,6 @@ was used to generate the orbit parameters. If the orbit parameters are obtained
 from a TLE, then the inertial frame will be TEME.
 
 """
-
 function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
     # Auxiliary variables.
     orb = orbp.orb
@@ -225,7 +222,6 @@ was used to generate the orbit parameters. If the orbit parameters are obtained
 from a TLE, then the inertial frame will be TEME.
 
 """
-
 function propagate!(orbp::OrbitPropagatorTwoBody, t::Vector)
     # Auxiliary variables.
     orb = orbp.orb

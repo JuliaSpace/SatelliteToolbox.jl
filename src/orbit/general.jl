@@ -44,7 +44,6 @@ export angvel, dArgPer, dRAAN, period
 This structure contains the same elements of the TLE with the same units.
 
 """
-
 struct TLE
     name::String            # Name of the satellite.
 
@@ -76,6 +75,7 @@ end
 
 """
 This structure defines the orbit in terms of the Keplerian elements.
+
 """
 mutable struct Orbit{T1,T2,T3,T4,T5,T6,T7}
     t::T1  # Orbit epoch.
@@ -107,7 +107,6 @@ macro throws an exception if the orbit is not valid.
 * e: Eccentricity.
 
 """
-
 macro check_orbit(a, e)
     quote
         # Check if the arguments are valid.
@@ -155,7 +154,6 @@ An object of type `Orbit` with the specified orbit. The orbit epoch is defined
 as 0.0.
 
 """
-
 function Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
     Orbit(0.0, a, e, i, Ω, ω, f)
 end
@@ -188,7 +186,6 @@ the symbol `pert`.
 The angular velocity of an object in the specified orbit [rad/s].
 
 """
-
 function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Unperturbed orbit period.
     n0 = sqrt(m0/Float64(a)^3)
@@ -231,7 +228,6 @@ perturbation terms specified by the symbol `pert`.
 The angular velocity of an object in the specified orbit [rad/s].
 
 """
-
 function angvel(orb::Orbit, pert::Symbol = :J2)
     angvel(orb.a, orb.e, orb.i, pert)
 end
@@ -260,7 +256,6 @@ perturbation terms specified by the symbol `pert`.
 The perturbation of the argument of perigee [rad/s].
 
 """
-
 function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
@@ -302,7 +297,6 @@ the perturbation terms specified by the symbol `pert`.
 The perturbation of the argument of perigee [rad/s].
 
 """
-
 function dArgPer(orb::Orbit, pert::Symbol = :J2)
     dArgPer(org.a, org.e, orb.i, pert)
 end
@@ -331,7 +325,6 @@ perturbation terms specified by the symbol `pert`.
 The time derivative of the RAAN [rad/s].
 
 """
-
 function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
@@ -372,7 +365,6 @@ orbit `orb` using the perturbation terms specified by the symbol `pert`.
 The time derivative of the RAAN [rad/s].
 
 """
-
 function dRAAN(orb::Orbit, pert::Symbol = :J2)
     dRAAN(orb.a, orb.e, orb.i, pert)
 end
@@ -401,7 +393,6 @@ the symbol `pert`.
 The orbit period [s].
 
 """
-
 function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     n = angvel(a, e, i, pert)
     2.0*pi/n
@@ -428,7 +419,6 @@ specified by the symbol `pert`.
 The orbit period [s].
 
 """
-
 function period(orb::Orbit, pert::Symbol = :J2)
     period(orb.a, orb.e, orb.i, pert)
 end

@@ -59,7 +59,6 @@ the satellite position vector `r_i`.
 * `SAT_LIGHTING_UMBRA`: Satellite is at umbra region.
 
 """
-
 function satellite_lighting_condition(r_i::AbstractVector, s_i::AbstractVector)
     # Norme of the sun position vector.
     norm_s_i = norm(s_i)

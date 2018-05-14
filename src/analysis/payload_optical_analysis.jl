@@ -41,7 +41,6 @@ to cover the entire Equator within the revisit interval.
 The minimum half FOV [rad].
 
 """
-
 function minimum_half_FOV_grss(h::Real, T::Real, i::Real, To::Integer)
     adjacent_track_angle_grss(h, T, i, To, 0.0)
 end
@@ -65,7 +64,6 @@ to cover the entire Equator within the revisit interval.
 The minimum half FOV [rad].
 
 """
-
 function minimum_half_FOV_grss(h::Real, a::Real, e::Real, i::Real, To::Integer)
     adjacent_track_angle_grss(h, a, e, i, To, 0.0)
 end
@@ -87,7 +85,6 @@ cover the entire Equator within the revisit interval.
 The minimum swath [m].
 
 """
-
 function minimum_swath_grss(T::Real, i::Real, To::Integer)
     adjacent_track_distance_grss(T, i, To, 0.0)
 end
@@ -110,7 +107,6 @@ cover the entire Equator within the revisit interval.
 The minimum swath [m].
 
 """
-
 function minimum_swath_grss(a::Real, e::Real, i::Real, To::Integer)
     adjacent_track_distance_grss(a, e, i, To, 0.0)
 end
@@ -130,10 +126,8 @@ Compute the swath width given the orbit altitude and the half FOV.
 The swath width [m].
 
 """
-
 function swath_width(h::Real, HalfFOV::Real)
     gamma = pi - asin((R0+h)/R0*sin(HalfFOV))
     alpha = pi - gamma - HalfFOV
     S = R0*alpha
 end
-

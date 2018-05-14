@@ -71,7 +71,6 @@ A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:J2}},
                                t_0::Number,
                                n_0::Number,
@@ -116,7 +115,6 @@ A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:J2}},
                                orb_0::Orbit,
                                dn_o2::Number = 0,
@@ -154,7 +152,6 @@ A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:J2}},
                                tle::TLE,
                                j2_gc::J2_GravCte = j2_gc_wgs84)
@@ -197,7 +194,6 @@ from a TLE, then the inertial frame will be TEME. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 
 """
-
 function step!(orbp::OrbitPropagatorJ2, Δt::Number)
     # Auxiliary variables.
     orb = orbp.orb
@@ -249,7 +245,6 @@ from a TLE, then the inertial frame will be TEME. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 
 """
-
 function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
     # Auxiliary variables.
     orb = orbp.orb

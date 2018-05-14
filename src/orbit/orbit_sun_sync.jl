@@ -51,7 +51,6 @@ eccentricity `e`.
 * A boolean variable that indicates if the numerical algorithm converged.
 
 """
-
 function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
     # Check if the arguments are valid.
     if (n <= 0)
@@ -144,7 +143,6 @@ Compute the Sun-synchronous orbit given the inclination `i` and the eccentricity
 The semi-major axis of the Sun-synchronous orbit [m].
 
 """
-
 function compute_ss_orbit_by_inclination(i::Number, e::Number)
     if !( 0. <= e < 1. )
         throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
@@ -184,7 +182,6 @@ eccentricity `e`.
 The inclination of the Sun-synchronous orbit [rad].
 
 """
-
 function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
     # Check if the arguments are valid.
     if (a*(1.0-e) <= R0)

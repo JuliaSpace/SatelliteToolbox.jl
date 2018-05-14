@@ -84,7 +84,6 @@ If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
 the angle interval is [-π,π].
 
 """
-
 function satellite_sun_angle_earth_pointing(JD0::Number,
                                             a::Number,
                                             e::Number,
@@ -240,7 +239,6 @@ If the **mean anomaly** is used, then the angle interval is [0, 2π]. Otherwise,
 the angle interval is [-π,π].
 
 """
-
 function satellite_sun_angle_earth_pointing(JD0::Number,
                                             a::Number,
                                             e::Number,

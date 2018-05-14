@@ -131,7 +131,6 @@ If `N` is omitted, then the full normalization will be used.
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
 """
-
 legendre(ϕ::Number, n_max::Number, ph_term::Bool = false) =
     legendre_fully_normalized(ϕ, n_max, ph_term)
 
@@ -180,7 +179,6 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
           _
     where P_n,m is the fully normalized Legendre associated function.
 """
-
 function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
     (rows, cols) = size(P)
 
@@ -252,7 +250,6 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
     where P_n,m is the fully normalized Legendre associated function.
 
 """
-
 function legendre_fully_normalized(ϕ::Number,
                                    n_max::Number,
                                    ph_term::Bool = false)
@@ -300,7 +297,6 @@ This algorithm was based on [3,4]. The conversion is obtained by:
           =
     where P_n,m is the quasi-normalized normalized Legendre associated function.
 """
-
 function legendre_schmidt_quasi_normalized!(P::Matrix,
                                             ϕ::Number,
                                             ph_term::Bool = false)
@@ -375,7 +371,6 @@ This algorithm was based on [3,4]. The conversion is obtained by:
     where P_n,m is the quasi-normalized normalized Legendre associated function.
 
 """
-
 function legendre_schmidt_quasi_normalized(ϕ::Number,
                                            n_max::Number,
                                            ph_term::Bool = false)
@@ -407,7 +402,6 @@ The result will be stored at matrix `P`.
            (**DEFAULT** = `false`).
 
 """
-
 function legendre_conventional!(P::Matrix,
                                 ϕ::Number,
                                 ph_term::Bool = false)
@@ -466,7 +460,6 @@ The maximum degree that will be computed is `n_max`.
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
 """
-
 function legendre_conventional(ϕ::Number,
                                n_max::Number,
                                ph_term::Bool = false)

@@ -49,7 +49,6 @@ The distance between adjacent ground tracks at the given latitude [m].
 The functions **does not** check if the orbit is a GRSS orbit.
 
 """
-
 function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
     # Angle between two adjacent traces.
     theta = (T/To)*pi/43200.0
@@ -60,7 +59,6 @@ function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number
     # Minimum swath.
     beta*R0*cos(lat)
 end
-
 
 """
 ### function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int, lat::Number)
@@ -86,7 +84,6 @@ The distance between adjacent ground tracks at the given latitude [m].
 The functions *does not* check if the orbit is a GRSS orbit.
 
 """
-
 function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int,
                                       lat::Number)
     # Orbit period.
@@ -121,7 +118,6 @@ The angle between adjacent ground tracks at the given latitude [rad].
 The functions **does not** check if the orbit is a GRSS orbit.
 
 """
-
 function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int,
                                    lat::Number)
     # Angle between two adjacent traces.
@@ -164,7 +160,6 @@ inclination `i`, and orbit cycle `To`.
 The functions *does not* check if the orbit is a GRSS orbit.
 
 """
-
 function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number,
                                    To::Int, lat::Number)
     # Period (J2).
@@ -193,7 +188,6 @@ Compute the Sun-synchronous orbit given the number of revolutions per day
 * A boolean variable that indicates if the numerical algorithm converged.
 
 """
-
 function compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
     compute_ss_orbit_by_ang_vel(numRevPD*2*pi/86400.0, e)
 end
@@ -226,7 +220,6 @@ If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a orbit
 is added to the list.
 
 """
-
 function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                                       minAlt::Number=-1.0, maxAlt::Number=-1.0,
                                       e::Number=0.0)
@@ -318,6 +311,5 @@ Sort the list of Sun-synchronous orbits `ss_orbits` by height.
 A matrix containing a list of Sun-synchronous orbits sorted by height.
 
 """
-
 sort_list_ss_orbits_by_height(ss_orbits::Matrix) =
     sortrows(ss_orbits, by=x->x[1])

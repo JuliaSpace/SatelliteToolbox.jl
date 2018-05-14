@@ -68,7 +68,6 @@ more readable code than the original one in FORTRAN, because it uses features
 available in julia language.
 
 """
-
 igrf12(date::Number, r::Number, λ::Number, Ω::Number) =
     igrf12(date, r, λ, Ω, Val{:geocentric})
 
@@ -309,18 +308,18 @@ more readable code than the original one in FORTRAN, because it uses features
 available in julia language.
 
 """
-
-# TODO: This method has a small error (≈ 0.01 nT) compared with the `igrf12syn`.
-# However, the result is exactly the same as the MATLAB function in [3]. Hence,
-# this does not seem to be an error in the conversion from geodetic to
-# geocentric coordinates. This is probably caused by a numerical error. Further
-# verification is necessary.
-
 function igrf12(date::Number,
                 h::Number,
                 λ::Number,
                 Ω::Number,
                 ::Type{Val{:geodetic}})
+
+    # TODO: This method has a small error (≈ 0.01 nT) compared with the
+    # `igrf12syn`.  However, the result is exactly the same as the MATLAB
+    # function in [3]. Hence, this does not seem to be an error in the
+    # conversion from geodetic to geocentric coordinates. This is probably
+    # caused by a numerical error. Further verification is necessary.
+
     # Convert the geodetic coordinates to geocentric coordinates.
     (λ_gc, r) = GeodetictoGeocentric(λ, h)
 
@@ -363,7 +362,6 @@ the ones described in the function `igrf12syn` in [2].
   that a warning message is printed for dates grated than 2020.
 
 """
-
 function igrf12syn(isv::Int,
                    date::Number,
                    itype::Int,

@@ -44,7 +44,6 @@ The RAAN in the interval [0, 2π] [rad].
 The sun position is computed at noon of the day `t0`.
 
 """
-
 function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
     println("WARNING: The function compute_RAAN_lt(t0::Int, asc_node_lt::Real) is deprecated!")
     println("Use the function compute_RAAN_lt(JD::Real, asc_node_lt::Real) instead.\n")
@@ -70,7 +69,6 @@ Julian day `JD`.
 The RAAN in the interval [0, 2π] [rad].
 
 """
-
 function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
     # Get the sun position at noon (UT) represented in the Inertial ref. frame.
     s_i = sun_position_i(JD)
@@ -112,7 +110,6 @@ analysis is performed for `numDays` days.
 The RAAN computed for each day in the interval [0,2π] [rad].
 
 """
-
 function sim_RAAN_J2(a::Number,
                      e::Number,
                      i::Number,
@@ -131,4 +128,3 @@ function sim_RAAN_J2(a::Number,
 
     [days RAAN]
 end
-

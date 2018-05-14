@@ -53,7 +53,6 @@ The true anomaly [rad].
 This functions uses the Newton-Raphson method to compute the true anomaly.
 
 """
-
 function satellite_orbit_compute_f(a::Number,
                                    e::Number,
                                    i::Number,

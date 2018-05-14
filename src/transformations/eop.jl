@@ -58,7 +58,6 @@ respect to the crust at 19 June 2018, the following can be used:
     x[DatestoJD(2018,19,06,0,0,0)]
 
 """
-
 struct EOPData_IAU1980{T}
     x::T
     y::T
@@ -94,7 +93,6 @@ respect to the crust at 19 June 2018, the following can be used:
     x[DatestoJD(2018,19,06,0,0,0)]
 
 """
-
 struct EOPData_IAU2000A{T}
     x::T
     y::T
@@ -133,7 +131,6 @@ with the interpolations of the EOP parameters. Notice that the interpolation
 indexing is set to the Julian Day.
 
 """
-
 function get_iers_eop(data_type::Symbol = :IAU2000A)
     if data_type == :IAU1980
         return get_iers_eop_iau_1980()
@@ -166,7 +163,6 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-
 function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
     r = HTTP.request("GET", url)
 
@@ -200,7 +196,6 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-
 function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
     r = HTTP.request("GET", url)
 
@@ -245,7 +240,6 @@ download it using the following commands:
         wget https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214
 
 """
-
 function read_iers_eop(filename::String, data_type::Symbol = :IAU2000A)
     # Parse the data removing the header.
     eop = readdlm(filename; skipblanks=true, skipstart=14)
@@ -318,4 +312,3 @@ function parse_iers_eop_iau_2000A(eop::Matrix)
         extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
     )
 end
-

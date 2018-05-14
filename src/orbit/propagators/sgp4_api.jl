@@ -39,7 +39,6 @@ Structure that holds the information related to the SGP4 propagator.
 * sgp4d: Structure that stores the SGP4 data (see `SGP4_Structure`).
 
 """
-
 mutable struct OrbitPropagatorSGP4{T}
     orb::Orbit{T,T,T,T,T,T,T}
 
@@ -63,7 +62,6 @@ Macro that updates the parameters of `orbp.orb` using `t` and `orbp.sgp4d`.
 * t: New orbit epoch [s].
 
 """
-
 macro update_orb!(orbp, t)
     quote
         local orb   = $(esc(orbp)).orb
@@ -113,7 +111,6 @@ A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                t_0::Number,
                                n_0::Number,
@@ -170,7 +167,6 @@ A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                orb_0::Orbit,
                                bstar::Number = 0.0,
@@ -205,7 +201,6 @@ A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
 
 """
-
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                tle::TLE,
                                sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
@@ -240,7 +235,6 @@ parameters will be written in `orbp`.
 * The velocity vector represented in TEME frame after the step [m].
 
 """
-
 function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     # Auxiliary variables.
     orb   = orbp.orb
@@ -282,7 +276,6 @@ at the last propagation instant.
   instant [m].
 
 """
-
 function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
     # Auxiliary variables.
     orb   = orbp.orb
@@ -311,4 +304,3 @@ function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
 
     (result_orb, result_r, result_v)
 end
-

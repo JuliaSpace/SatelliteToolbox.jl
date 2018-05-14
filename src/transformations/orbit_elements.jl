@@ -40,32 +40,6 @@
 export kepler_to_rv
 export rv_to_kepler
 
-"""
-### function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
-
-Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
-representation (position vector `r` and velocity vector `v`)
-
-##### Args
-
-* a: Semi-major axis [m].
-* e: Excentricity.
-* i: Inclination [rad].
-* Ω: Right ascension of the ascending node [rad].
-* ω: Argument of perigee [rad].
-* f: True anomaly [rad].
-
-##### Returns
-
-* The position vector represented in the inertial reference frame [m].
-* The velocity vector represented in the inertial reference frame [m].
-
-##### References
-
-This algorithm was adapted from [1] and [3, p. 37-38].
-
-"""
-
 ################################################################################
 #                                 TEST RESULTS
 ################################################################################
@@ -104,6 +78,31 @@ This algorithm was adapted from [1] and [3, p. 37-38].
 #
 ################################################################################
 
+"""
+### function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+
+Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
+representation (position vector `r` and velocity vector `v`)
+
+##### Args
+
+* a: Semi-major axis [m].
+* e: Excentricity.
+* i: Inclination [rad].
+* Ω: Right ascension of the ascending node [rad].
+* ω: Argument of perigee [rad].
+* f: True anomaly [rad].
+
+##### Returns
+
+* The position vector represented in the inertial reference frame [m].
+* The velocity vector represented in the inertial reference frame [m].
+
+##### References
+
+This algorithm was adapted from [1] and [3, p. 37-38].
+
+"""
 function kepler_to_rv(a::Number,
                       e::Number,
                       i::Number,
@@ -143,27 +142,6 @@ function kepler_to_rv(a::Number,
     (r_i, v_i)
 end
 
-"""
-### function rv_to_kepler(r::Vector, v::Vector)
-
-Convert a Cartesian representation (position vector `r` and velocity vector `v`)
-to the Keplerian elements.
-
-##### Args
-
-* r: Position vector in an inertial reference frame [m].
-* v: Velocity vector in an inertial reference frame [m].
-
-##### Returns
-
-An instance of the structure `Orbit` with the Keplerian elements [SI units].
-
-##### References
-
-The algorithm was adapted from [1].
-
-"""
-
 ################################################################################
 #                                 TEST RESULTS
 ################################################################################
@@ -194,6 +172,26 @@ The algorithm was adapted from [1].
 #
 ################################################################################
 
+"""
+### function rv_to_kepler(r::Vector, v::Vector)
+
+Convert a Cartesian representation (position vector `r` and velocity vector `v`)
+to the Keplerian elements.
+
+##### Args
+
+* r: Position vector in an inertial reference frame [m].
+* v: Velocity vector in an inertial reference frame [m].
+
+##### Returns
+
+An instance of the structure `Orbit` with the Keplerian elements [SI units].
+
+##### References
+
+The algorithm was adapted from [1].
+
+"""
 function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
     # Position and velocity vector norms.
     r2 = r_i'*r_i
@@ -282,7 +280,6 @@ vector `[vx;vy;vz]`) to the Keplerian elements.
     - True anomaly [rad].
 
 """
-
 function rv_to_kepler(x::Number,  y::Number,  z::Number,
                       vx::Number, vy::Number, vz::Number)
     # Create the position and velocity vectors.

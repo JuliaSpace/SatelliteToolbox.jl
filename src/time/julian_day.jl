@@ -91,7 +91,6 @@ The Julian Day.
 The algorithm was obtained from [2] (Accessed on 2018-04-11).
 
 """
-
 function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
     # Check the input.
     ( (M < 1) || (M > 12) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
@@ -145,7 +144,6 @@ Convert the date `date` to Julian Day.
 The Julian Day.
 
 """
-
 function DatetoJD(date::Date)
     return DatetoJD(Dates.year(date), Dates.month(date), Dates.day(date),
                     0, 0, 0)
@@ -165,7 +163,6 @@ Convert the date and time `dateTime` to Julian Day.
 The Julian Day.
 
 """
-
 function DatetoJD(dateTime::DateTime)
     return DatetoJD(Dates.year(dateTime),
                     Dates.month(dateTime),
@@ -218,7 +215,6 @@ the following warning:
 > In particular, the method fails if Y<400.
 
 """
-
 function JDtoDate(JD::Number)
     Q = JD + 0.5
     Z = floor(Int, Q)

@@ -41,7 +41,6 @@ The `str` parsed to the type `T`. If an error occurred, then an exception is
 thrown.
 
 """
-
 macro parse_value(T, str, line_num)
     quote
         local _T = $(esc(T))
@@ -73,7 +72,6 @@ division by 10.
 The computed checksum.
 
 """
-
 function compute_checksum(str::String)
     checksum = 0
 
@@ -110,7 +108,6 @@ Read the TLEs in the file `tle_filename`.
 An array with all the TLEs that were parsed.
 
 """
-
 function read_tle(tle_filename::String, verify_checksum::Bool = true)
     # Open the file in read mode.
     file = open(tle_filename, "r")
@@ -363,7 +360,6 @@ Print the TLE `tle` in the IO `io`.
 * color: If true, then the text will be printed with colors.
 
 """
-
 function print_tle(io::IO, tle::TLE, color::Bool = true)
     # Colors will be printed only for STDOUT.
     b = (color) ? "\x1b[1m"         : ""

@@ -107,7 +107,6 @@ the True Equator. Furthermore, since the recovered latitude and longitude are
 sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
-
 rITRFtoPEF_fk5(x_p::Number, y_p::Number) = rITRFtoPEF_fk5(DCM, x_p, y_p)
 
 rITRFtoPEF_fk5(T::Type, x_p::Number, y_p::Number) =
@@ -151,7 +150,6 @@ the True Equator. Furthermore, since the recovered latitude and longitude are
 sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
-
 rPEFtoITRF_fk5(x_p::Number, y_p::Number) = rPEFtoITRF_fk5(DCM, x_p, y_p)
 
 rPEFtoITRF_fk5(T::Type, x_p::Number, y_p::Number) =
@@ -204,7 +202,6 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-
 rPEFtoTOD_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
     rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
 
@@ -288,7 +285,6 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-
 rTODtoPEF_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
     rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)'
 
@@ -494,7 +490,6 @@ the EOP corrections, then the GCRF in this rotation is what is usually called
 the J2000 reference frame.
 
 """
-
 rGCRFtoMOD_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)'
 
 function rGCRFtoMOD_fk5(::Type{DCM},JD_TT::Number)
@@ -568,7 +563,6 @@ models are highly imprecise since the motion is still not very well understood
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 """
-
 rITRFtoGCRF_fk5(JD_UT1::Number,
                 JD_TT::Number,
                 x_p::Number,
@@ -646,7 +640,6 @@ models are highly imprecise since the motion is still not very well understood
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 """
-
 rGCRFtoITRF_fk5(JD_UT1::Number,
                 JD_TT::Number,
                 x_p::Number,
@@ -720,7 +713,6 @@ The rotation that aligns the PEF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-
 rPEFtoMOD_fk5(JD_UT1::Number,
               JD_TT::Number,
               δΔϵ_1980::Number = 0,
@@ -818,7 +810,6 @@ The rotation that aligns the MOD frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-
 rMODtoPEF_fk5(JD_UT1::Number,
               JD_TT::Number,
               δΔϵ_1980::Number = 0,

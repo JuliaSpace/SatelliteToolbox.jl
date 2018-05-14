@@ -181,7 +181,6 @@ Initialize the data structure of SGP4 algorithm.
 The structure `SGP4_Structure` with the initialized parameters.
 
 """
-
 function sgp4_init(sgp4_gc::SGP4_GravCte{T},
                    t_0::Number,
                    n_0::Number,
@@ -350,7 +349,6 @@ values in `sgp4d` will be modified.
 * The velocity vector represented in TEME frame at time `t` [km/s].
 
 """
-
 function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Unpack variables.
     t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
@@ -564,4 +562,3 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
     (r_TEME, v_TEME)
 end
-

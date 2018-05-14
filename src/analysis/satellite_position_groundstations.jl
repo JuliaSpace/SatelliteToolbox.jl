@@ -50,7 +50,6 @@ minimum elevation angle of `minElev`.
              station.
 
 """
-
 function satellite_check_station(r_e::Vector, rs_e::Vector, minElev::Number)
     # Check if the satellite is within the visibility circle of the station.
     dr_e = r_e - rs_e
@@ -87,7 +86,6 @@ altitude `h_s`, and a minimum elevation angle of `minElev`.
              station.
 
 """
-
 function satellite_check_station(r_e::Vector,
                                  lat_s::Number,
                                  lon_s::Number,

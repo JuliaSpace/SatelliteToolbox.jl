@@ -99,7 +99,6 @@ If `JD` is after `ΔAT_Data[end,1]`, then `ΔAT_Data[end,2]` will be returned,
 because it is not possible yet to predict when leap seconds will be added.
 
 """
-
 function get_ΔAT(JD::Number)
     # If `JD` is before `ΔAT_Data[1,1]`, then return 10.0.
     if JD < ΔAT_Data[1,1]
@@ -134,7 +133,6 @@ difference `ΔUT1`, which is provided by IERS EOP Data.
 The Julian Day in UT1.
 
 """
-
 JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number) = JD_UTC + ΔUT1/86400
 
 """
@@ -153,7 +151,6 @@ difference `ΔUT1`, which is provided by IERS EOP Data.
 The Julian Day in UT1.
 
 """
-
 JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number) = JD_UT1 - ΔUT1/86400
 
 """
@@ -173,7 +170,6 @@ will be interpolated.
 The Julian Day in UT1.
 
 """
-
 function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
 	JD_UTCtoUT1(JD_UTC, eop.UT1_UTC[JD_UTC])
 end
@@ -195,7 +191,6 @@ will be interpolated.
 The Julian Day in UTC.
 
 """
-
 function JD_UT1toUTC(JD_UT1::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
 	JD_UT1toUTC(JD_UT1, eop.UT1_UTC[JD_UT1])
 end
@@ -220,7 +215,6 @@ computations.**
 The Julian Day in TT.
 
 """
-
 JD_UTCtoTT(JD_UTC::Number, ΔAT::Number) = JD_UTC + (ΔAT + 32.184)/86400
 
 function JD_UTCtoTT(JD_UTC::Number)
@@ -248,7 +242,6 @@ leading to wrong computations.**
 The Julian Day in UTC.
 
 """
-
 JD_TTtoUTC(JD_TT::Number, ΔAT::Number) = JD_TT - (ΔAT + 32.184)/86400
 
 function JD_TTtoUTC(JD_UTC::Number)
@@ -275,7 +268,6 @@ Check if the year `year` is a leap year.
 This algorithm was based on [3].
 
 """
-
 function is_leap_year(year::Int)
     # Check if `year` is positive. This algorithm does not handle negative
     # years.
@@ -295,4 +287,3 @@ function is_leap_year(year::Int)
         return false
     end
 end
-
