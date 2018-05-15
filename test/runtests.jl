@@ -11,6 +11,13 @@ g = "\x1b[1m\x1b[32m"
 y = "\x1b[1m\x1b[33m"
 c = "\x1b[1m\x1b[36m"
 
+@testset "Geomagnetic Field Models" begin
+    cd("./earth/geomagnetic_field_model/")
+    include("./earth/geomagnetic_field_model/igrf.jl")
+    cd("../../")
+end
+println("")
+
 @testset "General orbit functions" begin
     include("./orbit/general.jl")
 end
