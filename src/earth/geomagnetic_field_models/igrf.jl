@@ -120,7 +120,7 @@ function igrf12(date::Number,
     Δt = date - epoch
 
     # Compute the maximum spherical harmonic degree for the selected date.
-    n_max = (epoch <= 1995) ? 10 : 13
+    n_max = (epoch < 1995) ? 10 : 13
 
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
