@@ -109,22 +109,22 @@ j2_gc_wgs72 = J2_GravCte(
 ################################################################################
 
 """
-### function j2_init(j2_gc::J2_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
+    function j2_init(j2_gc::J2_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
 ##### Args
 
-* j2_gc: J2 orbit propagator gravitational constants (see `J2_GravCte`).
-* t_0: Epoch of the orbital elements [s].
-* n_0: Mean motion at epoch [rad/s].
-* e_0: Initial eccentricity.
-* i_0: Initial inclination [rad].
-* Ω_0: Initial right ascension of the ascending node [rad].
-* ω_0: Initial argument of perigee [rad].
-* M_0: Initial mean anomaly [rad].
-* dn_o2: First time derivative of the mean motion divided by two [rad/s^2].
-* ddn_o6: Second time derivative of the mean motion divided by six [rad/s^3].
+* `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
+* `t_0`: Epoch of the orbital elements [s].
+* `n_0`: Mean motion at epoch [rad/s].
+* `e_0`: Initial eccentricity.
+* `i_0`: Initial inclination [rad].
+* `Ω_0`: Initial right ascension of the ascending node [rad].
+* `ω_0`: Initial argument of perigee [rad].
+* `M_0`: Initial mean anomaly [rad].
+* `dn_o2`: First time derivative of the mean motion divided by two [rad/s^2].
+* `ddn_o6`: Second time derivative of the mean motion divided by six [rad/s^3].
 
 ##### Returns
 
@@ -201,15 +201,15 @@ function j2_init(j2_gc::J2_GravCte{T},
 end
 
 """
-### function j2!(j2d::J2_Structure{T}, t::Number) where T
+    function j2!(j2d::J2_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `j2d` until the time `t`. Notice that the values
 in `j2d` will be modified.
 
 ##### Args
 
-* j2d: J2 orbit propagator structure (see `J2_Structure`).
-* t: Time in which the elements will be propagated [s].
+* `j2d`: J2 orbit propagator structure (see `J2_Structure`).
+* `t`: Time in which the elements will be propagated [s].
 
 ##### Returns
 

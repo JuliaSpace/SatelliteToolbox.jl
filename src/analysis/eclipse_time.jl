@@ -36,20 +36,20 @@
 export satellite_eclipse_time
 
 """
-### function satellite_eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, numDays::Integer, relative::Bool = false)
+    function satellite_eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, numDays::Integer, relative::Bool = false)
 
 Compute the eclipse time of a satellite.
 
 ##### Args
 
-* JD0: Initial instant for the analysis [Julian day].
-* a: Semi-major axis of the orbit [m].
-* e: Orbit eccentricity.
-* i: Orbit inclination [rad].
-* w: Argument of perigee [rad].
-* RAAN: Right ascension of the ascending node at `JD0` [rad].
-* numDays: Number of days of the analysis.
-* relative: Compute the eclipse time relative to the nodal period.
+* `JD0`: Initial instant for the analysis [Julian day].
+* `a`: Semi-major axis of the orbit [m].
+* `e`: Orbit eccentricity.
+* `i`: Orbit inclination [rad].
+* `w`: Argument of perigee [rad].
+* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
+* `numDays`: Number of days of the analysis.
+* `relative`: Compute the eclipse time relative to the nodal period.
 
 ##### Returns
 

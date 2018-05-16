@@ -68,19 +68,19 @@ export DatetoJD, JDtoDate
 ################################################################################
 
 """
-### function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
+    function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
 
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month =
 `M`, Day = `D`, Hour = `h`, minute = `m`, and second = `s`) to Julian Day.
 
 ##### Args
 
-* Y: Year in Gregorian Calendar.
-* M: Month in Gregorian Calendar (`1` => **January**, `2` => **February**, ...).
-* D: Day in Gregorian Calendar.
-* h: Hour (0 - 24).
-* m: Minutes.
-* s: Seconds.
+* `Y`: Year in Gregorian Calendar.
+* `M`: Month in Gregorian Calendar (`1` => **January**, `2` => **February**, ...).
+* `D`: Day in Gregorian Calendar.
+* `h`: Hour (0 - 24).
+* `m`: Minutes.
+* `s`: Seconds.
 
 ##### Returns
 
@@ -131,13 +131,13 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
 end
 
 """
-### function DatetoJD(date::Date)
+    function DatetoJD(date::Date)
 
 Convert the date `date` to Julian Day.
 
 ##### Args
 
-* date: Date to be converted.
+* `date`: Date to be converted.
 
 ##### Returns
 
@@ -150,13 +150,13 @@ function DatetoJD(date::Date)
 end
 
 """
-### function DatetoJD(dateTime::DateTime)
+    function DatetoJD(dateTime::DateTime)
 
 Convert the date and time `dateTime` to Julian Day.
 
 ##### Args
 
-* dateTime: Date and time to be converted.
+* `dateTime`: Date and time to be converted.
 
 ##### Returns
 
@@ -173,15 +173,15 @@ function DatetoJD(dateTime::DateTime)
 end
 
 """
-### function JDtoDate([T,] JD::Number)
+    function JDtoDate([T,] JD::Number)
 
 Convert a date represented in Julian Day `JD` to Gregorian Calendar. The
 optional parameter `T` defines the return type.
 
 ##### Args
 
-* T: (OPTIONAL) Defines the return type of the functions (**DEFAULT** = `none`).
-* JD: Julian Day.
+* `T`: (OPTIONAL) Defines the return type of the functions (**Default** = `none`).
+* `JD`: Julian Day.
 
 ##### Returns
 

@@ -31,18 +31,18 @@
 export satellite_orbit_compute_f
 
 """
-### function satellite_orbit_compute_f(a::Number, e::Number, i::Number, m::Number, tol::Number = 1e-10)
+    function satellite_orbit_compute_f(a::Number, e::Number, i::Number, m::Number, tol::Number = 1e-10)
 
 Compute the true anomaly given the mean anomaly `m`, the semi-major axis `a`,
 the eccentricity `e`, and the inclination `i`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* m: Mean anomaly [rad].
-* tol: (OPTIONAL) Tolerance for the Newton-Raphson method (**DEFAULT**: 1e-10).
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `m`: Mean anomaly [rad].
+* `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
 ##### Returns
 

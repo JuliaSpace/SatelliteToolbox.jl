@@ -31,7 +31,7 @@ export init_orbit_propagator, step!, propagate!
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:J2}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
+    function init_orbit_propagator(::Type{Val{:J2}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
 
 Initialize the J2 orbit propagator using the initial orbit specified by the
 elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the
@@ -39,19 +39,19 @@ gravitational parameters `j2_gc` (see `J2_GravCte`).
 
 ##### Args
 
-* t_0: Initial orbit epoch [s].
-* n_0: Initial angular velocity [rad/s].
-* e_0: Initial eccentricity.
-* i_0: Initial inclination [rad].
-* Ω_0: Initial right ascension of the ascending node [rad].
-* ω_0: Initial argument of perigee [rad].
-* M_0: Initial mean anomaly [rad].
-* dn_o2: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]
-         (**DEFAULT** = 0).
-* ddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6 [rad/s³]
-          (**DEFAULT** = 0).
-* j2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (**DEFAULT** =
-         `j2_gc_wgs84`).
+* `t_0`: Initial orbit epoch [s].
+* `n_0`: Initial angular velocity [rad/s].
+* `e_0`: Initial eccentricity.
+* `i_0`: Initial inclination [rad].
+* `Ω_0`: Initial right ascension of the ascending node [rad].
+* `ω_0`: Initial argument of perigee [rad].
+* `M_0`: Initial mean anomaly [rad].
+* `dn_o2`: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]
+           (**Default** = 0).
+* `ddn_o6`: (OPTIONAL) Second time derivative of mean motion divided by 6 [rad/s³]
+            (**Default** = 0).
+* `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
+           `j2_gc_wgs84`).
 
 ##### Returns
 
@@ -82,20 +82,20 @@ function init_orbit_propagator(::Type{Val{:J2}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)
+    function init_orbit_propagator(::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)
 
 Initialize the J2 orbit propagator using the initial orbit specified in `orb_0`,
 and the gravitational parameters in the structure `j2_gc`.
 
 ##### Args
 
-* orb_0: Initial orbital elements (see `Orbit`).
-* dn_o2: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]
-         (**DEFAULT** = 0).
-* ddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6 [rad/s³]
-          (**DEFAULT** = 0).
-* j2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (**DEFAULT** =
-         `j2_gc_wgs84`).
+* `orb_0`: Initial orbital elements (see `Orbit`).
+* `dn_o2`: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]
+           (**Default** = 0).
+* `ddn_o6`: (OPTIONAL) Second time derivative of mean motion divided by 6
+            [rad/s³] (**Default** = 0).
+* `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
+           `j2_gc_wgs84`).
 
 ##### Returns
 
@@ -122,7 +122,7 @@ function init_orbit_propagator(::Type{Val{:J2}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)
+    function init_orbit_propagator(::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)
 
 Initialize the J2 orbit propagator using the initial orbit specified in the TLE
 `tle`. The orbit epoch `t0` will be defined as the number of seconds since the
@@ -130,9 +130,9 @@ beginning of the year (see `TLE.epoch_day`).
 
 ##### Args
 
-* tle: TLE that will be used to initialize the propagator.
-* j2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (**DEFAULT** =
-         `j2_gc_wgs84`).
+* `tle`: TLE that will be used to initialize the propagator.
+* `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
+           `j2_gc_wgs84`).
 
 ##### Returns
 
@@ -157,15 +157,15 @@ function init_orbit_propagator(::Type{Val{:J2}},
 end
 
 """
-### function step!(orbp::OrbitPropagatorJ2, Δt::Number)
+    function step!(orbp::OrbitPropagatorJ2, Δt::Number)
 
 Propagate the orbit in `orbp` by `Δt` s using the J2 orbit propagator algorithm.
 The new parameters will be written in `orbp`.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorJ2`).
-* Δt: Step time [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorJ2`).
+* `Δt`: Step time [s].
 
 ##### Returns
 
@@ -204,7 +204,7 @@ function step!(orbp::OrbitPropagatorJ2, Δt::Number)
 end
 
 """
-### function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
+    function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the J2 orbit propagator. The structure `orbp` will contain the elements at
@@ -212,9 +212,9 @@ the last propagation instant.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorJ2`).
-* t: Time instants from orbit epoch in which the orbit will be propagated
-     [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorJ2`).
+* `t`: Time instants from orbit epoch in which the orbit will be propagated
+       [s].
 
 ##### Returns
 

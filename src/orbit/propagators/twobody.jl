@@ -62,20 +62,20 @@ end
 ################################################################################
 
 """
-### function twobody_init(t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T) where T
+    function twobody_init(t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T) where T
 
 Initialize the data structure of Two Body orbit propagator algorithm.
 
 ##### Args
 
-* t_0: Epoch of the orbital elements [s].
-* n_0: Mean motion at epoch [rad/s].
-* e_0: Initial eccentricity.
-* i_0: Initial inclination [rad].
-* Ω_0: Initial right ascension of the ascending node [rad].
-* ω_0: Initial argument of perigee [rad].
-* M_0: Initial mean anomaly.
-* μ: Standard gravitational parameter of the central body [m^3/s^2].
+* `t_0`: Epoch of the orbital elements [s].
+* `n_0`: Mean motion at epoch [rad/s].
+* `e_0`: Initial eccentricity.
+* `i_0`: Initial inclination [rad].
+* `Ω_0`: Initial right ascension of the ascending node [rad].
+* `ω_0`: Initial argument of perigee [rad].
+* `M_0`: Initial mean anomaly.
+* `μ`: Standard gravitational parameter of the central body [m^3/s^2].
 
 ##### Returns
 
@@ -106,15 +106,15 @@ function twobody_init(t_0::Number,
 end
 
 """
-### function twobody!(tbd::TwoBody_Structure, t::Number)
+    function twobody!(tbd::TwoBody_Structure, t::Number)
 
 Propagate the orbit defined in `tbd` until the time `t`. Notice that the values
 in `tbd` will be modified.
 
 ##### Args
 
-* tbd: Two Body orbit propagator structure (see `TwoBody_Structure`).
-* t: Time in which the elements will be propagated [s].
+* `tbd`: Two Body orbit propagator structure (see `TwoBody_Structure`).
+* `t`: Time in which the elements will be propagated [s].
 
 ##### Returns
 

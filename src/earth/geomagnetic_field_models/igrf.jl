@@ -37,7 +37,7 @@ export igrf12syn
 ################################################################################
 
 """
-### function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}])
+    function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}])
 
 **IGRF v12 Model**
 
@@ -47,10 +47,10 @@ coordinates: latitude `λ`, longitude `Ω`, and distance from the Earth center
 
 ##### Args
 
-* date: Year A.D.
-* r: Distance from the Earth center [m].
-* λ: Geocentric latitude (-π/2,+π/2) [rad].
-* Ω: Geocentric longitude (-π,+π) [rad].
+* `date`: Year A.D.
+* `r`: Distance from the Earth center [m].
+* `λ`: Geocentric latitude (-π/2,+π/2) [rad].
+* `Ω`: Geocentric longitude (-π,+π) [rad].
 
 ##### Returns
 
@@ -277,7 +277,7 @@ function igrf12(date::Number,
 end
 
 """
-### function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}})
+    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}})
 
 **IGRF v12 Model**
 
@@ -287,10 +287,10 @@ ellipsoid `h`.
 
 ##### Args
 
-* date: Year A.D.
-* h: Altitude above the reference elipsoid [m].
-* λ: Geodetic latitude (-π/2,+π/2) [rad].
-* Ω: Geodetic longitude (-π,+π) [rad].
+* `date`: Year A.D.
+* `h`: Altitude above the reference elipsoid [m].
+* `λ`: Geodetic latitude (-π/2,+π/2) [rad].
+* `Ω`: Geodetic longitude (-π,+π) [rad].
 
 ##### Returns
 
@@ -332,7 +332,7 @@ function igrf12(date::Number,
 end
 
 """
-### function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number)
+    function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number)
 
 This is a julia implementation of the official IGRF source code, which was
 written in Fortran [2]. The input and output variables are exactly the same as
@@ -340,20 +340,20 @@ the ones described in the function `igrf12syn` in [2].
 
 ##### Args
 
-* isv: `0` if main-field values are required, `1` if secular variation values
-        are required.
-* date: Year A.D.
-* itype: `1` if geodetic (spheroid), `2` if geocentric (sphere).
-* alt: Height above sea level [km] if `itype = 1`, or distance from the center of
-       Earth [km] if `itype = 2` (must be > 3485 km).
-* colat: Colatitude (0 - 180) [˚].
-* elong: East-Longitude (0 - 360) [˚].
+* `isv`: `0` if main-field values are required, `1` if secular variation values
+         are required.
+* `date`: Year A.D.
+* `itype`: `1` if geodetic (spheroid), `2` if geocentric (sphere).
+* `alt`: Height above sea level [km] if `itype = 1`, or distance from the center of
+         Earth [km] if `itype = 2` (must be > 3485 km).
+* `colat`: Colatitude (0 - 180) [˚].
+* `elong`: East-Longitude (0 - 360) [˚].
 
 ##### Returns
 
-* The north component: [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
-* The east component: [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
-* The vertical component: [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
+* The north component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
+* The east component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
+* The vertical component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
 * The total intensity if `isv = 0`, or rubbish if `isv = 1`.
 
 ##### Remarks

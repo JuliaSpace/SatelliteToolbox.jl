@@ -31,7 +31,7 @@
 export equation_of_time
 
 """
-### function equation_of_time(JD::Number)
+    function equation_of_time(JD::Number)
 
 Compute the difference between the Sun apparent local time and the Sun mean
 local time, which is called Equation of Time, at the Julian Day `JD`. The
@@ -39,7 +39,7 @@ algorithm was adapted from [1, p. 178, 277-279].
 
 ##### Args
 
-* JD: Julian day.
+* `JD`: Julian day.
 
 ##### Returns
 

@@ -32,7 +32,7 @@ export step!, propagate!
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:twobody}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
+    function init_orbit_propagator(::Type{Val{:twobody}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
 Initialize the Two Body orbit propagator using the initial orbit specified by
 the elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
@@ -40,15 +40,15 @@ gravitational parameters of the central body `μ`.
 
 ##### Args
 
-* t_0: Initial orbit epoch [s].
-* n_0: Initial angular velocity [rad/s].
-* e_0: Initial eccentricity.
-* i_0: Initial inclination [rad].
-* Ω_0: Initial right ascension of the ascending node [rad].
-* ω_0: Initial argument of perigee [rad].
-* M_0: Initial mean anomaly [rad].
-* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-     (**DEFAULT** = `m0`).
+* `t_0`: Initial orbit epoch [s].
+* `n_0`: Initial angular velocity [rad/s].
+* `e_0`: Initial eccentricity.
+* `i_0`: Initial inclination [rad].
+* `Ω_0`: Initial right ascension of the ascending node [rad].
+* `ω_0`: Initial argument of perigee [rad].
+* `M_0`: Initial mean anomaly [rad].
+* `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+     (**Default** = `m0`).
 
 ##### Returns
 
@@ -76,16 +76,16 @@ function init_orbit_propagator(::Type{Val{:twobody}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)
+    function init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)
 
 Initialize the Two Body orbit propagator using the initial orbit specified in
 `orb_0`, and the standard gravitational parameters of the central body `μ`.
 
 ##### Args
 
-* orb_0: Initial orbital elements (see `Orbit`).
-* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-     (**DEFAULT** = `m0`).
+* `orb_0`: Initial orbital elements (see `Orbit`).
+* `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+       (**Default** = `m0`).
 
 ##### Returns
 
@@ -108,7 +108,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
+    function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
 
 Initialize the Two Body orbit propagator using the initial orbit specified in
 the TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds
@@ -116,9 +116,9 @@ since the beginning of the year (see `TLE.epoch_day`).
 
 ##### Args
 
-* tle: TLE that will be used to initialize the propagator.
-* μ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-     (**DEFAULT** = `m0`).
+* `tle`: TLE that will be used to initialize the propagator.
+* `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
+       (**Default** = `m0`).
 
 ##### Returns
 
@@ -141,15 +141,15 @@ function init_orbit_propagator(::Type{Val{:twobody}},
 end
 
 """
-### function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
+    function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
 
 Propagate the orbit in `orbp` by `Δt` s using the Two Body orbit propagator
 algorithm. The new parameters will be written in `orbp`.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorTwoBody`).
-* Δt: Step time [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorTwoBody`).
+* `Δt`: Step time [s].
 
 ##### Returns
 
@@ -182,7 +182,7 @@ function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
 end
 
 """
-### function propagate!(orbp::OrbitPropagatorTwoBody, t::Vector)
+    function propagate!(orbp::OrbitPropagatorTwoBody, t::Vector)
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the Two Body orbit propagator. The structure `orbp` will contain the
@@ -190,9 +190,8 @@ elements at the last propagation instant.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorTwoBody`).
-* t: Time instants from orbit epoch in which the orbit will be propagated
-     [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorTwoBody`).
+* `t`: Time instants from orbit epoch in which the orbit will be propagated [s].
 
 ##### Returns
 

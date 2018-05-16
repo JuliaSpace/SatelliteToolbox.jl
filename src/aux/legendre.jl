@@ -59,7 +59,7 @@ export legendre_schmidt_quasi_normalized!, legendre_schmidt_quasi_normalized
 export legendre_conventional!, legendre_conventional
 
 """
-### function legendre!([N,] P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre!([N,] P::Matrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the associated Legendre function `P_n,m[cos(ϕ)]`. The maximum degree
 and order that will be computed are given by the dimensions of matrix `P`.
@@ -81,11 +81,11 @@ If `N` is omitted, then the full normalization will be used.
 
 ##### Args
 
-* N: (OPTIONAL) Choose the normalization (**DEFAULT**: none).
-* P: Matrix that will store the computed associated Legendre function.
-* ϕ: Angle [rad].
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `N`: (OPTIONAL) Choose the normalization (**Default**: none).
+* `P`: Matrix that will store the computed associated Legendre function.
+* `ϕ`: Angle [rad].
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+           (**Default** = `false`).
 
 """
 legendre!(P::Matrix, ϕ::Number, ph_term::Bool = false) =
@@ -101,7 +101,7 @@ legendre!(::Type{Val{:conv}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
     legendre_conventional!(P, ϕ, ph_term)
 
 """
-### function legendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function legendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the associated Legendre function `P_n,m[cos(ϕ)]`. The maximum degree
 that will be computed is `n_max`.
@@ -120,11 +120,11 @@ If `N` is omitted, then the full normalization will be used.
 
 ##### Args
 
-* N: (OPTIONAL) Choose the normalization (**DEFAULT**: none).
-* ϕ: Angle [rad].
-* n_max: The maximum degree that will be computed.
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `N`: (OPTIONAL) Choose the normalization (**Default**: none).
+* `ϕ`: Angle [rad].
+* `n_max`: The maximum degree that will be computed.
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+           (**Default** = `false`).
 
 ##### Returns
 
@@ -148,7 +148,7 @@ legendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
 ################################################################################
 
 """
-### function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree and order that will be computed are given by the dimensions
@@ -158,10 +158,10 @@ The result will be stored at matrix `P`.
 
 ##### Args
 
-* P: Matrix that will store the computed associated Legendre function.
-* ϕ: Angle [rad].
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `P`: Matrix that will store the computed associated Legendre function.
+* `ϕ`: Angle [rad].
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+           (**Default** = `false`).
 
 ##### Remarks
 
@@ -217,17 +217,17 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
 end
 
 """
-### function legendre_fully_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function legendre_fully_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`. The
 maximum degree that will be computed is `n_max`.
 
 ##### Args
 
-* ϕ: Angle [rad].
-* n_max: The maximum degree that will be computed.
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `ϕ`: Angle [rad].
+* `n_max`: The maximum degree that will be computed.
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+           (**Default** = `false`).
 
 ##### Returns
 
@@ -265,7 +265,7 @@ end
 ################################################################################
 
 """
-### function legendre_schmidt_quasi_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_schmidt_quasi_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the Schmidt quasi-normalized associated Legendre function
 `P_n,m[cos(ϕ)]` [3,4].  The maximum degree and order that will be computed are
@@ -276,10 +276,10 @@ The result will be stored at matrix `P`.
 
 ##### Args
 
-* P: Matrix that will store the computed associated Legendre function.
-* ϕ: Angle [rad].
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `P`: Matrix that will store the computed associated Legendre function.
+* `ϕ`: Angle [rad].
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+           (**Default** = `false`).
 
 ##### Remarks
 
@@ -338,17 +338,17 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
 end
 
 """
-### function legendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function legendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
 ##### Args
 
-* ϕ: Angle [rad].
-* n_max: The maximum degree that will be computed.
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `ϕ`: Angle [rad].
+* `n_max`: The maximum degree that will be computed.
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+             (**Default** = `false`).
 
 ##### Returns
 
@@ -386,7 +386,7 @@ end
 ################################################################################
 
 """
-### function legendre_conventional!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_conventional!(P::Matrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree and order that will be computed are given by the dimensions
@@ -396,10 +396,10 @@ The result will be stored at matrix `P`.
 
 ##### Args
 
-* P: Matrix that will store the computed associated Legendre function.
-* ϕ: Angle [rad].
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `P`: Matrix that will store the computed associated Legendre function.
+* `ϕ`: Angle [rad].
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+             (**Default** = `false`).
 
 """
 function legendre_conventional!(P::Matrix,
@@ -443,17 +443,17 @@ function legendre_conventional!(P::Matrix,
 end
 
 """
-### function legendre_conventional(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function legendre_conventional(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
 ##### Args
 
-* ϕ: Angle [rad].
-* n_max: The maximum degree that will be computed.
-* ph_term: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**DEFAULT** = `false`).
+* `ϕ`: Angle [rad].
+* `n_max`: The maximum degree that will be computed.
+* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
+             (**Default** = `false`).
 
 ##### Returns
 

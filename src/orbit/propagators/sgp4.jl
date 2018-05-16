@@ -102,21 +102,21 @@ sgp4_gc_wgs72 = SGP4_GravCte(
 ################################################################################
 
 """
-### function sgp4_init(spg4_gc::SGP4_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
+    function sgp4_init(spg4_gc::SGP4_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
 
 Initialize the data structure of SGP4 algorithm.
 
 ##### Args
 
-* spg4_gc: SPG4 gravitational constants (see `SGP4_GravCte`).
-* t_0: Epoch of the orbital elements [min].
-* n_0: SGP type "mean" mean motion at epoch [rad/min].
-* e_0: "Mean" eccentricity at epoch.
-* i_0: "Mean" inclination at epoch [rad].
-* Ω_0: "Mean" longitude of the ascending node at epoch [rad].
-* ω_0: "Mean" argument of perigee at epoch [rad].
-* M_0: "Mean" mean anomaly at epoch [rad].
-* bstar: Drag parameter (B*).
+* `spg4_gc`: SPG4 gravitational constants (see `SGP4_GravCte`).
+* `t_0`: Epoch of the orbital elements [min].
+* `n_0`: SGP type "mean" mean motion at epoch [rad/min].
+* `e_0`: "Mean" eccentricity at epoch.
+* `i_0`: "Mean" inclination at epoch [rad].
+* `Ω_0`: "Mean" longitude of the ascending node at epoch [rad].
+* `ω_0`: "Mean" argument of perigee at epoch [rad].
+* `M_0`: "Mean" mean anomaly at epoch [rad].
+* `bstar`: Drag parameter (B*).
 
 ##### Returns
 
@@ -275,15 +275,15 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 end
 
 """
-### function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
+    function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `sgp4d` until the time `t`. Notice that the
 values in `sgp4d` will be modified.
 
 ##### Args
 
-* sgp4d: SPG4 structure (see `SGP4_Structure`).
-* t: Time that the elements will be propagated [min].
+* `sgp4d`: SPG4 structure (see `SGP4_Structure`).
+* `t`: Time that the elements will be propagated [min].
 
 ##### Returns
 

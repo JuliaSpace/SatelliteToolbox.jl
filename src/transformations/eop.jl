@@ -37,7 +37,7 @@ export get_iers_eop, get_eop_iau_1980, get_eop_iau_2000A
 export read_iers_eop
 
 """
-### function get_iers_eop(data_type::Symbol = :IAU2000A)
+    function get_iers_eop(data_type::Symbol = :IAU2000A)
 
 Download and parse the IERS EOP C04 data. The data type is specified by
 `data_type` symbol. Supported values are:
@@ -47,8 +47,8 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 
 ##### Args
 
-* data_type: (OPTIONAL) Symbol that defines the type of data that will be
-             downloaded (**DEFAULT** = `:IAU2000A`).
+* `data_type`: (OPTIONAL) Symbol that defines the type of data that will be
+               downloaded (**Default** = `:IAU2000A`).
 
 ##### Returns
 
@@ -68,14 +68,14 @@ function get_iers_eop(data_type::Symbol = :IAU2000A)
 end
 
 """
-### function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
+    function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
 
 Get the IERS EOP C04 IAU1980 data from the URL `url`.
 
 ##### Args
 
-* url: (OPTIONAL) Url in which the coefficients will be obtained (**DEFAULT** =
-       https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213)
+* `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
+         https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213)
 
 ##### Returns
 
@@ -101,14 +101,14 @@ end
 
 
 """
-### function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
+    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
 
 Get the IERS EOP C04 IAU2000A data from the URL `url`.
 
 ##### Args
 
-* url: (OPTIONAL) Url in which the coefficients will be obtained (**DEFAULT** =
-       https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214)
+* `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
+         https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214)
 
 ##### Returns
 
@@ -133,7 +133,7 @@ function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-
 end
 
 """
-### function read_iers_eop(filename::String, data_type::Symbol = :IAU2000A)
+    function read_iers_eop(filename::String, data_type::Symbol = :IAU2000A)
 
 Read IERS EOP Data from the file `filename`. The user must specify if the data
 is related to the model IAU 1980 (`data_type = :IAU1980`) or to the model IAU
@@ -141,8 +141,8 @@ is related to the model IAU 1980 (`data_type = :IAU1980`) or to the model IAU
 
 ##### Args
 
-* filename: The file path in which the EOP data will be read.
-* data_type: (OPTIONAL) Model type of the EOP Data (**DEFAULT** = `:IAU2000A`).
+* `filename`: The file path in which the EOP data will be read.
+* `data_type`: (OPTIONAL) Model type of the EOP Data (**Default** = `:IAU2000A`).
 
 ##### Returns
 

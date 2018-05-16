@@ -31,7 +31,7 @@
 export rECEFtoECI
 
 """
-### function rECEFtoECI([T,] [M,] ECEF, ECI, JD_UTC::Number [, eop_data])
+    function rECEFtoECI([T,] [M,] ECEF, ECI, JD_UTC::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
 frame to an Earth-Centered Inertial (`ECI`) reference frame at the Julian Day
@@ -105,12 +105,12 @@ is provided, the Julian Day UT1 will be accurately computed.
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
-* M: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
-* ECEF: ECEF frame.
-* ECI: ECI frame.
-* JD_UTC: Julian day [UTC].
-* eop_data: EOP Data.
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `M`: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
+* `ECEF`: ECEF frame.
+* `ECI`: ECI frame.
+* `JD_UTC`: Julian day [UTC].
+* `eop_data`: EOP Data.
 
 ##### Returns
 

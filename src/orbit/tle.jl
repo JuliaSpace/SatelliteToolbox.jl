@@ -31,9 +31,9 @@ error indicating the line `line_num` with the problem.
 
 ##### Args
 
-* T: Type of the output.
-* str: Input string.
-* line_num: Line number that is being analyzed.
+* `T`: Type of the output.
+* `str`: Input string.
+* `line_num`: Line number that is being analyzed.
 
 ##### Returns
 
@@ -56,7 +56,7 @@ macro parse_value(T, str, line_num)
 end
 
 """
-### function compute_checksum(str::String)
+    function compute_checksum(str::String)
 
 Compute the checksum of the line `str` modulo 10. The algorithm is simple: add
 all the numbers in the line, ignoring letters, spaces, periods, and plus signs,
@@ -65,7 +65,7 @@ division by 10.
 
 ##### Args
 
-* str: String to be checked, the checksum **must not** be in this string.
+* `str`: String to be checked, the checksum **must not** be in this string.
 
 ##### Returns
 
@@ -93,15 +93,15 @@ function compute_checksum(str::String)
 end
 
 """
-### function read_tle(tle_filename::String)
+    function read_tle(tle_filename::String)
 
 Read the TLEs in the file `tle_filename`.
 
 ##### Args
 
-* tle_filename: TLE file name.
-* verify_checksum: (OPTIONAL) If false, then the checksum will not be verified
-  (**DEFAULT** = true).
+* `tle_filename`: TLE file name.
+* `verify_checksum`: (OPTIONAL) If false, then the checksum will not be verified
+                     (**Default** = true).
 
 ##### Returns
 
@@ -349,15 +349,15 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 end
 
 """
-### function print_tle(io::IO, tle::TLE)
+    function print_tle(io::IO, tle::TLE)
 
 Print the TLE `tle` in the IO `io`.
 
 ##### Args
 
-* io: IO to print the TLE.
-* tle: TLE to be printed.
-* color: If true, then the text will be printed with colors.
+* `io`: IO to print the TLE.
+* `tle`: TLE to be printed.
+* `color`: If true, then the text will be printed with colors.
 
 """
 function print_tle(io::IO, tle::TLE, color::Bool = true)

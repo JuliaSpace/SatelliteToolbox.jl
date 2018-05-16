@@ -44,7 +44,7 @@
 export satellite_position_i
 
 """
-### function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
+    function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number, w::Number, f::Number)
 
 Compute the satellite position in the Earth-Centered Inertial (ECI) reference
 frame given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
@@ -54,12 +54,12 @@ elements.
 
 ##### Args
 
-* a: Semi-major axis.
-* e: Eccentricity.
-* i: Inclination [rad].
-* RAAN: Right ascension of the ascending node [rad].
-* w: Argument of perigee [rad].
-* f: True anomaly [rad].
+* `a`: Semi-major axis.
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `RAAN`: Right ascension of the ascending node [rad].
+* `w`: Argument of perigee [rad].
+* `f`: True anomaly [rad].
 
 ##### Returns
 

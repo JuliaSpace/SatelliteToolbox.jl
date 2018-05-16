@@ -55,8 +55,8 @@ macro throws an exception if the orbit is not valid.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
 
 """
 macro check_orbit(a, e)
@@ -85,7 +85,7 @@ end
 ################################################################################
 
 """
-### function Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    function Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
 
 Create an orbit with semi-major axis `a`, eccentricity `e`, inclination `i`,
 right ascension of the ascending node `Ω`, argument of perigee `ω`, and true
@@ -93,12 +93,12 @@ anomaly `f`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* Ω: Right ascension of the ascending node [rad].
-* ω: Argument of perigee [rad].
-* f: True anomaly [rad].
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `Ω`: Right ascension of the ascending node [rad].
+* `ω`: Argument of perigee [rad].
+* `f`: True anomaly [rad].
 
 ##### Returns
 
@@ -115,7 +115,7 @@ end
 ################################################################################
 
 """
-### function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 Compute the angular velocity of an object in an orbit with semi-major axis `a`,
 eccentricity `e`, and inclination `i`, using the perturbation terms specified by
@@ -128,10 +128,10 @@ the symbol `pert`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 
@@ -160,7 +160,7 @@ function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 end
 
 """
-### function angvel(orb::Orbit, pert::Symbol = :J2)
+    function angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity of an object in an orbit `orb` using the
 perturbation terms specified by the symbol `pert`.
@@ -172,8 +172,8 @@ perturbation terms specified by the symbol `pert`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `orb`: Orbit (see `Orbit`).
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 
@@ -185,7 +185,7 @@ function angvel(orb::Orbit, pert::Symbol = :J2)
 end
 
 """
-### function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee of an orbit with
 semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
@@ -198,10 +198,10 @@ perturbation terms specified by the symbol `pert`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 
@@ -229,7 +229,7 @@ function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 end
 
 """
-### function dArgPer(orb::Orbit, pert::Symbol = :J2)
+    function dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee of an orbit `orb` using
 the perturbation terms specified by the symbol `pert`.
@@ -241,8 +241,8 @@ the perturbation terms specified by the symbol `pert`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `orb`: Orbit (see `Orbit`).
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 
@@ -254,7 +254,7 @@ function dArgPer(orb::Orbit, pert::Symbol = :J2)
 end
 
 """
-### function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node of an
 orbit with semi-major axis `a`, eccentricity `e`, and inclination `i`, using the
@@ -267,10 +267,10 @@ perturbation terms specified by the symbol `pert`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* pert: Symbol that defines the perturbation (DEFAULT = `:J2`).
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `pert`: Symbol that defines the perturbation (Default = `:J2`).
 
 ##### Returns
 
@@ -297,7 +297,7 @@ function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 end
 
 """
-### function dRAAN(orb::Orbit, pert::Symbol = :J2)
+    function dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node of an
 orbit `orb` using the perturbation terms specified by the symbol `pert`.
@@ -309,8 +309,8 @@ orbit `orb` using the perturbation terms specified by the symbol `pert`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
-* pert: Symbol that defines the perturbation (DEFAULT = `:J2`).
+* `orb`: Orbit (see `Orbit`).
+* `pert`: Symbol that defines the perturbation (Default = `:J2`).
 
 ##### Returns
 
@@ -322,7 +322,7 @@ function dRAAN(orb::Orbit, pert::Symbol = :J2)
 end
 
 """
-### function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 Compute the period of an object in an orbit with semi-major axis `a`,
 eccentricity `e`, and inclination `i`, using the perturbation terms specified by
@@ -335,10 +335,10 @@ the symbol `pert`.
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Eccentricity.
-* i: Inclination [rad].
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `a`: Semi-major axis [m].
+* `e`: Eccentricity.
+* `i`: Inclination [rad].
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 
@@ -351,7 +351,7 @@ function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 end
 
 """
-### function period(orb::Orbit, pert::Symbol = :J2)
+    function period(orb::Orbit, pert::Symbol = :J2)
 
 Compute the period of an object in an orbit `orb` using the perturbation terms
 specified by the symbol `pert`.
@@ -363,8 +363,8 @@ specified by the symbol `pert`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
-* pert: (OPTIONAL) Symbol that defines the perturbation (**DEFAULT** = `:J2`).
+* `orb`: Orbit (see `Orbit`).
+* `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
 ##### Returns
 

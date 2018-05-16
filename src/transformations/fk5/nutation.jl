@@ -174,7 +174,7 @@ const nut_coefs_1980 = [
 ################################################################################
 
 """
-### function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
+    function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
 
 Compute the nutation parameters at the Julian Day (Terrestrial Time) `JD_TT`
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
@@ -187,9 +187,9 @@ are [0.0001"/JC].
 
 ##### Args
 
-* JD_TT: Julian day [TT]
-* nut_coefs_1980: (OPTIONAL) Nutation coefficients (**DEFAULT** =
-  `nut_coefs_1980`).
+* `JD_TT`: Julian day [TT]
+* `nut_coefs_1980`: (OPTIONAL) Nutation coefficients (**Default** =
+                    `nut_coefs_1980`).
 
 ##### Returns
 

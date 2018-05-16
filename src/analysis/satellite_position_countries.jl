@@ -26,20 +26,20 @@
 export satellite_check_Brazil
 
 """
-### function satellite_check_Brazil(lat::Number, lon::Number)
+    function satellite_check_Brazil(lat::Number, lon::Number)
 
 Verify if a point described by latitude `lat` and longitude `lon` is inside
 Brazil.
 
 ##### Args
 
-* lat: Latitude [rad].
-* lon: Longitude [rad].
+* `lat`: Latitude [rad].
+* `lon`: Longitude [rad].
 
 ##### Returns
 
-* **TRUE**: The point is inside Brazil.
-* **FALSE**: The point is not inside Brazil.
+* `TRUE`: The point is inside Brazil.
+* `FALSE`: The point is not inside Brazil.
 
 ##### Remarks
 

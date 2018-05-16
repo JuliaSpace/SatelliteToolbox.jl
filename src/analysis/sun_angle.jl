@@ -41,25 +41,25 @@
 export satellite_sun_angle_earth_pointing
 
 """
-### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Number = 0.1*pi/180.0)
+    function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Number = 0.1*pi/180.0)
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
 ##### Args
 
-* JD0: Initial instant for the analysis [Julian day].
-* a: Semi-major axis of the orbit [m].
-* e: Orbit eccentricity.
-* i: Orbit inclination [rad].
-* w: Argument of perigee [rad].
-* RAAN: Right ascension of the ascending node at `JD0` [rad].
-* numDays: Number of days for the analysis.
-* fN_k: Function **f(s_b)** that describes the solar panel normal at each k-th
-        sampling step. Notice that **s_b** is the Sun vector represented in the
-        body coordinate frame.
-* meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
-               anomaly instead of in the orbit latitude (**DEFAULT**: false).
-* step: (OPTIONAL) Mean anomaly step (**DEFAULT**: 0.1 deg).
+* `JD0`: Initial instant for the analysis [Julian day].
+* `a`: Semi-major axis of the orbit [m].
+* `e`: Orbit eccentricity.
+* `i`: Orbit inclination [rad].
+* `w`: Argument of perigee [rad].
+* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
+* `numDays`: Number of days for the analysis.
+* `fN_k`: Function **f(s_b)** that describes the solar panel normal at each k-th
+          sampling step. Notice that **s_b** is the Sun vector represented in
+          the body coordinate frame.
+* `meanAnomaly`: (OPTIONAL) If **true**, compute using angular steps in the mean
+                 anomaly instead of in the orbit latitude (**Default**: false).
+* `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
 ##### Returns
 
@@ -198,23 +198,23 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
 end
 
 """
-### function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::AbstractVector, step::Number = 0.1*pi/180.0)
+    function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::AbstractVector, step::Number = 0.1*pi/180.0)
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
 ##### Args
 
-* JD0: Initial instant for the analysis [Julian day].
-* a: Semi-major axis of the orbit [m].
-* e: Orbit eccentricity.
-* i: Orbit inclination [rad].
-* w: Argument of perigee [rad].
-* RAAN: Right ascension of the ascending node at `JD0` [rad].
-* numDays: Number of days for the analysis.
-* N: Vector normal to the surface represented in the body reference frame.
-* meanAnomaly: (OPTIONAL) If **true**, compute using angular steps in the mean
-               anomaly instead of in the orbit latitude (**DEFAULT**: false).
-* step: (OPTIONAL) Mean anomaly step (**DEFAULT**: 0.1 deg).
+* `JD0`: Initial instant for the analysis [Julian day].
+* `a`: Semi-major axis of the orbit [m].
+* `e`: Orbit eccentricity.
+* `i`: Orbit inclination [rad].
+* `w`: Argument of perigee [rad].
+* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
+* `numDays`: Number of days for the analysis.
+* `N`: Vector normal to the surface represented in the body reference frame.
+* `meanAnomaly`: (OPTIONAL) If **true**, compute using angular steps in the mean
+                 anomaly instead of in the orbit latitude (**Default**: false).
+* `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
 ##### Returns
 

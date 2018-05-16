@@ -72,7 +72,7 @@ export rPEFtoMOD_fk5,   rMODtoPEF_fk5
 # ==============================================================================
 
 """
-### function rITRFtoPEF_fk5([T,] x_p::Number, y_p::Number)
+    function rITRFtoPEF_fk5([T,] x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Pseudo-Earth Fixed (PEF) frame considering the polar motion
@@ -86,11 +86,11 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* x_p: Polar motion displacement about X-axis, which is the IERS Reference
-       Meridian direction (positive south along the 0˚ longitude meridian)
-       [rad].
-* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `x_p`: Polar motion displacement about X-axis, which is the IERS Reference
+         Meridian direction (positive south along the 0˚ longitude meridian)
+         [rad].
+* `y_p`: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
 
 ##### Returns
 
@@ -116,7 +116,7 @@ rITRFtoPEF_fk5(T::Type, x_p::Number, y_p::Number) =
     smallangle2rot(T, +y_p, +x_p, 0)
 
 """
-### function rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
+    function rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) with the
 International Terrestrial Reference Frame (ITRF) considering the polar motion
@@ -130,10 +130,11 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* x_p: Polar motion rotation about X-axis, which is the IERS Reference Meridian
-       direction (positive south along the 0˚ longitude meridian). [rad].
-* y_p: Polar motion rotation about Y-axis (90˚ W or 270˚ E meridian) [rad].
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `x_p`: Polar motion rotation about X-axis, which is the IERS Reference
+         Meridian direction (positive south along the 0˚ longitude meridian)
+         [rad].
+* `y_p`: Polar motion rotation about Y-axis (90˚ W or 270˚ E meridian) [rad].
 
 ##### Returns
 
@@ -162,7 +163,7 @@ rPEFtoITRF_fk5(T::Type, x_p::Number, y_p::Number) =
 # ==============================================================================
 
 """
-### function rPEFtoTOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+    function rPEFtoTOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 True of Date (TOD) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
@@ -183,11 +184,11 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -245,7 +246,7 @@ function rPEFtoTOD_fk5(T::Type,
 end
 
 """
-### function rTODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+    function rTODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the
 Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
@@ -266,11 +267,11 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -306,7 +307,7 @@ end
 # ==============================================================================
 
 """
-### function rTODtoMOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rTODtoMOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the Mean of
 Date (MOD) frame at the Julian Day (Terrestrial Time) `JD_TT`. This algorithm
@@ -321,12 +322,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -364,7 +365,7 @@ function rTODtoMOD_fk5(T::Type,
 end
 
 """
-### function rMODtoTOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rMODtoTOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True of
 Date (TOD) frame at the Julian Day (Terrestrial Time) `JD_TT`. This algorithm
@@ -379,12 +380,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -420,7 +421,7 @@ end
 # ==============================================================================
 
 """
-### function rMODtoGCRF_fk5([T,] JD_TT::Number)
+    function rMODtoGCRF_fk5([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the
 Geocentric Celestial Reference Frame (GCRF) at the Julian Day (Terrestrial Time)
@@ -433,8 +434,8 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `DCM`).
-* JD_TT: Julian Day [Terrestrial Time].
+* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
+* `JD_TT`: Julian Day [Terrestrial Time].
 
 ##### Returns
 
@@ -459,7 +460,7 @@ function rMODtoGCRF_fk5(T::Type, JD_TT::Number)
 end
 
 """
-### function rGCRFtoMOD_fk5([T,] JD_TT::Number)
+    function rGCRFtoMOD_fk5([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the Mean of Date (MOD) frame at the Julian Day (Terrestrial Time) `JD_TT`.
@@ -472,8 +473,8 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT**: `DCM`).
-* JD_TT: Julian Day [Terrestrial Time].
+* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
+* `JD_TT`: Julian Day [Terrestrial Time].
 
 ##### Returns
 
@@ -515,7 +516,7 @@ end
 # ==============================================================================
 
 """
-### function rITRFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rITRFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1)
@@ -536,17 +537,17 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* x_p: Polar motion displacement about X-axis, which is the IERS Reference
-       Meridian direction (positive south along the 0˚ longitude meridian)
-       [rad].
-* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `x_p`: Polar motion displacement about X-axis, which is the IERS Reference
+         Meridian direction (positive south along the 0˚ longitude meridian)
+         [rad].
+* `y_p`: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -592,7 +593,7 @@ function rITRFtoGCRF_fk5(T::Type,
 end
 
 """
-### function rGCRFtoITRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rGCRFtoITRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 International Terrestrial Reference Frame (ITRF) at the Julian Day `JD_UT1`
@@ -613,17 +614,17 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* x_p: Polar motion displacement about X-axis, which is the IERS Reference
-       Meridian direction (positive south along the 0˚ longitude meridian)
-       [rad].
-* y_p: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `x_p`: Polar motion displacement about X-axis, which is the IERS Reference
+         Meridian direction (positive south along the 0˚ longitude meridian)
+         [rad].
+* `y_p`: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -678,7 +679,7 @@ end
 # ==============================================================================
 
 """
-### function rPEFtoMOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rPEFtoMOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 Mean of Date (MOD) at the Julian Day `JD_UT1` (UT1) and `JD_TT` (Terrestrial
@@ -699,13 +700,13 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 
@@ -775,7 +776,7 @@ function rPEFtoMOD_fk5(T::Type,
 end
 
 """
-### function rMODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    function rMODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
 Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` (UT1) and `JD_TT`
@@ -796,13 +797,13 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 ##### Args
 
-* T: (OPTIONAL) Type of the rotation representation (**DEFAULT** = `DCM`).
-* JD_UT1: Julian Day [UT1].
-* JD_TT: Julian Day [Terrestrial Time].
-* δΔϵ_1980: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-            (**DEFAULT** = 0).
-* δΔψ_1980: (OPTIONAL) Correction in the nutation of the longitude [rad]
-            (**DEFAULT** = 0).
+* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
+* `JD_UT1`: Julian Day [UT1].
+* `JD_TT`: Julian Day [Terrestrial Time].
+* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
+              (**Default** = 0).
+* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
+              (**Default** = 0).
 
 ##### Returns
 

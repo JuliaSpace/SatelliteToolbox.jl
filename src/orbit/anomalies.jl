@@ -37,7 +37,7 @@ export f_to_E, f_to_M
 ################################################################################
 
 """
-### function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
+    function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
 
 Compute the eccentric anomaly given the eccentricity `e` and the mean anomaly
 `M`. This function uses the Newton-Raphson algorithm and the tolerance to accept
@@ -45,9 +45,9 @@ the solution is `tol`.
 
 ##### Args
 
-* e: Eccentricity.
-* M: Mean anomaly [rad].
-* tol: (OPTIONAL) Tolerance for the Newton-Raphson method (**DEFAULT**: 1e-10).
+* `e`: Eccentricity.
+* `M`: Mean anomaly [rad].
+* `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
 ##### Returns
 
@@ -82,7 +82,7 @@ function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
 end
 
 """
-### function M_to_f(e::Number, M::Number, tol::Number = 1e-10)
+    function M_to_f(e::Number, M::Number, tol::Number = 1e-10)
 
 Compute the true anomaly given the eccentricity `e` and the mean anomaly `M`.
 This function uses the Newton-Raphson algorithm and the tolerance to accept the
@@ -90,9 +90,9 @@ solution is `tol`.
 
 ##### Args
 
-* e: Eccentricity.
-* M: Mean anomaly [rad].
-* tol: (OPTIONAL) Tolerance for the Newton-Raphson method (**DEFAULT**: 1e-10).
+* `e`: Eccentricity.
+* `M`: Mean anomaly [rad].
+* `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
 ##### Returns
 
@@ -112,15 +112,15 @@ end
 ################################################################################
 
 """
-### function E_to_f(e::Number, E::Number)
+    function E_to_f(e::Number, E::Number)
 
 Compute the true anomaly given the eccentricity `e` and the eccentric anomaly
 `E`.
 
 ##### Args
 
-* e: Eccentricity.
-* E: Eccentric anomaly [rad].
+* `e`: Eccentricity.
+* `E`: Eccentric anomaly [rad].
 
 ##### Returns
 
@@ -133,15 +133,15 @@ function E_to_f(e::Number, E::Number)
 end
 
 """
-### function E_to_M(e::Number, E::Number)
+    function E_to_M(e::Number, E::Number)
 
 Compute the mean anomaly given the eccentricity `e` and the eccentric anomaly
 `E`.
 
 ##### Args
 
-* e: Eccentricity.
-* E: Eccentric anomaly [rad].
+* `e`: Eccentricity.
+* `E`: Eccentric anomaly [rad].
 
 ##### Returns
 
@@ -157,15 +157,15 @@ end
 ################################################################################
 
 """
-### function f_to_E(e::Number,f::Number)
+    function f_to_E(e::Number,f::Number)
 
 Compute the eccentric anomaly given the eccentricity `e` and the true anomaly
 `f`.
 
 ##### Args
 
-* e: Eccentricity.
-* f: True anomaly [rad].
+* `e`: Eccentricity.
+* `f`: True anomaly [rad].
 
 ##### Returns
 
@@ -177,13 +177,13 @@ function f_to_E(e::Number, f::Number)
 end
 
 """
-### function f_to_E(orb::Orbit)
+    function f_to_E(orb::Orbit)
 
 Compute the eccentric anomaly given the orbit `orb`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
+* `orb`: Orbit (see `Orbit`).
 
 ##### Returns
 
@@ -195,14 +195,14 @@ function f_to_E(orb::Orbit)
 end
 
 """
-### function f_to_M(e::Number, f::Number)
+    function f_to_M(e::Number, f::Number)
 
 Compute the mean anomaly given the eccentricity `e` and the true anomaly `f`.
 
 ##### Args
 
-* e: Eccentricity.
-* f: True anomaly [rad].
+* `e`: Eccentricity.
+* `f`: True anomaly [rad].
 
 ##### Returns
 
@@ -218,13 +218,13 @@ function f_to_M(e::Number, f::Number)
 end
 
 """
-### function f_to_M(orb::Orbit)
+    function f_to_M(orb::Orbit)
 
 Compute the mean anomaly given the orbit `orb`.
 
 ##### Args
 
-* orb: Orbit (see `Orbit`).
+* `orb`: Orbit (see `Orbit`).
 
 ##### Returns
 

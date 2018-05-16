@@ -37,8 +37,8 @@ Macro that updates the parameters of `orbp.orb` using `t` and `orbp.sgp4d`.
 
 ##### Args
 
-* orbp: Orbit propagator structure.
-* t: New orbit epoch [s].
+* `orbp`: Orbit propagator structure.
+* `t`: New orbit epoch [s].
 
 """
 macro update_orb!(orbp, t)
@@ -62,7 +62,7 @@ end
 ################################################################################
 
 """
-### function init_orbit_propagator(::Type{Val{:sgp4}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
+    function init_orbit_propagator(::Type{Val{:sgp4}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 
 Initialize the SGP4 orbit propagator using the initial orbit specified by the
 elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, the B* parameter
@@ -72,17 +72,15 @@ Notice that the orbit elements **must be** represented in TEME frame.
 
 ##### Args
 
-* orb_0: Initial orbital elements (see `Orbit`).
-
-* t_0: Initial orbit epoch [s].
-* n_0: Initial angular velocity [rad/s].
-* e_0: Initial eccentricity.
-* i_0: Initial inclination [rad]
-* Ω_0: Initial right ascension of the ascending node [rad].
-* ω_0: Initial argument of perigee [rad].
-* M_0: Initial mean anomaly [rad].
-* bstar: Initial B* parameter of the SGP4.
-* sgp4_gc: (OPTIONAL) Gravitational constants (**DEFAULT** = `sgp4_gc_wgs84`).
+* `t_0`: Initial orbit epoch [s].
+* `n_0`: Initial angular velocity [rad/s].
+* `e_0`: Initial eccentricity.
+* `i_0`: Initial inclination [rad]
+* `Ω_0`: Initial right ascension of the ascending node [rad].
+* `ω_0`: Initial argument of perigee [rad].
+* `M_0`: Initial mean anomaly [rad].
+* `bstar`: Initial B* parameter of the SGP4.
+* `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
 ##### Returns
 
@@ -125,7 +123,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0.0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+    function init_orbit_propagator(::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0.0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
 
 Initialize the SGP4 orbit propagator using the initial orbit specified in
 `orb_0`, the B* parameter `bstar`, and the gravitational constants in the
@@ -136,9 +134,9 @@ TEME frame.
 
 ##### Args
 
-* orb_0: Initial orbital elements (see `Orbit`).
-* bstar: B* parameter of the SGP4.
-* sgp4_gc: (OPTIONAL) Gravitational constants (**DEFAULT** = `sgp4_gc_wgs84`).
+* `orb_0`: Initial orbital elements (see `Orbit`).
+* `bstar`: B* parameter of the SGP4.
+* `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
 ##### Returns
 
@@ -163,7 +161,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 end
 
 """
-### function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)
+    function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)
 
 Initialize the SGP4 orbit propagator using the initial orbit specified in the
 TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds since
@@ -171,8 +169,8 @@ the beginning of the year (see `TLE.epoch_day`).
 
 ##### Args
 
-* tle: TLE that will be used to initialize the propagator.
-* sgp4_gc: (OPTIONAL) Gravitational constants (**DEFAULT** = `sgp4_gc_wgs84`).
+* `tle`: TLE that will be used to initialize the propagator.
+* `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
 ##### Returns
 
@@ -196,15 +194,15 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 end
 
 """
-### function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
+    function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
 
 Propagate the orbit in `orbp` by `Δt` s using the SGP4 propagator. The new
 parameters will be written in `orbp`.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorSGP4`).
-* Δt: Step time [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorSGP4`).
+* `Δt`: Step time [s].
 
 ##### Returns
 
@@ -234,7 +232,7 @@ function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
 end
 
 """
-### function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
+    function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the SGP4 propagator. The structure `orbp` will contain the orbit elements
@@ -242,8 +240,8 @@ at the last propagation instant.
 
 ##### Args
 
-* orbp: Propagator structure (see `OrbitPropagatorSGP4`).
-* t: Time instants from orbit epoch in which the orbit will be propagated [s].
+* `orbp`: Propagator structure (see `OrbitPropagatorSGP4`).
+* `t`: Time instants from orbit epoch in which the orbit will be propagated [s].
 
 ##### Returns
 

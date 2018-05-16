@@ -44,7 +44,7 @@ end
 ################################################################################
 
 """
-### function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
+    function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
 
 Compute the gravity acceleration at position `r` using the EGM coefficients
 `egm_coefs`. The maximum degree that will be used while computing the spherical
@@ -52,9 +52,9 @@ harmonics will be `n_max`.
 
 ##### Args
 
-* egm_coefs: EGM coefficients.
-* r: Position in ITRF in which the gravity will be computed [m].
-* n_max: Maximum degree when computing the spherical harmonics.
+* `egm_coefs`: EGM coefficients.
+* `r`: Position in ITRF in which the gravity will be computed [m].
+* `n_max`: Maximum degree when computing the spherical harmonics.
 
 ##### Returns
 
@@ -181,7 +181,7 @@ function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
 end
 
 """
-### function compute_U(egm_coefs::EGM_Coefs, ϕ_gc::Number, λ_gc::Number, r_gc::Number, n_max::Number)
+    function compute_U(egm_coefs::EGM_Coefs, ϕ_gc::Number, λ_gc::Number, r_gc::Number, n_max::Number)
 
 Compute the gravity potential using the EGM coefficients `egm_coefs` at the
 geocentric latitude `ϕ_gc`, geocentric longitude `λ_gc`, and geocentric radius
@@ -190,11 +190,11 @@ harmonics will be `n_max`.
 
 ##### Args
 
-* egm_coefs: EGM coefficients.
-* ϕ_gc: Geocentric latitude [rad].
-* λ_gc: Geocentric longitude [rad].
-* r_gc: Geocentric radius [m].
-* n_max: Maximum degree when computing the spherical harmonics.
+* `egm_coefs`: EGM coefficients.
+* `ϕ_gc`: Geocentric latitude [rad].
+* `λ_gc`: Geocentric longitude [rad].
+* `r_gc`: Geocentric radius [m].
+* `n_max`: Maximum degree when computing the spherical harmonics.
 
 ##### Returns
 
@@ -236,16 +236,16 @@ function compute_U(egm_coefs::EGM_Coefs,
 end
 
 """
-### function read_egm_coefs(filename::String, μ::Number, R0::Number)
+    function read_egm_coefs(filename::String, μ::Number, R0::Number)
 
 Read the file `filename` with the EGM coefficients and create the structure
 `EGM_Coefs` with them.
 
 ##### Args
 
-* filename: The path to the file with the coefficients.
-* μ: Earth gravitational constant with atmosphere [m³/s²].
-* R0: Semi-major axis of the reference elipsoid [m].
+* `filename`: The path to the file with the coefficients.
+* `μ`: Earth gravitational constant with atmosphere [m³/s²].
+* `R0`: Semi-major axis of the reference elipsoid [m].
 
 ##### Returns
 
@@ -279,7 +279,7 @@ function read_egm_coefs(filename::String, μ::Number, R0::Number)
 end
 
 """
-### function read_egm_coefs(egm_version::Symbol)
+    function read_egm_coefs(egm_version::Symbol)
 
 Read the EGM coefficients from the bundled files. The variable `egm_version`
 specify which EGM version must be used. The possible values are:
@@ -289,7 +289,7 @@ specify which EGM version must be used. The possible values are:
 
 ##### Args
 
-* egm_version: (OPTIONAL) Select EGM version (**DEFAULT**: `:EGM2008`).
+* `egm_version`: (OPTIONAL) Select EGM version (**Default**: `:EGM2008`).
 
 ##### Returns
 

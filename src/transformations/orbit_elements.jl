@@ -79,19 +79,19 @@ export rv_to_kepler
 ################################################################################
 
 """
-### function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
 
 Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
 representation (position vector `r` and velocity vector `v`)
 
 ##### Args
 
-* a: Semi-major axis [m].
-* e: Excentricity.
-* i: Inclination [rad].
-* Ω: Right ascension of the ascending node [rad].
-* ω: Argument of perigee [rad].
-* f: True anomaly [rad].
+* `a`: Semi-major axis [m].
+* `e`: Excentricity.
+* `i`: Inclination [rad].
+* `Ω`: Right ascension of the ascending node [rad].
+* `ω`: Argument of perigee [rad].
+* `f`: True anomaly [rad].
 
 ##### Returns
 
@@ -173,15 +173,15 @@ end
 ################################################################################
 
 """
-### function rv_to_kepler(r::Vector, v::Vector)
+    function rv_to_kepler(r::Vector, v::Vector)
 
 Convert a Cartesian representation (position vector `r` and velocity vector `v`)
 to the Keplerian elements.
 
 ##### Args
 
-* r: Position vector in an inertial reference frame [m].
-* v: Velocity vector in an inertial reference frame [m].
+* `r`: Position vector in an inertial reference frame [m].
+* `v`: Velocity vector in an inertial reference frame [m].
 
 ##### Returns
 
@@ -255,19 +255,19 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
 end
 
 """
-### function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
+    function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
 
 Convert a Cartesian representation (position vector `[x;y;z]` and velocity
 vector `[vx;vy;vz]`) to the Keplerian elements.
 
 ##### Args
 
-* x: X component of the position vector in an inertial reference frame [m].
-* y: Y component of the position vector in an inertial reference frame [m].
-* z: Z component of the position vector in an inertial reference frame [m].
-* vx: X component of the velocity vector in an inertial reference frame [m/s].
-* vy: Y component of the velocity vector in an inertial reference frame [m/s].
-* vz: Z component of the velocity vector in an inertial reference frame [m/s].
+* `x`: X component of the position vector in an inertial reference frame [m].
+* `y`: Y component of the position vector in an inertial reference frame [m].
+* `z`: Z component of the position vector in an inertial reference frame [m].
+* `vx`: X component of the velocity vector in an inertial reference frame [m/s].
+* `vy`: Y component of the velocity vector in an inertial reference frame [m/s].
+* `vz`: Z component of the velocity vector in an inertial reference frame [m/s].
 
 ##### Returns
 

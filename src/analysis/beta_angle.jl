@@ -29,18 +29,18 @@
 export satellite_beta_angle
 
 """
-### function satellite_beta_angle(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, numDays::Integer)
+    function satellite_beta_angle(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, numDays::Integer)
 
 Compute the beta angle of a satellite.
 
 ##### Args
 
-* JD0: Initial instant for the analysis [Julian day].
-* a: Semi-major axis of the orbit [m].
-* e: Orbit eccentricity.
-* i: Orbit inclination [rad].
-* RAAN: Right ascension of the ascending node at `JD0` [rad].
-* numDays: Number of days of the analysis.
+* `JD0`: Initial instant for the analysis [Julian day].
+* `a`: Semi-major axis of the orbit [m].
+* `e`: Orbit eccentricity.
+* `i`: Orbit inclination [rad].
+* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
+* `numDays`: Number of days of the analysis.
 
 ##### Returns
 

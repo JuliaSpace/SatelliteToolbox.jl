@@ -35,14 +35,14 @@ export precession_fk5
 ################################################################################
 
 """
-### function precession_fk5(JD_TT::Number)
+    function precession_fk5(JD_TT::Number)
 
 Compute the angles related to the precession movement in the Julian Day
 (Terrestrial Time) `JD_TT` using the theory IAU-76/FK5.
 
 ##### Args
 
-* JD_TT: Julian day [TT].
+* `JD_TT`: Julian day [TT].
 
 ##### Returns
 
