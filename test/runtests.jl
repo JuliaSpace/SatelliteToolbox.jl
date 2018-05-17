@@ -1,5 +1,10 @@
 VERSION >= v"0.7.0-DEV.2036" && using Test
 VERSION <  v"0.7.0-DEV.2036" && using Base.Test
+
+VERSION >=  v"0.7.0-DEV" && using DelimitedFiles
+VERSION >=  v"0.7.0-DEV" && using LinearAlgebra
+VERSION >=  v"0.7.0-DEV" && using Printf
+
 using SatelliteToolbox
 using ReferenceFrameRotations
 
@@ -36,8 +41,13 @@ println("")
     include("./transformations/fk5/fk5.jl")
     cd("../../")
     cd("./transformations/")
-    include("./transformations/ecef_to_eci.jl")
-    include("./transformations/eci_to_ecef.jl")
+    # These tests cannot pass with julia 0.7 due to the following issue of
+    # Interpolations.jl:
+    #
+    #   https://github.com/JuliaMath/Interpolations.jl/issues/204
+    #
+    VERSION < v"0.7.0-DEV" && include("./transformations/ecef_to_eci.jl")
+    VERSION < v"0.7.0-DEV" && include("./transformations/eci_to_ecef.jl")
     cd("../")
 end
 println("")

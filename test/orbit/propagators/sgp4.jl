@@ -52,7 +52,7 @@
     for tle in tles_test_01
         filename = @sprintf("./sgp4_tests/aiaa-2006-6753/sgp4_tle_%d_result.txt",
                             tle.sat_num)
-        SGP4_results = readdlm(filename)
+        SGP4_results = readdlm(filename; comments=true)
 
         # Initialize the orbit propagator.
         orbp = init_orbit_propagator(Val{:sgp4}, tle, sgp4_gc_wgs72)
