@@ -89,9 +89,9 @@ function satellite_sun_radiation_earth_pointing(JD0::Number,
                                                 meanAnomaly::Bool = false,
                                                 step::Number = 0.1*pi/180.0)
     # Constants
-    const deg2rad = pi/180.0
-    const rad2deg = 180.0/pi
-    const day2sec = 24.0*60.0*60.0
+    deg2rad = pi/180.0
+    rad2deg = 180.0/pi
+    day2sec = 24.0*60.0*60.0
 
     # Initialization of variables.
     theta = 0.0                   # Sun angle relative to the inertial

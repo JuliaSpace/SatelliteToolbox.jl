@@ -380,7 +380,7 @@ set to `true`.
 
 """
 function dlegendre_fully_normalized(ϕ::Number, P::Matrix, ph_term = false)
-    dP = zeros(P)
+    dP = zero(P)
     dlegendre_fully_normalized!(dP,ϕ,P,ph_term)
     dP
 end
@@ -410,7 +410,6 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-
 function dlegendre_fully_normalized(ϕ::Number,
                                     n_max::Number,
                                     ph_term::Bool = false)
@@ -507,7 +506,7 @@ set to `true`.
 function dlegendre_schmidt_quasi_normalized(ϕ::Number,
                                             P::Matrix,
                                             ph_term = false)
-    dP = zeros(P)
+    dP = zero(P)
     dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
     dP
 end
@@ -674,7 +673,7 @@ set to `true`.
 
 """
 function dlegendre_conventional(ϕ::Number, P::Matrix, ph_term = false)
-    dP = zeros(P)
+    dP = zero(P)
     dlegendre_conventional!(dP, ϕ, P, ph_term)
     dP
 end

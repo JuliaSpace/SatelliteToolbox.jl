@@ -215,7 +215,7 @@ export TwoBody_Structure
 Low level Two Body orbit propagator structure.
 
 """
-type TwoBody_Structure{T}
+mutable struct TwoBody_Structure{T}
     # Initial parameters.
     t_0::T
     n_0::T
@@ -262,7 +262,7 @@ Gravitational constants for J2 orbit propagator.
 * `J2`: The second gravitational zonal harmonic of the Earth.
 
 """
-immutable J2_GravCte{T}
+struct J2_GravCte{T}
     R0::T
     μm::T
     J2::T
@@ -272,7 +272,7 @@ end
 Low level J2 orbit propagator structure.
 
 """
-type J2_Structure{T}
+mutable struct J2_Structure{T}
     # Orbit parameters.
     t_0::T
     a_0::T
@@ -345,7 +345,7 @@ end
 Low level SGP4 structure.
 
 """
-type SGP4_Structure{T<:Real}
+mutable struct SGP4_Structure{T<:Real}
     # TLE parameters.
     t_0::T
     n_0::T

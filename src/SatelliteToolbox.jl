@@ -7,8 +7,12 @@ export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
 import Base: asin, atan2, copy, cos, deepcopy, getindex, mod, sin, show
 
-importall ReferenceFrameRotations
-importall StaticArrays
+VERSION >= v"0.7.0-DEV" && using Dates
+VERSION >= v"0.7.0-DEV" && using LinearAlgebra
+VERSION >= v"0.7.0-DEV" && using Printf
+
+using ReferenceFrameRotations
+using StaticArrays
 
 # Re-exporting symbols from ReferenceFrameRotations.jl.
 export DCM

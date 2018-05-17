@@ -68,12 +68,12 @@ function satellite_eclipse_time(JD0::Number,
                                 numDays::Integer,
                                 relative::Bool = false)
     # Constants
-    const deg2rad = pi/180.0
-    const rad2deg = 180.0/pi
-    const day2sec = 24.0*60.0*60.0
+    deg2rad = pi/180.0
+    rad2deg = 180.0/pi
+    day2sec = 24.0*60.0*60.0
 
     # Step of the orbit propagation (mean anomaly) [rad].
-    const step = 0.1*deg2rad
+    step = 0.1*deg2rad
 
     # Initialization of variables.
     theta = 0.0                   # Sun angle relative to the inertial

@@ -62,10 +62,10 @@ function compute_ss_orbit_by_ang_vel(n::Number, e::Number)
     end
 
     # Tolerance for the Newton-Raphson method.
-    const tol = 1e-18
+    tol = 1e-18
 
     # Maximum number of iterations for the Newton-Raphson method.
-    const maxIt = 30
+    maxIt = 30
 
     # Auxiliary variables.
     sqrt_m0::Float64 = sqrt(m0)

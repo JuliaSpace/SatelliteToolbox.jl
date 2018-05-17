@@ -48,7 +48,7 @@ The equation of time [rad].
 """
 function equation_of_time(JD::Number)
     # Constants
-    const deg2rad = pi/180
+    deg2rad = pi/180
 
     # Number of Julian centuries from J2000 epoch.
     T_UT1 = (JD-JD_J2000)/36525.0

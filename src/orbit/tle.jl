@@ -56,7 +56,7 @@ macro parse_value(T, str, line_num)
 end
 
 """
-    function compute_checksum(str::String)
+    function compute_checksum(str::AbstractString)
 
 Compute the checksum of the line `str` modulo 10. The algorithm is simple: add
 all the numbers in the line, ignoring letters, spaces, periods, and plus signs,
@@ -72,7 +72,7 @@ division by 10.
 The computed checksum.
 
 """
-function compute_checksum(str::String)
+function compute_checksum(str::AbstractString)
     checksum = 0
 
     for c in str
@@ -154,6 +154,8 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
     line_num = 0
 
     skip_line_read = false
+
+    line = nothing
 
     while !eof(file)
         # Read the current line, strip white spaces, and skip if it is blank or

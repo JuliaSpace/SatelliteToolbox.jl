@@ -218,7 +218,7 @@ function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
     # in the interval [0,2π]°.
     #
     # The parameters here were updated as stated in the errata [2].
-    const r = 360
+    r = 360
 
     M_m = 134.96298139 + (1325r + 198.8673981)*T_TT +
                          0.0086972*T_TT^2 +
