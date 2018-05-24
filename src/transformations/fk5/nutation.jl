@@ -53,7 +53,8 @@ export nutation_fk5
 #   http://hpiers.obspm.fr/eop-pc/models/nutations/nut.html
 #
 # Notice that the order of them is not equal to that presented in the original
-# paper, but this have no impact when computing the nutation.
+# paper, but this have no impact when computing the nutation. Moreover, this is
+# the same order that is presented in [1, p. 1043].
 #
 ################################################################################
 
@@ -174,7 +175,7 @@ const nut_coefs_1980 = [
 ################################################################################
 
 """
-    function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
+    function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
 
 Compute the nutation parameters at the Julian Day (Terrestrial Time) `JD_TT`
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
@@ -183,13 +184,16 @@ that must be a matrix in which each line has the following syntax [1, p. 1043]:
     an1  an2  an3  an4  an5  Ai  Bi  Ci  Di
 
 where the units of `Ai` and `Ci` are [0.0001"] and the units of `Bi` and `Di`
-are [0.0001"/JC].
+are [0.0001"/JC]. The user can also specify the number of coefficients `n_max`
+that will be used when computing the nutation.
 
 ##### Args
 
 * `JD_TT`: Julian day [TT]
 * `nut_coefs_1980`: (OPTIONAL) Nutation coefficients (**Default** =
                     `nut_coefs_1980`).
+* `n_max`: (OPTIONAL) Number of coefficients that will be used when computing
+           the nutation (**Default** = 106).
 
 ##### Returns
 
@@ -198,7 +202,7 @@ are [0.0001"/JC].
 * The nutation in longitude [rad].
 
 """
-function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
+function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
     # Compute the Julian Centuries from `JD_TT`.
     T_TT = (JD_TT - JD_J2000)/36525
 
@@ -252,7 +256,7 @@ function nutation_fk5(JD_TT::Number, nut_coefs_1980::Matrix = nut_coefs_1980)
     ΔΨ_1980 = 0.0
     Δϵ_1980 = 0.0
 
-    for i = 1:106
+    for i = 1:n_max
         # Unpack values.
         an1, an2, an3, an4, an5, Ai, Bi, Ci, Di = nut_coefs_1980[i,:]
 
