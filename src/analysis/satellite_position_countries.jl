@@ -31,17 +31,17 @@ export satellite_check_Brazil
 Verify if a point described by latitude `lat` and longitude `lon` is inside
 Brazil.
 
-##### Args
+# Args
 
 * `lat`: Latitude [rad].
 * `lon`: Longitude [rad].
 
-##### Returns
+# Returns
 
 * `TRUE`: The point is inside Brazil.
 * `FALSE`: The point is not inside Brazil.
 
-##### Remarks
+# Remarks
 
 This function was based on the algorithm sent by Renato Branco to Ronan Arraes
 by e-mail at 2016-02-16.

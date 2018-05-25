@@ -33,18 +33,18 @@ Compute the distance between adjacent ground tracks at a given latitude `lat`
 for a ground repeating, Sun-synchronous orbit with period `T`, inclination
 `i`, and orbit cycle `To` days.
 
-##### Args
+# Args
 
 * `T`: Orbit period [s].
 * `i`: Inclination [rad].
 * `To`: Orbit cycle [days].
 * `lat`: Latitude [rad].
 
-##### Returns
+# Returns
 
 The distance between adjacent ground tracks at the given latitude [m].
 
-##### Remarks
+# Remarks
 
 The functions **does not** check if the orbit is a GRSS orbit.
 
@@ -67,7 +67,7 @@ Compute the distance between adjacent ground tracks at a given latitude `lat`
 for a ground repeating, Sun-synchronous orbit with semi-major axis `a`,
 eccentricity `e`, inclination `i`, and orbit cycle `To`.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
@@ -75,11 +75,11 @@ eccentricity `e`, inclination `i`, and orbit cycle `To`.
 * `To`: Orbit cycle [days].
 * `lat`: Latitude [rad].
 
-##### Returns
+# Returns
 
 The distance between adjacent ground tracks at the given latitude [m].
 
-##### Remarks
+# Remarks
 
 The functions *does not* check if the orbit is a GRSS orbit.
 
@@ -101,7 +101,7 @@ measured from the satellite position for a ground repeating, Sun-synchronous
 orbit with altitude in the Equator `h`, period `T`, inclination `i`, and orbit
 cycle `To`.
 
-##### Args
+# Args
 
 * `h`: Orbit altitude in the Equator [m].
 * `T`: Orbit period [s].
@@ -109,11 +109,11 @@ cycle `To`.
 * `To`: Orbit cycle [days].
 * `lat`: Latitude.
 
-##### Returns
+# Returns
 
 The angle between adjacent ground tracks at the given latitude [rad].
 
-##### Remarks
+# Remarks
 
 The functions **does not** check if the orbit is a GRSS orbit.
 
@@ -142,7 +142,7 @@ measured from the satellite position for a ground repeating, Sun-synchronous
 orbit with altitude in the Equator `h`, semi-major axis `a`, eccentricity `e`,
 inclination `i`, and orbit cycle `To`.
 
-##### Args
+# Args
 
 * `h`: Orbit altitude in the Equator [m].
 * `a`: Semi-major axis [m].
@@ -151,11 +151,11 @@ inclination `i`, and orbit cycle `To`.
 * `To`: Orbit cycle [days].
 * `lat`: Latitude.
 
-##### Returns
+# Returns
 
 * The angle between adjacent ground tracks at the given latitude [rad].
 
-##### Remarks
+# Remarks
 
 The functions *does not* check if the orbit is a GRSS orbit.
 
@@ -175,12 +175,12 @@ end
 Compute the Sun-synchronous orbit given the number of revolutions per day
 `numRevPD` and the eccentricity `e`.
 
-##### Args
+# Args
 
 * `numRevPD`: Number of revolutions per day.
 * `e`: Eccentricity.
 
-##### Returns
+# Returns
 
 * The semi-major axis [m].
 * The inclination [rad].
@@ -197,7 +197,7 @@ end
 
 Compute a list of repeating Sun-synchronous orbits.
 
-##### Args
+# Args
 
 * `minRep`: Minimum repetition time of the orbit [days].
 * `maxRep`: Maximum repetition time of the orbit [days].
@@ -205,7 +205,7 @@ Compute a list of repeating Sun-synchronous orbits.
 * `maxAlt`: Minimum altitude of the orbits on the list [m].
 * `e`: Eccentricity.
 
-##### Returns
+# Returns
 
 A matrix containing the orbits found with the following format:
 
@@ -214,7 +214,7 @@ A matrix containing the orbits found with the following format:
 
 in which the period is Int + Num/Den.
 
-##### Remarks
+# Remarks
 
 If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a orbit
 is added to the list.
@@ -301,12 +301,12 @@ end
 
 Sort the list of Sun-synchronous orbits `ss_orbits` by height.
 
-##### Args
+# Args
 
 * `ss_orbits`: List of Sun-synchronous orbits (see
                `list_ss_orbits_by_rep_period`).
 
-##### Returns
+# Returns
 
 A matrix containing a list of Sun-synchronous orbits sorted by height.
 

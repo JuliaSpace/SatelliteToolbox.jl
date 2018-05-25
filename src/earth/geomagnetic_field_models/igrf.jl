@@ -45,23 +45,23 @@ Compute the geomagnetic field vector [nT] at the date `date`, and **geocentric**
 coordinates: latitude `λ`, longitude `Ω`, and distance from the Earth center
 `r`.
 
-##### Args
+# Args
 
 * `date`: Year A.D.
 * `r`: Distance from the Earth center [m].
 * `λ`: Geocentric latitude (-π/2,+π/2) [rad].
 * `Ω`: Geocentric longitude (-π,+π) [rad].
 
-##### Returns
+# Returns
 
 The geomagnetic field vector represented in the geocentric reference frame [nT].
 
-##### Remarks
+# Remarks
 
 The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
 that a warning message is printed for dates grated than 2020.
 
-##### Disclaimer
+# Disclaimer
 
 This function is an independent implementation of the IGRF model. It contains a
 more readable code than the original one in FORTRAN, because it uses features
@@ -285,23 +285,23 @@ Compute the geomagnetic field vector [nT] at the date `date`, and **geodetic**
 coordinates: latitude `λ`, longitude `Ω`, and altitude above the reference
 ellipsoid `h`.
 
-##### Args
+# Args
 
 * `date`: Year A.D.
 * `h`: Altitude above the reference elipsoid [m].
 * `λ`: Geodetic latitude (-π/2,+π/2) [rad].
 * `Ω`: Geodetic longitude (-π,+π) [rad].
 
-##### Returns
+# Returns
 
 The geomagnetic field vector represented in the geodetic reference frame [nT].
 
-##### Remarks
+# Remarks
 
 The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
 that a warning message is printed for dates grated than 2020.
 
-##### Disclaimer
+# Disclaimer
 
 This function is an independent implementation of the IGRF model. It contains a
 more readable code than the original one in FORTRAN, because it uses features
@@ -338,7 +338,7 @@ This is a julia implementation of the official IGRF source code, which was
 written in Fortran [2]. The input and output variables are exactly the same as
 the ones described in the function `igrf12syn` in [2].
 
-##### Args
+# Args
 
 * `isv`: `0` if main-field values are required, `1` if secular variation values
          are required.
@@ -349,14 +349,14 @@ the ones described in the function `igrf12syn` in [2].
 * `colat`: Colatitude (0 - 180) [˚].
 * `elong`: East-Longitude (0 - 360) [˚].
 
-##### Returns
+# Returns
 
 * The north component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
 * The east component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
 * The vertical component [nT] if `isv = 0`, or [nT/year] if `isv = 1`.
 * The total intensity if `isv = 0`, or rubbish if `isv = 1`.
 
-##### Remarks
+# Remarks
 
 * The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
   that a warning message is printed for dates grated than 2020.

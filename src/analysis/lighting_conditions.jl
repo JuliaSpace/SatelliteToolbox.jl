@@ -46,13 +46,13 @@ const SAT_LIGHTING_UMBRA = 2
 Compute the satellite lighting condition given the Sun unitary vector `s_i` and
 the satellite position vector `r_i`.
 
-##### Args
+# Args
 
 * `r_i`: Satellite position vector represented in the Inertial coordinate frame
        [m].
 * `s_i`: Sun position vector represented in the Inertial coordinate frame [m].
 
-##### Returns
+# Returns
 
 * `SAT_LIGHTING_SUNLIGHT`: Satellite is under sunlight.
 * `SAT_LIGHTING_PENUMBRA`: Satellite is at penumbra region.

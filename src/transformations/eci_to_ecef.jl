@@ -41,7 +41,7 @@ be `DCM` or `Quaternion`. The model used to compute the rotation is specified by
 selected by the input `ECI` and the `ECEF` frame is selected by the input
 `ECEF`. The possible values are listed below.
 
-##### Rotation description
+# Rotation description
 
 The rotations that aligns the ECI with ECEF can be described by Direction Cosine
 Matrices or Quaternion. This is selected by the parameter `T`. The possible
@@ -52,7 +52,7 @@ values are:
 
 If no value is specified, then it falls back to `DCM`.
 
-##### Conversion model
+# Conversion model
 
 The model that will be used to compute the rotation is given by `M`. The
 possible values are:
@@ -61,7 +61,7 @@ possible values are:
 
 If no value is specified, then it falls back to `FK5()`.
 
-##### ECI Frame
+# ECI Frame
 
 The ECI frame is selected by the parameter `ECI`. The possible values are:
 
@@ -71,7 +71,7 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
 
-##### ECEF Frame
+# ECEF Frame
 
 The ECEF frame is selected by the parameter `ECEF`. The possible values are:
 
@@ -80,7 +80,7 @@ The ECEF frame is selected by the parameter `ECEF`. The possible values are:
 * `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
            frame.
 
-##### EOP Data
+# EOP Data
 
 The conversion between the frames depends on EOP Data (see `get_iers_eop` and
 `read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
@@ -103,7 +103,7 @@ to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `M`: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
@@ -112,12 +112,12 @@ is provided, the Julian Day UT1 will be accurately computed.
 * `JD_UTC`: Julian day [UTC].
 * `eop_data`: EOP Data.
 
-##### Returns
+# Returns
 
 The rotation description represented by `T` that rotates the ECI reference frame
 into alignment with the ECEF reference frame.
 
-##### Examples
+# Examples
 
 ```julia-repl
 julia> eop_IAU1980 = get_iers_eop(:IAU1980)

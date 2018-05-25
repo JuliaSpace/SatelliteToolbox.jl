@@ -84,7 +84,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `x_p`: Polar motion displacement about X-axis, which is the IERS Reference
@@ -92,12 +92,12 @@ will be returned. In case this parameter is omitted, then it falls back to
          [rad].
 * `y_p`: Polar motion displacement about Y-axis (90˚W or 270˚E meridian) [rad].
 
-##### Returns
+# Returns
 
 The rotation that aligns the ITRF frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
 the location of the terrestrial pole agreed by international committees [1]. The
@@ -128,7 +128,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `x_p`: Polar motion rotation about X-axis, which is the IERS Reference
@@ -136,12 +136,12 @@ will be returned. In case this parameter is omitted, then it falls back to
          [rad].
 * `y_p`: Polar motion rotation about Y-axis (90˚ W or 270˚ E meridian) [rad].
 
-##### Returns
+# Returns
 
 The rotation that aligns the PEF frame with the ITRF. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
 the location of the terrestrial pole agreed by international committees [1]. The
@@ -182,7 +182,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -190,12 +190,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the PEF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The Pseudo-Earth Fixed (PEF) frame is rotated into the True of Date (TOD) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -265,7 +265,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -273,12 +273,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TOD frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The True of Date (TOD) frame is rotated into the Pseudo-Earth Fixed (PEF) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -320,7 +320,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -329,12 +329,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TOD frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The True of Date (TOD) frame is rotated into the Mean of Date (MOD) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -378,7 +378,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -387,12 +387,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the MOD frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The Mean of Date (MOD) frame is rotated into the True of Date (TOD) frame
 considering the 1980 IAU Theory of Nutation. The IERS EOP corrections must be
@@ -432,17 +432,17 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
 
-##### Returns
+# Returns
 
 The rotation that aligns the MOD frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The Mean of Date (MOD) frame is rotated into the Geocentric Celestial Reference
 Frame (GCRF) considering the IAU 1976 Precession model.
@@ -471,17 +471,17 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
 
-##### Returns
+# Returns
 
 The rotation that aligns the GCRF frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The Geocentric Celestial Reference Frame (GCRF) is rotated into the Mean of Date
 (MOD) frame considering the IAU 1976 Precession model.
@@ -535,7 +535,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -549,12 +549,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the ITRF frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
 this is the only way available to compute the conversion ITRF <=> PEF (the
@@ -612,7 +612,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -626,12 +626,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the GCRF frame with the ITRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
 this is the only way available to compute the conversion ITRF <=> PEF (the
@@ -698,7 +698,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -708,7 +708,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the PEF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -795,7 +795,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `JD_UT1`: Julian Day [UT1].
@@ -805,7 +805,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the MOD frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.

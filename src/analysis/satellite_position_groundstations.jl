@@ -36,14 +36,14 @@ Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with position vector `rs_e` (ECEF) and a
 minimum elevation angle of `minElev`.
 
-##### Args
+# Args
 
 * `r_e`: Satellite position represented in the ECEF reference frame.
 * `rs_e`: Ground station position represented in the ECEF reference frame.
 * `minElev`: Minimum elevation angle in which the station can see the satellite
              [rad].
 
-##### Returns
+# Returns
 
 * `TRUE`: The satellite is inside the visibility circle of the ground station.
 * `FALSE`: The satellite is not inside the visibility circle of the ground
@@ -70,7 +70,7 @@ Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with latitude `lat_s`, longitude `lon_s`,
 altitude `h_s`, and a minimum elevation angle of `minElev`.
 
-##### Args
+# Args
 
 * `r_e`: Satellite position represented in the ECEF reference frame.
 * `lat_s`: Latitude of the ground station [rad].
@@ -79,7 +79,7 @@ altitude `h_s`, and a minimum elevation angle of `minElev`.
 * `minElev`: Minimum elevation angle in which the station can see the satellite
            [rad].
 
-##### Returns
+# Returns
 
 * `TRUE`: The satellite is inside the visibility circle of the ground station.
 * `FALSE`: The satellite is not inside the visibility circle of the ground

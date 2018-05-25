@@ -52,7 +52,7 @@ frame given the orbital elements `a`, `e`, `i`, `RAAN`, `w`, and `f`.
 Notice that the ECI frame used will be the same as the frame of the orbital
 elements.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis.
 * `e`: Eccentricity.
@@ -61,7 +61,7 @@ elements.
 * `w`: Argument of perigee [rad].
 * `f`: True anomaly [rad].
 
-##### Returns
+# Returns
 
 * The satellite position vector represented in the ECI reference frame.
 * The unit vector perpendicular to the satellite position vector that lies on

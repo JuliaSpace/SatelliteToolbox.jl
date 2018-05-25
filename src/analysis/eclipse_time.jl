@@ -40,7 +40,7 @@ export satellite_eclipse_time
 
 Compute the eclipse time of a satellite.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -51,7 +51,7 @@ Compute the eclipse time of a satellite.
 * `numDays`: Number of days of the analysis.
 * `relative`: Compute the eclipse time relative to the nodal period.
 
-##### Returns
+# Returns
 
 The following table:
 

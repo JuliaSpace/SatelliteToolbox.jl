@@ -37,7 +37,7 @@ Initialize the J2 orbit propagator using the initial orbit specified by the
 elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the
 gravitational parameters `j2_gc` (see `J2_GravCte`).
 
-##### Args
+# Args
 
 * `t_0`: Initial orbit epoch [s].
 * `n_0`: Initial angular velocity [rad/s].
@@ -53,7 +53,7 @@ gravitational parameters `j2_gc` (see `J2_GravCte`).
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
            `j2_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
@@ -87,7 +87,7 @@ end
 Initialize the J2 orbit propagator using the initial orbit specified in `orb_0`,
 and the gravitational parameters in the structure `j2_gc`.
 
-##### Args
+# Args
 
 * `orb_0`: Initial orbital elements (see `Orbit`).
 * `dn_o2`: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]
@@ -97,7 +97,7 @@ and the gravitational parameters in the structure `j2_gc`.
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
            `j2_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
@@ -128,13 +128,13 @@ Initialize the J2 orbit propagator using the initial orbit specified in the TLE
 `tle`. The orbit epoch `t0` will be defined as the number of seconds since the
 beginning of the year (see `TLE.epoch_day`).
 
-##### Args
+# Args
 
 * `tle`: TLE that will be used to initialize the propagator.
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
            `j2_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorJ2` that stores the information
 of the orbit propagator.
@@ -162,19 +162,19 @@ end
 Propagate the orbit in `orbp` by `Δt` s using the J2 orbit propagator algorithm.
 The new parameters will be written in `orbp`.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorJ2`).
 * `Δt`: Step time [s].
 
-##### Returns
+# Returns
 
 * The Keplerian elements represented in the inertial frame after the step (see
   `Orbit`) [SI units].
 * The position vector represented in the inertial frame after the step [m].
 * The velocity vector represented in the inertial frame after the step [m].
 
-##### Remarks
+# Remarks
 
 The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. If the orbit parameters are obtained
@@ -210,13 +210,13 @@ Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the J2 orbit propagator. The structure `orbp` will contain the elements at
 the last propagation instant.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorJ2`).
 * `t`: Time instants from orbit epoch in which the orbit will be propagated
        [s].
 
-##### Returns
+# Returns
 
 * An array with the mean Keplerian elements represented in inertial frame in
   each time instant (see `Orbit`) [SI units].
@@ -225,7 +225,7 @@ the last propagation instant.
 * An array with the velocity vector represented in inertial frame in each time
   instant [m].
 
-##### Remarks
+# Remarks
 
 The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. If the orbit parameters are obtained

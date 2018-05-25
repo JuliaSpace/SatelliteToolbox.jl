@@ -33,7 +33,7 @@ export satellite_beta_angle
 
 Compute the beta angle of a satellite.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -42,7 +42,7 @@ Compute the beta angle of a satellite.
 * `RAAN`: Right ascension of the ascending node at `JD0` [rad].
 * `numDays`: Number of days of the analysis.
 
-##### Returns
+# Returns
 
 The beta angle computed for each day in degrees.
 

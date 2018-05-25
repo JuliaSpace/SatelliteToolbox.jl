@@ -45,12 +45,12 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 * `IAU1980`: Get IERS EOP C04 IAU1980 data.
 * `IAU2000A`: Get IERS EOP C04 IAU2000A data.
 
-##### Args
+# Args
 
 * `data_type`: (OPTIONAL) Symbol that defines the type of data that will be
                downloaded (**Default** = `:IAU2000A`).
 
-##### Returns
+# Returns
 
 A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
 with the interpolations of the EOP parameters. Notice that the interpolation
@@ -72,12 +72,12 @@ end
 
 Get the IERS EOP C04 IAU1980 data from the URL `url`.
 
-##### Args
+# Args
 
 * `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
          https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213)
 
-##### Returns
+# Returns
 
 The structure `EOPData_IAU1980` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
@@ -105,12 +105,12 @@ end
 
 Get the IERS EOP C04 IAU2000A data from the URL `url`.
 
-##### Args
+# Args
 
 * `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
          https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214)
 
-##### Returns
+# Returns
 
 The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
@@ -139,12 +139,12 @@ Read IERS EOP Data from the file `filename`. The user must specify if the data
 is related to the model IAU 1980 (`data_type = :IAU1980`) or to the model IAU
 2000A (`data_type = :IAU2000A`), which is the default.
 
-##### Args
+# Args
 
 * `filename`: The file path in which the EOP data will be read.
 * `data_type`: (OPTIONAL) Model type of the EOP Data (**Default** = `:IAU2000A`).
 
-##### Returns
+# Returns
 
 A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
 with the interpolations of the EOP parameters. Notice that the interpolation

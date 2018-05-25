@@ -37,15 +37,15 @@ export J2000toGMST, JDtoGMST
 Compute the Greenwich Mean Sideral Time (GMST) given the instant `J2000` in
 J2000.0 reference [UT1].
 
-##### Args
+# Args
 
 * `J2000_UT1`: Instant in J2000.0 reference [UT1].
 
-##### Returns
+# Returns
 
 * Greenwich mean sideral time [rad].
 
-##### Remarks
+# Remarks
 
 Based on algorithm in [2] (http://www.navipedia.net/index.php/CEP_to_ITRF),
 accessed at 2015-12-01.
@@ -72,15 +72,15 @@ end
 
 Compute the Greenwich Mean Sideral Time (GMST) for a Julian Day `JD` [UT1].
 
-##### Args
+# Args
 
 * `JD_UT1`: Julian day [UT1].
 
-##### Returns
+# Returns
 
 * Greenwich mean sideral time [rad].
 
-##### Remarks
+# Remarks
 
 Based on algorithm in [1, pp. 188].
 

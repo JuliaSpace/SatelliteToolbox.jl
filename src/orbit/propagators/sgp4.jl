@@ -106,7 +106,7 @@ sgp4_gc_wgs72 = SGP4_GravCte(
 
 Initialize the data structure of SGP4 algorithm.
 
-##### Args
+# Args
 
 * `spg4_gc`: SPG4 gravitational constants (see `SGP4_GravCte`).
 * `t_0`: Epoch of the orbital elements [min].
@@ -118,7 +118,7 @@ Initialize the data structure of SGP4 algorithm.
 * `M_0`: "Mean" mean anomaly at epoch [rad].
 * `bstar`: Drag parameter (B*).
 
-##### Returns
+# Returns
 
 The structure `SGP4_Structure` with the initialized parameters.
 
@@ -280,12 +280,12 @@ end
 Propagate the orbit defined in `sgp4d` until the time `t`. Notice that the
 values in `sgp4d` will be modified.
 
-##### Args
+# Args
 
 * `sgp4d`: SPG4 structure (see `SGP4_Structure`).
 * `t`: Time that the elements will be propagated [min].
 
-##### Returns
+# Returns
 
 * The position vector represented in TEME frame at time `t` [km].
 * The velocity vector represented in TEME frame at time `t` [km/s].

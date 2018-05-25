@@ -73,7 +73,7 @@ export DatetoJD, JDtoDate
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month =
 `M`, Day = `D`, Hour = `h`, minute = `m`, and second = `s`) to Julian Day.
 
-##### Args
+# Args
 
 * `Y`: Year in Gregorian Calendar.
 * `M`: Month in Gregorian Calendar (`1` => **January**, `2` => **February**, ...).
@@ -82,11 +82,11 @@ Convert a date represented using the Gregorian Calendar (Year = `y`, Month =
 * `m`: Minutes.
 * `s`: Seconds.
 
-##### Returns
+# Returns
 
 The Julian Day.
 
-##### Remarks
+# Remarks
 
 The algorithm was obtained from [2] (Accessed on 2018-04-11).
 
@@ -135,11 +135,11 @@ end
 
 Convert the date `date` to Julian Day.
 
-##### Args
+# Args
 
 * `date`: Date to be converted.
 
-##### Returns
+# Returns
 
 The Julian Day.
 
@@ -154,11 +154,11 @@ end
 
 Convert the date and time `dateTime` to Julian Day.
 
-##### Args
+# Args
 
 * `dateTime`: Date and time to be converted.
 
-##### Returns
+# Returns
 
 The Julian Day.
 
@@ -178,12 +178,12 @@ end
 Convert a date represented in Julian Day `JD` to Gregorian Calendar. The
 optional parameter `T` defines the return type.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Defines the return type of the functions (**Default** = `none`).
 * `JD`: Julian Day.
 
-##### Returns
+# Returns
 
 If `T` is omitted or `Int`, then a tuple with the following data will be
 returned:
@@ -204,7 +204,7 @@ does not handle them.
 
 If `T` is `DateTime`, then it will return the Julia structure `DateTime`.
 
-##### Remarks
+# Remarks
 
 The algorithm was obtained from [2] (Accessed on 2018-04-11). In [2], there is
 the following warning:

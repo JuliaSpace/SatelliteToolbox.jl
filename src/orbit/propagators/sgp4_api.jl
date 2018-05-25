@@ -35,7 +35,7 @@ export init_orbit_propagator, step!, propagate!
 
 Macro that updates the parameters of `orbp.orb` using `t` and `orbp.sgp4d`.
 
-##### Args
+# Args
 
 * `orbp`: Orbit propagator structure.
 * `t`: New orbit epoch [s].
@@ -70,7 +70,7 @@ elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, the B* parameter
 
 Notice that the orbit elements **must be** represented in TEME frame.
 
-##### Args
+# Args
 
 * `t_0`: Initial orbit epoch [s].
 * `n_0`: Initial angular velocity [rad/s].
@@ -82,7 +82,7 @@ Notice that the orbit elements **must be** represented in TEME frame.
 * `bstar`: Initial B* parameter of the SGP4.
 * `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
@@ -132,13 +132,13 @@ structure `sgp4_gc`.
 Notice that the orbit elements specified in `orb_0` **must be** represented in
 TEME frame.
 
-##### Args
+# Args
 
 * `orb_0`: Initial orbital elements (see `Orbit`).
 * `bstar`: B* parameter of the SGP4.
 * `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
@@ -167,12 +167,12 @@ Initialize the SGP4 orbit propagator using the initial orbit specified in the
 TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds since
 the beginning of the year (see `TLE.epoch_day`).
 
-##### Args
+# Args
 
 * `tle`: TLE that will be used to initialize the propagator.
 * `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
@@ -199,12 +199,12 @@ end
 Propagate the orbit in `orbp` by `Δt` s using the SGP4 propagator. The new
 parameters will be written in `orbp`.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorSGP4`).
 * `Δt`: Step time [s].
 
-##### Returns
+# Returns
 
 * The mean Keplerian elements represented in TEME frame after the step (see
   `Orbit`) [SI units].
@@ -238,12 +238,12 @@ Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the SGP4 propagator. The structure `orbp` will contain the orbit elements
 at the last propagation instant.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorSGP4`).
 * `t`: Time instants from orbit epoch in which the orbit will be propagated [s].
 
-##### Returns
+# Returns
 
 * An array with the mean Keplerian elements represented in TEME frame in each
   time instant (see `Orbit`) [SI units].

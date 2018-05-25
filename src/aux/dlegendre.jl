@@ -70,7 +70,7 @@ following values are valid:
 
 If `N` is omitted, then the full normalization will be used.
 
-##### Args
+# Args
 
 * `N`: (OPTIONAL) Choose the normalization (**Default**: none).
 * `dP`: Matrix that will store the computed first-order derivative of the
@@ -133,7 +133,7 @@ following values are valid:
 
 If `N` is omitted, then the full normalization will be used.
 
-##### Args
+# Args
 
 * `N`: (OPTIONAL) Choose the normalization (**Default**: none).
 * `P`: Matrix with the associated Legendre functions.
@@ -182,7 +182,7 @@ following values are valid:
 
 If `N` is omitted, then the full normalization will be used.
 
-##### Args
+# Args
 
 * `N`: (OPTIONAL) Choose the normalization (**Default**: none).
 * `ϕ`: Angle [rad].
@@ -239,7 +239,7 @@ This algorithm needs the matrix `P` with the fully normalized associated
 Legendre function. This can be computed using the function
 `legendre_fully_normalized`.
 
-##### Args
+# Args
 
 * `dP`: Matrix that will store the computed first-order derivative of the
         associated Legendre functions.
@@ -360,7 +360,7 @@ Legendre function. This can be computed using the function
 `legendre_fully_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `P`: Matrix with the associated Legendre function.
@@ -397,7 +397,7 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.
@@ -443,7 +443,7 @@ This algorithm needs the matrix `P` with the Schmidt quasi-normalized associated
 Legendre function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`.
 
-##### Args
+# Args
 
 * `dP`: Matrix that will store the computed first-order derivative of the
       associated Legendre functions.
@@ -484,7 +484,7 @@ Legendre function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `P`: Matrix with the associated Legendre function.
@@ -523,7 +523,7 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.
@@ -568,7 +568,7 @@ however, that `dP` must be a square matrix.
 This algorithm needs the matrix `P` with the conventional associated Legendre
 function. This can be computed using the function `legendre_conventional`.
 
-##### Args
+# Args
 
 * `dP`: Matrix that will store the computed first-order derivative of the
       associated Legendre functions.
@@ -653,7 +653,7 @@ function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `P`: Matrix with the associated Legendre function.
@@ -690,7 +690,7 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.

@@ -36,7 +36,7 @@ export satellite_orbit_compute_f
 Compute the true anomaly given the mean anomaly `m`, the semi-major axis `a`,
 the eccentricity `e`, and the inclination `i`.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
@@ -44,11 +44,11 @@ the eccentricity `e`, and the inclination `i`.
 * `m`: Mean anomaly [rad].
 * `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
-##### Returns
+# Returns
 
 The true anomaly [rad].
 
-##### Remarks
+# Remarks
 
 This functions uses the Newton-Raphson method to compute the true anomaly.
 

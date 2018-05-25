@@ -45,7 +45,7 @@ export satellite_sun_angle_earth_pointing
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -61,14 +61,14 @@ Compute the Sun angle on a satellite surface for an Earth-pointing mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 A matrix containing the sun angle [rad] for each position in orbit for each day.
 
 **NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
 eclipse, then `NaN` is returned in the matrix.
 
-##### Remarks
+# Remarks
 
 The body reference frame is defined as:
 
@@ -202,7 +202,7 @@ end
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -216,14 +216,14 @@ Compute the Sun angle on a satellite surface for an Earth-pointing mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 A matrix containing the Sun angle for each position in orbit for each day.
 
 **NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
 eclipse, then `NaN` is returned in the matrix.
 
-##### Remarks
+# Remarks
 
 The body reference frame is defined as:
 

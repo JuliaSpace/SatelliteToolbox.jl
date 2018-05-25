@@ -66,7 +66,7 @@ end
 
 Initialize the data structure of Two Body orbit propagator algorithm.
 
-##### Args
+# Args
 
 * `t_0`: Epoch of the orbital elements [s].
 * `n_0`: Mean motion at epoch [rad/s].
@@ -77,7 +77,7 @@ Initialize the data structure of Two Body orbit propagator algorithm.
 * `M_0`: Initial mean anomaly.
 * `μ`: Standard gravitational parameter of the central body [m^3/s^2].
 
-##### Returns
+# Returns
 
 The structure `TwoBody_Structure` with the initialized parameters.
 
@@ -111,12 +111,12 @@ end
 Propagate the orbit defined in `tbd` until the time `t`. Notice that the values
 in `tbd` will be modified.
 
-##### Args
+# Args
 
 * `tbd`: Two Body orbit propagator structure (see `TwoBody_Structure`).
 * `t`: Time in which the elements will be propagated [s].
 
-##### Returns
+# Returns
 
 * The position vector represented in the inertial frame at time `t` [m].
 * The velocity vector represented in the inertial frame at time `t` [m/s]

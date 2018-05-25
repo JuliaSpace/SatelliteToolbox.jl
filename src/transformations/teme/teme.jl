@@ -61,7 +61,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -70,7 +70,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TEME frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -130,7 +130,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -139,7 +139,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -169,7 +169,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -178,7 +178,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TEME frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -249,7 +249,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -258,7 +258,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the MOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -288,7 +288,7 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
@@ -297,12 +297,12 @@ will be returned. In case this parameter is omitted, then it falls back to
 * `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
               (**Default** = 0).
 
-##### Returns
+# Returns
 
 The rotation that aligns the TEME frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
 nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
@@ -342,17 +342,17 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
 
-##### Returns
+# Returns
 
 The rotation that aligns the GCRF frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
-##### Remarks
+# Remarks
 
 The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
 nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
@@ -380,12 +380,12 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
 
-##### Returns
+# Returns
 
 The rotation that aligns the TEME frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
@@ -414,12 +414,12 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
-##### Args
+# Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
 * `JD_TT`: Julian Day [Terrestrial Time].
 
-##### Returns
+# Returns
 
 The rotation that aligns the PEF frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.

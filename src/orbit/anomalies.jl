@@ -43,13 +43,13 @@ Compute the eccentric anomaly given the eccentricity `e` and the mean anomaly
 `M`. This function uses the Newton-Raphson algorithm and the tolerance to accept
 the solution is `tol`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `M`: Mean anomaly [rad].
 * `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
-##### Returns
+# Returns
 
 The eccentric anomaly in the interval [0,2π].
 
@@ -88,13 +88,13 @@ Compute the true anomaly given the eccentricity `e` and the mean anomaly `M`.
 This function uses the Newton-Raphson algorithm and the tolerance to accept the
 solution is `tol`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `M`: Mean anomaly [rad].
 * `tol`: (OPTIONAL) Tolerance for the Newton-Raphson method (**Default**: 1e-10).
 
-##### Returns
+# Returns
 
 The true anomaly in the interval [0,2π].
 
@@ -117,12 +117,12 @@ end
 Compute the true anomaly given the eccentricity `e` and the eccentric anomaly
 `E`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `E`: Eccentric anomaly [rad].
 
-##### Returns
+# Returns
 
 The true anomaly in the interval [0, 2π].
 
@@ -138,12 +138,12 @@ end
 Compute the mean anomaly given the eccentricity `e` and the eccentric anomaly
 `E`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `E`: Eccentric anomaly [rad].
 
-##### Returns
+# Returns
 
 The mean anomaly in the interval [0, 2π].
 
@@ -162,12 +162,12 @@ end
 Compute the eccentric anomaly given the eccentricity `e` and the true anomaly
 `f`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `f`: True anomaly [rad].
 
-##### Returns
+# Returns
 
 The eccentric anomaly in the interval [0,2π].
 
@@ -181,11 +181,11 @@ end
 
 Compute the eccentric anomaly given the orbit `orb`.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 
-##### Returns
+# Returns
 
 The eccentric anomaly in the interval [0,2π].
 
@@ -199,12 +199,12 @@ end
 
 Compute the mean anomaly given the eccentricity `e` and the true anomaly `f`.
 
-##### Args
+# Args
 
 * `e`: Eccentricity.
 * `f`: True anomaly [rad].
 
-##### Returns
+# Returns
 
 The mean anomaly in the interval [0,2π].
 
@@ -222,11 +222,11 @@ end
 
 Compute the mean anomaly given the orbit `orb`.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 
-##### Returns
+# Returns
 
 The mean anomaly in the interval [0,2π].
 

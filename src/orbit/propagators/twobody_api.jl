@@ -38,7 +38,7 @@ Initialize the Two Body orbit propagator using the initial orbit specified by
 the elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
 gravitational parameters of the central body `μ`.
 
-##### Args
+# Args
 
 * `t_0`: Initial orbit epoch [s].
 * `n_0`: Initial angular velocity [rad/s].
@@ -50,7 +50,7 @@ gravitational parameters of the central body `μ`.
 * `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
      (**Default** = `m0`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorTwoBody` that stores the
 information of the orbit propagator.
@@ -81,13 +81,13 @@ end
 Initialize the Two Body orbit propagator using the initial orbit specified in
 `orb_0`, and the standard gravitational parameters of the central body `μ`.
 
-##### Args
+# Args
 
 * `orb_0`: Initial orbital elements (see `Orbit`).
 * `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
        (**Default** = `m0`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorTwoBody` that stores the
 information of the orbit propagator.
@@ -114,13 +114,13 @@ Initialize the Two Body orbit propagator using the initial orbit specified in
 the TLE `tle`. The orbit epoch `t0` will be defined as the number of seconds
 since the beginning of the year (see `TLE.epoch_day`).
 
-##### Args
+# Args
 
 * `tle`: TLE that will be used to initialize the propagator.
 * `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
        (**Default** = `m0`).
 
-##### Returns
+# Returns
 
 A new instance of the structure `OrbitPropagatorTwoBody` that stores the
 information of the orbit propagator.
@@ -146,12 +146,12 @@ end
 Propagate the orbit in `orbp` by `Δt` s using the Two Body orbit propagator
 algorithm. The new parameters will be written in `orbp`.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorTwoBody`).
 * `Δt`: Step time [s].
 
-##### Returns
+# Returns
 
 * The Keplerian elements represented in the inertial frame after the step (see
   `Orbit`) [SI units].
@@ -188,12 +188,12 @@ Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the Two Body orbit propagator. The structure `orbp` will contain the
 elements at the last propagation instant.
 
-##### Args
+# Args
 
 * `orbp`: Propagator structure (see `OrbitPropagatorTwoBody`).
 * `t`: Time instants from orbit epoch in which the orbit will be propagated [s].
 
-##### Returns
+# Returns
 
 * An array with the mean Keplerian elements represented in inertial frame in
   each time instant (see `Orbit`) [SI units].

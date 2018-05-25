@@ -40,11 +40,11 @@ export precession_fk5
 Compute the angles related to the precession movement in the Julian Day
 (Terrestrial Time) `JD_TT` using the theory IAU-76/FK5.
 
-##### Args
+# Args
 
 * `JD_TT`: Julian day [TT].
 
-##### Returns
+# Returns
 
 The angles (ζ, Θ, z) as described in [1, p. 226-228].
 

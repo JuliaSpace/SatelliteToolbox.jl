@@ -84,7 +84,7 @@ export rv_to_kepler
 Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
 representation (position vector `r` and velocity vector `v`)
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Excentricity.
@@ -93,12 +93,12 @@ representation (position vector `r` and velocity vector `v`)
 * `ω`: Argument of perigee [rad].
 * `f`: True anomaly [rad].
 
-##### Returns
+# Returns
 
 * The position vector represented in the inertial reference frame [m].
 * The velocity vector represented in the inertial reference frame [m].
 
-##### References
+# References
 
 This algorithm was adapted from [1] and [3, p. 37-38].
 
@@ -178,16 +178,16 @@ end
 Convert a Cartesian representation (position vector `r` and velocity vector `v`)
 to the Keplerian elements.
 
-##### Args
+# Args
 
 * `r`: Position vector in an inertial reference frame [m].
 * `v`: Velocity vector in an inertial reference frame [m].
 
-##### Returns
+# Returns
 
 An instance of the structure `Orbit` with the Keplerian elements [SI units].
 
-##### References
+# References
 
 The algorithm was adapted from [1].
 
@@ -260,7 +260,7 @@ end
 Convert a Cartesian representation (position vector `[x;y;z]` and velocity
 vector `[vx;vy;vz]`) to the Keplerian elements.
 
-##### Args
+# Args
 
 * `x`: X component of the position vector in an inertial reference frame [m].
 * `y`: Y component of the position vector in an inertial reference frame [m].
@@ -269,7 +269,7 @@ vector `[vx;vy;vz]`) to the Keplerian elements.
 * `vy`: Y component of the velocity vector in an inertial reference frame [m/s].
 * `vz`: Z component of the velocity vector in an inertial reference frame [m/s].
 
-##### Returns
+# Returns
 
 * The Keplerian elements in this order:
     - Semi-major axis [km].

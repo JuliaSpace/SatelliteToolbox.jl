@@ -30,16 +30,16 @@ export compute_RAAN_lt, sim_RAAN_J2
 Compute the RAAN so that the orbit plane local time is `asc_node_lt` at the date
 `t0`, which is specified as a number of days from January 1st, 2000.
 
-##### Args
+# Args
 
 * `t0`: Day of the analysis [number of days since January 1st, 2000].
 * `asc_node_lt`: Desired local time for the ascending node [hour].
 
-##### Returns
+# Returns
 
 The RAAN in the interval [0, 2π] [rad].
 
-##### Remarks
+# Remarks
 
 The sun position is computed at noon of the day `t0`.
 
@@ -59,12 +59,12 @@ end
 Compute the RAAN so that the orbit plane local time is `asc_node_lt` at the
 Julian day `JD`.
 
-##### Args
+# Args
 
 * `JD`: Julian day.
 * `asc_node_lt`: Desired local time for the ascending node [hour].
 
-##### Returns
+# Returns
 
 The RAAN in the interval [0, 2π] [rad].
 
@@ -97,7 +97,7 @@ Simulate the RAAN of an orbit with semi-major axis `a`, eccentricity `e`,
 inclination `i` and initial RAAN `RAAN_0` considering J2 perturbations. The
 analysis is performed for `numDays` days.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis of the satellite orbit [m].
 * `e`: Orbit eccentricity.
@@ -105,7 +105,7 @@ analysis is performed for `numDays` days.
 * `RAAN_0`: Initial right ascension of the ascending node [rad].
 * `numDays`: Number of days of the analysis.
 
-##### Returns
+# Returns
 
 The RAAN computed for each day in the interval [0,2π] [rad].
 

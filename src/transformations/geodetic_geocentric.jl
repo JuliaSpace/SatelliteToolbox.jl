@@ -59,17 +59,17 @@ export GeodetictoGeocentric
 Convert the vector `r_e` represented in the Earth-Centered, Earth-Fixed (ECEF)
 reference frame into Geodetic coordinates (WGS-84).
 
-##### Args
+# Args
 
 * `r_e`: Position vector represented in the ECEF reference frame.
 
-##### Returns
+# Returns
 
 * Latitude [rad].
 * Longitude [rad].
 * Altitude [m].
 
-##### Remarks
+# Remarks
 
 Based on algorithm in [3].
 
@@ -99,17 +99,17 @@ end
 Convert the latitude `lat`, longitude `lon`, and altitude `h` (WGS-84) into the
 Earth-Centered, Earth-Fixed (ECEF) reference frame.
 
-##### Args
+# Args
 
 * `lat`: Latitude in WGS-84 [rad].
 * `lon`: Longitude in WGS-84 [rad].
 * `h`: Altitude in WGS-84 [rad].
 
-##### Returns
+# Returns
 
 The converted vector represented in the ECEF reference frame.
 
-##### Remarks
+# Remarks
 
 Based on algorithm in [3].
 
@@ -131,17 +131,17 @@ Compute the geocentric latitude and radius from the geodetic latitude `ϕ_gd` an
 height above the reference ellipsoid `h` (WGS-84). Notice that the longitude is
 the same in both geocentric and geodetic coordinates.
 
-##### Args
+# Args
 
 * `ϕ_gd`: Geodetic latitude (-π/2,+π/2) [rad].
 * `h`: Height above the reference ellipsoid (WGS-84) [m].
 
-##### Returns
+# Returns
 
 * Geocentric latitude [rad].
 * Radius from the center of the Earth [m].
 
-##### Remarks
+# Remarks
 
 Based on algorithm in [4, p. 3].
 

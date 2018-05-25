@@ -53,7 +53,7 @@ end
 Verify if the orbit with semi-major axis `a` and eccentricity `e` is valid. This
 macro throws an exception if the orbit is not valid.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
@@ -91,7 +91,7 @@ Create an orbit with semi-major axis `a`, eccentricity `e`, inclination `i`,
 right ascension of the ascending node `Ω`, argument of perigee `ω`, and true
 anomaly `f`.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
@@ -100,7 +100,7 @@ anomaly `f`.
 * `ω`: Argument of perigee [rad].
 * `f`: True anomaly [rad].
 
-##### Returns
+# Returns
 
 An object of type `Orbit` with the specified orbit. The orbit epoch is defined
 as 0.0.
@@ -126,14 +126,14 @@ the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
 * `i`: Inclination [rad].
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The angular velocity of an object in the specified orbit [rad/s].
 
@@ -170,12 +170,12 @@ perturbation terms specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The angular velocity of an object in the specified orbit [rad/s].
 
@@ -196,14 +196,14 @@ perturbation terms specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
 * `i`: Inclination [rad].
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The perturbation of the argument of perigee [rad/s].
 
@@ -239,12 +239,12 @@ the perturbation terms specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The perturbation of the argument of perigee [rad/s].
 
@@ -265,14 +265,14 @@ perturbation terms specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
 * `i`: Inclination [rad].
 * `pert`: Symbol that defines the perturbation (Default = `:J2`).
 
-##### Returns
+# Returns
 
 The time derivative of the RAAN [rad/s].
 
@@ -307,12 +307,12 @@ orbit `orb` using the perturbation terms specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 * `pert`: Symbol that defines the perturbation (Default = `:J2`).
 
-##### Returns
+# Returns
 
 The time derivative of the RAAN [rad/s].
 
@@ -333,14 +333,14 @@ the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
 * `i`: Inclination [rad].
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The orbit period [s].
 
@@ -361,12 +361,12 @@ specified by the symbol `pert`.
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
 
-##### Args
+# Args
 
 * `orb`: Orbit (see `Orbit`).
 * `pert`: (OPTIONAL) Symbol that defines the perturbation (**Default** = `:J2`).
 
-##### Returns
+# Returns
 
 The orbit period [s].
 

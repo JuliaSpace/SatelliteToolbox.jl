@@ -29,14 +29,14 @@ export minimum_swath_grss, minimum_half_FOV_grss, swath_width
 Compute the minimum half FOV of a ground repeating Sun-synchronous (GRSS) orbit
 to cover the entire Equator within the revisit interval.
 
-##### Args
+# Args
 
 * `h`: Orbit altitude in the Equator [m].
 * `T`: Orbit period [s].
 * `i`: Inclination [rad].
 * `To`: Orbit cycle [days].
 
-##### Returns
+# Returns
 
 The minimum half FOV [rad].
 
@@ -51,7 +51,7 @@ end
 Compute the minimum half FOV of a ground repeating Sun-synchronous (GRSS) orbit
 to cover the entire Equator within the revisit interval.
 
-##### Args
+# Args
 
 * `h`: Orbit altitude in the Equator [m].
 * `a`: Semi-major axis [m].
@@ -59,7 +59,7 @@ to cover the entire Equator within the revisit interval.
 * `i`: Inclination [rad].
 * `To`: Orbit cycle [days].
 
-##### Returns
+# Returns
 
 The minimum half FOV [rad].
 
@@ -74,13 +74,13 @@ end
 Compute the minimum swath of a ground repeating Sun-synchronous (GRSS) orbit to
 cover the entire Equator within the revisit interval.
 
-##### Args
+# Args
 
 * `T`: Orbit period [s].
 * `i`: Inclination [rad].
 * `To`: Orbit cycle [days].
 
-##### Returns
+# Returns
 
 The minimum swath [m].
 
@@ -95,14 +95,14 @@ end
 Compute the minimum swath of a ground repeating Sun-synchronous (GRSS) orbit to
 cover the entire Equator within the revisit interval.
 
-##### Args
+# Args
 
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
 * `i`: Inclination [rad].
 * `To`: Orbit cycle [days].
 
-##### Returns
+# Returns
 
 The minimum swath [m].
 
@@ -116,12 +116,12 @@ end
 
 Compute the swath width given the orbit altitude and the half FOV.
 
-##### Args
+# Args
 
 * `h`: Orbit altitude [m].
 * `HalfFOV`: Half field of view [rad].
 
-##### Returns
+# Returns
 
 The swath width [m].
 

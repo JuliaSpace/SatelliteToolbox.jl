@@ -38,7 +38,7 @@ export satellite_sun_radiation_earth_pointing_mean
 
 Compute the Sun radiation on a satellite surface for an Earth-pointing mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -54,7 +54,7 @@ Compute the Sun radiation on a satellite surface for an Earth-pointing mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 A matrix containing the Sun radiation [W/m²] for each position in orbit for each
 day.
@@ -62,7 +62,7 @@ day.
 **NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
 eclipse, then `NaN` is returned in the matrix.
 
-##### Remarks
+# Remarks
 
 The body reference frame is defined as:
 
@@ -198,7 +198,7 @@ end
 Compute the mean Sun radiation on a satellite surface for an Earth-pointing
 mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -214,11 +214,11 @@ mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 The mean Sun radiation on a surface [W/m²].
 
-##### Remarks
+# Remarks
 
 For more details, see **satellite_sun_radiation_earth_pointing**.
 
@@ -255,7 +255,7 @@ end
 
 Compute the Sun radiation on a satellite surface for an Earth-pointing mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -269,7 +269,7 @@ Compute the Sun radiation on a satellite surface for an Earth-pointing mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 A matrix containing the Sun radiation [W/m²] for each position in orbit for each
 day.
@@ -277,7 +277,7 @@ day.
 **NOTE**: if the Sun angle is larger than 90 deg or if the satellite is in
 eclipse, then `NaN` is returned in the matrix.
 
-##### Remarks
+# Remarks
 
 The body reference frame is defined as:
 
@@ -314,7 +314,7 @@ end
 Compute the mean Sun radiation on a satellite surface for an Earth-pointing
 mission.
 
-##### Args
+# Args
 
 * `JD0`: Initial instant for the analysis [Julian day].
 * `a`: Semi-major axis of the orbit [m].
@@ -328,11 +328,11 @@ mission.
                  anomaly instead of in the orbit latitude (**Default**: false).
 * `step`: (OPTIONAL) Mean anomaly step (**Default**: 0.1 deg).
 
-##### Returns
+# Returns
 
 The mean Sun radiation on a surface [W/m²].
 
-##### Remarks
+# Remarks
 
 For more details, see **satellite_sun_radiation_earth_pointing**.
 

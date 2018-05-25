@@ -29,13 +29,13 @@ export read_tle
 Parse the string `str` using the type `T`. If it is not succeeded, then throw an
 error indicating the line `line_num` with the problem.
 
-##### Args
+# Args
 
 * `T`: Type of the output.
 * `str`: Input string.
 * `line_num`: Line number that is being analyzed.
 
-##### Returns
+# Returns
 
 The `str` parsed to the type `T`. If an error occurred, then an exception is
 thrown.
@@ -63,11 +63,11 @@ all the numbers in the line, ignoring letters, spaces, periods, and plus signs,
 but assigning +1 to the minus signs. The checksum is the remainder of the
 division by 10.
 
-##### Args
+# Args
 
 * `str`: String to be checked, the checksum **must not** be in this string.
 
-##### Returns
+# Returns
 
 The computed checksum.
 
@@ -97,13 +97,13 @@ end
 
 Read the TLEs in the file `tle_filename`.
 
-##### Args
+# Args
 
 * `tle_filename`: TLE file name.
 * `verify_checksum`: (OPTIONAL) If false, then the checksum will not be verified
                      (**Default** = true).
 
-##### Returns
+# Returns
 
 An array with all the TLEs that were parsed.
 
@@ -355,7 +355,7 @@ end
 
 Print the TLE `tle` in the IO `io`.
 
-##### Args
+# Args
 
 * `io`: IO to print the TLE.
 * `tle`: TLE to be printed.

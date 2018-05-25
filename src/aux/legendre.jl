@@ -79,7 +79,7 @@ following values are valid:
 
 If `N` is omitted, then the full normalization will be used.
 
-##### Args
+# Args
 
 * `N`: (OPTIONAL) Choose the normalization (**Default**: none).
 * `P`: Matrix that will store the computed associated Legendre function.
@@ -118,7 +118,7 @@ following values are valid:
 
 If `N` is omitted, then the full normalization will be used.
 
-##### Args
+# Args
 
 * `N`: (OPTIONAL) Choose the normalization (**Default**: none).
 * `ϕ`: Angle [rad].
@@ -126,7 +126,7 @@ If `N` is omitted, then the full normalization will be used.
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
            (**Default** = `false`).
 
-##### Returns
+# Returns
 
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
@@ -156,14 +156,14 @@ of matrix `P`. Notice, however, that `P` must be a square matrix.
 
 The result will be stored at matrix `P`.
 
-##### Args
+# Args
 
 * `P`: Matrix that will store the computed associated Legendre function.
 * `ϕ`: Angle [rad].
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
            (**Default** = `false`).
 
-##### Remarks
+# Remarks
 
 This algorithm was based on [1]. Our definition of fully normalized associated
 Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
@@ -222,18 +222,18 @@ end
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`. The
 maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
            (**Default** = `false`).
 
-##### Returns
+# Returns
 
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
-##### Remarks
+# Remarks
 
 This algorithm was based on [1]. Our definition of fully normalized associated
 Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
@@ -274,14 +274,14 @@ square matrix.
 
 The result will be stored at matrix `P`.
 
-##### Args
+# Args
 
 * `P`: Matrix that will store the computed associated Legendre function.
 * `ϕ`: Angle [rad].
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
            (**Default** = `false`).
 
-##### Remarks
+# Remarks
 
 This algorithm was based on [3,4]. The conversion is obtained by:
 
@@ -343,18 +343,18 @@ end
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
              (**Default** = `false`).
 
-##### Returns
+# Returns
 
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
-##### Remarks
+# Remarks
 
 This algorithm was based on [3,4]. The conversion is obtained by:
 
@@ -394,7 +394,7 @@ of matrix `P`. Notice, however, that `P` must be a square matrix.
 
 The result will be stored at matrix `P`.
 
-##### Args
+# Args
 
 * `P`: Matrix that will store the computed associated Legendre function.
 * `ϕ`: Angle [rad].
@@ -448,14 +448,14 @@ end
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree that will be computed is `n_max`.
 
-##### Args
+# Args
 
 * `ϕ`: Angle [rad].
 * `n_max`: The maximum degree that will be computed.
 * `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
              (**Default** = `false`).
 
-##### Returns
+# Returns
 
 A square matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 

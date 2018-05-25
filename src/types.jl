@@ -53,7 +53,7 @@ EOP Data for IAU 1980. The fields are described as follows:
 * `dPsi, dEps`: Celestial pole offsets referred to the model IAU1980 [arcsec].
 * `*_err`: Errors in the components [same unit as the component].
 
-##### Remarks
+# Remarks
 
 Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
 if one want to obtain, for example, the X component of the polar motion with
@@ -88,7 +88,7 @@ EOP Data for IAU 2000A. The files are described as follows:
 * `dX, dY`: Celestial pole offsets referred to the model IAU2000A [arcsec].
 * `*_err`: Errors in the components [same unit as the component].
 
-##### Remarks
+# Remarks
 
 Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
 if one want to obtain, for example, the X component of the polar motion with
@@ -148,7 +148,7 @@ This structure contains the same elements of the TLE with the same units.
 
 * `name`: Name of the satellite.
 
-##### First line
+# First line
 
 * `sat_num`: Satellite number.
 * `classification`: Classification ('U', 'C', or 'S').
@@ -161,7 +161,7 @@ This structure contains the same elements of the TLE with the same units.
 * `elem_set_number`: Element set number.
 * `checksum_l1`: Checksum of the line 1 (modulo 10).
 
-##### Second line
+# Second line
 
 * `i`: Inclination [deg].
 * `Ω`: Right ascension of the ascending node [deg].

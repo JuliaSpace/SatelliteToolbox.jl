@@ -113,7 +113,7 @@ j2_gc_wgs72 = J2_GravCte(
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
-##### Args
+# Args
 
 * `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
 * `t_0`: Epoch of the orbital elements [s].
@@ -126,7 +126,7 @@ Initialize the data structure of J2 orbit propagator algorithm.
 * `dn_o2`: First time derivative of the mean motion divided by two [rad/s^2].
 * `ddn_o6`: Second time derivative of the mean motion divided by six [rad/s^3].
 
-##### Returns
+# Returns
 
 The structure `J2_Structure` with the initialized parameters.
 
@@ -206,12 +206,12 @@ end
 Propagate the orbit defined in `j2d` until the time `t`. Notice that the values
 in `j2d` will be modified.
 
-##### Args
+# Args
 
 * `j2d`: J2 orbit propagator structure (see `J2_Structure`).
 * `t`: Time in which the elements will be propagated [s].
 
-##### Returns
+# Returns
 
 * The position vector represented in the inertial frame at time `t` [m].
 * The velocity vector represented in the inertial frame at time `t` [m/s]

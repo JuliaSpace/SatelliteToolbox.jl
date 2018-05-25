@@ -187,7 +187,7 @@ where the units of `Ai` and `Ci` are [0.0001"] and the units of `Bi` and `Di`
 are [0.0001"/JC]. The user can also specify the number of coefficients `n_max`
 that will be used when computing the nutation.
 
-##### Args
+# Args
 
 * `JD_TT`: Julian day [TT]
 * `nut_coefs_1980`: (OPTIONAL) Nutation coefficients (**Default** =
@@ -195,7 +195,7 @@ that will be used when computing the nutation.
 * `n_max`: (OPTIONAL) Number of coefficients that will be used when computing
            the nutation (**Default** = 106).
 
-##### Returns
+# Returns
 
 * The mean obliquity of the ecliptic [rad].
 * The nutation in obliquity of the ecliptic [rad].

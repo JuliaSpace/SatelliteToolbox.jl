@@ -50,13 +50,13 @@ Compute the gravity acceleration at position `r` using the EGM coefficients
 `egm_coefs`. The maximum degree that will be used while computing the spherical
 harmonics will be `n_max`.
 
-##### Args
+# Args
 
 * `egm_coefs`: EGM coefficients.
 * `r`: Position in ITRF in which the gravity will be computed [m].
 * `n_max`: Maximum degree when computing the spherical harmonics.
 
-##### Returns
+# Returns
 
 A vector with the gravity acceleration represented in ITRF (Earth body-fixed
 frame).
@@ -188,7 +188,7 @@ geocentric latitude `ϕ_gc`, geocentric longitude `λ_gc`, and geocentric radius
 `r_gc`. The maximum degree that will be used while computing the spherical
 harmonics will be `n_max`.
 
-##### Args
+# Args
 
 * `egm_coefs`: EGM coefficients.
 * `ϕ_gc`: Geocentric latitude [rad].
@@ -196,7 +196,7 @@ harmonics will be `n_max`.
 * `r_gc`: Geocentric radius [m].
 * `n_max`: Maximum degree when computing the spherical harmonics.
 
-##### Returns
+# Returns
 
 The gravitational potential at specified location [J/kg].
 
@@ -241,17 +241,17 @@ end
 Read the file `filename` with the EGM coefficients and create the structure
 `EGM_Coefs` with them.
 
-##### Args
+# Args
 
 * `filename`: The path to the file with the coefficients.
 * `μ`: Earth gravitational constant with atmosphere [m³/s²].
 * `R0`: Semi-major axis of the reference elipsoid [m].
 
-##### Returns
+# Returns
 
 A structure `EGM_Coefs` with the coefficients.
 
-##### Remarks
+# Remarks
 
 The original file with EGM2008 coefficients use a Fortan formated float:
 
@@ -287,11 +287,11 @@ specify which EGM version must be used. The possible values are:
 * `:EGM96`: Use EGM96 coefficients.
 * `:EGM2008`: Use EGM2008 coefficients.
 
-##### Args
+# Args
 
 * `egm_version`: (OPTIONAL) Select EGM version (**Default**: `:EGM2008`).
 
-##### Returns
+# Returns
 
 A structure `EGM_Coefs` with the coefficients.
 
