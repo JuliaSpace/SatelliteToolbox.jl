@@ -85,6 +85,8 @@ include("transformations/fk5/fk5.jl")
 include("transformations/fk5/nutation.jl")
 include("transformations/fk5/precession.jl")
 
+include("transformations/teme/teme.jl")
+
 include("time/julian_day.jl")
 include("time/time.jl")
 

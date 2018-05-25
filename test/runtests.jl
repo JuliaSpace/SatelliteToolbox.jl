@@ -40,6 +40,9 @@ println("")
     cd("./transformations/fk5/")
     include("./transformations/fk5/fk5.jl")
     cd("../../")
+    cd("./transformations/teme/")
+    include("./transformations/teme/teme.jl")
+    cd("../../")
     cd("./transformations/")
     # These tests cannot pass with julia 0.7 due to the following issue of
     # Interpolations.jl:
