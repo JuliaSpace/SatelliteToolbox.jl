@@ -23,6 +23,9 @@
 #
 # Changelog
 #
+# 2018-05-25: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add tests related to TEME.
+#
 # 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
