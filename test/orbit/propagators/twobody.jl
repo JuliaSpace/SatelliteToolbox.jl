@@ -65,7 +65,7 @@
 ################################################################################
 
 @testset "Two Body orbit propagator" begin
-    orb = rv_to_kepler(1131340, -2282343, 6672423, -5643.05, 4303.33, 2428.79)
+    orb = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
     orbp = init_orbit_propagator(Val{:twobody}, orb)
     (o,r,v) = step!(orbp,40*60)
 
