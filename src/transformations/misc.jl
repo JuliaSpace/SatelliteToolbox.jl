@@ -16,12 +16,15 @@
 #
 # Changelog
 #
+# 2018-05-25: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add support for TEME.
+#
 # 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export FK5, ITRF, PEF, TOD, MOD, GCRF, J2000
+export FK5, ITRF, PEF, TOD, MOD, GCRF, J2000, TEME
 
 # Auxiliary functions to define the conversion models.
 @inline FK5()   = Val{:FK5}
@@ -33,3 +36,4 @@ export FK5, ITRF, PEF, TOD, MOD, GCRF, J2000
 @inline MOD()   = Val{:MOD}
 @inline GCRF()  = Val{:GCRF}
 @inline J2000() = Val{:J2000}
+@inline TEME()  = Val{:TEME}

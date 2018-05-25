@@ -490,3 +490,59 @@ end
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 end
+
+## TEME to PEF
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
+#
+# one gets:
+#
+#   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECItoECEF TEME => PEF" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+
+    D_PEF_TEME = rECItoECEF(FK5(), TEME(), PEF(), JD_UTC, eop)
+    r_pef = D_PEF_TEME*r_teme
+
+    @test r_pef[1] ≈ -1033.47503130 atol=3e-4
+    @test r_pef[2] ≈ +7901.30558560 atol=3e-4
+    @test r_pef[3] ≈ +6380.34453270 atol=3e-4
+
+    q_PEF_TEME = rECItoECEF(Quaternion, FK5(), TEME(), PEF(), JD_UTC, eop)
+    r_pef = vect(conj(q_PEF_TEME)*r_teme*q_PEF_TEME)
+
+    @test r_pef[1] ≈ -1033.47503130 atol=3e-4
+    @test r_pef[2] ≈ +7901.30558560 atol=3e-4
+    @test r_pef[3] ≈ +6380.34453270 atol=3e-4
+
+    D_PEF_TEME = rECItoECEF(TEME(), PEF(), JD_UTC, eop)
+    r_pef = D_PEF_TEME*r_teme
+
+    @test r_pef[1] ≈ -1033.47503130 atol=3e-4
+    @test r_pef[2] ≈ +7901.30558560 atol=3e-4
+    @test r_pef[3] ≈ +6380.34453270 atol=3e-4
+
+    q_PEF_TEME = rECItoECEF(Quaternion, TEME(), PEF(), JD_UTC, eop)
+    r_pef = vect(conj(q_PEF_TEME)*r_teme*q_PEF_TEME)
+
+    @test r_pef[1] ≈ -1033.47503130 atol=3e-4
+    @test r_pef[2] ≈ +7901.30558560 atol=3e-4
+    @test r_pef[3] ≈ +6380.34453270 atol=3e-4
+end

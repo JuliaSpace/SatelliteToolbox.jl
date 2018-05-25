@@ -23,6 +23,9 @@
 #
 # Changelog
 #
+# 2018-05-25: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add support to TEME.
+#
 # 2018-05-09: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
@@ -218,11 +221,52 @@ Quaternion{Float64}:
               Type{Val{:PEF}}} =
     inv_rotation(rECEFtoECI(T, M, T_ECEF, T_ECI, JD_UTC, eop_data))
 
+# If ECI frame is TEME, then the only ECEF frame supported is PEF.
+@inline rECItoECEF(T_ECI::T1,
+                   T_ECEF::T2,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU1980) where
+    T1<:Type{Val{:TEME}} where
+    T2<:Type{Val{:PEF}} =
+    inv_rotation(rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data))
+
+@inline rECItoECEF(T::T1,
+                   T_ECI::T2,
+                   T_ECEF::T3,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU1980) where
+    T1<:Union{Type{DCM},Type{Quaternion}} where
+    T2<:Type{Val{:TEME}} where
+    T3<:Type{Val{:PEF}} =
+    inv_rotation(rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data))
+
+@inline rECItoECEF(M::T1,
+                   T_ECI::T2,
+                   T_ECEF::T3,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU1980) where
+    T1<:Type{Val{:FK5}} where
+    T2<:Type{Val{:TEME}} where
+    T3<:Type{Val{:PEF}} =
+    inv_rotation(rECEFtoECI(DCM, M, T_ECEF, T_ECI, JD_UTC, eop_data))
+
+@inline rECItoECEF(T::T1,
+                   M::T2,
+                   T_ECI::T3,
+                   T_ECEF::T4,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU1980) where
+    T1<:Union{Type{DCM},Type{Quaternion}} where
+    T2<:Type{Val{:FK5}} where
+    T3<:Type{Val{:TEME}} where
+    T4<:Type{Val{:PEF}} =
+    inv_rotation(rECEFtoECI(T, M, T_ECEF, T_ECI, JD_UTC, eop_data))
+
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECEF(T_ECI::T1,
                    T_ECEF::T2,
                    JD_UTC::Number) where
-    T1<:Type{Val{:J2000}} where
+    T1<:Union{Type{Val{:J2000}},Type{Val{:TEME}}} where
     T2<:Type{Val{:PEF}} =
     inv_rotation(rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC))
 
@@ -231,7 +275,7 @@ Quaternion{Float64}:
                    T_ECEF::T3,
                    JD_UTC::Number) where
     T1<:Type{Val{:FK5}} where
-    T2<:Type{Val{:J2000}} where
+    T2<:Union{Type{Val{:J2000}},Type{Val{:TEME}}} where
     T3<:Type{Val{:PEF}} =
     inv_rotation(rECEFtoECI(DCM, M, T_ECEF, T_ECI, JD_UTC))
 
@@ -240,7 +284,7 @@ Quaternion{Float64}:
                    T_ECEF::T3,
                    JD_UTC::Number) where
     T1<:Union{Type{DCM},Type{Quaternion}} where
-    T2<:Type{Val{:J2000}} where
+    T2<:Union{Type{Val{:J2000}},Type{Val{:TEME}}} where
     T3<:Type{Val{:PEF}} =
     inv_rotation(rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC))
 
@@ -251,6 +295,6 @@ Quaternion{Float64}:
                    JD_UTC::Number) where
     T1<:Union{Type{DCM},Type{Quaternion}} where
     T2<:Type{Val{:FK5}} where
-    T3<:Type{Val{:J2000}} where
+    T3<:Union{Type{Val{:J2000}},Type{Val{:TEME}}} where
     T4<:Type{Val{:PEF}} =
     inv_rotation(rECEFtoECI(T, M, T_ECEF, T_ECI, JD_UTC))
