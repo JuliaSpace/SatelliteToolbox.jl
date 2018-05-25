@@ -38,9 +38,6 @@ include("constants.jl")
 #                                    Files
 ################################################################################
 
-include("./aux/legendre.jl")
-include("./aux/dlegendre.jl")
-
 include("analysis/beta_angle.jl")
 include("analysis/eclipse_time.jl")
 include("analysis/lighting_conditions.jl")
@@ -55,6 +52,9 @@ include("earth/gravity_models/egm.jl")
 include("earth/geomagnetic_field_models/igrf.jl")
 include("earth/geomagnetic_field_models/igrf12_coefs.jl")
 include("earth/geomagnetic_field_models/igrf12syn_coefs.jl")
+
+include("./misc/legendre.jl")
+include("./misc/dlegendre.jl")
 
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
@@ -72,12 +72,12 @@ include("orbit/propagators/sgp4_api.jl")
 include("orbit/propagators/twobody.jl")
 include("orbit/propagators/twobody_api.jl")
 
-include("transformations/aux.jl")
 include("transformations/eop.jl")
 include("transformations/ecef_to_eci.jl")
 include("transformations/eci_to_ecef.jl")
 include("transformations/geodetic_geocentric.jl")
 include("transformations/gmst.jl")
+include("transformations/misc.jl")
 include("transformations/orbit_elements.jl")
 include("transformations/position.jl")
 

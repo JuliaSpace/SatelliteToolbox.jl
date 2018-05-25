@@ -1,6 +1,7 @@
 # SatelliteToolbox
 
 [![Build Status](https://travis-ci.org/SatelliteToolbox/SatelliteToolbox.jl.svg?branch=master)](https://travis-ci.org/SatelliteToolbox/SatelliteToolbox.jl)
+[![Build status](https://ci.appveyor.com/api/projects/status/x7ogyjfx1x5yj78j/branch/master?svg=true)](https://ci.appveyor.com/project/ronisbr/satellitetoolbox-jl/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/SatelliteToolbox/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/SatelliteToolbox/SatelliteToolbox.jl?branch=master)
 
 This package contains several functions to build simulations related with
