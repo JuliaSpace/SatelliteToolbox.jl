@@ -60,3 +60,7 @@ println("")
 end
 println("")
 
+@testset "Functions related with the Sun" begin
+    include("./sun/equation_of_time.jl")
+end
+println("")
