@@ -68,6 +68,8 @@ If no value is specified, then it falls back to `FK5()`.
 
 The ECI frame is selected by the parameter `ECI`. The possible values are:
 
+* `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
+            reference frame.
 * `MOD()`: ECI will be selected as the Mean of Date (MOD).
 * `TOD()`: ECI will be selected as the True of Date (TOD).
 * `J2000()`: ECI will be selected as the J2000 reference frame.
@@ -100,6 +102,7 @@ given the selected frames.
 | IAU-76/FK5 | `J2000` | `PEF`  | Not required* |
 | IAU-76/FK5 | `TOD`   | `PEF`  | EOP IAU1980   |
 | IAU-76/FK5 | `MOD`   | `PEF`  | EOP IAU1980   |
+| IAU-76/FK5 | `TEME`  | `PEF`  | Not required* |
 
 `*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but

@@ -77,6 +77,8 @@ The ECEF frame is selected by the parameter `ECEF`. The possible values are:
 
 The ECI frame is selected by the parameter `ECI`. The possible values are:
 
+* `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
+            reference frame.
 * `MOD()`: ECI will be selected as the Mean of Date (MOD).
 * `TOD()`: ECI will be selected as the True of Date (TOD).
 * `J2000()`: ECI will be selected as the J2000 reference frame.
@@ -100,6 +102,7 @@ given the selected frames.
 | IAU-76/FK5 | `PEF`  | `J2000` | Not required* |
 | IAU-76/FK5 | `PEF`  | `TOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `MOD`   | EOP IAU1980   |
+| IAU-76/FK5 | `PEF`  | `TEME`  | Not required* |
 
 `*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
