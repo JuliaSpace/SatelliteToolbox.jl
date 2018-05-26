@@ -37,7 +37,7 @@ export get_iers_eop, get_eop_iau_1980, get_eop_iau_2000A
 export read_iers_eop
 
 """
-    function get_iers_eop(data_type::Symbol = :IAU2000A)
+    function get_iers_eop(data_type::Symbol = :IAU1980)
 
 Download and parse the IERS EOP C04 data. The data type is specified by
 `data_type` symbol. Supported values are:
@@ -48,7 +48,7 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 # Args
 
 * `data_type`: (OPTIONAL) Symbol that defines the type of data that will be
-               downloaded (**Default** = `:IAU2000A`).
+               downloaded (**Default** = `:IAU1980`).
 
 # Returns
 
@@ -57,7 +57,7 @@ with the interpolations of the EOP parameters. Notice that the interpolation
 indexing is set to the Julian Day.
 
 """
-function get_iers_eop(data_type::Symbol = :IAU2000A)
+function get_iers_eop(data_type::Symbol = :IAU1980)
     if data_type == :IAU1980
         return get_iers_eop_iau_1980()
     elseif data_type == :IAU2000A
@@ -133,16 +133,16 @@ function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-
 end
 
 """
-    function read_iers_eop(filename::String, data_type::Symbol = :IAU2000A)
+    function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
 
 Read IERS EOP Data from the file `filename`. The user must specify if the data
-is related to the model IAU 1980 (`data_type = :IAU1980`) or to the model IAU
-2000A (`data_type = :IAU2000A`), which is the default.
+is related to the model IAU 1980 (`data_type = :IAU1980`), which is the default,
+or to the model IAU 2000A (`data_type = :IAU2000A`).
 
 # Args
 
 * `filename`: The file path in which the EOP data will be read.
-* `data_type`: (OPTIONAL) Model type of the EOP Data (**Default** = `:IAU2000A`).
+* `data_type`: (OPTIONAL) Model type of the EOP Data (**Default** = `:IAU1980`).
 
 # Returns
 
@@ -166,7 +166,7 @@ download it using the following commands:
         wget https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214
 
 """
-function read_iers_eop(filename::String, data_type::Symbol = :IAU2000A)
+function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
     # Parse the data removing the header.
     eop = readdlm(filename; skipblanks=true, skipstart=14)
 
