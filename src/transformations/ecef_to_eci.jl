@@ -79,8 +79,8 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 
 * `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
             reference frame.
-* `MOD()`: ECI will be selected as the Mean of Date (MOD).
 * `TOD()`: ECI will be selected as the True of Date (TOD).
+* `MOD()`: ECI will be selected as the Mean of Date (MOD).
 * `J2000()`: ECI will be selected as the J2000 reference frame.
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
@@ -96,12 +96,12 @@ given the selected frames.
 |:-----------|:-------|:--------|:--------------|
 | IAU-76/FK5 | `ITRF` | `GCRF`  | EOP IAU1980   |
 | IAU-76/FK5 | `ITRF` | `J2000` | EOP IAU1980   |
-| IAU-76/FK5 | `ITRF` | `TOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `ITRF` | `MOD`   | EOP IAU1980   |
+| IAU-76/FK5 | `ITRF` | `TOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `GCRF`  | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `J2000` | Not required* |
-| IAU-76/FK5 | `PEF`  | `TOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `MOD`   | EOP IAU1980   |
+| IAU-76/FK5 | `PEF`  | `TOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `TEME`  | Not required* |
 
 `*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
@@ -262,34 +262,6 @@ function rECEFtoECI(T::Type,
     rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
 end
 
-#                                 ITRF => TOD
-# ==============================================================================
-
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:TOD}},
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980)
-
-    # Get the time in UT1 and TT.
-    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
-    JD_TT  = JD_UTCtoTT(JD_UTC)
-
-    # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
-
-    # Compute the rotation.
-    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
-    r_TOD_PEF  = rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
-
-    compose_rotation(r_PEF_ITRF, r_TOD_PEF)
-end
-
 #                                 ITRF => MOD
 # ==============================================================================
 
@@ -318,6 +290,35 @@ function rECEFtoECI(T::Type,
 
     compose_rotation(r_PEF_ITRF, r_MOD_PEF)
 end
+
+#                                 ITRF => TOD
+# ==============================================================================
+
+function rECEFtoECI(T::Type,
+                    ::Type{Val{:FK5}},
+                    ::Type{Val{:ITRF}},
+                    ::Type{Val{:TOD}},
+                    JD_UTC::Number,
+                    eop_data::EOPData_IAU1980)
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    #
+    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
+    x_p      = eop_data.x[JD_UTC]*pi/648000
+    y_p      = eop_data.y[JD_UTC]*pi/648000
+    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+
+    # Compute the rotation.
+    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
+    r_TOD_PEF  = rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
+
+    compose_rotation(r_PEF_ITRF, r_TOD_PEF)
+end
+
 
 #                                 PEF => GCRF
 # ==============================================================================
@@ -386,6 +387,31 @@ function rECEFtoECI(T::Type,
     compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
 
+#                                 PEF => MOD
+# ==============================================================================
+
+function rECEFtoECI(T::Type,
+                    ::Type{Val{:FK5}},
+                    ::Type{Val{:PEF}},
+                    ::Type{Val{:MOD}},
+                    JD_UTC::Number,
+                    eop_data::EOPData_IAU1980)
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    #
+    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
+    x_p      = eop_data.x[JD_UTC]*pi/648000
+    y_p      = eop_data.y[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
+    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+
+    # Compute the rotation.
+    rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
+
 #                                 PEF => TOD
 # ==============================================================================
 
@@ -411,30 +437,6 @@ function rECEFtoECI(T::Type,
     rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 end
 
-#                                 PEF => MOD
-# ==============================================================================
-
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:MOD}},
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980)
-    # Get the time in UT1 and TT.
-    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
-    JD_TT  = JD_UTCtoTT(JD_UTC)
-
-    # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
-
-    # Compute the rotation.
-    rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-end
 
 #                                 PEF => TEME
 # ==============================================================================
