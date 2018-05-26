@@ -168,69 +168,28 @@ Quaternion{Float64}:
   + 0.43630989232629747 - 0.0005909971869613186.i + 0.00030510471843995434.j + 0.8997962188693898.k
 ```
 """
-@inline rECEFtoECI(T_ECEF::T1,
-                   T_ECI::T2,
+@inline rECEFtoECI(T_ECEF::T_ECEFs,
+                   T_ECI::T_ECIs,
                    JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) where
-    T1<:Union{Type{Val{:ITRF}},
-              Type{Val{:PEF}}} where
-    T2<:Union{Type{Val{:GCRF}},
-              Type{Val{:J2000}},
-              Type{Val{:TOD}},
-              Type{Val{:MOD}}} =
+                   eop_data::EOPData_IAU1980) =
     rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
 
 @inline rECEFtoECI(T::Type,
-                   T_ECEF::T1,
-                   T_ECI::T2,
+                   T_ECEF::T_ECEFs,
+                   T_ECI::T_ECIs,
                    JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) where
-    T1<:Union{Type{Val{:ITRF}},
-              Type{Val{:PEF}}} where
-    T2<:Union{Type{Val{:GCRF}},
-              Type{Val{:J2000}},
-              Type{Val{:TOD}},
-              Type{Val{:MOD}}} =
-    rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
-
-# If ECI frame is TEME, then the only ECEF frame supported is PEF.
-@inline rECEFtoECI(T_ECEF::T1,
-                   T_ECI::T2,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) where
-    T1<:Type{Val{:PEF}} where
-    T2<:Type{Val{:TEME}} =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
-
-@inline rECEFtoECI(T::Type,
-                   T_ECEF::T1,
-                   T_ECI::T2,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) where
-    T1<:Type{Val{:PEF}} where
-    T2<:Type{Val{:TEME}} =
+                   eop_data::EOPData_IAU1980) =
     rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Type{Val{:J2000}},
+                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
 
 @inline rECEFtoECI(T::Type,
                    T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Type{Val{:J2000}},
-                   JD_UTC::Number) =
-    rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
-
-@inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Type{Val{:TEME}},
-                   JD_UTC::Number) =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
-
-@inline rECEFtoECI(T::Type,
-                   T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Type{Val{:TEME}},
+                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
                    JD_UTC::Number) =
     rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
 
@@ -238,15 +197,23 @@ Quaternion{Float64}:
 #                                  IAU-76/FK5
 ################################################################################
 
-#                                 ITRF => GCRF
-# ==============================================================================
-
+# Specialization related to the default type of the rotation representation.
 @inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:ITRF}},
-                   ::Type{Val{:GCRF}},
+                   T_ECEF::T_ECEFs,
+                   T_ECI::T_ECIs,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:ITRF}, Val{:GCRF}, JD_UTC, eop_data)
+    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
+
+# Specializations for those cases that EOP Data is not needed.
+@inline rECEFtoECI(::Type{Val{:FK5}},
+                   T_ECEF::Type{Val{:PEF}},
+                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
+                   JD_UTC::Number) =
+    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
+
+#                                 ITRF => GCRF
+# ==============================================================================
 
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
@@ -274,13 +241,6 @@ end
 #                                ITRF => J2000
 # ==============================================================================
 
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:ITRF}},
-                   ::Type{Val{:J2000}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:ITRF}, Val{:J2000}, JD_UTC, eop_data)
-
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
                     ::Type{Val{:ITRF}},
@@ -304,13 +264,6 @@ end
 
 #                                 ITRF => TOD
 # ==============================================================================
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:ITRF}},
-                   ::Type{Val{:TOD}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:ITRF}, Val{:TOD}, JD_UTC, eop_data)
 
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
@@ -339,13 +292,6 @@ end
 
 #                                 ITRF => MOD
 # ==============================================================================
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:ITRF}},
-                   ::Type{Val{:MOD}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:ITRF}, Val{:MOD}, JD_UTC, eop_data)
 
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
@@ -376,18 +322,6 @@ end
 #                                 PEF => GCRF
 # ==============================================================================
 
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:GCRF}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM,
-               Val{:FK5},
-               Val{:PEF},
-               Val{:GCRF},
-               JD_UTC::Number,
-               eop_data::EOPData_IAU1980)
-
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
                     ::Type{Val{:PEF}},
@@ -416,19 +350,6 @@ end
 
 #                                PEF => J2000
 # ==============================================================================
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:J2000}},
-                   JD_UTC::Number) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:J2000}, JD_UTC)
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:J2000}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:J2000}, JD_UTC, eop_data)
 
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
@@ -468,13 +389,6 @@ end
 #                                 PEF => TOD
 # ==============================================================================
 
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:TOD}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:TOD}, JD_UTC, eop_data)
-
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
                     ::Type{Val{:PEF}},
@@ -500,13 +414,6 @@ end
 #                                 PEF => MOD
 # ==============================================================================
 
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:MOD}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:MOD}, JD_UTC, eop_data)
-
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},
                     ::Type{Val{:PEF}},
@@ -531,19 +438,6 @@ end
 
 #                                 PEF => TEME
 # ==============================================================================
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:TEME}},
-                   JD_UTC::Number) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:TEME}, JD_UTC)
-
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   ::Type{Val{:PEF}},
-                   ::Type{Val{:TEME}},
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, Val{:PEF}, Val{:TEME}, JD_UTC, eop_data)
 
 function rECEFtoECI(T::Type,
                     ::Type{Val{:FK5}},

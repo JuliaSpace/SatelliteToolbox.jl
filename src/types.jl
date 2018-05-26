@@ -408,3 +408,25 @@ mutable struct OrbitPropagatorSGP4{T}
     sgp4_gc::SGP4_GravCte{T}
     sgp4d::SGP4_Structure{T}
 end
+
+################################################################################
+#                               Reference Frames
+################################################################################
+
+export T_ECEFs, T_ECIs
+
+"""
+Union of all Earth-Centered Earth-Fixed (ECEF) frames supported.
+
+"""
+T_ECEFs = Union{Type{Val{:ITRF}}, Type{Val{:PEF}}}
+
+"""
+Union of all Earth-Centered Inertial (ECI) frames supported.
+
+"""
+T_ECIs = Union{Type{Val{:GCRF}},
+               Type{Val{:J2000}},
+               Type{Val{:TOD}},
+               Type{Val{:MOD}},
+               Type{Val{:TEME}}}
