@@ -32,20 +32,27 @@ export rECItoECI
 
 """
     function rECEFtoECI([T,] [M,] ECIo, ECIf, JD_UTC::Number [, eop_data])
+    function rECEFtoECI([T,] [M,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
-another ECI reference frame at the Julian Day [UTC] `JD_UTC`. The rotation
-description that will be used is given by `T`, which can be `DCM` or
-`Quaternion`. The model used to compute the rotation is specified by `M`.
+another ECI reference frame. If the origin and destination frame contain only
+one *of date* frame, then the first signature is used and `JD_UTC` is the epoch
+of this frame. On the other hand, if the origin and destination frame contain
+two *of date* frame, e.g. TOD => MOD, then the second signature must be used in
+which `JD_UTCo` is the epoch of the origin frame and `JD_UTCf` is the epoch of
+the destination frame.
+
+The rotation description that will be used is given by `T`, which can be `DCM`
+or `Quaternion`. The model used to compute the rotation is specified by `M`.
 Currently, only IAU-76/FK5 is supported (`M = FK5()`). The input ECI frame is
 selected by the input `ECIo` and the destination ECI frame is selected by the
 input `ECIf`.
 
 # Rotation description
 
-The rotations that aligns the input ECI frame with the destination ECI frame can
-be described by Direction Cosine Matrices or Quaternions. This is selected by
-the parameter `T`.
+The rotations that aligns the origin ECI frame with the destination ECI frame
+can be described by Direction Cosine Matrices or Quaternions. This is selected
+by the parameter `T`.
 
 The possible values are:
 
@@ -65,7 +72,7 @@ If no value is specified, then it falls back to `FK5()`.
 
 # ECI Frame
 
-The supported ECI frames for both input `ECIo` and destination `ECIf` are:
+The supported ECI frames for both origin `ECIo` and destination `ECIf` are:
 
 * `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
             reference frame.
@@ -110,6 +117,13 @@ to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
 
+## MOD and TOD
+
+In this function, MOD and TOD frames are always defined with IERS EOP
+corrections. Hence, if one wants to obtain the MOD and TOD frames according to
+the original IAU-76/FK5 theory, it is necessary to use the low-level functions
+in file `./src/transformations/fk5/fk5.jl`.
+
 # Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
@@ -119,10 +133,13 @@ is provided, the Julian Day UT1 will be accurately computed.
 * `JD_UTC`: Julian day [UTC].
 * `eop_data`: EOP Data.
 
+* `JD_UTCo`: Julian day of the origin reference frame [UTC].
+* `JD_UTCf`: Julian day of the destination reference frame [UTC].
+
 # Returns
 
-The rotation description represented by `T` that rotates the input ECI reference
-frame into alignment with the destination ECI reference frame.
+The rotation description represented by `T` that rotates the origin ECI
+reference frame into alignment with the destination ECI reference frame.
 
 # Examples
 
