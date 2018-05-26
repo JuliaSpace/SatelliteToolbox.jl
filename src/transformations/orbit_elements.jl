@@ -37,8 +37,94 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export change_oe_frame
 export kepler_to_rv
 export rv_to_kepler
+
+"""
+    function change_oe_frame(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number, conv_args...)
+    function change_oe_frame(oe::Orbit, conv_args...)
+
+Change the reference frame of orbit elements. The orbit elements can be
+specified by `a`, `e`, `i`, `Ω`, `ω`, and `f`, or the structure `oe` (see
+`Orbit`).
+
+The conversion arguments `conv_args` are **the same** arguments that one should
+pass to the function `rECItoECI` to convert between the desired frames. For more
+information, see the documentation of the function `rECItoECI`.
+
+# Args
+
+* `a`: Semi-major axis [m].
+* `e`: Excentricity.
+* `i`: Inclination [rad].
+* `Ω`: Right-ascension of the ascending node [rad].
+* `ω`: Argument of perigee [rad].
+* `f`: True anomaly [rad].
+* `conv_args...`: Conversion arguments, which are the same arguments that one
+                  would pass to the function `rECItoECI` to convert between the
+                  desired frames.
+
+* `oe`: An instance of the structure `Orbit` with the orbit elements that will
+        be converted [SI units].
+
+# Returns
+
+An instance of the structure `Orbit` with the Keplerian elements [SI units]
+converted to the new frame.
+
+# Examples
+
+```julia-repl
+julia> eop = get_iers_eop(:IAU1980);
+
+julia> teme_epoch = DatetoJD(2016,6,1,11,0,0);
+
+julia> tod_epoch  = DatetoJD(2016,1,1,0,0,0);
+
+julia> oe_teme    = Orbit(0,
+                          7130.982e3,
+                          0.001111,
+                          98.405*pi/180,
+                          227.336*pi/180,
+                          90*pi/180,
+                          320*pi/180)
+SatelliteToolbox.Orbit{Int64,Float64,Float64,Float64,Float64,Float64,Float64}(0, 7.130982e6, 0.001111, 1.71749125042502, 3.9677617083138292, 1.5707963267948966, 5.585053606381854)
+
+julia> oe_j2000 = change_oe_frame(oe_teme, TEME(), J2000(), teme_epoch, eop)
+SatelliteToolbox.Orbit{Float64,Float64,Float64,Float64,Float64,Float64,Float64}(0.0, 7.130982000000006e6, 0.0011110000000003463, 1.7162957615449077, 3.964244089992957, 1.5718507998574123, 5.585053606382253)
+
+julia> oe_tod   = change_oe_frame(oe_teme, TEME(), teme_epoch, TOD(), tod_epoch, eop)
+SatelliteToolbox.Orbit{Float64,Float64,Float64,Float64,Float64,Float64,Float64}(0.0, 7.130981999999998e6, 0.001110999999999734, 1.7174677913643532, 3.967667652144632, 1.5708200613408134, 5.58505360638179)
+```
+
+"""
+function change_oe_frame(a::Number,
+                         e::Number,
+                         i::Number,
+                         Ω::Number,
+                         ω::Number,
+                         f::Number,
+                         conv_args...)
+
+    # The approach is to transform the orbit elements to Cartesian
+    # representation, convert the frame, and then convert back to orbit
+    # elements.
+    #
+    # NOTE: In my benchmarks, the operation with DCMs are faster than with
+    # quaternions after the DCM representation was changed to SMatrix.
+
+    r_o, v_o    = kepler_to_rv(a, e, i, Ω, ω, f)
+    D_ECIf_ECIo = rECItoECI(DCM, conv_args...)
+    r_f         = D_ECIf_ECIo*r_o
+    v_f         = D_ECIf_ECIo*v_o
+
+    rv_to_kepler(r_f, v_f)
+end
+
+function change_oe_frame(oe::Orbit, conv_args...)
+    change_oe_frame(oe.a, oe.e, oe.i, oe.Ω, oe.ω, oe.f, conv_args...)
+end
 
 """
     function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
