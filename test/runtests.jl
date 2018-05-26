@@ -53,6 +53,8 @@ println("")
     VERSION < v"0.7.0-DEV" && include("./transformations/ecef_to_eci.jl")
     VERSION < v"0.7.0-DEV" && include("./transformations/eci_to_ecef.jl")
     VERSION < v"0.7.0-DEV" && include("./transformations/eci_to_eci.jl")
+
+    include("./transformations/orbit_elements.jl")
     cd("../")
 end
 println("")

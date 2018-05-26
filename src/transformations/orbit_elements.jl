@@ -40,44 +40,6 @@
 export kepler_to_rv
 export rv_to_kepler
 
-################################################################################
-#                                 TEST RESULTS
-################################################################################
-#
-# This function was tested using the example in [1, pp. 119-120].
-#
-# Scenario
-# ========
-#
-#    p    = 11067.790 km
-#    e    = 0.83285
-#    i    = 87.87°
-#    RAAN = 227.89°
-#    w    = 53.38°
-#    f    = 92.335°
-#    a    = p/(1-e^2)
-#
-#
-#                    +----------+----------+-----------+
-#                    | X [km/s] | Y [km/s] | Z [km/s]  |
-# +------------------+----------+----------+-----------+
-# | Algorithm in [1] | 4.902276 | 5.533124 | -1.975709 |
-# +------------------+----------+----------+-----------+
-# | This function    | 4.902279 | 5.533140 | -1.975710 |
-# +------------------+----------+----------+-----------+
-# | Difference       | 0.000003 | 0.000016 |  0.000001 |
-# +------------------+----------+----------+-----------+
-#
-# References
-# ==========
-#
-# [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications. 4th
-# ed. Microcosm Press. Hawthorn, CA, USA.
-#
-# TODO: The position part of the algorithm must be tested.
-#
-################################################################################
-
 """
     function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
 
@@ -141,36 +103,6 @@ function kepler_to_rv(a::Number,
 
     (r_i, v_i)
 end
-
-################################################################################
-#                                 TEST RESULTS
-################################################################################
-#
-# This function was tested using the examples in [2, pp. 114 - 116].
-#
-# Example 2-5
-# ===========
-#
-# Cartesian representation:
-#
-#     r = 6524.835    I + 6862.875    J + 6448.296    K km
-#     v =    4.901327 I +    5.533756 J -    1.976341 K km
-
-# Results of the conversion to Keplerian elements using this function compared
-# to those in [2].
-#
-#     ╔═════════════════╦══════════════╦═════════════════════╗
-#     ║    Parameter    ║   Vallado    ║ SatelliteToolbox.jl ║
-#     ╠═════════════════╬══════════════╬═════════════════════╣
-#     ║ Semi-major axis ║ 36127.343 km ║ 36127.349 km        ║
-#     ║ Eccentricity    ║ 0.832853     ║ 0.832853            ║
-#     ║ Inclination     ║ 87.870°      ║ 87.869°             ║
-#     ║ RAAN            ║ 227.898°     ║ 227.898             ║
-#     ║ Arg. of Perigee ║ 53.38        ║ 53.38°              ║
-#     ║ True Anomaly    ║ 92.335°      ║ 92.335°             ║
-#     ╚═════════════════╩══════════════╩═════════════════════╝
-#
-################################################################################
 
 """
     function rv_to_kepler(r::Vector, v::Vector)
