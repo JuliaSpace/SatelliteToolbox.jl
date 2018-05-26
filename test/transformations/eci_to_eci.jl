@@ -462,3 +462,633 @@ end
     @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
     @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
 end
+
+# J2000 <=> MOD
+# =============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC     = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#   v_j2000 =  -4.7432196000 i + 0.7905366000    j + 5.5337561900    k [km/s]
+#
+# one gets:
+#
+#   r_mod = 5094.02837450   i + 6127.87081640   j + 6380.24851640   k [km]
+#   v_mod =   -4.7462630520 i +    0.7860140450 j +    5.5317905620 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI J2000 <=> MOD" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## J2000 => MOD
+    ## ===========
+
+    r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+    v_j2000 = [-4.7432196000; 0.7905366000; 5.5337561900]
+
+    ## DCM
+    ## ---
+
+    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC, eop)
+
+    r_mod = D_MOD_J2000*r_j2000
+    v_mod = D_MOD_J2000*v_j2000
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC, eop)
+
+    r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
+    v_mod = vect(conj(q_MOD_J2000)*v_j2000*q_MOD_J2000)
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+
+    ## MOD => J2000
+    ## ===========
+
+    r_mod = [5094.02837450; 6127.87081640; 6380.24851640]
+    v_mod = [-4.7462630520; 0.7860140450; 5.5317905620]
+
+    ## DCM
+    ## ---
+
+    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC, eop)
+
+    r_j2000 = D_J2000_MOD*r_mod
+    v_j2000 = D_J2000_MOD*v_mod
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC, eop)
+
+    r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
+    v_j2000 = vect(conj(q_J2000_MOD)*v_mod*q_J2000_MOD)
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+end
+
+# J2000 <=> TOD
+# ============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#   v_j2000 =  -4.7432196000 i + 0.7905366000    j + 5.5337561900    k [km/s]
+#
+# one gets:
+#
+#   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI J2000 <=> TOD" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## J2000 => TOD
+    ## ===========
+
+    r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+    v_j2000 = [-4.7432196000; 0.7905366000; 5.5337561900]
+
+    ## DCM
+    ## ---
+
+    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC, eop)
+
+    r_tod = D_TOD_J2000*r_j2000
+    v_tod = D_TOD_J2000*v_j2000
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC, eop)
+
+    r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
+    v_tod = vect(conj(q_TOD_J2000)*v_j2000*q_TOD_J2000)
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TOD => J2000
+    ## ===========
+
+    r_tod = [5094.51620300; 6127.36527840; 6380.34453270]
+    v_tod = [-4.7460883850; 0.7860783240; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC, eop)
+
+    r_j2000 = D_J2000_TOD*r_tod
+    v_j2000 = D_J2000_TOD*v_tod
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC, eop)
+
+    r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
+    v_j2000 = vect(conj(q_J2000_TOD)*v_tod*q_J2000_TOD)
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+end
+
+# J2000 <=> TEME
+# =============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#   v_j2000 =  -4.7432196000 i + 0.7905366000    j + 5.5337561900    k [km/s]
+#
+# one gets:
+#
+#   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
+#   v_teme =   -4.7461314870 i +    0.7858180410 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI J2000 <=> TEME" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## J2000 => TEME
+    ## ===========
+
+    r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+    v_j2000 = [-4.7432196000; 0.7905366000; 5.5337561900]
+
+    ## DCM
+    ## ---
+
+    D_TEME_J2000 = rECItoECI(J2000(), TEME(), JD_UTC, eop)
+
+    r_teme = D_TEME_J2000*r_j2000
+    v_teme = D_TEME_J2000*v_j2000
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TEME_J2000 = rECItoECI(Quaternion, J2000(), TEME(), JD_UTC)
+
+    r_teme = vect(conj(q_TEME_J2000)*r_j2000*q_TEME_J2000)
+    v_teme = vect(conj(q_TEME_J2000)*v_j2000*q_TEME_J2000)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TEME => J2000
+    ## ===========
+
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+    v_teme = [-4.7461314870; 0.7858180410; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_J2000_TEME = rECItoECI(TEME(), J2000(), JD_UTC, eop)
+
+    r_j2000 = D_J2000_TEME*r_teme
+    v_j2000 = D_J2000_TEME*v_teme
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_J2000_TEME = rECItoECI(Quaternion, TEME(), J2000(), JD_UTC)
+
+    r_j2000 = vect(conj(q_J2000_TEME)*r_teme*q_J2000_TEME)
+    v_j2000 = vect(conj(q_J2000_TEME)*v_teme*q_J2000_TEME)
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+end
+
+# MOD <=> TOD
+# ============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_mod = 5094.02837450   i + 6127.87081640   j + 6380.24851640   k [km]
+#   v_mod =   -4.7462630520 i +    0.7860140450 j +    5.5317905620 k [km/s]
+#
+# one gets:
+#
+#   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI MOD <=> TOD" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## MOD => TOD
+    ## ===========
+
+    r_mod = [5094.02837450; 6127.87081640; 6380.24851640]
+    v_mod = [-4.7462630520; 0.7860140450; 5.5317905620]
+
+    ## DCM
+    ## ---
+
+    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC, eop)
+
+    r_tod = D_TOD_MOD*r_mod
+    v_tod = D_TOD_MOD*v_mod
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC, eop)
+
+    r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
+    v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TOD => MOD
+    ## ===========
+
+    r_tod = [5094.51620300; 6127.36527840; 6380.34453270]
+    v_tod = [-4.7460883850; 0.7860783240; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC, eop)
+
+    r_mod = D_MOD_TOD*r_tod
+    v_mod = D_MOD_TOD*v_tod
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC, eop)
+
+    r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
+    v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+end
+
+# MOD <=> TEME
+# ============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_mod = 5094.02837450   i + 6127.87081640   j + 6380.24851640   k [km]
+#   v_mod =   -4.7462630520 i +    0.7860140450 j +    5.5317905620 k [km/s]
+#
+# one gets:
+#
+#   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
+#   v_teme =   -4.7461314870 i +    0.7858180410 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI MOD <=> TEME" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## MOD => TEME
+    ## ===========
+
+    r_mod = [5094.02837450; 6127.87081640; 6380.24851640]
+    v_mod = [-4.7462630520; 0.7860140450; 5.5317905620]
+
+    ## DCM
+    ## ---
+
+    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC, eop)
+
+    r_teme = D_TEME_MOD*r_mod
+    v_teme = D_TEME_MOD*v_mod
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC, eop)
+
+    r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
+    v_teme = vect(conj(q_TEME_MOD)*v_mod*q_TEME_MOD)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TEME => MOD
+    ## ===========
+
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+    v_teme = [-4.7461314870; 0.7858180410; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC, eop)
+
+    r_mod = D_MOD_TEME*r_teme
+    v_mod = D_MOD_TEME*v_teme
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC, eop)
+
+    r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
+    v_mod = vect(conj(q_MOD_TEME)*v_teme*q_MOD_TEME)
+
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+end
+
+# TOD <=> TEME
+# ============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
+#
+# one gets:
+#
+#   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
+#   v_teme =   -4.7461314870 i +    0.7858180410 j +    5.5319312880 k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI TOD <=> TEME" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## TOD => TEME
+    ## ===========
+
+    r_tod = [5094.51620300; 6127.36527840; 6380.34453270]
+    v_tod = [-4.7460883850; 0.7860783240; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC, eop)
+
+    r_teme = D_TEME_TOD*r_tod
+    v_teme = D_TEME_TOD*v_tod
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC, eop)
+
+    r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
+    v_teme = vect(conj(q_TEME_TOD)*v_tod*q_TEME_TOD)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TEME => TOD
+    ## ===========
+
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+    v_teme = [-4.7461314870; 0.7858180410; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC, eop)
+
+    r_tod = D_TOD_TEME*r_teme
+    v_tod = D_TOD_TEME*v_teme
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC, eop)
+
+    r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
+    v_tod = vect(conj(q_TOD_TEME)*v_teme*q_TOD_TEME)
+
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+end
