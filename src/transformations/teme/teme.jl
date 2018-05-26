@@ -328,7 +328,7 @@ function rTEMEtoGCRF(T::Type,
 end
 
 """
-    function rGCRFtoTEME([T,] JD_TT::Number)
+    function rGCRFtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
 Equinox (TEME) frame at the Julian Day (Terrestrial Time) `JD_TT`. This
