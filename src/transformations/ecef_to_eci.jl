@@ -109,6 +109,13 @@ to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
 
+## MOD and TOD
+
+In this function, MOD and TOD frames are always defined with IERS EOP
+corrections. Hence, if one wants to obtain the MOD and TOD frames according to
+the original IAU-76/FK5 theory, it is necessary to use the low-level functions
+in file `./src/transformations/fk5/fk5.jl`.
+
 # Args
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
