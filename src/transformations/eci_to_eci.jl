@@ -44,7 +44,7 @@ of the destination frame.
 
 The rotation description that will be used is given by `T`, which can be `DCM`
 or `Quaternion`. The model used to compute the rotation is specified by `M`.
-Currently, only IAU-76/FK5 is supported (`M = FK5()`). The input ECI frame is
+Currently, only IAU-76/FK5 is supported (`M = FK5()`). The origin ECI frame is
 selected by the input `ECIo` and the destination ECI frame is selected by the
 input `ECIf`.
 
@@ -125,7 +125,7 @@ in file `./src/transformations/fk5/fk5.jl`.
 
 * `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
 * `M`: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
-* `ECIo`: Input ECEF frame.
+* `ECIo`: Origin ECEF frame.
 * `ECIf`: Destination ECI frame.
 * `JD_UTC`: Julian day [UTC].
 * `eop_data`: EOP Data.
