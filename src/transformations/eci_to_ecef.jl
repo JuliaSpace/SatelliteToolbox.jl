@@ -47,7 +47,7 @@ selected by the input `ECI` and the `ECEF` frame is selected by the input
 # Rotation description
 
 The rotations that aligns the ECI with ECEF can be described by Direction Cosine
-Matrices or Quaternion. This is selected by the parameter `T`. The possible
+Matrices or Quaternions. This is selected by the parameter `T`. The possible
 values are:
 
 * `DCM`: The rotation will be described by a Direction Cosine Matrix.
