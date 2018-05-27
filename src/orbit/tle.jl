@@ -399,7 +399,7 @@ function print_tle(io::IO, tle::TLE, color::Bool = true)
     nothing
 end
 
-# Overload show function for TLE.
-function Base.show(io::IO, tle::TLE)
-    print_tle(io,tle)
+# Overload display function for TLE.
+function Base.display(tle::TLE)
+    print_tle(STDOUT,tle)
 end
