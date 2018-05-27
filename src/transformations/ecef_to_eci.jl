@@ -98,6 +98,7 @@ given the selected frames.
 | IAU-76/FK5 | `ITRF` | `J2000` | EOP IAU1980   |
 | IAU-76/FK5 | `ITRF` | `MOD`   | EOP IAU1980   |
 | IAU-76/FK5 | `ITRF` | `TOD`   | EOP IAU1980   |
+| IAU-76/FK5 | `ITRF` | `TEME`  | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `GCRF`  | EOP IAU1980   |
 | IAU-76/FK5 | `PEF`  | `J2000` | Not required* |
 | IAU-76/FK5 | `PEF`  | `MOD`   | EOP IAU1980   |
@@ -326,6 +327,32 @@ function rECEFtoECI(T::Type,
     compose_rotation(r_PEF_ITRF, r_TOD_PEF)
 end
 
+#                                 ITRF => TEME
+# ==============================================================================
+
+function rECEFtoECI(T::Type,
+                    ::Type{Val{:FK5}},
+                    ::Type{Val{:ITRF}},
+                    ::Type{Val{:TEME}},
+                    JD_UTC::Number,
+                    eop_data::EOPData_IAU1980)
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    #
+    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
+    x_p      = eop_data.x[JD_UTC]*pi/648000
+    y_p      = eop_data.y[JD_UTC]*pi/648000
+
+    # Compute the rotation.
+    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
+    r_TEME_PEF = rPEFtoTEME(T, JD_UT1)
+
+    compose_rotation(r_PEF_ITRF, r_TEME_PEF)
+end
 
 #                                 PEF => GCRF
 # ==============================================================================

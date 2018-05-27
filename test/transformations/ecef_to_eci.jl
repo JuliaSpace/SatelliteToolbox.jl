@@ -270,6 +270,62 @@ end
     @test r_mod[3] ≈ +6380.24851640 atol=3e-4
 end
 
+## ITRF to TEME
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-15: Performing IAU-76/FK5 reduction.
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_itrf = -1033.4793830   i + 7901.2952754    j + 6380.3565958    k [km]
+#
+# one gets:
+#
+#   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECEFtoECI ITRF => TEME" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
+
+    D_TEME_ITRF = rECEFtoECI(FK5(), ITRF(), TEME(), JD_UTC, eop)
+    r_teme = D_TEME_ITRF*r_itrf
+
+    @test r_teme[1] ≈ +5094.18016210 atol=3e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=3e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=3e-4
+
+    q_TEME_ITRF = rECEFtoECI(Quaternion, FK5(), ITRF(), TEME(), JD_UTC, eop)
+    r_teme = vect(conj(q_TEME_ITRF)*r_itrf*q_TEME_ITRF)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=3e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=3e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=3e-4
+
+    D_TEME_ITRF = rECEFtoECI(ITRF(), TEME(), JD_UTC, eop)
+    r_teme = D_TEME_ITRF*r_itrf
+
+    @test r_teme[1] ≈ +5094.18016210 atol=3e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=3e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=3e-4
+
+    q_TEME_ITRF = rECEFtoECI(Quaternion, ITRF(), TEME(), JD_UTC, eop)
+    r_teme = vect(conj(q_TEME_ITRF)*r_itrf*q_TEME_ITRF)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=3e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=3e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=3e-4
+end
+
 ## PEF to GCRF
 ## ===========
 
