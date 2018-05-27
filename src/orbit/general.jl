@@ -43,6 +43,26 @@ function copy(orb::Orbit)
     Orbit(orb.t, orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f)
 end
 
+function display(orb::Orbit)
+    # Definition of colors that will be used for printing.
+    b = "\x1b[1m"
+    d = "\x1b[0m"
+    g = "\x1b[1m\x1b[32m"
+    y = "\x1b[1m\x1b[33m"
+
+    # Print the TLE information.
+    println()
+    print("                 $(g)Orbit$(d)\n")
+    print("$(y)  ======================================$(d)\n")
+    print("$(b)                  t = $(d)"); @printf("%10.1f\n",    orb.t)
+    print("$(b)    Semi-major axis = $(d)"); @printf("%13.4f km\n", orb.a/1000)
+    print("$(b)       Eccentricity = $(d)"); @printf("%15.6f\n",    orb.e)
+    print("$(b)        Inclination = $(d)"); @printf("%13.4f ˚\n",  orb.i*180/pi)
+    print("$(b)               RAAN = $(d)"); @printf("%13.4f ˚\n",  orb.Ω*180/pi)
+    print("$(b)    Arg. of Perigee = $(d)"); @printf("%13.4f ˚\n",  orb.ω*180/pi)
+    print("$(b)       True Anomaly = $(d)"); @printf("%13.4f ˚\n",  orb.f*180/pi)
+end
+
 ################################################################################
 #                                    Macros
 ################################################################################

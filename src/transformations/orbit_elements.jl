@@ -89,15 +89,41 @@ julia> oe_teme    = Orbit(0,
                           227.336*pi/180,
                           90*pi/180,
                           320*pi/180)
-SatelliteToolbox.Orbit{Int64,Float64,Float64,Float64,Float64,Float64,Float64}(0, 7.130982e6, 0.001111, 1.71749125042502, 3.9677617083138292, 1.5707963267948966, 5.585053606381854)
+
+                 Orbit
+  =====================================
+                  t =        0.0
+    Semi-major axis =     7130.9820 km
+       Eccentricity =        0.001111
+        Inclination =       98.4050 ˚
+               RAAN =      227.3360 ˚
+    Arg. of Perigee =       90.0000 ˚
+       True Anomaly =      320.0000 ˚
 
 julia> oe_j2000 = change_oe_frame(oe_teme, TEME(), J2000(), teme_epoch, eop)
-SatelliteToolbox.Orbit{Float64,Float64,Float64,Float64,Float64,Float64,Float64}(0.0, 7.130982000000006e6, 0.0011110000000003463, 1.7162957615449077, 3.964244089992957, 1.5718507998574123, 5.585053606382253)
+
+                 Orbit
+  ======================================
+                  t =        0.0
+    Semi-major axis =     7130.9820 km
+       Eccentricity =        0.001111
+        Inclination =       98.3365 ˚
+               RAAN =      227.1345 ˚
+    Arg. of Perigee =       90.0604 ˚
+       True Anomaly =      320.0000 ˚
 
 julia> oe_tod   = change_oe_frame(oe_teme, TEME(), teme_epoch, TOD(), tod_epoch, eop)
-SatelliteToolbox.Orbit{Float64,Float64,Float64,Float64,Float64,Float64,Float64}(0.0, 7.130981999999998e6, 0.001110999999999734, 1.7174677913643532, 3.967667652144632, 1.5708200613408134, 5.58505360638179)
-```
 
+                 Orbit
+  ======================================
+                  t =        0.0
+    Semi-major axis =     7130.9820 km
+       Eccentricity =        0.001111
+        Inclination =       98.4037 ˚
+               RAAN =      227.3306 ˚
+    Arg. of Perigee =       90.0014 ˚
+       True Anomaly =      320.0000 ˚
+```
 """
 function change_oe_frame(a::Number,
                          e::Number,
