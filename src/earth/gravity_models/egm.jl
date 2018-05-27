@@ -44,7 +44,7 @@ end
 ################################################################################
 
 """
-    function compute_g(egm_coefs::EGM_Coefs, r::Vector, n_max::Number)
+    function compute_g(egm_coefs::EGM_Coefs, r::AbstractVector, n_max::Number)
 
 Compute the gravity acceleration at position `r` using the EGM coefficients
 `egm_coefs`. The maximum degree that will be used while computing the spherical
@@ -63,7 +63,7 @@ frame).
 
 """
 function compute_g(egm_coefs::EGM_Coefs{T1,T2,T3},
-                   r::Vector,
+                   r::AbstractVector,
                    n_max::Number) where {T1,T2,T3}
     # Unpack EGM coefficients.
     C, S, μ, R0 = egm_coefs[:]
