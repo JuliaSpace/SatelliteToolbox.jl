@@ -62,11 +62,6 @@
 #                                  Overloads
 ################################################################################
 
-# Serialization of the arguments in J2_GravCtr.
-function getindex(j2_gc::J2_GravCte, ::Colon)
-    j2_gc.R0, j2_gc.μm, j2_gc.J2
-end
-
 # Copy for J2_Structure
 function Base.copy(m::J2_Structure)
     J2_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
@@ -75,15 +70,6 @@ end
 # Deepcopy for J2_Structure.
 function Base.deepcopy(m::J2_Structure)
     J2_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
-end
-
-# Serialization of the arguments in J2_Structure.
-function getindex(j2d::J2_Structure, ::Colon)
-
-    j2d.t_0, j2d.a_0, j2d.n_0, j2d.e_0, j2d.i_0, j2d.Ω_0, j2d.ω_0, j2d.M_0,
-    j2d.dn_o2, j2d.ddn_o6, j2d.a_k, j2d.e_k, j2d.i_k, j2d.Ω_k, j2d.ω_k, j2d.M_k,
-    j2d.n_k, j2d.f_k, j2d.C1, j2d.C2, j2d.C3, j2d.C4, j2d.j2_gc
-
 end
 
 ################################################################################
@@ -142,7 +128,7 @@ function j2_init(j2_gc::J2_GravCte{T},
                  dn_o2::Number,
                  ddn_o6::Number) where T
     # Unpack the gravitational constants to improve code readability.
-    R0, μm, J2 = j2_gc[:]
+    @unpack_J2_GravCte j2_gc
 
     # Get the semi-major axis using J2 perturbation theory [er].
     #
@@ -226,10 +212,8 @@ perturbation theory requires an inertial frame with true equator.
 """
 function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Unpack the variables.
-    t_0, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6, a_k, e_k, i_k, Ω_k,
-    ω_k, M_k, n_k, f_k, C1, C2, C3, C4, j2_gc = j2d[:]
-
-    R0, μm, J2 = j2_gc[:]
+    @unpack_J2_Structure j2d
+    @unpack_J2_GravCte   j2_gc
 
     # Time elapsed since epoch.
     Δt = t - t_0

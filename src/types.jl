@@ -262,7 +262,7 @@ Gravitational constants for J2 orbit propagator.
 * `J2`: The second gravitational zonal harmonic of the Earth.
 
 """
-struct J2_GravCte{T}
+@with_kw struct J2_GravCte{T}
     R0::T
     μm::T
     J2::T
@@ -272,7 +272,7 @@ end
 Low level J2 orbit propagator structure.
 
 """
-mutable struct J2_Structure{T}
+@with_kw mutable struct J2_Structure{T}
     # Orbit parameters.
     t_0::T
     a_0::T
