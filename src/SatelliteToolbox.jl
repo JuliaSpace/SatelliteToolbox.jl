@@ -11,6 +11,7 @@ VERSION >= v"0.7.0-DEV" && using Dates
 VERSION >= v"0.7.0-DEV" && using LinearAlgebra
 VERSION >= v"0.7.0-DEV" && using Printf
 
+using Parameters
 using ReferenceFrameRotations
 using StaticArrays
 
