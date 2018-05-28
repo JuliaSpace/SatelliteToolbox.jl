@@ -387,6 +387,10 @@ mutable struct SGP4_Structure{T<:Real}
     D2::T
     D3::T
     D4::T
+    dotM::T
+    dotω::T
+    dotΩ1::T
+    dotΩ::T
     # Others.
     isimp::Bool
     # SGP4 gravitational constants.

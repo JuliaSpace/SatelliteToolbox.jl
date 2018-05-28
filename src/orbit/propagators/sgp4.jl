@@ -71,7 +71,8 @@ function getindex(sgp4d::SGP4_Structure, ::Colon)
     sgp4d.M_k, sgp4d.n_k, sgp4d.all_0, sgp4d.nll_0, sgp4d.AE, sgp4d.QOMS2T,
     sgp4d.β_0, sgp4d.ξ, sgp4d.η, sgp4d.sin_i_0, sgp4d.θ, sgp4d.θ2, sgp4d.θ3,
     sgp4d.θ4, sgp4d.A_30, sgp4d.k_2, sgp4d.k_4, sgp4d.C1, sgp4d.C3, sgp4d.C4,
-    sgp4d.C5, sgp4d.D2, sgp4d.D3, sgp4d.D4, sgp4d.isimp, sgp4d.sgp4_gc
+    sgp4d.C5, sgp4d.D2, sgp4d.D3, sgp4d.D4, sgp4d.dotM, sgp4d.dotω, sgp4d.dotΩ1,
+    sgp4d.dotΩ, sgp4d.isimp, sgp4d.sgp4_gc
 
 end
 
@@ -255,6 +256,19 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     # that is seen in the original SGP4 Technical Report [1].
     D4 = 2/3*all_0^2*ξ^3*(221all_0 + 31s)*C1^4
 
+    # Compute the time-derivative of some orbital elements.
+    dotM = ( 1 + 3*k_2*(-1 + 3θ2)/(2all_0^2*β_0^3) +
+             3k_2^2*(13 - 78θ2 + 137θ4)/(16all_0^4*β_0^7) )*nll_0
+
+    dotω = ( -3*k_2*(1-5θ2)/(2all_0^2*β_0^4) +
+              3*k_2^2*(7 - 114θ2 + 395θ4)/(16all_0^4*β_0^8) +
+              5*k_4*(3 - 36θ2 + 49θ4)/(4all_0^4*β_0^8) )*nll_0
+
+    dotΩ1 = -3*k_2*θ/(all_0^2*β_0^4)*nll_0
+
+    dotΩ  = dotΩ1 + ( 3*k_2^2*(4θ - 19θ3)/(2all_0^4*β_0^8) +
+                        5*k_4*θ*(3 - 7θ2)/(2all_0^4*β_0^8) )*nll_0
+
     # The current orbital parameters are obtained from the TLE.
     a_k = all_0
     e_k = e_0
@@ -269,7 +283,8 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 
         t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k,
         n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30,
-        k_2, k_4, C1, C3, C4, C5, D2, D3, D4, isimp, sgp4_gc
+        k_2, k_4, C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ, isimp,
+        sgp4_gc
 
        )
 end
@@ -295,7 +310,8 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Unpack variables.
     t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
     all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30, k_2, k_4,
-    C1, C3, C4, C5, D2, D3, D4, isimp, sgp4_gc = sgp4d[:]
+    C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ, isimp, sgp4_gc =
+    sgp4d[:]
 
     R0, XKE, J2, J3, J4 = sgp4_gc[:]
 
@@ -305,16 +321,11 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Secular effects of atmospheric drag and gravitation.
     # ====================================================
 
-    M_DF = M_0 + ( 1 + 3*k_2*(-1 + 3θ2)/(2all_0^2*β_0^3) +
-                   3k_2^2*(13 - 78θ2 + 137θ4)/(16all_0^4*β_0^7) )*nll_0*Δt
+    M_DF = M_0 + dotM*Δt
 
-    ω_DF = ω_0 + ( -3*k_2*(1-5θ2)/(2all_0^2*β_0^4) +
-                    3*k_2^2*(7 - 114θ2 + 395θ4)/(16all_0^4*β_0^8) +
-                    5*k_4*(3 - 36θ2 + 49θ4)/(4all_0^4*β_0^8) )*nll_0*Δt
+    ω_DF = ω_0 + dotω*Δt
 
-    Ω_DF = Ω_0 + ( -3*k_2*θ/(all_0^2*β_0^4) +
-                    3*k_2^2*(4θ - 19θ3)/(2all_0^4*β_0^8) +
-                    5*k_4*θ*(3 - 7θ2)/(2all_0^4*β_0^8) )*nll_0*Δt
+    Ω_DF = Ω_0 + dotΩ*Δt
 
     Ω    = Ω_DF - 21/2*(nll_0*k_2*θ)/(all_0^2*β_0^2)*C1*Δt^2
 
