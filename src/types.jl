@@ -333,7 +333,7 @@ Gravitational constants for SGP4.
 * `J4`: The fourth gravitational zonal harmonic of the Earth.
 
 """
-struct SGP4_GravCte{T<:Real}
+@with_kw struct SGP4_GravCte{T<:Real}
     R0::T
     XKE::T
     J2::T
@@ -345,7 +345,7 @@ end
 Low level SGP4 structure.
 
 """
-mutable struct SGP4_Structure{T<:Real}
+@with_kw mutable struct SGP4_Structure{T<:Real}
     # TLE parameters.
     t_0::T
     n_0::T

@@ -48,11 +48,6 @@ export sgp4_init, sgp4!
 #                                  Overloads
 ################################################################################
 
-# Serialization of the arguments in SGP4_GravCte.
-function getindex(sgp4_gc::SGP4_GravCte, ::Colon)
-    sgp4_gc.R0, sgp4_gc.XKE, sgp4_gc.J2, sgp4_gc.J3, sgp4_gc.J4
-end
-
 # Copy for SGP4_Structure.
 function Base.copy(m::SGP4_Structure)
     SGP4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
@@ -61,19 +56,6 @@ end
 # Deepcopy for SGP4_Structure.
 function Base.deepcopy(m::SGP4_Structure)
     SGP4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
-end
-
-# Serialization of the arguments in SGP4_Structure.
-function getindex(sgp4d::SGP4_Structure, ::Colon)
-
-    sgp4d.t_0, sgp4d.n_0, sgp4d.e_0, sgp4d.i_0, sgp4d.Ω_0, sgp4d.ω_0, sgp4d.M_0,
-    sgp4d.bstar,sgp4d.a_k, sgp4d.e_k, sgp4d.i_k, sgp4d.Ω_k, sgp4d.ω_k,
-    sgp4d.M_k, sgp4d.n_k, sgp4d.all_0, sgp4d.nll_0, sgp4d.AE, sgp4d.QOMS2T,
-    sgp4d.β_0, sgp4d.ξ, sgp4d.η, sgp4d.sin_i_0, sgp4d.θ, sgp4d.θ2, sgp4d.θ3,
-    sgp4d.θ4, sgp4d.A_30, sgp4d.k_2, sgp4d.k_4, sgp4d.C1, sgp4d.C3, sgp4d.C4,
-    sgp4d.C5, sgp4d.D2, sgp4d.D3, sgp4d.D4, sgp4d.dotM, sgp4d.dotω, sgp4d.dotΩ1,
-    sgp4d.dotΩ, sgp4d.isimp, sgp4d.sgp4_gc
-
 end
 
 ################################################################################
@@ -135,7 +117,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
                    bstar::Number) where T
 
     # Unpack the gravitational constants to improve code readability.
-    R0, XKE, J2, J3, J4 = sgp4_gc[:]
+    @unpack_SGP4_GravCte sgp4_gc
 
     # Constants
     # =========
@@ -308,12 +290,8 @@ values in `sgp4d` will be modified.
 """
 function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Unpack variables.
-    t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k, n_k,
-    all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30, k_2, k_4,
-    C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ, isimp, sgp4_gc =
-    sgp4d[:]
-
-    R0, XKE, J2, J3, J4 = sgp4_gc[:]
+    @unpack_SGP4_Structure sgp4d
+    @unpack_SGP4_GravCte   sgp4_gc
 
     # Time elapsed since epoch.
     Δt = t-t_0
