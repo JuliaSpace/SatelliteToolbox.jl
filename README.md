@@ -152,7 +152,7 @@ The following code propagates the orbit of the Brazilian Satellite Amazonia-1
 for 1 day using the Two Body orbit propagator.
 
 ```julia
-julia> orbp = init_orbit_propagator(Val{:twobody}, Orbit(0.0,7130982.0,0.001111,98.405*pi/180,0.0,0.0,0.0))
+julia> orbp = init_orbit_propagator(Val{:twobody}, Orbit(0.0,7130982.0,0.001111,98.405*pi/180,pi/2,0.0,0.0))
 julia> (o,r,v) = propagate!(orbp, collect(0:3:24)*60*60)
 julia> r
 9-element Array{Array{T,1} where T,1}:
