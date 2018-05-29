@@ -155,6 +155,7 @@ This structure contains the same elements of the TLE with the same units.
 * `int_designator`: International designator.
 * `epoch_year`: Epoch year (two digits).
 * `epoch_day`: Epoch day (day + fraction of the day).
+* `epoch`: The epoch represented in Julian Day.
 * `dn_o2`: 1st time derivative of mean motion / 2 [rev/day²].
 * `ddn_o6`: 2nd time derivative of mean motion / 6 [rev/day³].
 * `bstar`: B* drag term.
@@ -173,7 +174,7 @@ This structure contains the same elements of the TLE with the same units.
 * `checksum_l2`: Checksum of the line 2 (modulo 10).
 
 """
-struct TLE
+@with_kw struct TLE
     name::String
 
     # First line
@@ -183,6 +184,7 @@ struct TLE
     int_designator::String
     epoch_year::Int
     epoch_day::Float64
+    epoch::Float64
     dn_o2::Float64
     ddn_o6::Float64
     bstar::Float64

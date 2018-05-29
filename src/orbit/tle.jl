@@ -134,6 +134,7 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
     int_designator = ""
     epoch_year = 0
     epoch_day = 0.0
+    epoch = 0.0
     dn_o2 = 0.0
     ddn_o6 = 0.0
     bstar = 0.0
@@ -225,6 +226,22 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
             # =====
             epoch_year = @parse_value(Int,     line[19:20], line_num)
             epoch_day  = @parse_value(Float64, line[21:32], line_num)
+
+            # Convert the TLE year and date to JD.
+            # ------------------------------------
+
+            # If the two-number year is higher than the current one, then
+            # consider it in the past (e.g. if today is 2018, then 18 = 2018 but
+            # 19 = 1919.
+            aux = Dates.year(now()) - 2000
+
+            if epoch_year > aux
+                epoch = DatetoJD(1900 + epoch_year, 1, 1, 0, 0, 0) - 1 +
+                        epoch_day
+            else
+                epoch = DatetoJD(2000 + epoch_year, 1, 1, 0, 0, 0) - 1 +
+                        epoch_day
+            end
 
             # Mean motion derivatives
             # =======================
@@ -322,6 +339,7 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
                       int_designator,
                       epoch_year,
                       epoch_day,
+                      epoch,
                       dn_o2,
                       ddn_o6,
                       bstar,
@@ -377,6 +395,7 @@ function print_tle(io::IO, tle::TLE, color::Bool = true)
     print(io, "$(b)        International designator: $(d)"); @printf(io, "%s\n", tle.int_designator)
     print(io, "$(b)                    Epoch (Year): $(d)"); @printf(io, "%d\n", tle.epoch_year)
     print(io, "$(b)                     Epoch (Day): $(d)"); @printf(io, "%12.8f\n", tle.epoch_day)
+    print(io, "$(b)              Epoch (Julian Day): $(d)"); @printf(io, "%12.8f\n", tle.epoch)
     print(io, "$(b)              Element set number: $(d)"); @printf(io, "%d\n", tle.elem_set_number)
     print(io, "$(b)                     Inclination: $(d)"); @printf(io, "%12.8f deg\n", tle.i)
     print(io, "$(b)                            RAAN: $(d)"); @printf(io, "%12.8f deg\n", tle.Ω)
