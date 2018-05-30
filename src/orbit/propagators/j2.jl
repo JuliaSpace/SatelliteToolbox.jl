@@ -95,14 +95,14 @@ j2_gc_wgs72 = J2_GravCte(
 ################################################################################
 
 """
-    function j2_init(j2_gc::J2_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
+    function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
 # Args
 
 * `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
-* `t_0`: Epoch of the orbital elements [s].
+* `epoch`: Epoch of the orbital elements [Julian Day].
 * `n_0`: Mean motion at epoch [rad/s].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
@@ -118,7 +118,7 @@ The structure `J2_Structure` with the initialized parameters.
 
 """
 function j2_init(j2_gc::J2_GravCte{T},
-                 t_0::Number,
+                 epoch::Number,
                  n_0::Number,
                  e_0::Number,
                  i_0::Number,
@@ -180,8 +180,8 @@ function j2_init(j2_gc::J2_GravCte{T},
     # Create the output structure with the data.
     J2_Structure{T}(
 
-        t_0, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6, a_0, e_0, i_0,
-        Ω_0, ω_0, M_0, n_0, f_0, C1, C2, C3, C4, j2_gc
+        epoch, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, dn_o2, ddn_o6, a_0, e_0,
+        i_0, Ω_0, ω_0, M_0, n_0, f_0, C1, C2, C3, C4, j2_gc
 
     )
 end
@@ -216,7 +216,7 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     @unpack_J2_GravCte   j2_gc
 
     # Time elapsed since epoch.
-    Δt = t - t_0
+    Δt = t
 
     # Propagate the orbital elements.
     a_k = a_0 - C1*Δt
@@ -234,6 +234,7 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     (r_i_k, v_i_k) = kepler_to_rv(a_k*R0, e_k, i_k, Ω_k, ω_k, f_k)
 
     # Update the J2 orbit propagator structure.
+    j2d.Δt  = Δt
     j2d.a_k = a_k
     j2d.e_k = e_k
     j2d.i_k = i_k

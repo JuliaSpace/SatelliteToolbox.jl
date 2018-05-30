@@ -85,14 +85,14 @@ sgp4_gc_wgs72 = SGP4_GravCte(
 ################################################################################
 
 """
-    function sgp4_init(spg4_gc::SGP4_GravCte{T}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
+    function sgp4_init(spg4_gc::SGP4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
 
 Initialize the data structure of SGP4 algorithm.
 
 # Args
 
 * `spg4_gc`: SPG4 gravitational constants (see `SGP4_GravCte`).
-* `t_0`: Epoch of the orbital elements [min].
+* `epoch`: Epoch of the orbital elements [Julian Day].
 * `n_0`: SGP type "mean" mean motion at epoch [rad/min].
 * `e_0`: "Mean" eccentricity at epoch.
 * `i_0`: "Mean" inclination at epoch [rad].
@@ -107,7 +107,7 @@ The structure `SGP4_Structure` with the initialized parameters.
 
 """
 function sgp4_init(sgp4_gc::SGP4_GravCte{T},
-                   t_0::Number,
+                   epoch::Number,
                    n_0::Number,
                    e_0::Number,
                    i_0::Number,
@@ -261,12 +261,12 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     n_k = nll_0
 
     # Create the output structure with the data.
-    SGP4_Structure(
+    SGP4_Structure{T}(
 
-        t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, a_k, e_k, i_k, Ω_k, ω_k, M_k,
-        n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4, A_30,
-        k_2, k_4, C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ, isimp,
-        sgp4_gc
+        epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, 0, a_k, e_k, i_k, Ω_k, ω_k,
+        M_k, n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, θ3, θ4,
+        A_30, k_2, k_4, C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ,
+        isimp, sgp4_gc
 
        )
 end
@@ -294,7 +294,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     @unpack_SGP4_GravCte   sgp4_gc
 
     # Time elapsed since epoch.
-    Δt = t-t_0
+    Δt = t
 
     # Secular effects of atmospheric drag and gravitation.
     # ====================================================
@@ -483,6 +483,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     v_TEME = (dot_r_k*Uv + r_dot_f_k*Vv)*R0/60
 
     # Update the variables.
+    sgp4d.Δt  = Δt
     sgp4d.a_k = a
     sgp4d.e_k = e
     sgp4d.i_k = i_k

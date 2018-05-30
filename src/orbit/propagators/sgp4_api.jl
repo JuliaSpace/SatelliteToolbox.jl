@@ -47,7 +47,7 @@ macro update_orb!(orbp, t)
         local sgp4d = $(esc(orbp)).sgp4d
         local R0    = $(esc(orbp)).sgp4_gc.R0
 
-        orb.t = $(esc(t))
+        orb.t = sgp4d.epoch + $(esc(t))/86400
         orb.a = sgp4d.a_k*R0*1000
         orb.e = sgp4d.e_k
         orb.i = sgp4d.i_k
@@ -62,17 +62,17 @@ end
 ################################################################################
 
 """
-    function init_orbit_propagator(::Type{Val{:sgp4}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
+    function init_orbit_propagator(::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 
 Initialize the SGP4 orbit propagator using the initial orbit specified by the
-elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, the B* parameter
+elements `epoch, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, the B* parameter
 `bstar`, and the gravitational constants in the structure `sgp4_gc`.
 
 Notice that the orbit elements **must be** represented in TEME frame.
 
 # Args
 
-* `t_0`: Initial orbit epoch [s].
+* `epoch`: Initial orbit epoch [Julian Day].
 * `n_0`: Initial angular velocity [rad/s].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad]
@@ -89,7 +89,7 @@ information of the orbit propagator.
 
 """
 function init_orbit_propagator(::Type{Val{:sgp4}},
-                               t_0::Number,
+                               epoch::Number,
                                n_0::Number,
                                e_0::Number,
                                i_0::Number,
@@ -100,7 +100,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
                                sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
     # Create the new SGP4 structure.
     sgp4d = sgp4_init(sgp4_gc,
-                      t_0/60.0,
+                      epoch,
                       n_0*60.0,
                       e_0,
                       i_0,
@@ -110,7 +110,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
                       bstar)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(t_0,
+    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch,
                                  sgp4d.a_k*sgp4_gc_wgs84.R0,
                                  e_0,
                                  i_0,
@@ -181,8 +181,9 @@ information of the orbit propagator.
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                tle::TLE,
                                sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+
     init_orbit_propagator(Val{:sgp4},
-                          tle.epoch_day*24*60*60,
+                          tle.epoch,
                           tle.n*2*pi/(24*60*60),
                           tle.e,
                           tle.i*pi/180,
@@ -218,14 +219,14 @@ function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     sgp4d = orbp.sgp4d
 
     # Propagate the orbit.
-    (r_teme, v_teme) = sgp4!(sgp4d, (orb.t + Δt)/60)
+    (r_teme, v_teme) = sgp4!(sgp4d, sgp4d.Δt + Δt/60)
 
     # Convert km to m.
     r_teme *= 1000
     v_teme *= 1000
 
     # Update the elements in the `orb` structure.
-    @update_orb!(orbp, orb.t + Δt)
+    @update_orb!(orbp, sgp4d.Δt*60)
 
     # Return the information about the step.
     (copy(orbp.orb), r_teme, v_teme)
@@ -265,14 +266,14 @@ function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
 
     for k in t
         # Propagate the orbit.
-        (r_teme_k, v_teme_k) = sgp4!(sgp4d, sgp4d.t_0 + k/60)
+        (r_teme_k, v_teme_k) = sgp4!(sgp4d, k/60)
 
         # Convert km to m.
         r_teme_k *= 1000
         v_teme_k *= 1000
 
         # Update the elements in the `orb` structure.
-        @update_orb!(orbp, sgp4d.t_0*60 + k)
+        @update_orb!(orbp, k)
 
         push!(result_orb, copy(orb))
         push!(result_r,   r_teme_k)

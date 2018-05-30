@@ -64,7 +64,7 @@
         # Compare the results.
         for k = 1:length(t)
             # Assemble the result vector.
-            st_sgp4_result = [(orbm[k].t-orbm[1].t)/60 r_TEME[k]'/1000 v_TEME[k]'/1000]
+            st_sgp4_result = [t[k]/60 r_TEME[k]'/1000 v_TEME[k]'/1000]
 
             # Compare the values.
             @test st_sgp4_result[1] == SGP4_results[k,1]

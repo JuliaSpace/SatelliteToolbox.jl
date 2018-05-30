@@ -32,15 +32,15 @@ export step!, propagate!
 ################################################################################
 
 """
-    function init_orbit_propagator(::Type{Val{:twobody}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
+    function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
 Initialize the Two Body orbit propagator using the initial orbit specified by
-the elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
+the elements `epoch, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the standard
 gravitational parameters of the central body `μ`.
 
 # Args
 
-* `t_0`: Initial orbit epoch [s].
+* `epoch`: Initial orbit epoch [Julian Day].
 * `n_0`: Initial angular velocity [rad/s].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
@@ -57,7 +57,7 @@ information of the orbit propagator.
 
 """
 function init_orbit_propagator(::Type{Val{:twobody}},
-                               t_0::Number,
+                               epoch::Number,
                                n_0::Number,
                                e_0::Number,
                                i_0::Number,
@@ -66,10 +66,10 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                                M_0::Number,
                                μ::T = m0) where T
     # Create the new Two Body propagator structure.
-    tbd = twobody_init(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ)
+    tbd = twobody_init(epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(t_0, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
+    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
 
     # Create and return the orbit propagator strucutre.
     OrbitPropagatorTwoBody(orb_0, tbd)
@@ -130,7 +130,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                                tle::TLE,
                                μ::Number = m0)
     init_orbit_propagator(Val{:twobody},
-                          tle.epoch_day*24*60*60,
+                          tle.epoch,
                           tle.n*2*pi/(24*60*60),
                           tle.e,
                           tle.i*pi/180,
@@ -171,10 +171,10 @@ function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
     tbd = orbp.tbd
 
     # Propagate the orbit.
-    (r_i, v_i) = twobody!(tbd, orb.t + Δt)
+    (r_i, v_i) = twobody!(tbd, tbd.Δt + Δt)
 
     # Update the elements in the `orb` structure.
-    orb.t += Δt
+    orb.t += Δt/86400
     orb.f  = tbd.f_k
 
     # Return the information about the step.
@@ -221,10 +221,10 @@ function propagate!(orbp::OrbitPropagatorTwoBody, t::Vector)
 
     for k in t
         # Propagate the orbit.
-        (r_i_k, v_i_k) = twobody!(tbd, tbd.t_0 + k)
+        (r_i_k, v_i_k) = twobody!(tbd, k)
 
         # Update the elements in the `orb` structure.
-        orb.t = tbd.t_0 + k
+        orb.t = tbd.epoch + k/86400
         orb.f = tbd.f_k
 
         push!(result_orb, copy(orb))

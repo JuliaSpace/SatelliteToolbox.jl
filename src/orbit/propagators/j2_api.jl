@@ -31,15 +31,15 @@ export init_orbit_propagator, step!, propagate!
 ################################################################################
 
 """
-    function init_orbit_propagator(::Type{Val{:J2}}, t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
+    function init_orbit_propagator(::Type{Val{:J2}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
 
 Initialize the J2 orbit propagator using the initial orbit specified by the
-elements `t_0, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the
+elements `epoch, `n_0, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the
 gravitational parameters `j2_gc` (see `J2_GravCte`).
 
 # Args
 
-* `t_0`: Initial orbit epoch [s].
+* `epoch`: Initial orbit epoch [Julian Day].
 * `n_0`: Initial angular velocity [rad/s].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
@@ -60,7 +60,7 @@ of the orbit propagator.
 
 """
 function init_orbit_propagator(::Type{Val{:J2}},
-                               t_0::Number,
+                               epoch::Number,
                                n_0::Number,
                                e_0::Number,
                                i_0::Number,
@@ -71,11 +71,11 @@ function init_orbit_propagator(::Type{Val{:J2}},
                                ddn_o6::Number = 0,
                                j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
     # Create the new Two Body propagator structure.
-    j2d = j2_init(j2_gc, t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6)
+    j2d = j2_init(j2_gc, epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6)
 
     # Create the `Orbit` structure.
     orb_0 =
-        Orbit{T,T,T,T,T,T,T}(t_0, j2d.a_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0, j2d.f_k)
+        Orbit{T,T,T,T,T,T,T}(epoch, j2d.a_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0, j2d.f_k)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorJ2(orb_0, j2d)
@@ -144,7 +144,7 @@ function init_orbit_propagator(::Type{Val{:J2}},
                                tle::TLE,
                                j2_gc::J2_GravCte = j2_gc_wgs84)
     init_orbit_propagator(Val{:J2},
-                          tle.epoch_day*24*60*60,
+                          tle.epoch,
                           tle.n*2*pi/(24*60*60),
                           tle.e,
                           tle.i*pi/180,
@@ -188,10 +188,10 @@ function step!(orbp::OrbitPropagatorJ2, Δt::Number)
     j2d = orbp.j2d
 
     # Propagate the orbit.
-    (r_i, v_i) = j2!(j2d, orb.t + Δt)
+    (r_i, v_i) = j2!(j2d, j2d.Δt + Δt)
 
     # Update the elements in the `orb` structure.
-    orb.t += Δt
+    orb.t += Δt/86400
     orb.a  = j2d.a_k*j2d.j2_gc.R0
     orb.e  = j2d.e_k
     orb.i  = j2d.i_k
@@ -245,10 +245,10 @@ function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
 
     for k in t
         # Propagate the orbit.
-        (r_i_k, v_i_k) = j2!(j2d, j2d.t_0 + k)
+        (r_i_k, v_i_k) = j2!(j2d, k)
 
         # Update the elements in the `orb` structure.
-        orb.t = j2d.t_0 + k
+        orb.t = j2d.epoch + k/86400
         orb.a = j2d.a_k*j2d.j2_gc.R0
         orb.e = j2d.e_k
         orb.i = j2d.i_k

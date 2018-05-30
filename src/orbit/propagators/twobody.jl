@@ -44,13 +44,14 @@ export twobody_init, twobody!
 
 # Copy for TwoBody_Structure.
 function Base.copy(m::TwoBody_Structure)
-    TwoBody_Structure(m.t_0,
+    TwoBody_Structure(m.epoch,
                       m.n_0,
                       m.e_0,
                       m.i_0,
                       m.Ω_0,
                       m.ω_0,
                       m.M_0,
+                      m.Δt,
                       m.a,
                       m.M_k,
                       m.f_k,
@@ -62,13 +63,13 @@ end
 ################################################################################
 
 """
-    function twobody_init(t_0::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T) where T
+    function twobody_init(epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T) where T
 
 Initialize the data structure of Two Body orbit propagator algorithm.
 
 # Args
 
-* `t_0`: Epoch of the orbital elements [s].
+* `epoch`: Epoch of the orbital elements [s].
 * `n_0`: Mean motion at epoch [rad/s].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
@@ -82,7 +83,7 @@ Initialize the data structure of Two Body orbit propagator algorithm.
 The structure `TwoBody_Structure` with the initialized parameters.
 
 """
-function twobody_init(t_0::Number,
+function twobody_init(epoch::Number,
                       n_0::Number,
                       e_0::Number,
                       i_0::Number,
@@ -102,7 +103,7 @@ function twobody_init(t_0::Number,
     f = M_to_f(e_0, M_0)
 
     # Create and return the Two Body orbit propagator structure.
-    TwoBody_Structure{T}(t_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, a, M_0, f, μ)
+    TwoBody_Structure{T}(epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, a, M_0, f, μ)
 end
 
 """
@@ -130,7 +131,8 @@ from a TLE, then the inertial frame will be TEME.
 """
 function twobody!(tbd::TwoBody_Structure, t::Number)
     # Time elapsed since epoch.
-    Δt = t - tbd.t_0
+    Δt     = t
+    tbd.Δt = Δt
 
     # Update the mean anomaly.
     tbd.M_k = tbd.M_0 + tbd.n_0*Δt

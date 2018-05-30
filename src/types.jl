@@ -219,13 +219,15 @@ Low level Two Body orbit propagator structure.
 """
 mutable struct TwoBody_Structure{T}
     # Initial parameters.
-    t_0::T
+    epoch::T
     n_0::T
     e_0::T
     i_0::T
     Ω_0::T
     ω_0::T
     M_0::T
+    # Propagation time from epoch.
+    Δt::T
     # Auxiliary parameters.
     a::T
     # Current parameters.
@@ -276,7 +278,7 @@ Low level J2 orbit propagator structure.
 """
 @with_kw mutable struct J2_Structure{T}
     # Orbit parameters.
-    t_0::T
+    epoch::T
     a_0::T
     n_0::T
     e_0::T
@@ -284,6 +286,8 @@ Low level J2 orbit propagator structure.
     Ω_0::T
     ω_0::T
     M_0::T
+    # Propagation time from epoch.
+    Δt::T
     # Drag parameters.
     dn_o2::T   # First time derivative of mean motion [rad/s²].
     ddn_o6::T  # Second time derivative of mean motion [rad/s³].
@@ -349,7 +353,7 @@ Low level SGP4 structure.
 """
 @with_kw mutable struct SGP4_Structure{T<:Real}
     # TLE parameters.
-    t_0::T
+    epoch::T
     n_0::T
     e_0::T
     i_0::T
@@ -357,6 +361,8 @@ Low level SGP4 structure.
     ω_0::T
     M_0::T
     bstar::T
+    # Propagation time from epoch.
+    Δt::T
     # Current parameters.
     a_k::T
     e_k::T
