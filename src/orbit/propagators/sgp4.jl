@@ -364,11 +364,11 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
     # Time elapsed since epoch.
     #
-    # We convert to `Flaot64` to avoid numerical problems with very big numbers
-    # as pointed out in:
+    # We convert to `T` to avoid numerical problems with very big numbers as
+    # pointed out in:
     #
     #   https://github.com/JuliaLang/julia/issues/27355
-    Δt = Float64(t)
+    Δt = T(t)
 
     # Initialization of the current elements with the values of the epoch.
     n_k = nll_0
