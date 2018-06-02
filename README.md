@@ -209,8 +209,9 @@ julia> r
  [7.5014e5, -5.54932e6, 4.42998e6]
 ```
 
-**NOTE**: The deep space bits (SDP4) **are not available** yet in this
-algorithm!
+**NOTE**: This algorithm has both methods **SGP4** and **SDP4**, the latter
+considers the deep space perturbations. It automatically selects which one to
+use given the initial orbit parameters.
 
 ### Sun
 
