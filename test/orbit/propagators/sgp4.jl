@@ -27,6 +27,10 @@
 #
 # Changelog
 #
+# 2018-06-02: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add tests related to the deep space algorithms in SGP4. Now, all the test
+#   cases mentioned in [1] are executed.
+#
 # 2018-04-02: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Initial version.
 #
@@ -41,10 +45,13 @@
     tles = read_tle("./sgp4_tests/sgp4_tests.tle")
 
     # Array with the satellite numbers that must be tested.
-    sat_num_array = [5; 6251; 28057; 28350; 28872; 29141; 29238; 88888]
+    # sat_num_array = [5; 6251; 28057; 28350; 28872; 29141; 29238; 88888]
 
     # Find the TLEs with the respective satellite numbers.
-    tles_test_01 = tles[find( (tle->tle.sat_num in sat_num_array), tles)]
+    # tles_test_01 = tles[find( (tle->tle.sat_num in sat_num_array), tles)]
+
+    # Test all the TLEs.
+    tles_test_01 = tles
 
     st_sgp4_result = []
     SGP4_results = []

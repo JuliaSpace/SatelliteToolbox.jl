@@ -16,6 +16,10 @@
 #
 # Changelog
 #
+# 2018-06-01: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add support for deep space. The SGP4 (sometimes called SGDP4) automatically
+#   selects what algorithm it should use (with deep space perturbations or not).
+#
 # 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Restrict types in the structures, which led to a huge performance gain.
 #
@@ -87,6 +91,14 @@ Notice that the orbit elements **must be** represented in TEME frame.
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
 
+# Remarks
+
+This implementation includes also the deep space perturbations, which was
+originally called SDP4 algorithm. Modern approaches, such as [2] and [3],
+identifies if the selected orbit must be propagated using the deep space
+perturbations and automatically applied them. This is sometimes called SGDP4
+algorithm.
+
 """
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                epoch::Number,
@@ -101,7 +113,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
     # Create the new SGP4 structure.
     sgp4d = sgp4_init(sgp4_gc,
                       epoch,
-                      n_0*60.0,
+                      n_0*60,
                       e_0,
                       i_0,
                       Ω_0,
@@ -143,6 +155,14 @@ TEME frame.
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
 
+# Remarks
+
+This implementation includes also the deep space perturbations, which was
+originally called SDP4 algorithm. Modern approaches, such as [2] and [3],
+identifies if the selected orbit must be propagated using the deep space
+perturbations and automatically applied them. This is sometimes called SGDP4
+algorithm.
+
 """
 function init_orbit_propagator(::Type{Val{:sgp4}},
                                orb_0::Orbit,
@@ -176,6 +196,14 @@ the beginning of the year (see `TLE.epoch_day`).
 
 A new instance of the structure `OrbitPropagatorSGP4` that stores the
 information of the orbit propagator.
+
+# Remarks
+
+This implementation includes also the deep space perturbations, which was
+originally called SDP4 algorithm. Modern approaches, such as [2] and [3],
+identifies if the selected orbit must be propagated using the deep space
+perturbations and automatically applied them. This is sometimes called SGDP4
+algorithm.
 
 """
 function init_orbit_propagator(::Type{Val{:sgp4}},
