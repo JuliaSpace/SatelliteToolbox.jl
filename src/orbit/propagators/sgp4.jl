@@ -72,7 +72,7 @@ end
 ################################################################################
 
 # WGS-84 / EGM-08 Gravitational constants.
-sgp4_gc_wgs84 = SGP4_GravCte{Float64}(
+const sgp4_gc_wgs84 = SGP4_GravCte{Float64}(
         R0/1000,
         60.0/sqrt(6378.137^3/398600.5),
          0.00108262998905,
@@ -81,7 +81,7 @@ sgp4_gc_wgs84 = SGP4_GravCte{Float64}(
        )
 
 # WGS-72 Gravitational constants.
-sgp4_gc_wgs72 = SGP4_GravCte{Float64}(
+const sgp4_gc_wgs72 = SGP4_GravCte{Float64}(
         6378.135,
         60.0/sqrt(6378.135^3/398600.8),
          0.001082616,
