@@ -461,7 +461,7 @@ Low level SGP4 structure.
     η::T
     sin_i_0::T
     θ::T
-    θ2::T
+    θ²::T
     A_30::T
     k_2::T
     k_4::T

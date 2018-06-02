@@ -185,21 +185,21 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     # Auxiliary variables to improve the performance.
     # ===============================================
 
-    e2_0 = e_0^2
+    e_0² = e_0^2
 
     sin_i_0 = sin(i_0)
 
     θ   = cos(i_0)
-    θ2  = θ^2
-    θ3  = θ^3
-    θ4  = θ^4
+    θ²  = θ^2
+    θ³  = θ^3
+    θ⁴  = θ^4
 
     # ==========================================================================
 
     # Recover the original mean motion (nll_0) and semi-major axis (all_0) from
     # the input elements.
 
-    aux = (3*θ2-1)/(1-e2_0)^(3/2)
+    aux = (3*θ²-1)/(1-e_0²)^(3/2)
 
     a_1 = (XKE/n_0)^(2/3)
     δ_1 = 3/2*k_2/a_1^2*aux
@@ -251,7 +251,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 
     C2 = QOMS2T*ξ^4*nll_0*aux1*
          ( all_0*( 1 + (3/2)η^2 + 4e_0*η + e_0*η^3) +
-           3/2*(k_2*ξ)/aux0*(-1/2 + (3/2)θ2)*(8 + 24η^2 + 3η^4) )
+           3/2*(k_2*ξ)/aux0*(-1/2 + (3/2)θ²)*(8 + 24η^2 + 3η^4) )
 
     C1 = bstar*C2
 
@@ -259,13 +259,13 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 
     C4 = 2nll_0*QOMS2T*aux2*
          ( 2η*(1+e_0*η) + (1/2)e_0 + (1/2)η^3 -
-           2*k_2*ξ/(all_0*aux0)*
-                (3*(1-3θ2)*(1 + (3/2)η^2 - 2*e_0*η - (1/2)e_0*η^3) +
-                3/4*(1-θ2)*(2η^2 - e_0*η - e_0*η^3)*cos(2*ω_0)))
+           2k_2*ξ/(all_0*aux0)*
+                (3(1-3θ²)*(1 + (3/2)η^2 - 2e_0*η - (1/2)e_0*η^3) +
+                3/4*(1-θ²)*(2η^2 - e_0*η - e_0*η^3)*cos(2ω_0)))
 
-    C5 = 2*QOMS2T*aux2*(1 + (11/4)η*(η+e_0) + e_0*η^3)
+    C5 = 2QOMS2T*aux2*(1 + (11/4)η*(η+e_0) + e_0*η^3)
 
-    D2 = 4*all_0*ξ*C1^2
+    D2 = 4all_0*ξ*C1^2
 
     D3 = 4/3*all_0*ξ^2*( 17all_0 +   s)*C1^3
 
@@ -274,17 +274,17 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     D4 = 2/3*all_0^2*ξ^3*(221all_0 + 31s)*C1^4
 
     # Compute the time-derivative of some orbital elements.
-    dotM = ( 1 + 3*k_2*(-1 + 3θ2)/(2all_0^2*β_0^3) +
-             3k_2^2*(13 - 78θ2 + 137θ4)/(16all_0^4*β_0^7) )*nll_0
+    dotM = ( 1 + 3k_2*(-1 + 3θ²)/(2all_0^2*β_0^3) +
+             3k_2^2*(13 - 78θ² + 137θ⁴)/(16all_0^4*β_0^7) )*nll_0
 
-    dotω = ( -3*k_2*(1-5θ2)/(2all_0^2*β_0^4) +
-              3*k_2^2*(7 - 114θ2 + 395θ4)/(16all_0^4*β_0^8) +
-              5*k_4*(3 - 36θ2 + 49θ4)/(4all_0^4*β_0^8) )*nll_0
+    dotω = ( -3k_2*(1-5θ²)/(2all_0^2*β_0^4) +
+              3k_2^2*(7 - 114θ² + 395θ⁴)/(16all_0^4*β_0^8) +
+              5k_4*(3 - 36θ² + 49θ⁴)/(4all_0^4*β_0^8) )*nll_0
 
-    dotΩ1 = -3*k_2*θ/(all_0^2*β_0^4)*nll_0
+    dotΩ1 = -3k_2*θ/(all_0^2*β_0^4)*nll_0
 
-    dotΩ  = dotΩ1 + ( 3*k_2^2*(4θ - 19θ3)/(2all_0^4*β_0^8) +
-                        5*k_4*θ*(3 - 7θ2)/(2all_0^4*β_0^8) )*nll_0
+    dotΩ  = dotΩ1 + ( 3k_2^2*(4θ - 19θ³)/(2all_0^4*β_0^8) +
+                        5k_4*θ*(3 - 7θ²)/(2all_0^4*β_0^8) )*nll_0
 
     # The current orbital parameters are obtained from the TLE.
     a_k = all_0
@@ -321,7 +321,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     SGP4_Structure{T}(
 
         epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, 0, a_k, e_k, i_k, Ω_k, ω_k,
-        M_k, n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ2, A_30,
+        M_k, n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ², A_30,
         k_2, k_4, C1, C3, C4, C5, D2, D3, D4, dotM, dotω, dotΩ1, dotΩ,
         algorithm, sgp4_gc, sgp4_ds
 
@@ -477,7 +477,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
         # recomputed.
         sin_i_k = sin(i_k)
         θ       = cos(i_k)
-        θ2      = θ^2
+        θ²      = θ^2
     end
 
     # Vallado's code does not let the eccentricity to be smaller than 1e-6.
@@ -565,21 +565,21 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
     # Short-term periodic terms.
 
-    Δr       = +k_2/(2p_L)*(1 - θ2)*cos_2u
+    Δr       = +k_2/(2p_L)*(1 - θ²)*cos_2u
 
-    Δu       = -k_2/(4p_L^2)*(7θ2 - 1)*sin_2u
+    Δu       = -k_2/(4p_L^2)*(7θ² - 1)*sin_2u
 
     ΔΩ       = +3k_2*θ/(2p_L^2)*sin_2u
 
     Δi       = +3k_2*θ/(2p_L^2)*sin_i_k*cos_2u
 
-    Δdot_r   = -k_2*n_k/p_L*(1 - θ2)*sin_2u
+    Δdot_r   = -k_2*n_k/p_L*(1 - θ²)*sin_2u
 
-    Δr_dot_f = +k_2*n_k/p_L*( (1 - θ2)*cos_2u - 3/2*(1 - 3θ2) )
+    Δr_dot_f = +k_2*n_k/p_L*( (1 - θ²)*cos_2u - 3/2*(1 - 3θ²) )
 
     # The short-term periodics are added to give the osculating quantities.
 
-    r_k       = r*( 1 - (3/2)k_2*sqrt(1 - e_L^2)/p_L^2*(3θ2 - 1) ) + Δr
+    r_k       = r*( 1 - (3/2)k_2*sqrt(1 - e_L^2)/p_L^2*(3θ² - 1) ) + Δr
 
     u_k       = u + Δu
 
@@ -675,8 +675,9 @@ function dsinit(epoch::T,
 
     #                         Auxiliary Variables
     # ==========================================================================
-    e_02        = e_0^2
-    sqrt_1_e_02 = sqrt((1 - e_02))
+    e_0²        = e_0^2
+    e_0³        = e_0 * e_0²
+    sqrt_1_e_0² = sqrt((1 - e_0²))
     inv_all_0   = 1/all_0
     inv_nll_0   = 1/nll_0
     se          = zero(T)
@@ -685,9 +686,9 @@ function dsinit(epoch::T,
     sgh         = zero(T)
     shdq        = zero(T)
     sin_i_0     = sin(i_0)
-    sin_i_02    = sin_i_0^2
+    sin_i_0²    = sin_i_0^2
     cos_i_0     = cos(i_0)
-    cos_i_02    = cos_i_0^2
+    cos_i_0²    = cos_i_0^2
     sin_Ω_0     = sin(Ω_0)
     cos_Ω_0     = cos(Ω_0)
     sin_ω_0     = sin(ω_0)
@@ -712,27 +713,27 @@ function dsinit(epoch::T,
     # `day` is the number of days since Jan 0, 1900 at 12h.
     day    = epoch - (DatetoJD(1900,1,1,12,0,0)-1)
 
-    xnodce = mod(4.5236020 - 9.2422029e-4*day, 2*pi)
+    xnodce = mod(4.5236020 - 9.2422029e-4day, 2*pi)
     stem   = sin(xnodce)
     ctem   = cos(xnodce)
 
-    zcosil = 0.91375164 - 0.03568096*ctem
+    zcosil = 0.91375164 - 0.03568096ctem
     zsinil = sqrt(1 - zcosil^2)
 
-    zsinhl = 0.089683511*stem/zsinil
+    zsinhl = 0.089683511stem/zsinil
     zcoshl = sqrt(1 - zsinhl^2)
 
-    gam    = 5.8351514 + 0.0019443680*day
+    gam    = 5.8351514 + 0.0019443680day
 
-    zx     = 0.39785416*stem/zsinil
-    zy     = zcoshl*ctem + 0.91744867*zsinhl*stem
+    zx     = 0.39785416stem/zsinil
+    zy     = zcoshl*ctem + 0.91744867zsinhl*stem
     zx     = atan2(zx,zy)
     zx     = gam + zx - xnodce
     zcosgl = cos(zx)
     zsingl = sin(zx)
 
-    zmol   = mod(4.7199672 + 0.22997150*day - gam, 2*pi)
-    zmos   = mod(6.2565837 + 0.017201977*day, 2*pi)
+    zmol   = mod(4.7199672 + 0.22997150day - gam, 2π)
+    zmos   = mod(6.2565837 + 0.017201977day,      2π)
 
     #                            Do Solar Terms
     # ==========================================================================
@@ -771,30 +772,30 @@ function dsinit(epoch::T,
         z31 = 12x1^2    - 3x3^2
         z32 = 24x1 * x2 - 6x3 * x4
         z33 = 12x2^2    - 3x4^2
-        z1  = 3(   a1^2 + a2^2   ) + z31 * e_02
-        z2  = 6(a1 * a3 + a2 * a4) + z32 * e_02
-        z3  = 3(   a3^2 + a4^2   ) + z33 * e_02
-        z11 = -6a1 * a5 + e_02 * (-24x1 * x7 - 6x3 * x5)
-        z12 = -6(a1 * a6 + a3 * a5) + e_02 * ( -24(x2 * x7 + x1 * x8) -
+        z1  = 3(   a1^2 + a2^2   ) + z31 * e_0²
+        z2  = 6(a1 * a3 + a2 * a4) + z32 * e_0²
+        z3  = 3(   a3^2 + a4^2   ) + z33 * e_0²
+        z11 = -6a1 * a5 + e_0² * (-24x1 * x7 - 6x3 * x5)
+        z12 = -6(a1 * a6 + a3 * a5) + e_0² * ( -24(x2 * x7 + x1 * x8) -
                                                  6(x3 * x6 + x4 * x5) )
-        z13 = -6a3 * a6 + e_02 * (-24x2 * x8 - 6x4 * x6)
-        z21 = +6a2 * a5 + e_02 * (+24x1 * x5 - 6x3 * x7)
-        z22 = +6(a4 * a5 + a2 * a6) + e_02 * (24(x2 * x5 + x1 * x6) -
+        z13 = -6a3 * a6 + e_0² * (-24x2 * x8 - 6x4 * x6)
+        z21 = +6a2 * a5 + e_0² * (+24x1 * x5 - 6x3 * x7)
+        z22 = +6(a4 * a5 + a2 * a6) + e_0² * (24(x2 * x5 + x1 * x6) -
                                                6(x4 * x7 + x3 * x8) )
-        z23 = +6a4 * a6 + e_02 * (24x2 * x6 - 6x4 * x8)
-        z1  = +2z1 + (1 - e_02) * z31
-        z2  = +2z2 + (1 - e_02) * z32
-        z3  = +2z3 + (1 - e_02) * z33
+        z23 = +6a4 * a6 + e_0² * (24x2 * x6 - 6x4 * x8)
+        z1  = +2z1 + (1 - e_0²) * z31
+        z2  = +2z2 + (1 - e_0²) * z32
+        z3  = +2z3 + (1 - e_0²) * z33
         s3  = +cc * inv_nll_0
-        s2  = -0.5s3 / sqrt_1_e_02
-        s4  = +s3 * sqrt_1_e_02
+        s2  = -0.5s3 / sqrt_1_e_0²
+        s4  = +s3 * sqrt_1_e_0²
         s1  = -15e_0 * s4
         s5  = +x1 * x3 + x2 * x4
         s6  = +x2 * x3 + x1 * x4
         s7  = +x2 * x4 - x1 * x3
         se  = +s1 * zn * s5
         si  = +s2 * zn * (z11 + z13)
-        sl  = -zn * s3 * (z1 + z3 - 14 - 6e_02)
+        sl  = -zn * s3 * (z1 + z3 - 14 - 6e_0²)
         sgh = +s4 * zn * (z31 + z33 - 6)
 
         shdq = zero(T)
@@ -810,7 +811,7 @@ function dsinit(epoch::T,
         xi3  =  +2s2 * (z13 - z11)
         xl2  =  -2s3 * z2
         xl3  =  -2s3 * (z3 - z1)
-        xl4  =  -2s3 * (-21 - 9e_02) * ze
+        xl4  =  -2s3 * (-21 - 9e_0²) * ze
         xgh2 =  +2s4 * z32
         xgh3 =  +2s4 * (z33 - z31)
         xgh4 = -18s4 * ze
@@ -863,9 +864,9 @@ function dsinit(epoch::T,
         iresfl = true;
         isynfl = true;
 
-        g200    = e_02 * (0.8125e_02 - 2.5) + 1
-        g310    = 2e_02 + 1
-        g300    = e_02 * (6.60937e_02 - 6) + 1
+        g200    = e_0² * (0.8125e_0² - 2.5) + 1
+        g310    = 2e_0² + 1
+        g300    = e_0² * (6.60937e_0² - 6) + 1
         f220    = 0.75(cos_i_0 + 1)^2
         f311    = 0.9375(3.0cos_i_0 + 1)*sin_i_0^2 - 0.75(cos_i_0 + 1)
         f330    = 1.875 * (cos_i_0 + 1)^3
@@ -886,54 +887,53 @@ function dsinit(epoch::T,
         iresfl = true
         isynfl = false
 
-        e_03 = e_0 * e_02
         g201 = -0.306 - 0.44(e_0 - 0.64)
 
         if e_0 <= 0.65
-            g211 =   3.616     - 13.247e_0 + 16.29000e_02
-            g310 = 117.3900e_0 - 19.302    - 228.4190e_02 + 156.5910e_03
-            g322 = 109.7927e_0 - 18.9068   - 214.6334e_02 + 146.5816e_03
-            g410 = 242.6940e_0 - 41.122    - 471.0940e_02 + 313.9530e_03
-            g422 = 841.8800e_0 - 146.407   - 1629.014e_02 + 1083.435e_03
-            g520 = 3017.977e_0 - 532.114   - 5740.032e_02 + 3708.276e_03
+            g211 =    3.6160 -  13.2470e_0 + 16.29000e_0²
+            g310 = - 19.3020 + 117.3900e_0 - 228.4190e_0² + 156.5910e_0³
+            g322 = - 18.9068 + 109.7927e_0 - 214.6334e_0² + 146.5816e_0³
+            g410 = - 41.1220 + 242.6940e_0 - 471.0940e_0² + 313.9530e_0³
+            g422 = - 146.407 + 841.8800e_0 - 1629.014e_0² + 1083.435e_0³
+            g520 = - 532.114 + 3017.977e_0 - 5740.032e_0² + 3708.276e_0³
         else
-            g211 = 331.8190e_0 - 72.099    - 508.7380e_02 + 266.7240e_03
-            g310 = 1582.851e_0 - 346.844   - 2415.925e_02 + 1246.113e_03
-            g322 = 1554.908e_0 - 342.585   - 2366.899e_02 + 1215.972e_03
-            g410 = 4758.686e_0 - 1052.797  - 7193.992e_02 + 3651.957e_03
-            g422 = 16178.11e_0 - 3581.69   - 24462.77e_02 + 12422.52e_03
+            g211 = -   72.099 + 331.8190e_0 - 508.7380e_0² + 266.7240e_0³
+            g310 = -  346.844 + 1582.851e_0 - 2415.925e_0² + 1246.113e_0³
+            g322 = -  342.585 + 1554.908e_0 - 2366.899e_0² + 1215.972e_0³
+            g410 = - 1052.797 + 4758.686e_0 - 7193.992e_0² + 3651.957e_0³
+            g422 = - 3581.690 + 16178.11e_0 - 24462.77e_0² + 12422.52e_0³
 
             if e_0 <= 0.715
-                g520 = 1464.74 - 4664.75e_0 + 3763.64e_02
+                g520 = 1464.74 - 4664.75e_0 + 3763.64e_0²
             else
-                g520 = 29936.92e_0 - 5149.66 - 54087.36e_02 + 31324.56e_03
+                g520 = - 5149.66 + 29936.92e_0 - 54087.36e_0² + 31324.56e_0³
             end
         end
 
         if e_0 < 0.7
-            g533 = 4988.6100e_0 - 919.2277  - 9064.7700e_02 + 5542.210e_03
-            g521 = 4568.6173e_0 - 822.71072 - 8491.4146e_02 + 5337.524e_03
-            g532 = 4690.2500e_0 - 853.666   - 8624.7700e_02 + 5341.400e_03
+            g533 = - 919.22770 + 4988.6100e_0 - 9064.7700e_0² + 5542.210e_0³
+            g521 = - 822.71072 + 4568.6173e_0 - 8491.4146e_0² + 5337.524e_0³
+            g532 = - 853.66600 + 4690.2500e_0 - 8624.7700e_0² + 5341.400e_0³
         else
-            g533 = 161616.52e_0 - 37995.78  - 229838.20e_02 + 109377.94e_03
-            g521 = 218913.95e_0 - 51752.104 - 309468.16e_02 + 146349.42e_03
-            g532 = 170470.89e_0 - 40023.88  - 242699.48e_02 + 115605.82e_03
+            g533 = - 37995.780 + 161616.52e_0 - 229838.20e_0² + 109377.94e_0³
+            g521 = - 51752.104 + 218913.95e_0 - 309468.16e_0² + 146349.42e_0³
+            g532 = - 40023.880 + 170470.89e_0 - 242699.48e_0² + 115605.82e_0³
         end
 
-        f220 = +0.75(1 + 2cos_i_0 + cos_i_02)
-        f221 = +1.5sin_i_02
-        f321 = +1.875sin_i_0 * (1 - 2cos_i_0 - 3cos_i_02)
-        f322 = -1.875sin_i_0 * (1 + 2cos_i_0 - 3cos_i_02)
-        f441 = +35sin_i_02 * f220
-        f442 = +39.375sin_i_02^2
-        f522 = +9.84375sin_i_0 * (sin_i_02 * (+1 - 2cos_i_0 - 5cos_i_02) +
-                                   0.33333333(-2 + 4cos_i_0 + 6cos_i_02) )
-        f523 = sin_i_0 * (4.92187512sin_i_02 * (-2 - 4cos_i_0 + 10cos_i_02) +
-                                     6.56250012(+1 + 2cos_i_0 -  3cos_i_02) )
-        f542 = 29.53125sin_i_0 * (+2 - 8cos_i_0 + cos_i_02 *
-                                    (-12 + 8cos_i_0 + 10cos_i_02))
-        f543 = 29.53125sin_i_0 * (-2 - 8cos_i_0 + cos_i_02 *
-                                    (+12 + 8cos_i_0 - 10cos_i_02))
+        f220 = +0.75(1 + 2cos_i_0 + cos_i_0²)
+        f221 = +1.5sin_i_0²
+        f321 = +1.875sin_i_0 * (1 - 2cos_i_0 - 3cos_i_0²)
+        f322 = -1.875sin_i_0 * (1 + 2cos_i_0 - 3cos_i_0²)
+        f441 = +35sin_i_0² * f220
+        f442 = +39.375sin_i_0²^2
+        f522 = +9.84375sin_i_0 * (sin_i_0² * (+1 - 2cos_i_0 - 5cos_i_0²) +
+                                   0.33333333(-2 + 4cos_i_0 + 6cos_i_0²) )
+        f523 = sin_i_0 * (4.92187512sin_i_0² * (-2 - 4cos_i_0 + 10cos_i_0²) +
+                                     6.56250012(+1 + 2cos_i_0 -  3cos_i_0²) )
+        f542 = 29.53125sin_i_0 * (+2 - 8cos_i_0 + cos_i_0² *
+                                    (-12 + 8cos_i_0 + 10cos_i_0²))
+        f543 = 29.53125sin_i_0 * (-2 - 8cos_i_0 + cos_i_0² *
+                                    (+12 + 8cos_i_0 - 10cos_i_0²))
 
         temp1   = 3(nll_0 * inv_all_0)^2
         temp0   = temp1 * ROOT22
@@ -1154,8 +1154,8 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
 
         # In Vallado's implementation [2], this is in the final of the loop
         # instead of at the beginning.
-        xli   += delt * (xldot + delt * 0.5 * xndot)
-        xni   += delt * (xndot + delt * 0.5 * xnddt)
+        xli   += delt * (xldot + delt * xndot / 2)
+        xni   += delt * (xndot + delt * xnddt / 2)
         atime += delt
     end
 
@@ -1291,7 +1291,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
         Ω_aux   = Ω_per
         Ω_per   = mod(atan2(alfdp, betdp), 2π)
 
-        if abs(Ω_aux - Ω_per) > pi
+        if abs(Ω_aux - Ω_per) > π
             Ω_per = (Ω_per < Ω_aux) ? Ω_per + 2π : Ω_per - 2π
         end
 
