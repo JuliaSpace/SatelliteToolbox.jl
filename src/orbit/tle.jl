@@ -264,7 +264,8 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
             # Ephemeris type
             # ==============
-            (line[63] != '0') && warn("Warning in TLE file (line $line_num): Ephemeris type should be 0!")
+            (line[63] != '0' && line[63] != ' ') &&
+                warn("Warning in TLE file (line $line_num): Ephemeris type should be 0!")
 
             # Element number
             # ==============
