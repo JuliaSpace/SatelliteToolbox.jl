@@ -83,5 +83,35 @@
             @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-9
         end
     end
+
+    # Test using the function `read_tle_from_string`.
+    tle = read_tle_from_string(
+        "1 23599U 95029B   06171.76535463  .00085586  12891-6  12956-2 0  2905",
+        "2 23599   6.9327   0.2849 5782022 274.4436  25.2425  4.47796565123555")
+
+    filename     = "./sgp4_tests/aiaa-2006-6753/sgp4_tle_23599_result.txt"
+    SGP4_results = readdlm(filename; comments=true)
+
+    # Initialize the orbit propagator.
+    orbp = init_orbit_propagator(Val{:sgp4}, tle[1], sgp4_gc_wgs72)
+
+    # Propagate the orbit.
+    t = SGP4_results[:,1]*60
+    (orbm, r_TEME, v_TEME) = propagate!(orbp, t)
+
+    # Compare the results.
+    for k = 1:length(t)
+        # Assemble the result vector.
+        st_sgp4_result = [t[k]/60 r_TEME[k]'/1000 v_TEME[k]'/1000]
+
+        # Compare the values.
+        @test st_sgp4_result[1] == SGP4_results[k,1]
+        @test st_sgp4_result[2] ≈  SGP4_results[k,2] atol=1e-8
+        @test st_sgp4_result[3] ≈  SGP4_results[k,3] atol=1e-8
+        @test st_sgp4_result[4] ≈  SGP4_results[k,4] atol=1e-8
+        @test st_sgp4_result[5] ≈  SGP4_results[k,5] atol=1e-9
+        @test st_sgp4_result[6] ≈  SGP4_results[k,6] atol=1e-9
+        @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-9
+    end
 end
 println("")

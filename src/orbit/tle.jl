@@ -21,7 +21,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export read_tle
+export read_tle, read_tle_from_string
 
 """
 ### macro parse_value(T, str, line_num)
@@ -93,7 +93,7 @@ function compute_checksum(str::AbstractString)
 end
 
 """
-    function read_tle(tle_filename::String)
+    @inline function read_tle(tle_filename::String)
 
 Read the TLEs in the file `tle_filename`.
 
@@ -108,10 +108,52 @@ Read the TLEs in the file `tle_filename`.
 An array with all the TLEs that were parsed.
 
 """
-function read_tle(tle_filename::String, verify_checksum::Bool = true)
+@inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
     # Open the file in read mode.
     file = open(tle_filename, "r")
 
+    _parse_tle(file, verify_checksum)
+end
+
+"""
+    @inline function read_tle_from_string(tles::String, verify_checksum::Bool = true)
+    @inline function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
+
+Parse a set of TLEs in the string `tles` or one TLE with first line `tle_l1` and
+second line `tle_l2`.
+
+# Args
+
+* `tles`: TLEs that will be parsed.
+* `verify_checksum`: (OPTIONAL) If false, then the checksum will not be verified
+                     (**Default** = true).
+
+* `tle_l1`: First line of the TLE.
+* `tle_l2`: Second line of the TLE.
+
+# Returns
+
+An array with all the TLEs that were parsed.
+
+"""
+@inline function read_tle_from_string(tles::String,
+                                      verify_checksum::Bool = true)
+    # Convert the string to an IOBuffer and call the function to parse it.
+    _parse_tle(IOBuffer(tles), verify_checksum)
+end
+
+@inline function read_tle_from_string(tle_l1::String,
+                                      tle_l2::String,
+                                      verify_checksum::Bool = false)
+    # Assemble the TLE into one string and call the function to parse it.
+    read_tle_from_string(tle_l1 * '\n' * tle_l2, verify_checksum)
+end
+
+################################################################################
+#                              Private Functions
+################################################################################
+
+function _parse_tle(io::IO, verify_checksum::Bool = true)
     # State machine to read the TLE. It has three possible states:
     #
     #   :name -> Satellite name.
@@ -158,11 +200,11 @@ function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
     line = nothing
 
-    while !eof(file)
+    while !eof(io)
         # Read the current line, strip white spaces, and skip if it is blank or
         # is a comment.
         if !skip_line_read
-            line = strip(readline(file))
+            line = strip(readline(io))
             line_num += 1
             (isempty(line))  && continue
             (line[1] == '#') && continue
