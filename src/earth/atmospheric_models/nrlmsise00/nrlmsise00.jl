@@ -136,6 +136,13 @@ Neutral Atmosphere Empirical Model from the surface to lower exosphere.
 This routine computes the NRLMSISE-00 outputs (see `NRLMSISE00_Output`) using
 the configurations in the structure `nrlmsise00` (see `NRLMSISE00_Structure`).
 
+Notice that the NRLMSISE-00 will be run using the default flags (see
+`NRLMSISE00_DEFAULT_FLAGS`). The user can only change the value of
+`flags[:output_m_kg]` using the keyword `output_si` to select whether the output
+must be converted to SI units. If more control is needed, then the user must
+manually call the function `conf_nrlmsise00` and then call `gtd7` or `gtd7d`
+with the desired flags.
+
 # Args
 
 * `doy`: Day of year.
@@ -148,11 +155,14 @@ the configurations in the structure `nrlmsise00` (see `NRLMSISE00_Structure`).
 * `f107`: Daily F10.7 flux for previous day.
 * `ap`: Magnetic index (daily) if it is a number. If it is an array, then see
         **Remarks**.
+
+# Keywords
+
+* `output_si`: (OPTIONAL) If `true`, then the output units will be [m⁻³] for
+               species number density and [kg/m⁻³] for the total density.
+               Otherwise, the units will be [cm⁻³] and [g/cm⁻³], respectively.
 * `dversion`: (OPTIONAL) If `true`, run `gtd7d`. Otherwise, run `gtd7` (see
               **Remarks**).
-* `new_flags`: (OPTIONAL) A dictionary containing the flags that differs from
-                the defaults (see `NRLMSISE00_DEFAULT_FLAGS`) (**DEFAULT** =
-                `empty`).
 
 # Returns
 
@@ -178,7 +188,7 @@ If `ap` is a `Vector`, then it must be a vector with 7 dimensions as described
 below:
 
 | Index | Description                                                                   |
-|-------|-------------------------------------------------------------------------------|
+|-------|:------------------------------------------------------------------------------|
 |     1 | Daily AP.                                                                     |
 |     2 | 3 hour AP index for current time.                                             |
 |     3 | 3 hour AP index for 3 hours before current time.                              |
@@ -221,12 +231,15 @@ function nrlmsise00(doy::Int,
                     lst::Number,
                     f107A::Number,
                     f107::Number,
-                    ap::Union{Number,AbstractVector{Number}},
-                    dversion::Bool = true,
-                    new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+                    ap::Union{Number,AbstractVector{Number}};
+                    output_si::Bool = true,
+                    dversion::Bool = true)
 
     # Constant
     dgtr = 1.74533e-2 # Convert degrees to radians.
+
+    # Check if the user wants the output in SI units.
+    new_flags = output_si ? Dict(:output_m_kg => true) : Dict{Symbol,Bool}()
 
     # Create the input structure for NRLMSISE-00 converting the arguments.
     nrlmsise00d = conf_nrlmsise00(0,
