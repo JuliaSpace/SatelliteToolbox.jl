@@ -49,6 +49,7 @@ include("analysis/satellite_position_groundstations.jl")
 include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
+include("earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
 include("earth/gravity_models/egm.jl")
 include("earth/geomagnetic_field_models/igrf.jl")
 include("earth/geomagnetic_field_models/igrf12_coefs.jl")

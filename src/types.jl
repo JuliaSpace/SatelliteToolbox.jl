@@ -16,6 +16,9 @@
 #
 # Changelog
 #
+# 2018-06-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
+#   Add structures related with the NRLMSISE-00 model.
+#
 # 2018-06-01: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
 #   Add structure related with the deep space algorithms in SGP4.
 #
@@ -23,6 +26,107 @@
 #   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+
+################################################################################
+#                                 NRLMSISE-00
+################################################################################
+
+"""
+Structure with the configuration parameters for NRLMSISE-00 model. It can be
+created using the function `conf_nrlmsise00`.
+
+"""
+@with_kw mutable struct NRLMSISE00_Structure{T}
+    # Inputs
+    # ======
+    year::Int = 0
+    doy::Int  = 0
+    sec::T    = 0
+    alt::T    = 0
+    g_lat::T  = 0
+    g_long::T = 0
+    lst::T    = 0
+    f107A::T  = 0
+    f107::T   = 0
+    ap::T     = 0
+    ap_array::Vector{T} = zeros(T, 7)
+    flags::Dict{Symbol, Bool} = NRLMSISE00_DEFAULT_FLAGS
+
+    # Auxiliary variables to improve code performance
+    # ===============================================
+    re::T                   = T(6367.088132098377173)
+    gsurf::T                = T(0)
+    df::T                   = T(0)
+    dfa::T                  = T(0)
+    plg::Matrix{T}          = zeros(T, 8, 8)
+    ctloc::T                = T(0)
+    stloc::T                = T(0)
+    c2tloc::T               = T(0)
+    s2tloc::T               = T(0)
+    s3tloc::T               = T(0)
+    c3tloc::T               = T(0)
+    apdf::T                 = T(0)
+    apt::T                  = T(0) # In the original source code, it has 4
+                                   # components, but only 1 is used.
+    dm28                    = T(0)
+    meso_tn1::Vector{T}     = zeros(T,5)
+    meso_tn2::Vector{T}     = zeros(T,4)
+    meso_tn3::Vector{T}     = zeros(T,5)
+    meso_tgn1::Vector{T}    = zeros(T,2)
+    meso_tgn2::Vector{T}    = zeros(T,2)
+    meso_tgn3::Vector{T}    = zeros(T,2)
+end
+
+"""
+Output structure for NRLMSISE00 model.
+
+* `den_N`: Nitrogen number density [U].
+* `den_N2`: N₂ number density [U].
+* `den_O`: Oxygen number density [U].
+* `den_aO`: Anomalous Oxygen number density [U].
+* `den_O2`: O₂ number density [U].
+* `den_H`: Hydrogen number density [U].
+* `den_He`: Helium number density [U].
+* `den_Ar`: Argon number density [U].
+* `den_Total`: Total mass density [T/U] (this value has different meanings for
+               routines `gtd7` and `gtd7d`).
+* `T_exo`: Exospheric temperature.
+* `T_alt`: Temperature at the selected altitude.
+* `flags`: Flags used to compute NRLMSISE-00 model.
+
+Notice that:
+
+* If `flags[:output_m_kg]` is `false`, then [U] is [cm⁻³] and [T] is [g/cm⁻³].
+* If `flags[:output_m_kg]` is `true`, then [U] is [m⁻³] and [T] is [kg/m⁻³].
+
+# Remarks
+
+Anomalous oxygen is defined as hot atomic oxygen or ionized oxygen that can
+become appreciable at high altitudes (`> 500 km`) for some ranges of inputs,
+thereby affection drag on satellites and debris. We group these species under
+the term **Anomalous Oxygen**, since their individual variations are not
+presently separable with the drag data used to define this model component.
+
+"""
+@with_kw struct NRLMSISE00_Output{T}
+    # Densities.
+    den_N::T
+    den_N2::T
+    den_O::T
+    den_aO::T
+    den_O2::T
+    den_H::T
+    den_He::T
+    den_Ar::T
+    den_Total::T
+
+    # Temperatures.
+    T_exo::T
+    T_alt::T
+
+    # Flags.
+    flags::Dict{Symbol, Bool}
+end
 
 ################################################################################
 #                             Earth Gravity Model
