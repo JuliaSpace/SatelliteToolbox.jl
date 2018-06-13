@@ -145,8 +145,7 @@ with the desired flags.
 
 # Args
 
-* `doy`: Day of year.
-* `sec`: Seconds in day [UT].
+* `JD`: Julian Day [UTC].
 * `alt`: Altitude [m].
 * `g_lat`: Geodetic latitude [rad].
 * `g_long`: Geodetic longitude [rad].
@@ -223,8 +222,7 @@ is the effective total mass density for drag and is the sum of the mass
 densities of all species in this model **including** the anomalous oxygen.
 
 """
-function nrlmsise00(doy::Int,
-                    sec::Number,
+function nrlmsise00(JD::Number,
                     alt::Number,
                     g_lat::Number,
                     g_long::Number,
@@ -241,10 +239,25 @@ function nrlmsise00(doy::Int,
     # Check if the user wants the output in SI units.
     new_flags = output_si ? Dict(:output_m_kg => true) : Dict{Symbol,Bool}()
 
+    # Convert the Julian Day to Date.
+    (Y, M, D, h, m, s) = JDtoDate(JD)
+
+    # Get the number of days since the beginning of the year.
+    doy = round(Int,DatetoJD(Y, M, D, 0, 0, 0) - DatetoJD(Y, 1, 1, 0, 0, 0)) + 1
+
+    # Get the number of seconds since the beginning of the day.
+    Δds = 3600h + 60m + s
+
+    # Get the local apparent solar time [hours].
+    eot = equation_of_time(JD)
+    lst = Δds/3600 + (g_long + eot)*12/π
+
     # Create the input structure for NRLMSISE-00 converting the arguments.
-    nrlmsise00d = conf_nrlmsise00(0,
+    #
+    # Notice that, for this algorithm, the year **is not** used.
+    nrlmsise00d = conf_nrlmsise00(Y,
                                   doy,
-                                  sec,
+                                  Δds,
                                   alt/1000,
                                   g_lat/dgtr,
                                   g_long/dgtr,
@@ -255,11 +268,9 @@ function nrlmsise00(doy::Int,
                                   new_flags)
 
     # Call the NRLMSISE-00 model.
-    if dversion
-        return gtd7d(nrlmsise00d)
-    else
-        return gtd7(nrlmsise00d)
-    end
+    nrlmsise00_out = (dversion) ? gtd7d(nrlmsise00d) : gtd7(nrlmsise00d)
+
+    nrlmsise00_out
 end
 
 
