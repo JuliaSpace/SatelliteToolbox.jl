@@ -799,7 +799,9 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Initialization of Variables
     # ===========================
 
-    T_alt = T(0)
+    T_alt     = T(0)
+    meso_tn1  = zeros(MVector{5,T})
+    meso_tgn1 = zeros(MVector{2,T})
 
     # Tinf variations not important below `za` or `zn1[1]`
     # ====================================================
@@ -1440,7 +1442,10 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         den_aO    *= 1e6
     end
 
-    @pack nrlmsise00d = meso_tn1, meso_tgn1, dm28
+    # Repack variables that were modified.
+    meso_tn1_5  = meso_tn1[5]
+    meso_tgn1_2 = meso_tgn1[2]
+    @pack nrlmsise00d = meso_tn1_5, meso_tgn1_2, dm28
 
     # Create output structure.
     NRLMSISE00_Output{T}(den_N     = den_N,
@@ -1456,7 +1461,6 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                          T_alt     = T_alt,
                          flags     = flags)
 end
-
 
 @inline function _scalh(alt::T, xm::T, temp::T, gsurf::T, re::T) where T<:Number
     rgas = T(831.4)

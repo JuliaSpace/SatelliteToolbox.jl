@@ -54,27 +54,27 @@ created using the function `conf_nrlmsise00`.
 
     # Auxiliary variables to improve code performance
     # ===============================================
-    re::T                   = T(6367.088132098377173)
-    gsurf::T                = T(0)
-    df::T                   = T(0)
-    dfa::T                  = T(0)
-    plg::Matrix{T}          = zeros(T, 8, 8)
-    ctloc::T                = T(0)
-    stloc::T                = T(0)
-    c2tloc::T               = T(0)
-    s2tloc::T               = T(0)
-    s3tloc::T               = T(0)
-    c3tloc::T               = T(0)
-    apdf::T                 = T(0)
-    apt::T                  = T(0) # In the original source code, it has 4
-                                   # components, but only 1 is used.
-    dm28                    = T(0)
-    meso_tn1::Vector{T}     = zeros(T,5)
-    meso_tn2::Vector{T}     = zeros(T,4)
-    meso_tn3::Vector{T}     = zeros(T,5)
-    meso_tgn1::Vector{T}    = zeros(T,2)
-    meso_tgn2::Vector{T}    = zeros(T,2)
-    meso_tgn3::Vector{T}    = zeros(T,2)
+    re::T          = T(6367.088132098377173)
+    gsurf::T       = T(0)
+    df::T          = T(0)
+    dfa::T         = T(0)
+    plg::Matrix{T} = zeros(T, 8, 8)
+    ctloc::T       = T(0)
+    stloc::T       = T(0)
+    c2tloc::T      = T(0)
+    s2tloc::T      = T(0)
+    s3tloc::T      = T(0)
+    c3tloc::T      = T(0)
+
+    # In the original source code, it has 4 components, but only 1 is used.
+    apt::T         = T(0)
+    apdf::T        = T(0)
+    dm28           = T(0)
+    # The original code declared all the `meso_*` vectors as global variables.
+    # However, only two values really need to be shared between the functions
+    # `gts7` and `gtd7`.
+    meso_tn1_5::T  = T(0)
+    meso_tgn1_2::T = T(0)
 end
 
 """

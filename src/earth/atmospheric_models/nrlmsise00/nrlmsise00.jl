@@ -516,6 +516,14 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     zn3  = SVector{5,T}([32.5,20.0,15.0,10.0,0.0])
     zmix = T(62.5)
 
+    # Initialization of variables
+    # ===========================
+
+    meso_tn2  = zeros(MVector{4,T})
+    meso_tn3  = zeros(MVector{5,T})
+    meso_tgn2 = zeros(MVector{2,T})
+    meso_tgn3 = zeros(MVector{2,T})
+
     # Latitude variation of gravity
     # =============================
 
@@ -544,9 +552,9 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Lower Mesosphere / Upper Stratosphere (between `zn3[1]` and `zn2[1]`)
     # =====================================================================
 
-    meso_tgn2[1] = meso_tgn1[2]
+    meso_tgn2[1] = meso_tgn1_2
 
-    meso_tn2[1]  = meso_tn1[5]
+    meso_tn2[1]  = meso_tn1_5
 
     meso_tn2[2]  =  pma[1,1]*pavgm[1]/
                     ( 1 - flags[:all_tn2_var]*_glob7s(pma[1,:], nrlmsise00d) )
@@ -667,8 +675,6 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                        zn2,
                        meso_tn2,
                        meso_tgn2)
-
-    @pack nrlmsise00d = meso_tn2, meso_tn3, meso_tgn2, meso_tgn3
 
     # Create output structure.
     NRLMSISE00_Output{T}(den_N     = den_N,
