@@ -69,7 +69,7 @@ created using the function `conf_nrlmsise00`.
     # In the original source code, it has 4 components, but only 1 is used.
     apt::T         = T(0)
     apdf::T        = T(0)
-    dm28           = T(0)
+    dm28::T        = T(0)
     # The original code declared all the `meso_*` vectors as global variables.
     # However, only two values really need to be shared between the functions
     # `gts7` and `gtd7`.

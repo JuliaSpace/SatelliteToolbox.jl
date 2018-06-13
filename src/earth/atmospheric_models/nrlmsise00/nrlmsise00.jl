@@ -366,28 +366,36 @@ function conf_nrlmsise00(year::Int,
 
     # Create and return the structure
     # ===============================
-    NRLMSISE00_Structure{Float64}(year   = year,
-                                  doy    = doy,
-                                  sec    = sec,
-                                  alt    = alt,
-                                  g_lat  = g_lat,
-                                  g_long = g_long,
-                                  lst    = lst,
-                                  f107A  = f107A,
-                                  f107   = f107,
-                                  ap     = ap,
-                                  flags  = flags,
-                                  re     = re,
-                                  gsurf  = gsurf,
-                                  df     = df,
-                                  dfa    = dfa,
-                                  plg    = plg,
-                                  stloc  = stloc,
-                                  ctloc  = ctloc,
-                                  s2tloc = s2tloc,
-                                  c2tloc = c2tloc,
-                                  s3tloc = s3tloc,
-                                  c3tloc = c3tloc)
+
+    # This is necessary to avoid type instability as reported here:
+    #
+    #   https://github.com/mauro3/Parameters.jl/issues/58
+    #
+    nrlmsise00d::NRLMSISE00_Structure{Float64} =
+        NRLMSISE00_Structure{Float64}(year     = year,
+                                      doy      = doy,
+                                      sec      = sec,
+                                      alt      = alt,
+                                      g_lat    = g_lat,
+                                      g_long   = g_long,
+                                      lst      = lst,
+                                      f107A    = f107A,
+                                      f107     = f107,
+                                      ap       = ap,
+                                      flags    = flags,
+                                      re       = re,
+                                      gsurf    = gsurf,
+                                      df       = df,
+                                      dfa      = dfa,
+                                      plg      = plg,
+                                      stloc    = stloc,
+                                      ctloc    = ctloc,
+                                      s2tloc   = s2tloc,
+                                      c2tloc   = c2tloc,
+                                      s3tloc   = s3tloc,
+                                      c3tloc   = c3tloc)
+
+    nrlmsise00d
 end
 
 function conf_nrlmsise00(year::Int,
@@ -440,28 +448,36 @@ function conf_nrlmsise00(year::Int,
 
     # Create and return the structure
     # ===============================
-    NRLMSISE00_Structure{Float64}(year     = year,
-                                  doy      = doy,
-                                  sec      = sec,
-                                  alt      = alt,
-                                  g_lat    = g_lat,
-                                  g_long   = g_long,
-                                  lst      = lst,
-                                  f107A    = f107A,
-                                  f107     = f107,
-                                  ap_array = ap,
-                                  flags    = flags,
-                                  re       = re,
-                                  gsurf    = gsurf,
-                                  df       = df,
-                                  dfa      = dfa,
-                                  plg      = plg,
-                                  stloc    = stloc,
-                                  ctloc    = ctloc,
-                                  s2tloc   = s2tloc,
-                                  c2tloc   = c2tloc,
-                                  s3tloc   = s3tloc,
-                                  c3tloc   = c3tloc)
+
+    # This is necessary to avoid type instability as reported here:
+    #
+    #   https://github.com/mauro3/Parameters.jl/issues/58
+    #
+    nrlmsise00d::NRLMSISE00_Structure{Float64} =
+        NRLMSISE00_Structure{Float64}(year     = year,
+                                      doy      = doy,
+                                      sec      = sec,
+                                      alt      = alt,
+                                      g_lat    = g_lat,
+                                      g_long   = g_long,
+                                      lst      = lst,
+                                      f107A    = f107A,
+                                      f107     = f107,
+                                      ap_array = ap,
+                                      flags    = flags,
+                                      re       = re,
+                                      gsurf    = gsurf,
+                                      df       = df,
+                                      dfa      = dfa,
+                                      plg      = plg,
+                                      stloc    = stloc,
+                                      ctloc    = ctloc,
+                                      s2tloc   = s2tloc,
+                                      c2tloc   = c2tloc,
+                                      s3tloc   = s3tloc,
+                                      c3tloc   = c3tloc)
+
+    nrlmsise00d
 end
 
 ################################################################################
@@ -676,19 +692,28 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                        meso_tn2,
                        meso_tgn2)
 
-    # Create output structure.
-    NRLMSISE00_Output{T}(den_N     = den_N,
-                         den_N2    = den_N2,
-                         den_O     = den_O,
-                         den_aO    = den_aO,
-                         den_O2    = den_O2,
-                         den_H     = den_H,
-                         den_He    = den_He,
-                         den_Ar    = den_Ar,
-                         den_Total = den_Total,
-                         T_exo     = T_exo,
-                         T_alt     = T_alt,
-                         flags     = flags)
+    # Create output structure and return.
+    #
+    # This is necessary to avoid type instability as reported here:
+    #
+    #   https://github.com/mauro3/Parameters.jl/issues/58
+    #
+
+    nrlmsise00_out::NRLMSISE00_Output{T} =
+        NRLMSISE00_Output{T}(den_N     = den_N,
+                             den_N2    = den_N2,
+                             den_O     = den_O,
+                             den_aO    = den_aO,
+                             den_O2    = den_O2,
+                             den_H     = den_H,
+                             den_He    = den_He,
+                             den_Ar    = den_Ar,
+                             den_Total = den_Total,
+                             T_exo     = T_exo,
+                             T_alt     = T_alt,
+                             flags     = flags)
+
+    nrlmsise00_out
 end
 
 """
@@ -726,7 +751,7 @@ all species in this model **including** the anomalous oxygen.
    presently separable with the drag data used to define this model component.
 
 """
-function gtd7d(nrlmsise00d::NRLMSISE00_Structure)
+function gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Call `gt7d` to compute the NRLMSISE-00 outputs.
     out = gtd7(nrlmsise00d)
 
@@ -743,8 +768,17 @@ function gtd7d(nrlmsise00d::NRLMSISE00_Structure)
     # Check if we must convert the units to SI.
     (nrlmsise00d.flags[:output_m_kg]) && (den_Total /= 1000)
 
-    # Create the new output.
-    NRLMSISE00_Output(out; den_Total = den_Total)
+    # Create the new output and return.
+    #
+    # This is necessary to avoid type instability as reported here:
+    #
+    #   https://github.com/mauro3/Parameters.jl/issues/58
+    #
+
+    nrlmsise00_out::NRLMSISE00_Output{T} =
+        NRLMSISE00_Output(out; den_Total = den_Total)
+
+    nrlmsise00_out
 end
 
 ################################################################################

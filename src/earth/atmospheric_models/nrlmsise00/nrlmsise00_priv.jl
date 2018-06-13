@@ -1447,19 +1447,28 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     meso_tgn1_2 = meso_tgn1[2]
     @pack nrlmsise00d = meso_tn1_5, meso_tgn1_2, dm28
 
-    # Create output structure.
-    NRLMSISE00_Output{T}(den_N     = den_N,
-                         den_N2    = den_N2,
-                         den_O     = den_O,
-                         den_aO    = den_aO,
-                         den_O2    = den_O2,
-                         den_H     = den_H,
-                         den_He    = den_He,
-                         den_Ar    = den_Ar,
-                         den_Total = den_Total,
-                         T_exo     = T_exo,
-                         T_alt     = T_alt,
-                         flags     = flags)
+    # Create output structure and return.
+    #
+    # This is necessary to avoid type instability as reported here:
+    #
+    #   https://github.com/mauro3/Parameters.jl/issues/58
+    #
+
+    nrlmsise00_out::NRLMSISE00_Output{T} =
+        NRLMSISE00_Output{T}(den_N     = den_N,
+                             den_N2    = den_N2,
+                             den_O     = den_O,
+                             den_aO    = den_aO,
+                             den_O2    = den_O2,
+                             den_H     = den_H,
+                             den_He    = den_He,
+                             den_Ar    = den_Ar,
+                             den_Total = den_Total,
+                             T_exo     = T_exo,
+                             T_alt     = T_alt,
+                             flags     = flags)
+
+    nrlmsise00_out
 end
 
 @inline function _scalh(alt::T, xm::T, temp::T, gsurf::T, re::T) where T<:Number
