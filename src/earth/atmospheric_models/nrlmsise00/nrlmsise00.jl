@@ -308,7 +308,7 @@ If `ap` is a `Vector`, then it must be a vector with 7 dimensions as described
 below:
 
 | Index | Description                                                                   |
-|-------|-------------------------------------------------------------------------------|
+|-------|:------------------------------------------------------------------------------|
 |     1 | Daily AP.                                                                     |
 |     2 | 3 hour AP index for current time.                                             |
 |     3 | 3 hour AP index for 3 hours before current time.                              |
