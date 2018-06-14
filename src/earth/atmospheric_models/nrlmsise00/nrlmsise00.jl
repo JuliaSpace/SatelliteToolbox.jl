@@ -127,7 +127,7 @@ const NRLMSISE00_DEFAULT_FLAGS =
 ################################################################################
 
 """
-    function nrlmsise00(doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::Union{Number,AbstractVector{Number}}, dversion::Bool = true, new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number, f107A::Number, f107::Number, ap::Union{Number,AbstractVector{Number}}; output_si::Bool = true, dversion::Bool = true)
 
 **NRLMSISE-00**
 
@@ -198,12 +198,6 @@ below:
 
 ## Notes on input variables
 
-UT, Local Time, and Longitude are used independently in the model and are not of
-equal importance for every situation. For the most physically realistic
-calculation these three variables should be consistent (`lst=sec/3600 +
-g_long/15`). The Equation of Time departures from the above formula for
-apparent local time can be included if available but are of minor importance.
-
 `f107` and `f107A` values used to generate the model correspond to the 10.7 cm
 radio flux at the actual distance of the Earth from the Sun rather than the
 radio flux at 1 AU. The following site provides both classes of values:
@@ -226,10 +220,9 @@ function nrlmsise00(JD::Number,
                     alt::Number,
                     g_lat::Number,
                     g_long::Number,
-                    lst::Number,
                     f107A::Number,
                     f107::Number,
-                    ap::Union{Number,AbstractVector{Number}};
+                    ap::Union{Number,AbstractVector};
                     output_si::Bool = true,
                     dversion::Bool = true)
 
@@ -249,8 +242,11 @@ function nrlmsise00(JD::Number,
     Δds = 3600h + 60m + s
 
     # Get the local apparent solar time [hours].
-    eot = equation_of_time(JD)
-    lst = Δds/3600 + (g_long + eot)*12/π
+    #
+    # TODO: To be very precise, I think this should also take into consideration
+    # the Equation of Time. However, the online version of NRLMSISE-00 does not
+    # use this.
+    lst = Δds/3600 + g_long*12/π
 
     # Create the input structure for NRLMSISE-00 converting the arguments.
     #
@@ -273,13 +269,12 @@ function nrlmsise00(JD::Number,
     nrlmsise00_out
 end
 
-
 ################################################################################
 #                             Auxiliary Functions
 ################################################################################
 
 """
-    function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector{Number}], new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+    function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector], new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
 
 Create the structure with the proper configuration to call the NRLMSISE-00
 model.
@@ -431,7 +426,7 @@ function conf_nrlmsise00(year::Int,
                          lst::Number,
                          f107A::Number,
                          f107::Number,
-                         ap::AbstractVector{Number},
+                         ap::AbstractVector,
                          new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
 
     # Constants
