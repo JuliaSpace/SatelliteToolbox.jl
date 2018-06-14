@@ -31,6 +31,8 @@
 #                                 NRLMSISE-00
 ################################################################################
 
+export NRLMSISE00_Structure, NRLMSISE00_Output
+
 """
 Structure with the configuration parameters for NRLMSISE-00 model. It can be
 created using the function `conf_nrlmsise00`.
