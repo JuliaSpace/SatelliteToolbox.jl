@@ -654,9 +654,7 @@ function _glob7s(p::AbstractVector{T},
     (p[100] != 2) && error("Wrong parameter set for glob7s.")
 
     # Initialization of variables.
-    apt  = T(0)
-    apdf = T(0)
-    t = zeros(T,15)
+    t = zeros(MVector{14,T})
 
     cd32 = cos( 1dr*(doy-p[32]) )
     cd18 = cos( 2dr*(doy-p[18]) )
@@ -666,7 +664,6 @@ function _glob7s(p::AbstractVector{T},
     # F10.7
     # =====
 
-    dfa  = f107A - 150
     t[1] = p[22]*dfa
 
     # Time independent
