@@ -127,7 +127,7 @@ const NRLMSISE00_DEFAULT_FLAGS =
 ################################################################################
 
 """
-    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number, f107A::Number, f107::Number, ap::Union{Number,AbstractVector{Number}}; output_si::Bool = true, dversion::Bool = true)
+    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number, f107A::Number, f107::Number, ap::Union{Number,AbstractVector}; output_si::Bool = true, dversion::Bool = true)
 
 **NRLMSISE-00**
 
@@ -149,7 +149,6 @@ with the desired flags.
 * `alt`: Altitude [m].
 * `g_lat`: Geodetic latitude [rad].
 * `g_long`: Geodetic longitude [rad].
-* `lst`: Local apparent solar time (hours).
 * `f107A`: 81 day average of F10.7 flux (centered on day of year `doy`).
 * `f107`: Daily F10.7 flux for previous day.
 * `ap`: Magnetic index (daily) if it is a number. If it is an array, then see
