@@ -43,6 +43,13 @@ println("")
 end
 println("")
 
+@testset "TLE Parser" begin
+    cd("./orbit/")
+    include("./orbit/tle.jl")
+    cd("../")
+end
+println("")
+
 @testset "Coordinate transformations" begin
     cd("./transformations/fk5/")
     include("./transformations/fk5/fk5.jl")
