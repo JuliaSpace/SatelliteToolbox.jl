@@ -114,4 +114,3 @@
         @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-9
     end
 end
-println("")
