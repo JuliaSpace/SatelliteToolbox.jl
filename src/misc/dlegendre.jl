@@ -106,7 +106,7 @@ dlegendre!(::Type{Val{:conv}},
     dlegendre_conventional!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre(ϕ::Number, P::Matrix, ph_term::Bool)
+    function dlegendre([N,] ϕ::Number, P::Matrix, ph_term::Bool)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
@@ -159,7 +159,7 @@ dlegendre(::Type{Val{:conv}}, ϕ::Number, P::Matrix, ph_term::Bool) =
     dlegendre_conventional(ϕ, P, ph_term)
 
 """
-    function dlegendre([T,] ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function dlegendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
