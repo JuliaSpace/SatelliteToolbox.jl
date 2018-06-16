@@ -43,9 +43,9 @@ export compute_dU, compute_U, compute_g, parse_gfc
 
 Compute the derivatives w.r.t. the spherical coordinates of the gravitational
 field (`∂U/∂r`, `∂U/∂ϕ`, `∂U/∂λ`) defined by the coefficients `gm_coefs` at the
-position `r` in ITRF.
-
-Notice that the zero degree term (`-μ/r²`) is considered in `∂U/∂r`.
+position `r` in ITRF. The maximum degree that will be used while computing
+the spherical harmonics will be `n_max`. If `n_max` is less or equal 0, then the
+maximum available degree will be used.
 
 # Args
 
@@ -73,7 +73,7 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
     @unpack_GravityModel_Coefs gm_coefs
 
     # Check if n_max is bigger than the maximum degree available.
-    if (n_max == 0) || (size(C,1)-1 < n_max)
+    if (n_max <= 0) || (size(C,1)-1 < n_max)
         n_max = size(C,1)-1
     end
 
@@ -161,9 +161,10 @@ end
 """
     function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector [, n_max::Number]) where T<:Number
 
-Compute the gravity acceleration at position `r` (ITRF) using the coefficients
-`gm_coefs`. The maximum degree that will be used while computing the spherical
-harmonics will be `n_max`.
+Compute the gravitational acceleration at position `r` (ITRF) using the
+coefficients `gm_coefs`. The maximum degree that will be used while computing
+the spherical harmonics will be `n_max`. If `n_max` is less or equal 0, then the
+maximum available degree will be used.
 
 # Args
 
@@ -174,8 +175,13 @@ harmonics will be `n_max`.
 
 # Returns
 
-A vector with the gravity acceleration represented in ITRF (Earth Centered,
-Earth fixed frame).
+A vector with the gravitational acceleration represented in ITRF (Earth
+Centered, Earth fixed frame).
+
+# Remarks
+
+Notice that this function computes the **gravitational acceleration**. Hence,
+the acceleration due to Earth rotation rate **is not** included.
 
 """
 function compute_g(gm_coefs::GravityModel_Coefs{T},
