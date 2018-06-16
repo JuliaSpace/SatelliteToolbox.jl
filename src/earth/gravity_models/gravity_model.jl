@@ -263,6 +263,15 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     ϕ_gc     = atan2(r[3], ρ_gc)
     λ_gc     = atan2(r[2], r[1])
 
+    # Sine and cosine of the geocentric longitude.
+    #
+    # This values were be used in the algorithm to decrease the computational
+    # burden.
+    sin_λ   = sin(1λ_gc)
+    cos_λ   = cos(1λ_gc)
+    sin_2λ  = sin(2λ_gc)
+    cos_2λ  = cos(2λ_gc)
+
     # Consider the zero degree term.
     U = T(1)
 
@@ -272,14 +281,32 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
     P = legendre(Val{legendre_norm}, ϕ_gc-pi/2, n_max, false)
 
-    for n = 2:n_max
+    @inbounds for n = 2:n_max
         aux_U = T(0)
 
-        for m = 0:n
-            sin_mλ = sin(m*λ_gc)
-            cos_mλ = cos(m*λ_gc)
+        # Sine and cosine with m = 0.
+        #
+        # This values will be used to update recursively `sin(m*λ_gc)` and
+        # `cos(m*λ_gc`), reducing the computational burden.
+        sin_mλ   = T(0)      # sin( 0*λ_gc)
+        sin_m_1λ = -sin_λ    # sin(-1*λ_gc)
+        sin_m_2λ = -sin_2λ   # sin(-2*λ_gc)
+        cos_mλ   = T(1)      # cos( 0*λ_gc)
+        cos_m_1λ = cos_λ     # cos(-1*λ_gc)
+        cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
+
+        @inbounds for m = 0:n
+            # Compute recursively `sin(m*λ_gc)` and `cos(m*λ_gc)`.
+            sin_mλ = 2*cos_λ*sin_m_1λ-sin_m_2λ
+            cos_mλ = 2*cos_λ*cos_m_1λ-cos_m_2λ
 
             aux_U += P[n+1,m+1]*(C[n+1,m+1]*cos_mλ + S[n+1,m+1]*sin_mλ)
+
+            # Update the values for the next step.
+            sin_m_2λ = sin_m_1λ
+            sin_m_1λ = sin_mλ
+            cos_m_2λ = cos_m_1λ
+            cos_m_1λ = cos_mλ
         end
 
         U += (R0/r_gc)^n*aux_U
