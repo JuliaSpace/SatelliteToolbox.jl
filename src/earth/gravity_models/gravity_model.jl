@@ -191,7 +191,6 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     ρ_gc     = sqrt(r[1]^2 + r[2]^2)
     ϕ_gc     = atan2(r[3], ρ_gc)
     λ_gc     = atan2(r[2], r[1])
-    cos_ϕ_gc = r[3]/r_gc
 
     # Compute the acceleration represented in the ITRF.
     # =================================================
@@ -207,7 +206,7 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     # the 2nd component will be 0.
 
     a_l = [∂Ur;
-           ∂Uλ/(r_gc*cos_ϕ_gc);
+           ∂Uλ/(r_gc*cos(ϕ_gc));
            ∂Uϕ/r_gc]
 
     # The vector `a_l` is represented in the local UEN (Up-Earth-North)
