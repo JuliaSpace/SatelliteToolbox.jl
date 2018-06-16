@@ -131,20 +131,23 @@ presently separable with the drag data used to define this model component.
 end
 
 ################################################################################
-#                             Earth Gravity Model
+#                                Gravity Model
 ################################################################################
 
-export EGM_Coefs
+export GravityModel_Coefs
 
 """
-Structure to store the EGM coefficients.
+Structure to store the information about a gravity model.
 
 """
-struct EGM_Coefs{T1,T2,T3}
-    C::Matrix{T1}
-    S::Matrix{T1}
-    μ::T2
-    R0::T3
+@with_kw struct GravityModel_Coefs{T}
+    name::String
+    μ::T
+    R0::T
+    legendre_norm::Symbol
+    n_max::Int
+    C::Matrix{T}
+    S::Matrix{T}
 end
 
 ################################################################################

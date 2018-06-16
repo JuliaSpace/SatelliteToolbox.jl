@@ -83,30 +83,45 @@ julia> igrf12(2017.12313, 640, 50*pi/180, 25*pi/180, Val{:geodetic})
 
 ### Earth Gravity Models
 
-#### Earth Gravitational Model (EGM)
+There is a native Julia implementation of gravity models. In theory, all static
+models available in [ICGEM](http://icgem.gfz-potsdam.de/home) can be used by
+reading the `gfc` files with the coefficients (see function `parse_gfc`).
 
-There is a native julia implementation of the Earth Gravitational Model (EGM)
-[96](http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/egm96.html) and
-[2008](http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/egm96.html).
+To simplify the operations, the coefficients related to the EGM96, JGM2, and
+JGM3 were embedded into the toolbox.
 
 For more information, see the files inside `./src/earth/gravity_models`.
 
 ##### Example
 
 ```julia
-julia> egm96 = read_egm_coefs(:EGM96)
-julia> compute_g(egm96, GeodetictoECEF(-45*pi/180, -22*pi/180, 0), 360)
-3-element Array{Float64,1}:
- -6.45141
+julia> egm96 = load_gravity_model(EGM96());
+
+julia> compute_g(egm96, GeodetictoECEF(-45*pi/180, -22*pi/180, 0))
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+ -6.45155
   2.60639
   6.93419
 
-julia> egm2008 = read_egm_coefs(:EGM2008)
-julia> compute_g(egm2008, GeodetictoECEF(-45*pi/180, -22*pi/180, 0), 360)
-3-element Array{Float64,1}:
- -6.45142
-  2.6064
+julia> compute_g(egm96, GeodetictoECEF(-45*pi/180, -22*pi/180, 0), 10)
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+ -6.45155
+  2.60639
   6.93419
+
+julia> jgm3 = load_gravity_model(JGM3());
+
+julia> compute_g(jgm3, GeodetictoECEF(-45*pi/180, -22*pi/180, 0))
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+ -6.45155
+  2.60641
+  6.93412
+
+julia> compute_g(jgm3, GeodetictoECEF(-45*pi/180, -22*pi/180, 0), 10)
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+ -6.45155
+  2.60641
+  6.93412
 ```
 
 ### Orbit Analysis
