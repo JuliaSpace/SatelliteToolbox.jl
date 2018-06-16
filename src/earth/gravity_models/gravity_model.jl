@@ -110,7 +110,7 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
     dP = dlegendre(Val{legendre_norm}, ϕ_gc-pi/2, P    , false)
 
     # Compute the derivatives.
-    for n = 2:n_max
+    @inbounds for n = 2:n_max
         rn = (R0/r_gc)^n
 
         aux_∂Ur = T(0)
@@ -128,7 +128,7 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
         cos_m_1λ = cos_λ     # cos(-1*λ_gc)
         cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
 
-        for m = 0:n
+        @inbounds for m = 0:n
             # Compute recursively `sin(m*λ_gc)` and `cos(m*λ_gc)`.
             sin_mλ = 2*cos_λ*sin_m_1λ-sin_m_2λ
             cos_mλ = 2*cos_λ*cos_m_1λ-cos_m_2λ
