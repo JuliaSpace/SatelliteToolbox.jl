@@ -30,6 +30,13 @@ println("")
 end
 println("")
 
+@testset "Gravity Field Models" begin
+    cd("./earth/gravity_models/")
+    include("./earth/gravity_models/gravity_models.jl")
+    cd("../../")
+end
+println("")
+
 @testset "General orbit functions" begin
     include("./orbit/general.jl")
 end
