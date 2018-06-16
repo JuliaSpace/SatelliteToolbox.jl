@@ -229,18 +229,15 @@ end
 """
     function compute_U(gm_coefs::GravityModel_Coefs{T}, ϕ_gc::Number, λ_gc::Number, r_gc::Number [, n_max::Number]) where T<:Number
 
-Compute the gravity potential using the coefficients `gm_coefs` at the
-geocentric latitude `ϕ_gc`, geocentric longitude `λ_gc`, and geocentric radius
-`r_gc`. The maximum degree that will be used while computing the spherical
+Compute the gravitational potential at `r` (ITRF) using the coefficients
+`gm_coefs`. The maximum degree that will be used while computing the spherical
 harmonics will be `n_max`. If `n_max` is less or equal 0, then the maximum
 available degree will be used.
 
 # Args
 
 * `gm_coefs`: Gravity model coefficients (see `GravityModel_Coefs`).
-* `ϕ_gc`: Geocentric latitude [rad].
-* `λ_gc`: Geocentric longitude [rad].
-* `r_gc`: Geocentric radius [m].
+* `r`: Position in ITRF in which the gravitational field will be computed [m].
 * `n_max`: (OPTIONAL) Maximum degree when computing the spherical harmonics
            (**Default**: 0, which uses the maximum degree).
 
@@ -250,9 +247,7 @@ The gravitational potential at specified location [J/kg].
 
 """
 function compute_U(gm_coefs::GravityModel_Coefs{T},
-                   ϕ_gc::Number,
-                   λ_gc::Number,
-                   r_gc::Number,
+                   r::AbstractVector,
                    n_max::Number = 0) where T<:Number
     # Unpack gravity model coefficients.
     @unpack_GravityModel_Coefs gm_coefs
@@ -261,6 +256,12 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     if (n_max <= 0) || (size(C,1)-1 < n_max)
         n_max = size(C,1)-1
     end
+
+    # Auxiliary variables.
+    r_gc     = norm(r)
+    ρ_gc     = sqrt(r[1]^2 + r[2]^2)
+    ϕ_gc     = atan2(r[3], ρ_gc)
+    λ_gc     = atan2(r[2], r[1])
 
     # Consider the zero degree term.
     U = T(1)
