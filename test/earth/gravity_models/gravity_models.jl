@@ -83,3 +83,57 @@
         end
     end
 end
+
+# Function compute_U
+# ------------------
+
+################################################################################
+#                                 TEST RESULTS
+################################################################################
+#
+# For each embedded model, the gravitational potential obtained from `compute_U`
+# is compared to the online computation available in [1]. The inputs for the
+# online computation were:
+#
+#   * Functional selection: `potential_ell`.
+#   * Reference system: `WGS84`.
+#   * Height over Ellipsoid: 0 m.
+#   * Grid step: 10 deg.
+#   * Tide System: Use unmodified model.
+#
+################################################################################
+
+@testset "Function compute_U" begin
+    # Read the inputs.
+    tests_out = (readdlm("./test_results/potential/EGM96_08b822daf0755f2f048a0af2d1afa5dedc5afa5738e991071e7b0d12cf3337ae.gdf";
+                         skipstart = 35),
+                 readdlm("./test_results/potential/JGM2_7801c122125724d1f5022463d2f87728edca77158ec4af1643168e31ee3ea384.gdf";
+                         skipstart = 35),
+                 readdlm("./test_results/potential/JGM3_719cfffa3f04b93dce106013c2b745451b656bdd0550afa7f7d4700e03901f88.gdf";
+                         skipstart = 35))
+
+    coefs = (load_gravity_model(EGM96()),
+             load_gravity_model(JGM2()),
+             load_gravity_model(JGM3()))
+
+    # Compare the results.
+    for m = 1:length(coefs)
+        coef = coefs[m]
+        test_out = tests_out[m]
+
+        for k = 1:size(test_out,1)
+            # Get latitude and longitude.
+            lat = test_out[k,2]*pi/180
+            lon = test_out[k,1]*pi/180
+
+            # Get the expected result in m²/s².
+            U_online = test_out[k,3]
+
+            # Use the model to compute the gravity using all the coefficients.
+            U = compute_U(coef, GeodetictoECEF(lat, lon, 0))
+
+            # Compare the results.
+            @test U_online ≈ U atol=1e-6 rtol=0
+        end
+    end
+end
