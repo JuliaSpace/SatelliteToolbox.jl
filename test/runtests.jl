@@ -24,8 +24,8 @@ end
 println("")
 
 @testset "Geomagnetic Field Models" begin
-    cd("./earth/geomagnetic_field_model/")
-    include("./earth/geomagnetic_field_model/igrf.jl")
+    cd("./earth/geomagnetic_field_models/")
+    include("./earth/geomagnetic_field_models/igrf.jl")
     cd("../../")
 end
 println("")
