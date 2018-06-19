@@ -1,26 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Auxiliary functions related to coordinate transformations.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-05-25: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add support for TEME.
-#
-# 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

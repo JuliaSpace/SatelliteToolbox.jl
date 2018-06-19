@@ -1,23 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Function related to TLE (Two line elements).
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-03-28: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

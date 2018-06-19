@@ -1,23 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Many functions to perform a preliminary analysis of an optical payload.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2015-07-15: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

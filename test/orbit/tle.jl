@@ -1,23 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Tests related to TLE parser.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-06-15: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

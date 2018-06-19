@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Functions to compute the nutation according to IAU-76/FK5.
@@ -21,13 +13,6 @@
 #
 #   [2] Vallado, D. A (06-Feb-2018). Consolidated Errata of Fundamentals of
 #       Astrodynamics and Applications 4th Ed.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-04-09: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Functions related Data and Time conversion.
@@ -51,13 +43,6 @@
 # with their first year of the cycle: The 19-year Metonic Cycle, the 15-year
 # Indiction Cycle (a Roman Taxation Cycle) and the 28-year Solar Cycle (the
 # length of time for the old Julian Calendar to repeat exactly).
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-04-09: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

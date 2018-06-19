@@ -1,12 +1,4 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
 #
@@ -21,17 +13,7 @@
 #       Spacecraft Umbra and Penumbra Shadow Terminator Points. NASA Technical
 #       Paper 3547.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2015-07-17:  Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Add option to plot the eclipse time relative to the nodal period.
-#
-# 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export satellite_eclipse_time
 

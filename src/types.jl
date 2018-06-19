@@ -1,29 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Types and structures of SatelliteToolbox.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-06-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add structures related with the NRLMSISE-00 model.
-#
-# 2018-06-01: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add structure related with the deep space algorithms in SGP4.
-#
-# 2018-05-14: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

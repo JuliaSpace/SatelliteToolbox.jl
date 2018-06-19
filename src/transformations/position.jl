@@ -1,43 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Compute the satellite position.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   The functions related to Geodetic coordinates and ECEF frames were removed
-#   because they must be updated to use the correct reference frames. This will
-#   be done in the future.
-#
-# 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   All DEPRECATED functions were removed.
-#
-# 2016-07-21: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   WARNING: satellite_position_latlon was renamed to satellite_position_LLA.
-#   The old function is still present, but it is marked as DEPRECATED and must
-#   not be used for new projects.
-#
-# 2015-11-05: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Remove the deprecated structure OrbitalParameters.
-#
-# 2014-08-12: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Add support to the structure OrbitalParameters.
-#   WARNING: the order of parameters in function satellite_position_i changed.
-#
-# 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

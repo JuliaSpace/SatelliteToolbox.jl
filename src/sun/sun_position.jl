@@ -1,13 +1,5 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Compute the sun position.
@@ -24,39 +16,6 @@
 #       Microcosm Press, Hawthorne, CA.
 #
 #   [4] The Astronomical Almanac for the year 2006.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2017-08-04: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   All DEPRECATED functions were removed.
-#
-# 2017-08-03: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Update the function `sun_position_i` to use the algorithm in [3], which was
-#   obtained from [4]. This is more accurate than the previous version.
-#   However, it was noted that the output is represented in the Mean Equinox of
-#   Date (MOD). Then it must be converted to the inertial system that will be
-#   used (J2000, True of Data, etc.).
-#
-# 2016-01-26: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   The function sun_position_i was changed to receive the Julian Day. The old
-#   function is now marked DEPRECATED.
-#
-# 2014-07-28: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   The sun vector is returned in meters.
-#
-#   The Celestial Coordinate Frame is now called Inertial coordinate frame (i).
-#
-# 2014-07-25: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Change the algorithm to the one presented in [2].
-#
-#   The function sun_position_i now returns the vector from the origin of the
-#   Celestial Coordinate Frame to the center of the Sun represented in the
-#   Celestial Coordinate Frame.
-#
-# 2014-07-16: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

@@ -1,30 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #    SatelliteToolbox orbit propagator API for SGP4 algorithm.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-06-01: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add support for deep space. The SGP4 (sometimes called SGDP4) automatically
-#   selects what algorithm it should use (with deep space perturbations or not).
-#
-# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Restrict types in the structures, which led to a huge performance gain.
-#
-# 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#    Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

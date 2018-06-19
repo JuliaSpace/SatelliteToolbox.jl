@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #    Coordinate transformations related with the geodetic and geocentric
@@ -26,26 +18,6 @@
 #       Note.
 #
 #   [4] ISO TC 20/SC 14 N (2011). Geomagnetic Reference Models.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-05-13: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   The `LLA` in function names was changed to `Geodetic`.
-#
-# 2018-05-07: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add function to convert from geodetic to geocentric latitude.
-#
-# 2018-03-27: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   The functions related to the GMST were moved to another file to improve code
-#   organization.
-#
-# 2016-03-10: Ronan Arraes Jardim Chagsa <ronan.arraes@inpe.br>
-#   Add code to convert from Geodetic (WGS-84) to ECEF reference frame.
-#
-# 2015-11-23: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

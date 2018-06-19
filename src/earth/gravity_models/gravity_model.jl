@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   General functions to compute the gravity field potential and gravity
@@ -22,13 +14,6 @@
 #   [2] http://icgem.gfz-potsdam.de/home
 #   [3] Delgado, M. R (2008). Aspherical Gravitational Field I: Modeling the
 #       Space Environment. Universidad Poletécnica de Madrid, Madrid, Spain.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-06-15: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version. Adapted from the old `egm.jl` file.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

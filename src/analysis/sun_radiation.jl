@@ -1,32 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Compute the sun radiation received in a satellite surface.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2015-07-16: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   The function to compute the sun radiation can propagate the orbit using the
-#   orbit latitude or the mean anomaly. Notice that if the latter is used, then
-#   the average value of the output will be the average sun radiation that the
-#   surface will receive, because the angular steps have the same time
-#   interval.
-#
-#   Add functions to compute the sun radiation average per day.
-#
-# 2015-05-20: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version, based on satellite_sun_angle.jl.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

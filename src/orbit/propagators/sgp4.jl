@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   SGP4 orbit propagator model.
@@ -32,20 +24,6 @@
 #   [3] SGP4 Source code of STRF: https://github.com/cbassa/strf
 #       The SGP4 C code available on STRF was converted by Paul. S. Crawford and
 #       Andrew R. Brooks.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-06-01: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Add support for deep space. The SGP4 (sometimes called SGDP4) automatically
-#   selects what algorithm it should use (with deep space perturbations or not).
-#
-# 2018-04-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Restrict types in the structures, which led to a huge performance gain.
-#
-# 2017-08-08: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

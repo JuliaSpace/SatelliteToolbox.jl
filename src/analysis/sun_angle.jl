@@ -1,40 +1,8 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Compute the sun angle on a satellite surface.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2016-09-11: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-#   Change the code based on `./satellite_sun_radiation.jl`, which is more
-#   reliable.
-#
-# 2015-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#
-#   Add function to compute the sun angle depending on a user-provided function
-#   that describe the surface normal according to the solar vector represented
-#   in the body coordinate frame. Thus, if the solar panel rotates about the
-#   body Y axis to maximize the sun angle, then the function must be:
-#
-#       function fN_k(s_b)
-#           theta_p = atan2(-s_b[3], s_b[1])
-#           [cos(theta_p); 0.0; -sin(theta_p)]
-#       end
-#
-# 2015-03-05: Ronan Arraes Jardim Chagas <ronan.chagas@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 

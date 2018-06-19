@@ -1,13 +1,5 @@
 #== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# INPE - Instituto Nacional de Pesquisas Espaciais
-# ETE  - Engenharia e Tecnologia Espacial
-# DSE  - Divisão de Sistemas Espaciais
-#
-# Author: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
 # Description
 #
 #   Functions related to the associated Legendre functions.
@@ -31,24 +23,6 @@
 #   [4] Winch, D. E., Ivers, D. J., Turner, J. P. R., Stening R. J (2005).
 #       Geomagnetism and Schmidt quasi-normalization. Geophysical Journal
 #       International, 160(2), pp. 487-504.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Changelog
-#
-# 2018-05-06: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   - Add the functions to compute the conventional Schmidt associated Legendre
-#     functions.
-#
-# 2018-04-30: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   - Improve the structure of the source code.
-#   - Add function to compute the Schmidt quasi-normalized associated Legendre
-#     functions.
-#   - **BREAKING**: The functions now compute the associated Legendre function
-#     `P_n,m[cos(ϕ)]` instead of `P_n,m[sin(ϕ)]`.
-#
-# 2018-04-06: Ronan Arraes Jardim Chagas <ronan.arraes@inpe.br>
-#   Initial version.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
