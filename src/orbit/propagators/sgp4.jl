@@ -996,7 +996,7 @@ function dsinit(epoch::T,
 	# Set up for original mode (LS terms at epoch non-zero).
 	pgh0 = ph0 = pe0 = pinc0 = pl0 = 0.0
 
-    @pack_SGP4_DeepSpace sgp4_ds
+    @pack!_SGP4_DeepSpace sgp4_ds
 
     return sgp4_ds
 end
