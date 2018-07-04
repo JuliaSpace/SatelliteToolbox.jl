@@ -321,7 +321,5 @@ This package will be continuously be enhanced. It is part of an official project
 of the Brazilian National Institute for Space Research (INPE). In the short
 term, the following is expected:
 
-* Add support for TEME (True Equator Mean Equinox) reference frame.
 * Add IAU-2000A model for coordinate transformations.
-* Add SDP4 bits to the orbit propagator.
 * Add a numerical propagator using EGM.
