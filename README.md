@@ -20,7 +20,7 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 ## Documentation
 
 A complete documentation of this package is not available yet. However, the
-functions are extensively documented using the julia documentation system, which
+functions are extensively documented using the Julia documentation system, which
 can be accessed by typing `?` followed by the function name in REPL.
 
 ## Status
@@ -136,11 +136,11 @@ SatelliteToolbox.NRLMSISE00_Output{Float64}
 
 #### IGRF v12
 
-There is a native julia implementation of the [International Geomagnetic
+There is a native Julia implementation of the [International Geomagnetic
 Reference Field (IGRF) v12](https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html). This
 can be accessed by two functions:
 
-* `igrf12syn`: This is the native julia implementation of the original FORTRAN
+* `igrf12syn`: This is the native Julia implementation of the original FORTRAN
   source-code with **the same** input parameters.
 * `igrf12`: An independent (more readable) implementation of the IGRF model.
   However, it is not as fast as `igrf12syn` yet.
@@ -237,7 +237,7 @@ julia> list_ss_orbits_by_rep_period(3,4,-1,-1,0.001)
 ### Orbit Propagators
 
 Currently, there are three orbit propagators available: **Two Body**, **J2**,
-and **SGP4**. All coded in julia (no external libraries required).
+and **SGP4**. All coded in Julia (no external libraries required).
 
 For more information, see the files inside `./src/orbit/propagators`.
 
