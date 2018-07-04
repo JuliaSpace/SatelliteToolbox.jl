@@ -52,6 +52,86 @@ julia> satellite_beta_angle(JD, 7130982.0, 0.001111, 98.405*pi/180, compute_RAAN
  4.0  16.7806
 ```
 
+### Earth Atmospheric Models
+
+#### NRLMSISE-00
+
+There is a native Julia implementation of the
+[NRLMSISE-00](https://ccmc.gsfc.nasa.gov/modelweb/models/nrlmsise00.php)
+atmosphere model. The model can be accessed by two methods:
+
+* Using the function `nrlmsise00`, which simplifies the usage but it is not as
+  configurable as the original model;
+* Using the low level function `gtd7` and `gtd7d`, which requires as input an
+  instance of the structure `NRLMSISE00_Structure` that contains the
+  configuration parameters.
+
+Both methods return an instance of the structure `NRLMSISE00_Output` that
+contains the following values:
+
+* Nitrogen number density;
+* N<sub>2</sub> number density;
+* Oxygen number density;
+* Anomalous oxygen number density;
+* O<sub>2</sub> number density;
+* Hydrogen number density;
+* Helium number density;
+* Argon number density;
+* Total mass density;
+* Exospheric temperature;
+* Temperature at the selected altitude;
+* Flags used to compute the NRLMSISE-00 model.
+
+For mode information, see the files inside
+`./src/earth/atmospheric_models/nrlmsise00`.
+
+##### Example
+
+```julia
+julia> nrlmsise00(DatetoJD(1986, 6, 19, 21, 35, 0), # Julian Day
+                  +100e3,                           # Altitude [m]
+                  -15.779444*pi/180,                # Latitude [rad]
+                  -47.929444*pi/180,                # Longitude [rad]
+                  91.0,                             # 81 day average F10.7
+                  107.0,                            # Daily F10.7
+                  12)                               # Magnetic index (daily)
+SatelliteToolbox.NRLMSISE00_Output{Float64}
+  den_N: Float64 3.51053422831127e11
+  den_N2: Float64 9.272926252367151e18
+  den_O: Float64 4.1194861170248454e17
+  den_aO: Float64 4.849094744214564e-37
+  den_O2: Float64 2.1517629595010985e18
+  den_H: Float64 2.1129784854913793e13
+  den_He: Float64 1.0505700390044144e14
+  den_Ar: Float64 9.605966121639621e16
+  den_Total: Float64 5.626277180627406e-7
+  T_exo: Float64 1027.3184649
+  T_alt: Float64 169.96892906010802
+  flags: Dict{Symbol,Bool}
+
+julia> nrlmsise00(DatetoJD(1986, 6, 19, 21, 35, 0), # Julian Day
+                  +100e3,                           # Altitude [m]
+                  -15.779444*pi/180,                # Latitude [rad]
+                  -47.929444*pi/180,                # Longitude [rad]
+                  91.0,                             # 81 day average F10.7
+                  107.0,                            # Daily F10.7
+                  12;                               # Magnetic index (daily)
+                  output_si = false)                # Output in g, 1/cm^3, g/cm^3
+SatelliteToolbox.NRLMSISE00_Output{Float64}
+  den_N: Float64 351053.422831127
+  den_N2: Float64 9.27292625236715e12
+  den_O: Float64 4.1194861170248456e11
+  den_aO: Float64 4.8490947442145636e-43
+  den_O2: Float64 2.1517629595010984e12
+  den_H: Float64 2.1129784854913794e7
+  den_He: Float64 1.0505700390044144e8
+  den_Ar: Float64 9.605966121639621e10
+  den_Total: Float64 5.626277180627406e-10
+  T_exo: Float64 1027.3184649
+  T_alt: Float64 169.96892906010802
+  flags: Dict{Symbol,Bool}
+```
+
 ### Earth Geomagnetic Field
 
 #### IGRF v12
