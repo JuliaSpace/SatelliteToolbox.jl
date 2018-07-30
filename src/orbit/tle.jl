@@ -519,5 +519,5 @@ end
 
 # Overload display function for TLE.
 function Base.display(tle::TLE)
-    print_tle(STDOUT,tle)
+    print_tle(stdout,tle)
 end
