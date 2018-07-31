@@ -5,15 +5,17 @@ module SatelliteToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan2, copy, cos, deepcopy, display, getindex, mod, sin, show
+import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, sin, show
 
-VERSION >= v"0.7.0-DEV" && using Dates
-VERSION >= v"0.7.0-DEV" && using LinearAlgebra
-VERSION >= v"0.7.0-DEV" && using Printf
-
+using Dates
+using DelimitedFiles
+using LinearAlgebra
 using Parameters
+using Printf
 using ReferenceFrameRotations
 using StaticArrays
+using SparseArrays
+using Statistics
 
 # Re-exporting symbols from ReferenceFrameRotations.jl.
 export DCM

@@ -59,12 +59,12 @@ eop = read_iers_eop("./eop_IAU1980_2.txt", :IAU1980)
     oe_J2000 = change_oe_frame(oe_TEME, TEME(), J2000(), epoch, eop)
     m = f_to_M(oe_J2000)
 
-    @test oe_J2000.a/1000   ≈ 7130.982 atol=1e-12
-    @test oe_J2000.e        ≈ e        atol=1e-12
+    @test oe_J2000.a/1000   ≈ 7130.982 atol=1e-8
+    @test oe_J2000.e        ≈ e        atol=1e-8
     @test oe_J2000.i*180/pi ≈ 98.3365  atol=1e-4
     @test oe_J2000.Ω*180/pi ≈ 227.134  atol=1e-3
     @test oe_J2000.ω*180/pi ≈ 90.0604  atol=1e-4
-    @test m*180/pi          ≈ 320      atol=1e-12
+    @test m*180/pi          ≈ 320      atol=1e-8
 end
 
 # Functions: kepler_to_rv and rv_to_kepler

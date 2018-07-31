@@ -178,7 +178,7 @@ function parse_iers_eop_iau_1980(eop::Matrix)
     #
     # The interpolation will be linear between two points in the grid. The
     # extrapolation will be flat, considering the nearest point.
-	knots = (eop[:,4]+2400000.5,)
+	knots = (eop[:,4] .+ 2400000.5,)
 
     EOPData_IAU1980(
         extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),

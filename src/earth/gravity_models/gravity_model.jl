@@ -66,8 +66,8 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
     # ==========================================
     r_gc = norm(r)
     ρ_gc = sqrt(r[1]^2 + r[2]^2)
-    ϕ_gc = atan2(r[3], ρ_gc)
-    λ_gc = atan2(r[2], r[1])
+    ϕ_gc = atan(r[3], ρ_gc)
+    λ_gc = atan(r[2], r[1])
 
     # Auxiliary variables
     # ===================
@@ -180,8 +180,8 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     # Auxiliary variables.
     r_gc     = norm(r)
     ρ_gc     = sqrt(r[1]^2 + r[2]^2)
-    ϕ_gc     = atan2(r[3], ρ_gc)
-    λ_gc     = atan2(r[2], r[1])
+    ϕ_gc     = atan(r[3], ρ_gc)
+    λ_gc     = atan(r[2], r[1])
 
     # Compute the acceleration represented in the ITRF.
     # =================================================
@@ -245,8 +245,8 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     # Auxiliary variables.
     r_gc     = norm(r)
     ρ_gc     = sqrt(r[1]^2 + r[2]^2)
-    ϕ_gc     = atan2(r[3], ρ_gc)
-    λ_gc     = atan2(r[2], r[1])
+    ϕ_gc     = atan(r[3], ρ_gc)
+    λ_gc     = atan(r[2], r[1])
 
     # Sine and cosine of the geocentric longitude.
     #
@@ -332,27 +332,27 @@ function parse_gfc(filename::String)
         header_lines += 1
 
         # Check if we are at the end of the header.
-        contains(str, "end_of_head") && break
+        occursin("end_of_head", str) && break
 
         # Check if the line contains the required information.
-        if contains(str, "product_type")
+        if occursin("product_type", str)
             aux = split(str)
 
             (aux[2] != "gravity_field") && error("The gfc file $filename has a wrong format.")
 
-        elseif contains(str, "modelname")
+        elseif occursin("modelname", str)
             aux  = split(str)
             name = aux[2]
 
-        elseif contains(str, "earth_gravity_constant")
+        elseif occursin("earth_gravity_constant", str)
             aux = split(str)
             μ   = parse(Float64, aux[2])
 
-        elseif contains(str, "radius")
+        elseif occursin("radius", str)
             aux = split(str)
             R₀  = parse(Float64, aux[2])
 
-        elseif contains(str, "max_degree")
+        elseif occursin("max_degree", str)
             aux   = split(str)
             n_max = parse(Int64, aux[2])
         end
@@ -384,8 +384,8 @@ function parse_gfc(filename::String)
                            μ             = μ,
                            R0            = R₀,
                            n_max         = n_max,
-                           C             = full(C),
-                           S             = full(S),
+                           C             = Matrix(C),
+                           S             = Matrix(S),
                            legendre_norm = :full)
 
     gm_coefs

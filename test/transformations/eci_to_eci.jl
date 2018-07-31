@@ -70,13 +70,13 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     r_j2000 = D_J2000_GCRF*r_gcrf
     v_j2000 = D_J2000_GCRF*v_gcrf
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -86,13 +86,13 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     r_j2000 = vect(conj(q_J2000_GCRF)*r_gcrf*q_J2000_GCRF)
     v_j2000 = vect(conj(q_J2000_GCRF)*v_gcrf*q_J2000_GCRF)
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 
     ## J2000 => GCRF
     ## =============
@@ -108,13 +108,13 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     r_gcrf = D_GCRF_J2000*r_j2000
     v_gcrf = D_GCRF_J2000*v_j2000
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -124,13 +124,13 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     r_gcrf = vect(conj(q_GCRF_J2000)*r_j2000*q_GCRF_J2000)
     v_gcrf = vect(conj(q_GCRF_J2000)*v_j2000*q_GCRF_J2000)
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 end
 
 # GCRF <=> MOD
@@ -175,13 +175,13 @@ end
     r_mod = D_MOD_GCRF*r_gcrf
     v_mod = D_MOD_GCRF*v_gcrf
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -191,13 +191,13 @@ end
     r_mod = vect(conj(q_MOD_GCRF)*r_gcrf*q_MOD_GCRF)
     v_mod = vect(conj(q_MOD_GCRF)*v_gcrf*q_MOD_GCRF)
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## MOD => GCRF
     ## ===========
@@ -213,13 +213,13 @@ end
     r_gcrf = D_GCRF_MOD*r_mod
     v_gcrf = D_GCRF_MOD*v_mod
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -229,13 +229,13 @@ end
     r_gcrf = vect(conj(q_GCRF_MOD)*r_mod*q_GCRF_MOD)
     v_gcrf = vect(conj(q_GCRF_MOD)*v_mod*q_GCRF_MOD)
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 end
 
 # GCRF <=> TOD
@@ -280,13 +280,13 @@ end
     r_tod = D_TOD_GCRF*r_gcrf
     v_tod = D_TOD_GCRF*v_gcrf
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -296,13 +296,13 @@ end
     r_tod = vect(conj(q_TOD_GCRF)*r_gcrf*q_TOD_GCRF)
     v_tod = vect(conj(q_TOD_GCRF)*v_gcrf*q_TOD_GCRF)
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## TOD => GCRF
     ## ===========
@@ -318,13 +318,13 @@ end
     r_gcrf = D_GCRF_TOD*r_tod
     v_gcrf = D_GCRF_TOD*v_tod
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -334,13 +334,13 @@ end
     r_gcrf = vect(conj(q_GCRF_TOD)*r_tod*q_GCRF_TOD)
     v_gcrf = vect(conj(q_GCRF_TOD)*v_tod*q_GCRF_TOD)
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 end
 
 # GCRF <=> TEME
@@ -385,13 +385,13 @@ end
     r_teme = D_TEME_GCRF*r_gcrf
     v_teme = D_TEME_GCRF*v_gcrf
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -401,13 +401,13 @@ end
     r_teme = vect(conj(q_TEME_GCRF)*r_gcrf*q_TEME_GCRF)
     v_teme = vect(conj(q_TEME_GCRF)*v_gcrf*q_TEME_GCRF)
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## TEME => GCRF
     ## ===========
@@ -423,13 +423,13 @@ end
     r_gcrf = D_GCRF_TEME*r_teme
     v_gcrf = D_GCRF_TEME*v_teme
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -439,13 +439,13 @@ end
     r_gcrf = vect(conj(q_GCRF_TEME)*r_teme*q_GCRF_TEME)
     v_gcrf = vect(conj(q_GCRF_TEME)*v_teme*q_GCRF_TEME)
 
-    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
-    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
-    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-7
+    @test r_gcrf[1] ≈ +5102.50895790 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01140070 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13692820 atol=1e-4
 
-    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-9
-    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
-    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-9
+    @test v_gcrf[1] ≈ -4.7432201570  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557270  atol=1e-7
 end
 
 # J2000 <=> MOD
@@ -490,13 +490,13 @@ end
     r_mod = D_MOD_J2000*r_j2000
     v_mod = D_MOD_J2000*v_j2000
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -506,13 +506,13 @@ end
     r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
     v_mod = vect(conj(q_MOD_J2000)*v_j2000*q_MOD_J2000)
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## MOD => J2000
     ## ===========
@@ -528,13 +528,13 @@ end
     r_j2000 = D_J2000_MOD*r_mod
     v_j2000 = D_J2000_MOD*v_mod
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -544,13 +544,13 @@ end
     r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
     v_j2000 = vect(conj(q_J2000_MOD)*v_mod*q_J2000_MOD)
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 end
 
 # J2000 <=> TOD
@@ -595,13 +595,13 @@ end
     r_tod = D_TOD_J2000*r_j2000
     v_tod = D_TOD_J2000*v_j2000
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -611,13 +611,13 @@ end
     r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
     v_tod = vect(conj(q_TOD_J2000)*v_j2000*q_TOD_J2000)
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## TOD => J2000
     ## ===========
@@ -633,13 +633,13 @@ end
     r_j2000 = D_J2000_TOD*r_tod
     v_j2000 = D_J2000_TOD*v_tod
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -649,13 +649,13 @@ end
     r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
     v_j2000 = vect(conj(q_J2000_TOD)*v_tod*q_J2000_TOD)
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 end
 
 # J2000 <=> TEME
@@ -700,13 +700,13 @@ end
     r_teme = D_TEME_J2000*r_j2000
     v_teme = D_TEME_J2000*v_j2000
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -716,13 +716,13 @@ end
     r_teme = vect(conj(q_TEME_J2000)*r_j2000*q_TEME_J2000)
     v_teme = vect(conj(q_TEME_J2000)*v_j2000*q_TEME_J2000)
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## TEME => J2000
     ## ===========
@@ -738,13 +738,13 @@ end
     r_j2000 = D_J2000_TEME*r_teme
     v_j2000 = D_J2000_TEME*v_teme
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -754,13 +754,13 @@ end
     r_j2000 = vect(conj(q_J2000_TEME)*r_teme*q_J2000_TEME)
     v_j2000 = vect(conj(q_J2000_TEME)*v_teme*q_J2000_TEME)
 
-    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
-    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
-    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-4
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-4
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-4
 
-    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
-    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
-    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
 end
 
 # MOD <=> TOD
@@ -805,13 +805,13 @@ end
     r_tod = D_TOD_MOD*r_mod
     v_tod = D_TOD_MOD*v_mod
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -821,13 +821,13 @@ end
     r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
     v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## TOD => MOD
     ## ===========
@@ -843,13 +843,13 @@ end
     r_mod = D_MOD_TOD*r_tod
     v_mod = D_MOD_TOD*v_tod
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -859,13 +859,13 @@ end
     r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
     v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 end
 
 # MOD <=> TEME
@@ -910,13 +910,13 @@ end
     r_teme = D_TEME_MOD*r_mod
     v_teme = D_TEME_MOD*v_mod
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -926,13 +926,13 @@ end
     r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
     v_teme = vect(conj(q_TEME_MOD)*v_mod*q_TEME_MOD)
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## TEME => MOD
     ## ===========
@@ -948,13 +948,13 @@ end
     r_mod = D_MOD_TEME*r_teme
     v_mod = D_MOD_TEME*v_teme
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -964,13 +964,13 @@ end
     r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
     v_mod = vect(conj(q_MOD_TEME)*v_teme*q_MOD_TEME)
 
-    @test r_mod[1] ≈ +5094.02837450 atol=1e-7
-    @test r_mod[2] ≈ +6127.87081640 atol=1e-7
-    @test r_mod[3] ≈ +6380.24851640 atol=1e-7
+    @test r_mod[1] ≈ +5094.02837450 atol=1e-4
+    @test r_mod[2] ≈ +6127.87081640 atol=1e-4
+    @test r_mod[3] ≈ +6380.24851640 atol=1e-4
 
-    @test v_mod[1] ≈ -4.7462630520  atol=1e-9
-    @test v_mod[2] ≈ +0.7860140450  atol=1e-9
-    @test v_mod[3] ≈ +5.5317905620  atol=1e-9
+    @test v_mod[1] ≈ -4.7462630520  atol=1e-7
+    @test v_mod[2] ≈ +0.7860140450  atol=1e-7
+    @test v_mod[3] ≈ +5.5317905620  atol=1e-7
 end
 
 # TOD <=> TEME
@@ -1015,13 +1015,13 @@ end
     r_teme = D_TEME_TOD*r_tod
     v_teme = D_TEME_TOD*v_tod
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -1031,13 +1031,13 @@ end
     r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
     v_teme = vect(conj(q_TEME_TOD)*v_tod*q_TEME_TOD)
 
-    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
-    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
-    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
-    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
-    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
 
     ## TEME => TOD
     ## ===========
@@ -1053,13 +1053,13 @@ end
     r_tod = D_TOD_TEME*r_teme
     v_tod = D_TOD_TEME*v_teme
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 
     ## Quaternion
     ## ----------
@@ -1069,11 +1069,11 @@ end
     r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
     v_tod = vect(conj(q_TOD_TEME)*v_teme*q_TOD_TEME)
 
-    @test r_tod[1] ≈ +5094.51620300 atol=1e-7
-    @test r_tod[2] ≈ +6127.36527840 atol=1e-7
-    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+    @test r_tod[1] ≈ +5094.51620300 atol=1e-4
+    @test r_tod[2] ≈ +6127.36527840 atol=1e-4
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-4
 
-    @test v_tod[1] ≈ -4.7460883850  atol=1e-9
-    @test v_tod[2] ≈ +0.7860783240  atol=1e-9
-    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+    @test v_tod[1] ≈ -4.7460883850  atol=1e-7
+    @test v_tod[2] ≈ +0.7860783240  atol=1e-7
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-7
 end
