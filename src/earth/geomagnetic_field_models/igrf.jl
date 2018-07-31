@@ -78,7 +78,7 @@ function igrf12(date::Number,
     # Warn the user that for dates after the year 2020 the accuracy maybe
     # reduced.
     (date > 2020) &&
-    warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
+    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
 
     # Input variables conversion
     # ==========================
@@ -360,7 +360,7 @@ function igrf12syn(isv::Int,
 
     # Warn the user that for dates after the year 2020 the accuracy maybe reduced.
     (date > 2020) &&
-    warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
+    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
 
     # Declaration of variables
     gh          = gh_igrf12

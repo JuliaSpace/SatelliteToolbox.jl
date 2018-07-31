@@ -63,7 +63,7 @@ function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 
     # Get the right ascension of the Sun in the Inertial ref. frame. This is the
     # Sun apparent local time.
-    SALT = atan2(s_i[2],s_i[1])
+    SALT = atan(s_i[2],s_i[1])
 
     # Get the equation of time to compute the Sun mean local time [rad].
     eot = equation_of_time(JD)

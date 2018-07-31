@@ -539,7 +539,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     sin_u   = a_k/r*( sin_E_ω - a_yN - a_xN*aux )
     cos_2u  = 1 - 2*sin_u^2
     sin_2u  = 2cos_u*sin_u
-    u       = atan2(sin_u, cos_u)
+    u       = atan(sin_u, cos_u)
 
     # Short-term periodic terms.
 
@@ -635,7 +635,6 @@ computations and save the values at an instance of the structure
 An instance of the structure `SGP4_DeepSpace` with the initalized values.
 
 """
-
 function dsinit(epoch::T,
                 nll_0::T,
                 all_0::T,
@@ -705,7 +704,7 @@ function dsinit(epoch::T,
 
     zx     = 0.39785416stem/zsinil
     zy     = zcoshl*ctem + 0.91744867zsinhl*stem
-    zx     = atan2(zx,zy)
+    zx     = atan(zx,zy)
     zx     = gam + zx - xnodce
     zcosgl = cos(zx)
     zsingl = sin(zx)
@@ -1267,7 +1266,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
         #                                   |----------    dls    ----------|
 		xls     = M_k + ω_k + cosis * Ω_per + pl + pgh - pinc * Ω_per * sinis
         Ω_aux   = Ω_per
-        Ω_per   = mod(atan2(alfdp, betdp), 2π)
+        Ω_per   = mod(atan(alfdp, betdp), 2π)
 
         if abs(Ω_aux - Ω_per) > π
             Ω_per = (Ω_per < Ω_aux) ? Ω_per + 2π : Ω_per - 2π

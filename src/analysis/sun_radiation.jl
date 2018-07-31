@@ -220,7 +220,7 @@ function satellite_sun_radiation_earth_pointing_mean(JD0::Number,
                                                            step)
 
     # Remove the NaNs.
-    sun_radiation[find(x->(isnan(x)), sun_radiation)] = 0.0
+    sun_radiation[findall(x->(isnan(x)), sun_radiation)] = 0.0
 
     # Compute the mean.
     squeeze(mean(sun_radiation, 1), 1)
@@ -334,7 +334,7 @@ function satellite_sun_radiation_earth_pointing_mean(JD0::Number,
                                                            step)
 
     # Remove the NaNs.
-    sun_radiation[find(x->(isnan(x)), sun_radiation)] = 0.0
+    sun_radiation[findall(x->(isnan(x)), sun_radiation)] = 0.0
 
     # Compute the mean.
     squeeze(mean(sun_radiation, 1), 1)
