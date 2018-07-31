@@ -56,7 +56,7 @@ function satellite_beta_angle(JD0::Number,
                                   # in the inertial coordinate frame.
 
     # Output vector.
-    beta = Array{Float64}(numDays,1)
+    beta = Vector{Float64}(undef,numDays)
 
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0

@@ -53,12 +53,12 @@ function ECEFtoGeodetic(r_e::Vector)
     Z = r_e[3]
 
     p = sqrt(X^2 + Y^2)
-    θ = atan2(Z*a_wgs84, p*b_wgs84)
+    θ = atan(Z*a_wgs84, p*b_wgs84)
 
     # Compute Geodetic.
-    lon = atan2(Y, X)
-    lat = atan2(Z + el_wgs84^2*b_wgs84*sin(θ)^3,
-                p -  e_wgs84^2*a_wgs84*cos(θ)^3)
+    lon = atan(Y, X)
+    lat = atan(Z + el_wgs84^2*b_wgs84*sin(θ)^3,
+               p -  e_wgs84^2*a_wgs84*cos(θ)^3)
     N   = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
     h   = p/cos(lat) - N
 

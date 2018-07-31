@@ -1,20 +1,10 @@
-VERSION >= v"0.7.0-DEV.2036" && using Test
-VERSION <  v"0.7.0-DEV.2036" && using Base.Test
+using Test
 
-VERSION >=  v"0.7.0-DEV" && using DelimitedFiles
-VERSION >=  v"0.7.0-DEV" && using LinearAlgebra
-VERSION >=  v"0.7.0-DEV" && using Printf
-
-using SatelliteToolbox
+using DelimitedFiles
+using LinearAlgebra
+using Printf
 using ReferenceFrameRotations
-
-# Colors
-
-b = "\x1b[1m"
-d = "\x1b[0m"
-g = "\x1b[1m\x1b[32m"
-y = "\x1b[1m\x1b[33m"
-c = "\x1b[1m\x1b[36m"
+using SatelliteToolbox
 
 @testset "Atmospheric Models" begin
     cd("./earth/atmospheric_models/nrlmsise00/")

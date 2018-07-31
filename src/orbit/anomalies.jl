@@ -114,7 +114,7 @@ The true anomaly in the interval [0, 2π].
 """
 function E_to_f(e::Number, E::Number)
     # Compute the true anomaly in the interval [0, 2*π].
-    mod(2*atan2( sqrt(1+e)*sin(E/2), sqrt(1-e)*cos(E/2) ), 2*pi)
+    mod(2*atan( sqrt(1+e)*sin(E/2), sqrt(1-e)*cos(E/2) ), 2*pi)
 end
 
 """
@@ -158,7 +158,7 @@ The eccentric anomaly in the interval [0,2π].
 
 """
 function f_to_E(e::Number, f::Number)
-    mod(2*atan2( sqrt(1-e)*sin(f/2), sqrt(1+e)*cos(f/2) ), 2*pi)
+    mod(2*atan( sqrt(1-e)*sin(f/2), sqrt(1+e)*cos(f/2) ), 2*pi)
 end
 
 """

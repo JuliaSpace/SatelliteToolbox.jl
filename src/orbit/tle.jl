@@ -63,7 +63,7 @@ function compute_checksum(str::AbstractString)
 
     for c in str
         # Check if `c` is a number.
-        if isnumber(c)
+        if isnumeric(c)
             checksum += parse(Int, c)
 
         # Check if `c` is a minus sign, which has value 1.
@@ -248,7 +248,7 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
     checksum_l2 = 0
 
     # Output array with the TLEs found in the file.
-    tles = Array{TLE}(0)
+    tles = Array{TLE}(undef,0)
 
     line_num = 0
 

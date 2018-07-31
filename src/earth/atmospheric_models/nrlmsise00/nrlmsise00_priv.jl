@@ -69,7 +69,6 @@ Chemistry / Dissociation correction for MSIS models.
 The chemistry / dissociation correction.
 
 """
-
 @inline function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number
 
     e1 = (alt - zh) / h1
@@ -232,7 +231,6 @@ This algorithm uses new lower thermo polynomial.
 * The temperature.
 
 """
-
 function _densu(re::T,
                 gsurf::T,
                 alt::T,

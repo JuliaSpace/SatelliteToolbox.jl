@@ -197,9 +197,9 @@ function propagate!(orbp::OrbitPropagatorTwoBody, t::Vector)
     tbd = orbp.tbd
 
     # Output.
-    result_orb = Array{Orbit}(0)
-    result_r   = Array{Vector}(0)
-    result_v   = Array{Vector}(0)
+    result_orb = Array{Orbit}(undef, 0)
+    result_r   = Array{Vector}(undef, 0)
+    result_v   = Array{Vector}(undef, 0)
 
     for k in t
         # Propagate the orbit.
