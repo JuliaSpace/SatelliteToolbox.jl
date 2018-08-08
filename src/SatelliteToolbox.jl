@@ -1,5 +1,3 @@
-__precompile__()
-
 module SatelliteToolbox
 
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad

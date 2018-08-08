@@ -297,4 +297,4 @@ A matrix containing a list of Sun-synchronous orbits sorted by height.
 
 """
 sort_list_ss_orbits_by_height(ss_orbits::Matrix) =
-    sortrows(ss_orbits, by=x->x[1])
+    sortslices(ss_orbits, dims=1, by=x->x[1])
