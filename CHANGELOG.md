@@ -1,6 +1,15 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.3.0
+-------------
+
+- Full support for `Julia 0.7` and `Julia 1.0`.
+    * The support for `Julia <= 0.6` is dropped in this version. Hence,
+      SatelliteToolbox.jl **will not** work with those versions anymore. If it
+      is necessary to use `Julia <= 0.6`, then you must stick with
+      `SatelliteToolbox.jl <= 0.2.0`.
+
 Version 0.2.0
 -------------
 
