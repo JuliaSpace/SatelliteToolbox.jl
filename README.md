@@ -11,11 +11,11 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 
 ## Requirements
 
-* Julia >= v0.6
-* HTTP
-* Interpolations
-* ReferenceFrameRotations >= 0.2.0
-* StaticArrays
+* Julia >= 0.7
+* HTTP >= 0.6.13
+* Interpolations >= 0.8.0
+* ReferenceFrameRotations >= 0.2.1
+* StaticArrays >= 0.8.3
 
 ## Documentation
 
