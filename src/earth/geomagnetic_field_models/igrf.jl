@@ -22,7 +22,7 @@ export igrf12syn
 ################################################################################
 
 """
-    function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}])
+    function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}]; show_warns = true)
 
 **IGRF v12 Model**
 
@@ -36,6 +36,10 @@ coordinates: latitude `λ`, longitude `Ω`, and distance from the Earth center
 * `r`: Distance from the Earth center [m].
 * `λ`: Geocentric latitude (-π/2,+π/2) [rad].
 * `Ω`: Geocentric longitude (-π,+π) [rad].
+
+# Keywords
+
+* `show_warns`: Show warnings about the data (**Default** = `true`).
 
 # Returns
 
@@ -53,14 +57,15 @@ more readable code than the original one in FORTRAN, because it uses features
 available in julia language.
 
 """
-igrf12(date::Number, r::Number, λ::Number, Ω::Number) =
-    igrf12(date, r, λ, Ω, Val{:geocentric})
+igrf12(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
+    igrf12(date, r, λ, Ω, Val{:geocentric}; show_warns = show_warns)
 
 function igrf12(date::Number,
                 r::Number,
                 λ::Number,
                 Ω::Number,
-                ::Type{Val{:geocentric}})
+                ::Type{Val{:geocentric}};
+                show_warns = true)
     # Input verification
     # ==================
 
@@ -77,7 +82,7 @@ function igrf12(date::Number,
 
     # Warn the user that for dates after the year 2020 the accuracy maybe
     # reduced.
-    (date > 2020) &&
+    show_warns && (date > 2020) &&
     @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.")
 
     # Input variables conversion
@@ -262,7 +267,7 @@ function igrf12(date::Number,
 end
 
 """
-    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}})
+    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}}; show_warns = true)
 
 **IGRF v12 Model**
 
@@ -276,6 +281,10 @@ ellipsoid `h`.
 * `h`: Altitude above the reference elipsoid [m].
 * `λ`: Geodetic latitude (-π/2,+π/2) [rad].
 * `Ω`: Geodetic longitude (-π,+π) [rad].
+
+# Keywords
+
+* `show_warns`: Show warnings about the data (**Default** = `true`).
 
 # Returns
 
@@ -297,7 +306,8 @@ function igrf12(date::Number,
                 h::Number,
                 λ::Number,
                 Ω::Number,
-                ::Type{Val{:geodetic}})
+                ::Type{Val{:geodetic}};
+                show_warns = true)
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
     # `igrf12syn`.  However, the result is exactly the same as the MATLAB
@@ -309,7 +319,7 @@ function igrf12(date::Number,
     (λ_gc, r) = GeodetictoGeocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
-    B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric})
+    B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric}; show_warns = show_warns)
 
     # Convert to geodetic coordinates.
     D_gd_gc = angle2dcm(λ_gc - λ, 0., 0., :YXZ)
@@ -317,7 +327,7 @@ function igrf12(date::Number,
 end
 
 """
-    function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number)
+    function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number; show_warns = true)
 
 This is a julia implementation of the official IGRF source code, which was
 written in Fortran [2]. The input and output variables are exactly the same as
@@ -333,6 +343,10 @@ the ones described in the function `igrf12syn` in [2].
          Earth [km] if `itype = 2` (must be > 3485 km).
 * `colat`: Colatitude (0 - 180) [˚].
 * `elong`: East-Longitude (0 - 360) [˚].
+
+# Keywords
+
+* `show_warns`: Show warnings about the data (**Default** = `true`).
 
 # Returns
 
@@ -352,14 +366,15 @@ function igrf12syn(isv::Int,
                    itype::Int,
                    alt::Number,
                    colat::Number,
-                   elong::Number)
+                   elong::Number;
+                   show_warns = true)
 
     # Check the data, since this model is valid for years between 1900 and 2025.
     ( (date < 1900) || (date > 2025) ) &&
     error("This IGRF version will not work for years outside the interval [1900, 2025).")
 
     # Warn the user that for dates after the year 2020 the accuracy maybe reduced.
-    (date > 2020) &&
+    show_warns && (date > 2020) &&
     @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.")
 
     # Declaration of variables
