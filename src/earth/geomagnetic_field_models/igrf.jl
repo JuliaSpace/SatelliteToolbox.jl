@@ -43,7 +43,7 @@ The geomagnetic field vector represented in the geocentric reference frame [nT].
 
 # Remarks
 
-The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
+The `date` must be greater or equal to 1900 and less than or equal 2025. Notice
 that a warning message is printed for dates grated than 2020.
 
 # Disclaimer
@@ -78,7 +78,7 @@ function igrf12(date::Number,
     # Warn the user that for dates after the year 2020 the accuracy maybe
     # reduced.
     (date > 2020) &&
-    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
+    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.")
 
     # Input variables conversion
     # ==========================
@@ -283,7 +283,7 @@ The geomagnetic field vector represented in the geodetic reference frame [nT].
 
 # Remarks
 
-The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
+The `date` must be greater or equal to 1900 and less than or equal 2025. Notice
 that a warning message is printed for dates grated than 2020.
 
 # Disclaimer
@@ -343,8 +343,8 @@ the ones described in the function `igrf12syn` in [2].
 
 # Remarks
 
-* The `date` must be grater or equal to 1900 and less than or equal 2025. Notice
-  that a warning message is printed for dates grated than 2020.
+* The `date` must be greater or equal to 1900 and less than or equal 2025.
+Notice that a warning message is printed for dates grated than 2020.
 
 """
 function igrf12syn(isv::Int,
@@ -360,7 +360,7 @@ function igrf12syn(isv::Int,
 
     # Warn the user that for dates after the year 2020 the accuracy maybe reduced.
     (date > 2020) &&
-    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years grater than 2020.")
+    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.")
 
     # Declaration of variables
     gh          = gh_igrf12
