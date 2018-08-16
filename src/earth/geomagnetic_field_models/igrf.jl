@@ -97,7 +97,7 @@ function igrf12(date::Number,
     # Compute the epoch that will be used to obtain the coefficients. This is
     # necessary because the IGRF provides coefficients every 5 years. Between
     # two epochs, those coefficients must be interpolated.
-    idx   = floor(Int, (date-1900)*0.2+1)
+    idx   = (date < 2020) ? floor(Int, (date-1900)*0.2+1) : 24
     epoch = 1900 + (idx-1)*5
 
     # Compute the fraction of time from the epoch of the coefficient selected by
