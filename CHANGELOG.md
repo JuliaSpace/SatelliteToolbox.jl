@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.3.1
+-------------
+
+- Fix bug when using the function `igrf12` for dates after 2020.
+- Add option `shown_warns` to suppress warning in IGRF.
+
 Version 0.3.0
 -------------
 
