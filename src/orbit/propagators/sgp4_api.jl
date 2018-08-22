@@ -266,9 +266,9 @@ function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
     sgp4d = orbp.sgp4d
 
     # Output.
-    result_orb = Array{Orbit}(undef, 0)
-    result_r   = Array{Vector}(undef, 0)
-    result_v   = Array{Vector}(undef, 0)
+    result_orb = Array{Orbit{T,T,T,T,T,T,T}}(undef, 0)
+    result_r   = Array{Vector{T}}(undef, 0)
+    result_v   = Array{Vector{T}}(undef, 0)
 
     for k in t
         # Propagate the orbit.

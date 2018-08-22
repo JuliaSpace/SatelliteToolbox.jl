@@ -186,7 +186,7 @@ function step!(orbp::OrbitPropagatorJ2, Δt::Number)
 end
 
 """
-    function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
+    function propagate!(orbp::OrbitPropagatorJ2{T}, t::Vector) where T
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the J2 orbit propagator. The structure `orbp` will contain the elements at
@@ -215,15 +215,15 @@ from a TLE, then the inertial frame will be TEME. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 
 """
-function propagate!(orbp::OrbitPropagatorJ2, t::Vector)
+function propagate!(orbp::OrbitPropagatorJ2{T}, t::Vector) where T
     # Auxiliary variables.
     orb = orbp.orb
     j2d = orbp.j2d
 
     # Output.
-    result_orb = Array{Orbit}(undef, 0)
-    result_r   = Array{Vector}(undef, 0)
-    result_v   = Array{Vector}(undef, 0)
+    result_orb = Array{Orbit{T,T,T,T,T,T,T}}(undef, 0)
+    result_r   = Array{Vector{T}}(undef, 0)
+    result_v   = Array{Vector{T}}(undef, 0)
 
     for k in t
         # Propagate the orbit.
