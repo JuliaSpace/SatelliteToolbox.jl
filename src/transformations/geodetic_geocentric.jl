@@ -26,7 +26,7 @@ export ECEFtoGeodetic, GeodetictoECEF
 export GeodetictoGeocentric
 
 """
-    function ECEFtoGeodetic(r_e::Vector)
+    function ECEFtoGeodetic(r_e::AbstractVector)
 
 Convert the vector `r_e` represented in the Earth-Centered, Earth-Fixed (ECEF)
 reference frame into Geodetic coordinates (WGS-84).
@@ -46,7 +46,7 @@ reference frame into Geodetic coordinates (WGS-84).
 Based on algorithm in [3].
 
 """
-function ECEFtoGeodetic(r_e::Vector)
+function ECEFtoGeodetic(r_e::AbstractVector)
     # Auxiliary variables.
     X = r_e[1]
     Y = r_e[2]
