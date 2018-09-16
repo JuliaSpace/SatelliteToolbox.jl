@@ -1,6 +1,13 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.3.2
+-------------
+
+- Fix compatibility issues with Parameters.jl v0.10.
+- Improve performance of `propagate!` functions by fixing type-stability issues.
+- `ECEFtoGeodetic` now accepts `AbstractVector` as input.
+
 Version 0.3.1
 -------------
 
