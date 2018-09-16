@@ -995,7 +995,14 @@ function dsinit(epoch::T,
 	# Set up for original mode (LS terms at epoch non-zero).
 	pgh0 = ph0 = pe0 = pinc0 = pl0 = 0.0
 
-    @pack!_SGP4_DeepSpace sgp4_ds
+    @pack! sgp4_ds = atime, xli, xni, xnq, xfact, ssl, ssg, ssh, sse, ssi,
+                     xlamo, omegaq, omgdt, gmst, del1, del2, del3, fasx2, fasx4,
+                     fasx6, d2201, d2211, d3210, d3222, d4410, d4422, d5220,
+                     d5232, d5421, d5433, xnddt, xndot, xldot, zmos, se2, se3,
+                     si2, si3, sl2, sl3, sl4, sgh2, sgh3, sgh4, sh2, sh3, zmol,
+                     ee2, e3, xi2, xi3, xl2, xl3, xl4, xgh2, xgh3, xgh4, xh2,
+                     xh3, pe, pinc, pgh, ph, pl, pgh0, ph0, pe0, pinc0, pl0,
+                     isynfl, iresfl, ilsz
 
     return sgp4_ds
 end
@@ -1145,7 +1152,7 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
         M_sec = xl - Ω_sec - ω_sec + θ
     end
 
-    @pack sgp4_ds = atime, xni, xli, xnddt, xndot, xldot
+    @pack! sgp4_ds = atime, xni, xli, xnddt, xndot, xldot
 
     (n_sec, e_sec, i_sec, Ω_sec, ω_sec, M_sec)
 end
@@ -1276,7 +1283,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
 		ω_per   = xls - M_per - cosis * Ω_per
     end
 
-    @pack sgp4_ds = pgh, ph, pe, pinc, pl
+    @pack! sgp4_ds = pgh, ph, pe, pinc, pl
 
     (e_per, i_per, Ω_per, ω_per, M_per)
 end

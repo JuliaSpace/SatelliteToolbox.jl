@@ -583,7 +583,7 @@ function _globe7!(p::AbstractVector{T},
     end
 
     # Update the NRLMSISE-00 structure.
-    @pack nrlmsise00d = apt, apdf
+    @pack! nrlmsise00d = apt, apdf
 
     # Parameters not used: 82, 89, 99, 139-149.
     tinf = p[31] +
@@ -1425,7 +1425,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Repack variables that were modified.
     meso_tn1_5  = meso_tn1[5]
     meso_tgn1_2 = meso_tgn1[2]
-    @pack nrlmsise00d = meso_tn1_5, meso_tgn1_2, dm28
+    @pack! nrlmsise00d = meso_tn1_5, meso_tgn1_2, dm28
 
     # Create output structure and return.
     #
