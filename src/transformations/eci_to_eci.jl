@@ -238,8 +238,8 @@ function rECItoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # In this case, we need to convert GCRF back to PEF and then convert to
     # J2000, which is the same conversion from PEF to GCRF **without** the EOP
@@ -305,8 +305,8 @@ function rECItoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Return the rotation.
     r_MOD_GCRF = rGCRFtoMOD_fk5(T, JD_TT)
@@ -340,8 +340,8 @@ function rECItoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Return the rotation.
     r_MOD_GCRF = rGCRFtoMOD_fk5(T, JD_TT)
@@ -376,8 +376,8 @@ function rECItoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # In this case, we need to convert J2000 back to PEF and then convert to
     # MOD. This is necessary because we need to apply EOP corrections to convert
@@ -418,8 +418,8 @@ function rECItoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # In this case, we need to convert J2000 back to PEF and then convert to
     # TOD. This is necessary because we need to apply EOP corrections to convert

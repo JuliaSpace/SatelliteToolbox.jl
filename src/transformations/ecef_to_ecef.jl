@@ -128,8 +128,8 @@ function rECEFtoECEF(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p = eop_data.x[JD_UTC]*pi/648000
-    y_p = eop_data.y[JD_UTC]*pi/648000
+    x_p = eop_data.x(JD_UTC)*pi/648000
+    y_p = eop_data.y(JD_UTC)*pi/648000
 
     # Return the rotation.
     rITRFtoPEF_fk5(T, x_p, y_p)

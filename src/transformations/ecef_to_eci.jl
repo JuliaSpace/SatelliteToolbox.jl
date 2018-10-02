@@ -220,10 +220,10 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
@@ -246,8 +246,8 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
 
     # Compute the rotation.
     rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
@@ -270,10 +270,10 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
@@ -299,9 +299,9 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
@@ -327,8 +327,8 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
 
     # Compute the rotation.
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
@@ -354,10 +354,10 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -420,10 +420,10 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔϵ_1980 = eop_data.dEps[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔϵ_1980 = eop_data.dEps(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -446,9 +446,9 @@ function rECEFtoECI(T::Type,
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x[JD_UTC]*pi/648000
-    y_p      = eop_data.y[JD_UTC]*pi/648000
-    δΔψ_1980 = eop_data.dPsi[JD_UTC]*pi/648000
+    x_p      = eop_data.x(JD_UTC)*pi/648000
+    y_p      = eop_data.y(JD_UTC)*pi/648000
+    δΔψ_1980 = eop_data.dPsi(JD_UTC)*pi/648000
 
     # Compute the rotation.
     rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
