@@ -153,7 +153,7 @@ The Julian Day in UT1.
 
 """
 function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
-	JD_UTCtoUT1(JD_UTC, eop.UT1_UTC[JD_UTC])
+	JD_UTCtoUT1(JD_UTC, eop.UT1_UTC(JD_UTC))
 end
 
 """
@@ -174,7 +174,7 @@ The Julian Day in UTC.
 
 """
 function JD_UT1toUTC(JD_UT1::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
-	JD_UT1toUTC(JD_UT1, eop.UT1_UTC[JD_UT1])
+	JD_UT1toUTC(JD_UT1, eop.UT1_UTC(JD_UT1))
 end
 
 """
