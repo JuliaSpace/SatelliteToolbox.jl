@@ -239,7 +239,7 @@ function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
 end
 
 """
-    function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
+    function propagate!(orbp::OrbitPropagatorSGP4{T}, t::AbstractVector) where T
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the SGP4 propagator. The structure `orbp` will contain the orbit elements
@@ -260,7 +260,7 @@ at the last propagation instant.
   instant [m].
 
 """
-function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Vector) where T
+function propagate!(orbp::OrbitPropagatorSGP4{T}, t::AbstractVector) where T
     # Auxiliary variables.
     orb   = orbp.orb
     sgp4d = orbp.sgp4d

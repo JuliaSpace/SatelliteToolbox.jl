@@ -164,7 +164,7 @@ function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
 end
 
 """
-    function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Vector) where T
+    function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::AbstractVector) where T
 
 Propagate the orbit in `orbp` using the time instants defined in the vector `t`
 using the Two Body orbit propagator. The structure `orbp` will contain the
@@ -191,7 +191,7 @@ was used to generate the orbit parameters. If the orbit parameters are obtained
 from a TLE, then the inertial frame will be TEME.
 
 """
-function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Vector) where T
+function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::AbstractVector) where T
     # Auxiliary variables.
     orb = orbp.orb
     tbd = orbp.tbd
