@@ -113,8 +113,8 @@ function propagate!(orbp::Union{OrbitPropagatorJ2{T},
     # Output.
     num_elems  = length(t)
     result_orb = Array{Orbit{T,T,T,T,T,T,T}}(undef, num_elems)
-    result_r   = Array{Vector{T}}(undef, num_elems)
-    result_v   = Array{Vector{T}}(undef, num_elems)
+    result_r   = Array{SVector{3,T}}(undef, num_elems)
+    result_v   = Array{SVector{3,T}}(undef, num_elems)
 
     for k = 1:num_elems
         # Propagate the orbit.

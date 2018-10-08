@@ -577,13 +577,13 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     sin_u_k = sin(u_k)
     cos_u_k = cos(u_k)
 
-    M = [ -sin_Ω_k*cos_i_k;
-           cos_Ω_k*cos_i_k;
-                   sin_i_k; ]
+    M = SVector(-sin_Ω_k*cos_i_k,
+                +cos_Ω_k*cos_i_k,
+                    sin_i_k     )
 
-    N = [ +cos_Ω_k;
-          +sin_Ω_k;
-          +T(0) ]
+    N = SVector(+cos_Ω_k,
+                +sin_Ω_k,
+                +T(0)   )
 
     Uv = M*sin_u_k + N*cos_u_k
     Vv = M*cos_u_k - N*sin_u_k
