@@ -302,7 +302,7 @@ end
 #                          Two Body Orbit Propagator
 # ==============================================================================
 
-export TwoBody_Structure
+export TwoBody_Structure, OrbitPropagatorTwoBody
 
 """
 Low level Two Body orbit propagator structure.
