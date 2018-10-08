@@ -24,9 +24,7 @@ export init_orbit_propagator
 
 """
     function init_orbit_propagator(orbp_type::Type{Val{:J2}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
-
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number = 0, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
-
     function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
 Initialize the orbit propagator `orbp_type` using the initial orbit specified by
@@ -157,9 +155,7 @@ end
 
 """
     function init_orbit_propagator(orbp_type::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)
-
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
-
     function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)
 
 Initialize the orbit propagator `orbp_type` using the initial orbit specified in
@@ -258,9 +254,7 @@ end
 
 """
     function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)
-
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)
-
     function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
 
 Initialize the orbit propagator `orbp_type` using the initial orbit specified in
