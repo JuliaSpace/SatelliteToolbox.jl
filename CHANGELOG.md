@@ -1,6 +1,18 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.4.0
+-------------
+
+- Fix warnings due to new syntax of the package **Interpolations.jl**.
+- Fix remaining compatibilities issues with Julia v1.0.
+- Changes in orbit propagators:
+    * `propagate!` can now receive one single epoch.
+    * All functions related to the orbit propagators uses `SVector`. This led to
+      a huge performance gain in API function `propagate!`. However, this
+      **can break existing code**, because the array returned by `propagate!` is
+      now an array of `SVector{3,T}` instead of an array of `Vector{T}`.
+
 Version 0.3.2
 -------------
 
