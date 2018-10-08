@@ -250,7 +250,7 @@ for 1 day using the Two Body orbit propagator.
 julia> orbp = init_orbit_propagator(Val{:twobody}, Orbit(0.0,7130982.0,0.001111,98.405*pi/180,pi/2,0.0,0.0))
 julia> (o,r,v) = propagate!(orbp, collect(0:3:24)*60*60)
 julia> r
-9-element Array{Array{T,1} where T,1}:
+9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
  [5.30372e-7, 7.12306e6, 3.58655e-6]
  [-987245.0, 2.2796e6, -6.68158e6]
  [-6.3457e5, -5.6651e6, -4.29471e6]
@@ -271,7 +271,7 @@ for 1 day using the J2 orbit propagator.
 julia> orbp = init_orbit_propagator(Val{:J2}, Orbit(0.0,7130982.0,0.001111,98.405*pi/180,pi/2,0.0,0.0))
 julia> (o,r,v) = propagate!(orbp, collect(0:3:24)*60*60)
 julia> r
-9-element Array{Array{T,1} where T,1}:
+9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
  [5.30372e-7, 7.12306e6, 3.58655e-6]
  [-9.98335e5, 2.14179e6, -6.72549e6]
  [-5.75909e5, -5.83674e6, -4.06734e6]
@@ -292,7 +292,7 @@ for 1 day using the SGP4 orbit propagator.
 julia> orbp = init_orbit_propagator(Val{:sgp4}, Orbit(0.0,7130982.0,0.001111,98.405*pi/180,pi/2,0.0,0.0))
 julia> (o,r,v) = propagate!(orbp, collect(0:3:24)*60*60)
 julia> r
-9-element Array{Array{T,1} where T,1}:
+9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
  [-2159.7, 7.13166e6, -14607.2]
  [-1.00096e6, 2.1411e6, -6.73899e6]
  [-5.78906e5, -5.83897e6, -4.08451e6]
