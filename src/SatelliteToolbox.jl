@@ -8,9 +8,11 @@ import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, sin, show
 using Dates
 using DelimitedFiles
 using LinearAlgebra
+using OptionalData
 using Parameters
 using Printf
 using ReferenceFrameRotations
+using RemoteFiles
 using StaticArrays
 using SparseArrays
 using Statistics
@@ -49,12 +51,14 @@ include("analysis/satellite_position_groundstations.jl")
 include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
+include("earth/atmospheric_models/jb2008/jb2008.jl")
 include("earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
 include("earth/gravity_models/embedded_gravity_models.jl")
 include("earth/gravity_models/gravity_model.jl")
 include("earth/geomagnetic_field_models/igrf.jl")
 include("earth/geomagnetic_field_models/igrf12_coefs.jl")
 include("earth/geomagnetic_field_models/igrf12syn_coefs.jl")
+include("earth/space_indices/space_indices.jl")
 
 include("./misc/legendre.jl")
 include("./misc/dlegendre.jl")

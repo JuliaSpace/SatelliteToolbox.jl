@@ -7,8 +7,44 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 ################################################################################
-#                                 NRLMSISE-00
+#                              Atmospheric Models
 ################################################################################
+
+#                             Jacchia-Bowman 2008
+# ==============================================================================
+
+export JB2008_Structure
+
+"""
+Output structure of the Jacchia-Bowman 2008.
+
+# Fields
+
+* `nN2`: Number density of N₂ [1/m³].
+* `nO2`: Number density of O₂ [1/m³].
+* `nO`: Number density of O [1/m³].
+* `nAr`: Number density of Ar [1/m³].
+* `nHe`: Number density of He [1/m³].
+* `nH`: Number density of H [1/m³].
+* `rho`: Total density [kg/m³].
+* `T_exo`: Exospheric temperature [K].
+* `Tz`: Temperature at the selected altitude [K].
+
+"""
+@with_kw struct JB2008_Structure{T}
+    nN2::T
+    nO2::T
+    nO::T
+    nAr::T
+    nHe::T
+    nH::T
+    rho::T
+    T_exo::T
+    Tz::T
+end
+
+#                                 NRLMSISE-00
+# ==============================================================================
 
 export NRLMSISE00_Structure, NRLMSISE00_Output
 
@@ -617,3 +653,8 @@ Union of all *of date* Earth-Centered Inertial (ECI) frames supported.
 T_ECIs_of_date = Union{Type{Val{:TOD}},
                        Type{Val{:MOD}},
                        Type{Val{:TEME}}}
+
+################################################################################
+#                                Space Indices
+################################################################################
+
