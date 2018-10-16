@@ -8,7 +8,10 @@ julia:
 matrix:
     allow_failures:
         - julia: nightly
-after_success:
-    - julia -e 'import Pkg; cd(Pkg.dir("SatelliteToolbox")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
 notifications:
     email: false
+after_success:
+    # Push coverage results to Coveralls.
+    - julia -e 'import Pkg; cd(Pkg.dir("SatelliteToolbox")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
+    # Push coverage results to Codecov.
+    - julia -e 'import Pkg; cd(Pkg.dir("SatelliteToolbox")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Coveralls.process_folder())';
