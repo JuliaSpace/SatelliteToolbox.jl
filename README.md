@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/JuliaSpace/SatelliteToolbox.jl.svg?branch=master)](https://travis-ci.org/JuliaSpace/SatelliteToolbox.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/x7ogyjfx1x5yj78j/branch/master?svg=true)](https://ci.appveyor.com/project/ronisbr/satellitetoolbox-jl/branch/master)
+[![codecov](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl)
 [![Coverage Status](https://coveralls.io/repos/github/JuliaSpace/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaSpace/SatelliteToolbox.jl?branch=master)
 
 This package contains several functions to build simulations related with
@@ -14,7 +15,10 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 * Julia >= 0.7
 * HTTP >= 0.6.13
 * Interpolations >= 0.8.0
+* Parameters >= 0.10.1
+* OptionalData >= 0.2.0
 * ReferenceFrameRotations >= 0.2.1
+* RemoteFiles >= 0.2.1
 * StaticArrays >= 0.8.3
 
 ## Documentation
