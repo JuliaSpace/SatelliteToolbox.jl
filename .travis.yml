@@ -9,6 +9,6 @@ matrix:
     allow_failures:
         - julia: nightly
 after_success:
-    - julia -e 'cd(Pkg.dir("SatelliteToolbox")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
+    - julia -e 'import Pkg; cd(Pkg.dir("SatelliteToolbox")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
 notifications:
     email: false
