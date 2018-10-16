@@ -10,6 +10,9 @@ using SatelliteToolbox
     cd("./earth/atmospheric_models/nrlmsise00/")
     include("./earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
     cd("../../../")
+    cd("./earth/atmospheric_models/jb2008/")
+    include("./earth/atmospheric_models/jb2008/jb2008.jl")
+    cd("../../../")
 end
 println("")
 
