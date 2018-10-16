@@ -76,10 +76,10 @@
                     # time.
                     tokens = split(line)
 
-                    year = parse(Int64,   tokens[1])
-                    doy  = parse(Int64,   tokens[2])
-                    hour = parse(Int64,   tokens[3])
-                    min  = parse(Int64,   tokens[4])
+                    year = parse(Int,     tokens[1])
+                    doy  = parse(Int,     tokens[2])
+                    hour = parse(Int,     tokens[3])
+                    min  = parse(Int,     tokens[4])
                     sec  = parse(Float64, tokens[5])
                 else
                     tokens = split(line)
