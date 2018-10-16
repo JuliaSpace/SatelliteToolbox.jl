@@ -227,7 +227,7 @@ function _parse_dtcfile(path::AbstractString)
             end
 
             # Compute the Julian day at midnight of the day.
-            year = parse(Int64, tokens[2])
+            year = parse(Int,     tokens[2])
             doy  = parse(Float64, tokens[3])
 
             JD_0h = DatetoJD(year, 1, 1, 0, 0, 0) - 1 + doy
