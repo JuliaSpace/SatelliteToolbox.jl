@@ -407,7 +407,6 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
         # Compute the hydrogen density based on the value at 500km.
         log_nH = log_nH_500km + H_sign *
             ( log(Tl₄/Tl₃) + ( 1000/Rstar ) * int_2 * MH )
-
     end
 
     # Eq. 24 [3] - Seasonal-latitudinal variation
@@ -575,11 +574,11 @@ function _jb2008_highaltitude(h::Number, F10ₐ::Number)
         # In [2], there is an error when computing this coefficients (eq. 11).
         # The partial derivative has the `500` factor and the coefficients have
         # other `500` factor that **is not** present in the source-code.
-        c1 = +1
-        c2 = +3F₁₅₀₀ - ∂F₁₅₀₀∂z - 3
-        c3 = -2F₁₅₀₀ + ∂F₁₅₀₀∂z + 2
-
-        FρH = @evalpoly(z, c1, c2, c3)
+        c0  = +1
+        c1  = +0
+        c2  = +3F₁₅₀₀ - ∂F₁₅₀₀∂z - 3
+        c3  = -2F₁₅₀₀ + ∂F₁₅₀₀∂z + 2
+        FρH = @evalpoly(z, c0, c1, c2, c3)
     elseif h > 1500
         FρH = C[1] + C[2]*F10ₐ + C[3]*h + C[4]*h*F10ₐ
     end
