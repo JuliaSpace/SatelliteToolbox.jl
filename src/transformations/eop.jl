@@ -30,10 +30,7 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 * `IAU1980`: Get IERS EOP C04 IAU1980 data.
 * `IAU2000A`: Get IERS EOP C04 IAU2000A data.
 
-# Args
-
-* `data_type`: (OPTIONAL) Symbol that defines the type of data that will be
-               downloaded (**Default** = `:IAU1980`).
+If `data_type` is omitted, then it defaults to `IAU1980`.
 
 # Returns
 
@@ -55,19 +52,15 @@ end
 """
     function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
 
-Get the IERS EOP C04 IAU1980 data from the URL `url`.
-
-# Args
-
-* `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
-         https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213)
+Get the IERS EOP C04 IAU1980 data from the URL `url`. If `url` is omitted, then
+it defaults to https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213.
 
 # Returns
 
 The structure `EOPData_IAU1980` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
 
-###### Remarks
+# Remarks
 
 For every field in `EOPData_IAU1980` to interpolation between two points in the
 grid is linear. If extrapolation is needed, then if will use the nearest value
@@ -88,19 +81,15 @@ end
 """
     function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
 
-Get the IERS EOP C04 IAU2000A data from the URL `url`.
-
-# Args
-
-* `url`: (OPTIONAL) Url in which the coefficients will be obtained (**Default** =
-         https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214)
+Get the IERS EOP C04 IAU2000A data from the URL `url`. If `url` is omitted, then
+it defaults to https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214.
 
 # Returns
 
 The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
 
-###### Remarks
+# Remarks
 
 For every field in `EOPData_IAU2000A` to interpolation between two points in the
 grid is linear. If extrapolation is needed, then if will use the nearest value
@@ -124,18 +113,13 @@ Read IERS EOP Data from the file `filename`. The user must specify if the data
 is related to the model IAU 1980 (`data_type = :IAU1980`), which is the default,
 or to the model IAU 2000A (`data_type = :IAU2000A`).
 
-# Args
-
-* `filename`: The file path in which the EOP data will be read.
-* `data_type`: (OPTIONAL) Model type of the EOP Data (**Default** = `:IAU1980`).
-
 # Returns
 
 A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
 with the interpolations of the EOP parameters. Notice that the interpolation
 indexing is set to the Julian Day.
 
-###### Remarks
+# Remarks
 
 The input file **must be exactly the same** as provided by IERS. One can
 download it using the following commands:

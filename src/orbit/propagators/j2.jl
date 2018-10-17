@@ -171,13 +171,8 @@ end
 """
     function j2!(j2d::J2_Structure{T}, t::Number) where T
 
-Propagate the orbit defined in `j2d` until the time `t`. Notice that the values
-in `j2d` will be modified.
-
-# Args
-
-* `j2d`: J2 orbit propagator structure (see `J2_Structure`).
-* `t`: Time in which the elements will be propagated [s].
+Propagate the orbit defined in `j2d` (see `J2_Structure`) until the time `t`
+[s]. Notice that the values in `j2d` will be modified.
 
 # Returns
 

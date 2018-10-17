@@ -309,13 +309,8 @@ end
 """
     function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
-Propagate the orbit defined in `sgp4d` until the time `t`. Notice that the
-values in `sgp4d` will be modified.
-
-# Args
-
-* `sgp4d`: SPG4 structure (see `SGP4_Structure`).
-* `t`: Time that the elements will be propagated [min].
+Propagate the orbit defined in `sgp4d` (see `SGP4_Structure`) until the time `t`
+[min]. Notice that the values in `sgp4d` will be modified.
 
 # Returns
 

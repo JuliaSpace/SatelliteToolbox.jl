@@ -22,8 +22,10 @@ export EGM96, JGM2, JGM3
 """
     function load_gravity_model(T)
 
-Load an embedded gravity model coefficients `T`. The current supported values
-for `T` are:
+Load an embedded gravity model coefficients `T` and return an instance of the
+structure `GravityModel_Coefs` with the parsed values.
+
+The current supported values for `T` are:
 
 | `T`       | Model Name                     | Maximum Degree |
 |:---------:|:-------------------------------|:---------------|
@@ -37,14 +39,6 @@ For other models, you can downlad the `gfc` file at
     http://icgem.gfz-potsdam.de/home
 
 and load it using the function `parse_gfc`.
-
-# Args
-
-* `T`: Embedded model to be loaded.
-
-# Returns
-
-An instance of the structure `GravityModel_Coefs` with the parsed values.
 
 """
 function load_gravity_model(::Type{Val{:egm96}})

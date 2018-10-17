@@ -35,25 +35,16 @@ export rTEMEtoPEF,  rPEFtoTEME
     function rTEMEtoTOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the True of Date (TOD) frame at the Julian Day (Terrestrial Time) `JD_TT`. This
+the True of Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ`) and in
-longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
+\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
+IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
-* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-              (**Default** = 0).
-* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
-              (**Default** = 0).
 
 # Returns
 
@@ -104,25 +95,16 @@ end
     function rTODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the True
-Equator Mean Equinox (TEME) frame at the Julian Day (Terrestrial Time) `JD_TT`.
+Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
-Notice that one can provide corrections for the nutation in obliquity (`δΔϵ`)
-and in longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually
+obtained from IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
-* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-              (**Default** = 0).
-* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
-              (**Default** = 0).
 
 # Returns
 
@@ -143,25 +125,16 @@ rTODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number 
     function rTEMEtoMOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Mean of Date (MOD) frame at the Julian Day (Terrestrial Time) `JD_TT`. This
+the Mean of Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ`) and in
-longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
+\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
+IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
-* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-              (**Default** = 0).
-* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
-              (**Default** = 0).
 
 # Returns
 
@@ -223,25 +196,16 @@ end
     function rMODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True
-Equator Mean Equinox (TEME) frame at the Julian Day (Terrestrial Time) `JD_TT`.
+Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
-Notice that one can provide corrections for the nutation in obliquity (`δΔϵ`)
-and in longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).  .
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually
+obtained from IERS EOP Data (see `get_iers_eop`).  .
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
-* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-              (**Default** = 0).
-* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
-              (**Default** = 0).
 
 # Returns
 
@@ -262,25 +226,16 @@ rMODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number 
     function rTEMEtoGCRF([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Geocentric Celestial Reference Frame (GCRF) at the Julian Day (Terrestrial
-Time) `JD_TT`. This algorithm uses the IAU-76/FK5 theory and TEME definition in
-[1, p. 233]. Notice that one can provide corrections for the nutation in
-obliquity (`δΔϵ`) and in longitude (`δΔψ`) that are usually obtained from IERS
-EOP Data (see `get_iers_eop`).
+the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_TT`
+[Terrestrial Time]. This algorithm uses the IAU-76/FK5 theory and TEME
+definition in [1, p. 233]. Notice that one can provide corrections for the
+nutation in obliquity (`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad]
+that are usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
-* `δΔϵ_1980`: (OPTIONAL) Correction in the nutation of the obliquity [rad]
-              (**Default** = 0).
-* `δΔψ_1980`: (OPTIONAL) Correction in the nutation of the longitude [rad]
-              (**Default** = 0).
 
 # Returns
 
@@ -316,21 +271,16 @@ end
     function rGCRFtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
-Equinox (TEME) frame at the Julian Day (Terrestrial Time) `JD_TT`. This
+Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ`) and in
-longitude (`δΔψ`) that are usually obtained from IERS EOP Data (see
-`get_iers_eop`).
+that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
+\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
+IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
 
 # Returns
 
@@ -357,18 +307,13 @@ rGCRFtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number
     function rTEMEtoPEF([T,] JD_TT::Number)
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Pseudo-Earth Fixed (PEF) frame at the Julian Day (Terrestrial Time) `JD_TT`.
+the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_TT` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
 
 # Returns
 
@@ -390,19 +335,14 @@ end
     function rPEFtoTEME([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
-True Equator Mean Equinox (TEME) frame at the Julian Day (Terrestrial Time)
-`JD_TT`.  This algorithm uses the IAU-76/FK5 theory and TEME definition in [1,
-p. 233].
+True Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial
+Time]. This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p.
+233].
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
-
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default**: `DCM`).
-* `JD_TT`: Julian Day [Terrestrial Time].
 
 # Returns
 

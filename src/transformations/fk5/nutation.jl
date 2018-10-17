@@ -162,7 +162,7 @@ const nut_coefs_1980 = [
 """
     function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
 
-Compute the nutation parameters at the Julian Day (Terrestrial Time) `JD_TT`
+Compute the nutation parameters at the Julian Day `JD_TT` [Terrestrial Time]
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
 that must be a matrix in which each line has the following syntax [1, p. 1043]:
 
@@ -170,15 +170,8 @@ that must be a matrix in which each line has the following syntax [1, p. 1043]:
 
 where the units of `Ai` and `Ci` are [0.0001"] and the units of `Bi` and `Di`
 are [0.0001"/JC]. The user can also specify the number of coefficients `n_max`
-that will be used when computing the nutation.
-
-# Args
-
-* `JD_TT`: Julian day [TT]
-* `nut_coefs_1980`: (OPTIONAL) Nutation coefficients (**Default** =
-                    `nut_coefs_1980`).
-* `n_max`: (OPTIONAL) Number of coefficients that will be used when computing
-           the nutation (**Default** = 106).
+that will be used when computing the nutation. If `n_max` is omitted, the it
+defaults to 106.
 
 # Returns
 

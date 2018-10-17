@@ -64,15 +64,6 @@ The conversion between the supported ECEF frames **always** depends on EOP Data
 (see `get_iers_eop` and `read_iers_eop`). If IAU-76/FK5 model is used, then the
 type of `eop_data` must be `EOPData_IAU1980`.
 
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
-* `M`: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
-* `ECEFo`: Origin ECEF frame.
-* `ECEFf`: Destination ECEF frame.
-* `JD_UTC`: Julian day [UTC].
-* `eop_data`: EOP Data.
-
 # Returns
 
 The rotation description represented by `T` that rotates the ECEF reference

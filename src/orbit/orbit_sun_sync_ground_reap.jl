@@ -14,20 +14,9 @@ export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 """
     function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
 
-Compute the distance between adjacent ground tracks at a given latitude `lat`
-for a ground repeating, Sun-synchronous orbit with period `T`, inclination
-`i`, and orbit cycle `To` days.
-
-# Args
-
-* `T`: Orbit period [s].
-* `i`: Inclination [rad].
-* `To`: Orbit cycle [days].
-* `lat`: Latitude [rad].
-
-# Returns
-
-The distance between adjacent ground tracks at the given latitude [m].
+Compute the distance between adjacent ground tracks [m] at a given latitude
+`lat` [rad] for a ground repeating, Sun-synchronous orbit with period `T` [s],
+inclination `i` [rad], and orbit cycle `To` [days].
 
 # Remarks
 
@@ -48,21 +37,9 @@ end
 """
     function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int, lat::Number)
 
-Compute the distance between adjacent ground tracks at a given latitude `lat`
-for a ground repeating, Sun-synchronous orbit with semi-major axis `a`,
-eccentricity `e`, inclination `i`, and orbit cycle `To`.
-
-# Args
-
-* `a`: Semi-major axis [m].
-* `e`: Eccentricity.
-* `i`: Inclination [rad].
-* `To`: Orbit cycle [days].
-* `lat`: Latitude [rad].
-
-# Returns
-
-The distance between adjacent ground tracks at the given latitude [m].
+Compute the distance between adjacent ground tracks [m] at a given latitude
+`lat` [rad] for a ground repeating, Sun-synchronous orbit with semi-major axis
+`a` [m], eccentricity `e`, inclination `i` [rad], and orbit cycle `To` [days].
 
 # Remarks
 
@@ -81,22 +58,10 @@ end
 """
     function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int, lat::Number)
 
-Compute the angle between two adjacent ground tracks in a given latitude `lat`
-measured from the satellite position for a ground repeating, Sun-synchronous
-orbit with altitude in the Equator `h`, period `T`, inclination `i`, and orbit
-cycle `To`.
-
-# Args
-
-* `h`: Orbit altitude in the Equator [m].
-* `T`: Orbit period [s].
-* `i`: Inclination [rad].
-* `To`: Orbit cycle [days].
-* `lat`: Latitude.
-
-# Returns
-
-The angle between adjacent ground tracks at the given latitude [rad].
+Compute the angle between two adjacent ground tracks [rad] in a given latitude
+`lat` [rad] measured from the satellite position for a ground repeating,
+Sun-synchronous orbit with altitude in the Equator `h` [m], period `T` [s],
+inclination `i` [rad], and orbit cycle `To` [days].
 
 # Remarks
 
@@ -122,23 +87,10 @@ end
 """
     function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number, To::Int, lat::Number)
 
-Compute the angle between two adjacent ground tracks in a given latitude `lat`
-measured from the satellite position for a ground repeating, Sun-synchronous
-orbit with altitude in the Equator `h`, semi-major axis `a`, eccentricity `e`,
-inclination `i`, and orbit cycle `To`.
-
-# Args
-
-* `h`: Orbit altitude in the Equator [m].
-* `a`: Semi-major axis [m].
-* `e`: Eccentricity.
-* `i`: Inclination [rad].
-* `To`: Orbit cycle [days].
-* `lat`: Latitude.
-
-# Returns
-
-* The angle between adjacent ground tracks at the given latitude [rad].
+Compute the angle between two adjacent ground tracks [rad] in a given latitude
+`lat` [rad] measured from the satellite position for a ground repeating,
+Sun-synchronous orbit with altitude in the Equator `h` [m], semi-major axis `a`
+[m], eccentricity `e`, inclination `i` [rad], and orbit cycle `To` [days].
 
 # Remarks
 
@@ -159,11 +111,6 @@ end
 
 Compute the Sun-synchronous orbit given the number of revolutions per day
 `numRevPD` and the eccentricity `e`.
-
-# Args
-
-* `numRevPD`: Number of revolutions per day.
-* `e`: Eccentricity.
 
 # Returns
 
@@ -284,16 +231,8 @@ end
 """
 ### sort_list_ss_orbits_by_height(ss_orbits::Matrix)
 
-Sort the list of Sun-synchronous orbits `ss_orbits` by height.
-
-# Args
-
-* `ss_orbits`: List of Sun-synchronous orbits (see
-               `list_ss_orbits_by_rep_period`).
-
-# Returns
-
-A matrix containing a list of Sun-synchronous orbits sorted by height.
+Sort the list of Sun-synchronous orbits `ss_orbits` (see
+`list_ss_orbits_by_rep_period`) by height and return a new matrix.
 
 """
 sort_list_ss_orbits_by_height(ss_orbits::Matrix) =

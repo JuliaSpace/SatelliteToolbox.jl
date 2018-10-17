@@ -59,7 +59,7 @@ http://sol.spacenvironment.net/jb2008/
 * `glon`: Geocentric longitude [rad].
 * `h`: Altitude [m].
 
-* `F10`: 10.7-cm solar flux \\[10⁻²² W/(M² Hz)\\] (Tabular time 1 day earlier).
+* `F10`: 10.7-cm solar flux \\[10⁻²² W/(M² Hz)] (Tabular time 1 day earlier).
 * `F10ₐ`: 10.7-cm averaged solar flux, 81-day centered on input time (Tabular
           time 1 day earlier).
 * `S10`: EUV index (26-34 nm) scaled to F10.7 (Tabular time 1 day earlier).
@@ -552,7 +552,7 @@ end
 
 Compute the high altitude exospheric density correction factor in altitude `h`
 [km] and the averaged 10.7-cm solar flux (81-day centered on input time)
-[10⁻²² W/(M² Hz)].
+\\[10⁻²² W/(M² Hz)].
 
 This function uses the model in Section 6.2 of [2].
 
@@ -665,7 +665,8 @@ Compute the semiannual variation of the density considering the JB2008 model
 
 * `doy`: Day of the year + fraction of the day.
 * `h`: Height [km].
-* `F10ₐ`: Averaged 10.7-cm flux (81-day centered on input-time) [10⁻²² W/(M² Hz)].
+* `F10ₐ`: Averaged 10.7-cm flux (81-day centered on input-time)
+          \\[10⁻²² W/(M² Hz)].
 * `S10ₐ`: EUV 81-day averaged centered index.
 * `M10ₐ`: MG2 81-day averaged centered index.
 
@@ -769,7 +770,7 @@ the source-code.
 # Args
 
 * `F10`: F10.7 flux.
-* `lst`: Local solar time (0 - 24) [hr].
+* `lst`: Local solar time (0 - 24) \\[hr].
 * `glat`: Geocentric latitude [rad].
 * `h`: Altitude [km].
 

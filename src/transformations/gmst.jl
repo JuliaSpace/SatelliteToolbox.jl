@@ -18,16 +18,8 @@ export J2000toGMST, JDtoGMST
 """
     function J2000toGMST(J2000_UT1::Number)
 
-Compute the Greenwich Mean Sideral Time (GMST) given the instant `J2000` in
-J2000.0 reference [UT1].
-
-# Args
-
-* `J2000_UT1`: Instant in J2000.0 reference [UT1].
-
-# Returns
-
-* Greenwich mean sideral time [rad].
+Compute the Greenwich Mean Sideral Time (GMST) \\[rad] given the instant
+`J2000_UT1` in J2000.0 reference [UT1].
 
 # Remarks
 
@@ -54,15 +46,8 @@ end
 """
     function JDtoGMST(JD_UT1::Number)
 
-Compute the Greenwich Mean Sideral Time (GMST) for a Julian Day `JD` [UT1].
-
-# Args
-
-* `JD_UT1`: Julian day [UT1].
-
-# Returns
-
-* Greenwich mean sideral time [rad].
+Compute the Greenwich Mean Sideral Time (GMST) \\[rad] for the Julian Day
+`JD_UT1` [UT1].
 
 # Remarks
 

@@ -22,28 +22,35 @@ export igrf12syn
 ################################################################################
 
 """
-    function igrf12(date::Number, r::Number, λ::Number, Ω::Number [, ::Type{Val{:geocentric}}]; show_warns = true)
+    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
 
 **IGRF v12 Model**
 
-Compute the geomagnetic field vector [nT] at the date `date`, and **geocentric**
-coordinates: latitude `λ`, longitude `Ω`, and distance from the Earth center
-`r`.
+Compute the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
+position (`r`, `λ`, `Ω`).
 
-# Args
+The position representation is defined by `T`. If `T` is `Val{:geocentric}`,
+then the input must be **geocentric** coordinates:
 
-* `date`: Year A.D.
-* `r`: Distance from the Earth center [m].
-* `λ`: Geocentric latitude (-π/2,+π/2) [rad].
-* `Ω`: Geocentric longitude (-π,+π) [rad].
+1. Distance from the Earth center `r` [m];
+1. Geocentric latitude `λ` (-π/2, +π/2) \\[rad]; and
+2. Geocentric longitude `Ω` (-π, +π) \\[rad].
+
+If `T` is `Val{:geodetic}`, then the input must be **geodetic**
+coordinates:
+
+1. Altitude above the reference ellipsoid `h` (WGS-84) \\[m];
+2. Geodetic latitude `λ` (-π/2, +π/2) \\[rad]; and
+3. Geodetic longitude `Ω` (-π, +π) \\[rad].
+
+If `T` is omitted, then it defaults to `Val{:geocentric}`.
+
+Notice that the output vector will be represented in the same reference system
+selected by the parameter `T` (geocentric or geodetic).
 
 # Keywords
 
 * `show_warns`: Show warnings about the data (**Default** = `true`).
-
-# Returns
-
-The geomagnetic field vector represented in the geocentric reference frame [nT].
 
 # Remarks
 
@@ -54,7 +61,7 @@ that a warning message is printed for dates grated than 2020.
 
 This function is an independent implementation of the IGRF model. It contains a
 more readable code than the original one in FORTRAN, because it uses features
-available in julia language.
+available in Julia language.
 
 """
 igrf12(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
@@ -266,42 +273,6 @@ function igrf12(date::Number,
     B_gc = [x;y;z]
 end
 
-"""
-    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, ::Type{Val{:geocentric}}; show_warns = true)
-
-**IGRF v12 Model**
-
-Compute the geomagnetic field vector [nT] at the date `date`, and **geodetic**
-coordinates: latitude `λ`, longitude `Ω`, and altitude above the reference
-ellipsoid `h`.
-
-# Args
-
-* `date`: Year A.D.
-* `h`: Altitude above the reference elipsoid [m].
-* `λ`: Geodetic latitude (-π/2,+π/2) [rad].
-* `Ω`: Geodetic longitude (-π,+π) [rad].
-
-# Keywords
-
-* `show_warns`: Show warnings about the data (**Default** = `true`).
-
-# Returns
-
-The geomagnetic field vector represented in the geodetic reference frame [nT].
-
-# Remarks
-
-The `date` must be greater or equal to 1900 and less than or equal 2025. Notice
-that a warning message is printed for dates grated than 2020.
-
-# Disclaimer
-
-This function is an independent implementation of the IGRF model. It contains a
-more readable code than the original one in FORTRAN, because it uses features
-available in julia language.
-
-"""
 function igrf12(date::Number,
                 h::Number,
                 λ::Number,
@@ -329,7 +300,7 @@ end
 """
     function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number; show_warns = true)
 
-This is a julia implementation of the official IGRF source code, which was
+This is a Julia implementation of the official IGRF source code, which was
 written in Fortran [2]. The input and output variables are exactly the same as
 the ones described in the function `igrf12syn` in [2].
 

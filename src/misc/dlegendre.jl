@@ -29,7 +29,7 @@ export dlegendre_conventional!, dlegendre_conventional
     function dlegendre!([N,] dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
-`P_n,m[x]` w.r.t. `ϕ`:
+`P_n,m[x]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -41,7 +41,7 @@ however, that `dP` must be a square matrix.
 
 This algorithm needs the matrix `P` with the associated Legendre function. This
 can be computed using the function `legendre`. Notice that this matrix must be
-computed using the same normalization (see `T`) as the one selected here.
+computed using the same normalization (see `N`) as the one selected here.
 
 The optional parameter `N` can be used to select the normalization. The
 following values are valid:
@@ -53,17 +53,10 @@ following values are valid:
 * `Val{:conv}`: Compute the conventional associated Legendre function (see
                 `dlegendre_conventional!`).
 
-If `N` is omitted, then the full normalization will be used.
+If `N` is omitted, then the full normalization will be used (`Val{:full}`).
 
-# Args
-
-* `N`: (OPTIONAL) Choose the normalization (**Default**: none).
-* `dP`: Matrix that will store the computed first-order derivative of the
-        associated Legendre functions.
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre functions.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
 dlegendre!(dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false) =
@@ -94,7 +87,7 @@ dlegendre!(::Type{Val{:conv}},
     function dlegendre([N,] ϕ::Number, P::Matrix, ph_term::Bool)
 
 Compute the first-order derivative of the associated Legendre function
-`P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+`P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -116,16 +109,12 @@ following values are valid:
 * `Val{:conv}`: Compute the conventional associated Legendre function (see
                 `dlegendre_conventional!`).
 
-If `N` is omitted, then the full normalization will be used.
+If `N` is omitted, then the full normalization will be used (`Val{:full}`).
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `N`: (OPTIONAL) Choose the normalization (**Default**: none).
-* `P`: Matrix with the associated Legendre functions.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
@@ -147,7 +136,7 @@ dlegendre(::Type{Val{:conv}}, ϕ::Number, P::Matrix, ph_term::Bool) =
     function dlegendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
-`P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+`P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -165,17 +154,12 @@ following values are valid:
 * `Val{:conv}`: Compute the conventional associated Legendre function (see
                 `dlegendre_conventional!`).
 
-If `N` is omitted, then the full normalization will be used.
+If `N` is omitted, then the full normalization will be used (`Val{:full}`).
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `N`: (OPTIONAL) Choose the normalization (**Default**: none).
-* `ϕ`: Angle [rad].
-* `n_max`: The maximum degree that will be computed.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
@@ -210,7 +194,7 @@ dlegendre(::Type{Val{:conv}},
     function dlegendre_fully_normalized!(dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the fully normalized associated Legendre
-function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -224,16 +208,10 @@ This algorithm needs the matrix `P` with the fully normalized associated
 Legendre function. This can be computed using the function
 `legendre_fully_normalized`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `dP`: Matrix that will store the computed first-order derivative of the
-        associated Legendre functions.
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -334,7 +312,7 @@ end
     function dlegendre_fully_normalized(ϕ::Number, P::Matrix, ph_term = false)
 
 Compute the first-order derivative of the Schmidt fully normalized associated
-Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -345,19 +323,15 @@ Legendre function. This can be computed using the function
 `legendre_fully_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -374,7 +348,7 @@ end
     function dlegendre_fully_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt fully normalized associated
-Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -382,14 +356,10 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `n_max`: The maximum degree that will be computed.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
@@ -414,7 +384,7 @@ end
     function dlegendre_schmidt_quasi_normalized!(dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
-Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -428,16 +398,10 @@ This algorithm needs the matrix `P` with the Schmidt quasi-normalized associated
 Legendre function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `dP`: Matrix that will store the computed first-order derivative of the
-      associated Legendre functions.
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -458,7 +422,7 @@ dlegendre_schmidt_quasi_normalized!(dP::Matrix,
     function dlegendre_schmidt_quasi_normalized(ϕ::Number, P::Matrix, ph_term = false)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
-Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -469,19 +433,15 @@ Legendre function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -500,7 +460,7 @@ end
     function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
-Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -508,14 +468,10 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `n_max`: The maximum degree that will be computed.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-           (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
@@ -540,7 +496,7 @@ end
     function dlegendre_conventional!(dP::Matrix, ϕ::Number, P::Matrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
-function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -553,16 +509,10 @@ however, that `dP` must be a square matrix.
 This algorithm needs the matrix `P` with the conventional associated Legendre
 function. This can be computed using the function `legendre_conventional`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `dP`: Matrix that will store the computed first-order derivative of the
-      associated Legendre functions.
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -627,7 +577,7 @@ end
     function dlegendre_conventional(ϕ::Number, P::Matrix, ph_term = false)
 
 Compute the first-order derivative of the conventional associated Legendre
-function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -638,19 +588,15 @@ function. This can be computed using the function
 `legendre_schmidt_quasi_normalized`. The maximum order of the computed
 derivatives will be selected according to the dimensions of the matrix `P`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `P`: Matrix with the associated Legendre function.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
-###### Remarks
+# Remarks
 
 The user is responsible to pass a matrix `P` with the correct values. For
 example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
@@ -667,7 +613,7 @@ end
     function dlegendre_conventional(ϕ::Number, n_max::Number, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
-function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
+function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
 
     dP_n,m[cos(ϕ)]
     --------------
@@ -675,14 +621,10 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ`:
 
 The maximum degree that will be computed is `n_max`.
 
-# Args
+If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
+be included. If `ph_term` is not present, then it defaults to `false`.
 
-* `ϕ`: Angle [rad].
-* `n_max`: The maximum degree that will be computed.
-* `ph_term`: (OPTIONAL) Include the Condon-Shortley phase term `(-1)^m`
-             (**Default** = `false`).
-
-###### Returns
+# Returns
 
 A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.

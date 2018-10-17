@@ -107,18 +107,6 @@ corrections. Hence, if one wants to obtain the MOD and TOD frames according to
 the original IAU-76/FK5 theory, it is necessary to use the low-level functions
 in file `./src/transformations/fk5/fk5.jl`.
 
-# Args
-
-* `T`: (OPTIONAL) Type of the rotation representation (**Default** = `DCM`).
-* `M`: (OPTIONAL) Model used to compute the rotation (**Default** = `FK5()`).
-* `ECIo`: Origin ECEF frame.
-* `ECIf`: Destination ECI frame.
-* `JD_UTC`: Julian day [UTC].
-* `eop_data`: EOP Data.
-
-* `JD_UTCo`: Julian day of the origin reference frame [UTC].
-* `JD_UTCf`: Julian day of the destination reference frame [UTC].
-
 # Returns
 
 The rotation description represented by `T` that rotates the origin ECI

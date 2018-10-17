@@ -12,19 +12,14 @@ export propagate!
     function propagate!(orbp, t::Number) where T
     function propagate!(orbp, t::AbstractVector) where T
 
-If `t` is a number, then propagate `orbp` until the epoch defined by `t`.
+If `t` is a number, then propagate `orbp` until the epoch defined by `t` [s].
 Otherwise, if `t` is an array, then propagate the orbit in `orbp` using the time
-instants defined in the vector `t`.
+instants defined in the vector `t` [s].
 
 In both cases, the orbit propagator algorithm is the one related to the
 structure `orbp`.
 
 The structure `orbp` will contain the elements at the last propagation instant.
-
-# Args
-
-* `orbp`: Propagator structure.
-* `t`: Time instant(s) in which the orbit will be propagated [s].
 
 # Returns
 

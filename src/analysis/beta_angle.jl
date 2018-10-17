@@ -29,7 +29,7 @@ Compute the beta angle of a satellite.
 
 # Returns
 
-The beta angle computed for each day in degrees.
+The beta angle [deg] computed for each day.
 
 """
 function satellite_beta_angle(JD0::Number,

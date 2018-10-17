@@ -27,17 +27,11 @@ export compute_dU, compute_U, compute_g, parse_gfc
     function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = 0) where T<:Number
 
 Compute the derivatives w.r.t. the spherical coordinates of the gravitational
-field (`∂U/∂r`, `∂U/∂ϕ`, `∂U/∂λ`) defined by the coefficients `gm_coefs` at the
-position `r` in ITRF. The maximum degree that will be used while computing
-the spherical harmonics will be `n_max`. If `n_max` is less or equal 0, then the
-maximum available degree will be used.
-
-# Args
-
-* `gm_coefs`: Gravity model coefficients (see `GravityModel_Coefs`).
-* `r`: Position in ITRF in which the gravity will be computed [m].
-* `n_max`: (OPTIONAL) Maximum degree when computing the spherical harmonics
-           (**Default**: 0, which uses the maximum degree).
+field (`∂U/∂r`, `∂U/∂ϕ`, `∂U/∂λ`) defined by the coefficients `gm_coefs` (see
+`GravityModel_Coefs`) at the position `r` [m] in ITRF. The maximum degree that
+will be used while computing the spherical harmonics will be `n_max`. If `n_max`
+is less or equal 0, then the maximum available degree will be used. If `n_max`
+is omitted, then it defaults to 0.
 
 # Returns
 
@@ -146,22 +140,11 @@ end
 """
     function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector [, n_max::Number]) where T<:Number
 
-Compute the gravitational acceleration at position `r` (ITRF) using the
-coefficients `gm_coefs`. The maximum degree that will be used while computing
-the spherical harmonics will be `n_max`. If `n_max` is less or equal 0, then the
-maximum available degree will be used.
-
-# Args
-
-* `gm_coefs`: Gravity model coefficients (see `GravityModel_Coefs`).
-* `r`: Position in ITRF in which the gravity will be computed [m].
-* `n_max`: (OPTIONAL) Maximum degree when computing the spherical harmonics
-           (**Default**: 0, which uses the maximum degree).
-
-# Returns
-
-A vector with the gravitational acceleration represented in ITRF (Earth
-Centered, Earth fixed frame).
+Compute the gravitational acceleration (ITRF) \\[m/s²] at position `r` \\[m]
+(ITRF) using the coefficients `gm_coefs` (see `GravityModel_Coefs`). The maximum
+degree that will be used while computing the spherical harmonics will be
+`n_max`. If `n_max` is less or equal 0, then the maximum available degree will
+be used. If `n_max` is omitted, then it defaults to 0.
 
 # Remarks
 
@@ -214,21 +197,11 @@ end
 """
     function compute_U(gm_coefs::GravityModel_Coefs{T}, ϕ_gc::Number, λ_gc::Number, r_gc::Number [, n_max::Number]) where T<:Number
 
-Compute the gravitational potential at `r` (ITRF) using the coefficients
-`gm_coefs`. The maximum degree that will be used while computing the spherical
-harmonics will be `n_max`. If `n_max` is less or equal 0, then the maximum
-available degree will be used.
-
-# Args
-
-* `gm_coefs`: Gravity model coefficients (see `GravityModel_Coefs`).
-* `r`: Position in ITRF in which the gravitational field will be computed [m].
-* `n_max`: (OPTIONAL) Maximum degree when computing the spherical harmonics
-           (**Default**: 0, which uses the maximum degree).
-
-# Returns
-
-The gravitational potential at specified location [J/kg].
+Compute the gravitational potential [J/kg] at `r` (ITRF) \\[m] using the
+coefficients `gm_coefs` (see `GravityModel_Coefs`). The maximum degree that will
+be used while computing the spherical harmonics will be `n_max`. If `n_max` is
+less or equal 0, then the maximum available degree will be used. If `n_max` is
+omitted, then it defaults to 0.
 
 """
 function compute_U(gm_coefs::GravityModel_Coefs{T},
@@ -303,16 +276,9 @@ end
 """
     function parse_gfc(filename::String)
 
-This function parse a `gfc` (*Gravity Field Coefficient*) file `filename`. More
+Parse a `gfc` (*Gravity Field Coefficient*) file `filename` and return an
+instance of the structure `GravityModel_Coefs` with the parsed values. More
 information about this format can be seen in [2].
-
-# Args
-
-* `filename`: File name and path of the `gfc` file.
-
-# Returns
-
-An instance of the structure `GravityModel_Coefs` with the parsed values.
 
 """
 function parse_gfc(filename::String)

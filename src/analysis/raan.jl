@@ -12,17 +12,9 @@ export compute_RAAN_lt, sim_RAAN_J2
 """
     function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
 
-Compute the RAAN so that the orbit plane local time is `asc_node_lt` at the date
-`t0`, which is specified as a number of days from January 1st, 2000.
-
-# Args
-
-* `t0`: Day of the analysis [number of days since January 1st, 2000].
-* `asc_node_lt`: Desired local time for the ascending node [hour].
-
-# Returns
-
-The RAAN in the interval [0, 2π] [rad].
+Compute the RAAN (0,2π) \\[rad] so that the orbit plane local time is
+`asc_node_lt` [hour] at the date `t0`, which is specified as a number of days
+from January 1st, 2000.
 
 # Remarks
 
@@ -41,17 +33,8 @@ end
 """
     function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 
-Compute the RAAN so that the orbit plane local time is `asc_node_lt` at the
-Julian day `JD`.
-
-# Args
-
-* `JD`: Julian day.
-* `asc_node_lt`: Desired local time for the ascending node [hour].
-
-# Returns
-
-The RAAN in the interval [0, 2π] [rad].
+Compute the RAAN (0,2π) \\[rad] so that the orbit plane local time is
+`asc_node_lt` [hour] at the Julian day `JD`.
 
 """
 function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
@@ -78,21 +61,15 @@ end
 """
     function sim_RAAN_J2(a::Number, e::Number, i::Number, RAAN_0::Number, numDays::Integer)
 
-Simulate the RAAN of an orbit with semi-major axis `a`, eccentricity `e`,
-inclination `i` and initial RAAN `RAAN_0` considering J2 perturbations. The
-analysis is performed for `numDays` days.
-
-# Args
-
-* `a`: Semi-major axis of the satellite orbit [m].
-* `e`: Orbit eccentricity.
-* `i`: Orbit inclination [rad].
-* `RAAN_0`: Initial right ascension of the ascending node [rad].
-* `numDays`: Number of days of the analysis.
+Simulate the RAAN of an orbit with semi-major axis `a` [m], eccentricity `e`,
+inclination `i` [rad], and initial RAAN `RAAN_0` [rad] considering J2
+perturbations. The analysis is performed for `numDays` days.
 
 # Returns
 
-The RAAN computed for each day in the interval [0,2π] [rad].
+A `numDays` × 2 matrix in which the i-th line is:
+
+    | day | RAAN (0,2π) [rad] |
 
 """
 function sim_RAAN_J2(a::Number,

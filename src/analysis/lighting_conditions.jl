@@ -28,14 +28,8 @@ const SAT_LIGHTING_UMBRA = 2
 """
     function satellite_lighting_condition(r_i::AbstractVector, s_i::AbstractVector)
 
-Compute the satellite lighting condition given the Sun unitary vector `s_i` and
-the satellite position vector `r_i`.
-
-# Args
-
-* `r_i`: Satellite position vector represented in the Inertial coordinate frame
-       [m].
-* `s_i`: Sun position vector represented in the Inertial coordinate frame [m].
+Compute the satellite lighting condition given the Sun unitary vector `s_i` [m]
+and the satellite position vector `r_i` [m].
 
 # Returns
 

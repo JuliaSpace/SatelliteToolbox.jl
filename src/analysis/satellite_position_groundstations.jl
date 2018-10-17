@@ -14,20 +14,13 @@ export satellite_check_station
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with position vector `rs_e` (ECEF) and a
-minimum elevation angle of `minElev`.
+minimum elevation angle of `minElev` [rad].
 
-# Args
+Notice that `r_e` and `rs_e` must be represented in the same ECEF frame, and
+must have the same unit.
 
-* `r_e`: Satellite position represented in the ECEF reference frame.
-* `rs_e`: Ground station position represented in the ECEF reference frame.
-* `minElev`: Minimum elevation angle in which the station can see the satellite
-             [rad].
-
-# Returns
-
-* `TRUE`: The satellite is inside the visibility circle of the ground station.
-* `FALSE`: The satellite is not inside the visibility circle of the ground
-           station.
+Returns `true` if the satellite is inside the visibility circle, or `false`
+otherwise.
 
 """
 function satellite_check_station(r_e::Vector, rs_e::Vector, minElev::Number)
@@ -47,23 +40,14 @@ end
     function satellite_check_station(r_e::Vector, lat_s::Number, lon_s::Number, h_s::Number, minElev::Number)
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
-visibility circle of a ground station with latitude `lat_s`, longitude `lon_s`,
-altitude `h_s`, and a minimum elevation angle of `minElev`.
+visibility circle of a ground station with latitude `lat_s` [rad], longitude
+`lon_s` [rad], altitude `h_s` (WGS-84), and a minimum elevation angle of
+`minElev` [rad].
 
-# Args
+Notice that the units of `r_e` and `h_s` must be the same.
 
-* `r_e`: Satellite position represented in the ECEF reference frame.
-* `lat_s`: Latitude of the ground station [rad].
-* `lon_s`: Longitude of the ground station [rad].
-* `h_s`: Altitude of the ground station (WGS-84) [m].
-* `minElev`: Minimum elevation angle in which the station can see the satellite
-           [rad].
-
-# Returns
-
-* `TRUE`: The satellite is inside the visibility circle of the ground station.
-* `FALSE`: The satellite is not inside the visibility circle of the ground
-           station.
+Returns `true` if the satellite is inside the visibility circle, or `false`
+otherwise.
 
 """
 function satellite_check_station(r_e::Vector,

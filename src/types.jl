@@ -97,6 +97,8 @@ end
 """
 Output structure for NRLMSISE00 model.
 
+# Fields
+
 * `den_N`: Nitrogen number density [U].
 * `den_N2`: N₂ number density [U].
 * `den_O`: Oxygen number density [U].
@@ -172,7 +174,9 @@ end
 export EOPData_IAU1980, EOPData_IAU2000A
 
 """
-EOP Data for IAU 1980. The fields are described as follows:
+EOP Data for IAU 1980.
+
+# Fields
 
 * `x, y`: Polar motion with respect to the crust [arcsec].
 * `UT1_UTC`: Irregularities of the rotation angle [s].
@@ -207,7 +211,9 @@ struct EOPData_IAU1980{T}
 end
 
 """
-EOP Data for IAU 2000A. The files are described as follows:
+EOP Data for IAU 2000A.
+
+# Fields
 
 * `x, y`: Polar motion with respect to the crust [arcsec].
 * `UT1_UTC`: Irregularities of the rotation angle [s].
@@ -251,6 +257,8 @@ export Orbit, TLE
 """
 This structure defines the orbit in terms of the Keplerian elements.
 
+# Fields
+
 * `t`: Orbit epoch.
 * `a`: Semi-major axis [m].
 * `e`: Eccentricity.
@@ -273,9 +281,11 @@ end
 """
 This structure contains the same elements of the TLE with the same units.
 
+# Fields
+
 * `name`: Name of the satellite.
 
-# First line
+## First line
 
 * `sat_num`: Satellite number.
 * `classification`: Classification ('U', 'C', or 'S').
@@ -289,7 +299,7 @@ This structure contains the same elements of the TLE with the same units.
 * `elem_set_number`: Element set number.
 * `checksum_l1`: Checksum of the line 1 (modulo 10).
 
-# Second line
+## Second line
 
 * `i`: Inclination [deg].
 * `Ω`: Right ascension of the ascending node [deg].
@@ -367,6 +377,8 @@ end
 """
 Structure that holds the information related to the Two Body orbit propagator.
 
+# Fields
+
 * `orb`: Current orbit (see `Orbit`).
 * `tbd`: Structure that stores the Two Body orbit propagator data (see
         `TwoBody_Structure`).
@@ -387,6 +399,8 @@ export J2_GravCte, J2_Structure, OrbitPropagatorJ2
 
 """
 Gravitational constants for J2 orbit propagator.
+
+# Fields
 
 * `R0`: Earth equatorial radius [m].
 * `μm`: √GM [er/s]^(3/2).
@@ -439,6 +453,8 @@ end
 """
 Structure that holds the information related to the J2 orbit propagator.
 
+# Fields
+
 * `orb`: Current orbit (see `Orbit`).
 * `j2d`: Structure that stores the J2 orbit propagator data (see
          `J2_Structure`).
@@ -458,6 +474,8 @@ export SGP4_GravCte, SGP4_Structure, OrbitPropagatorSGP4
 
 """
 Gravitational constants for SGP4.
+
+# Fields
 
 * `R0`: Earth equatorial radius [km].
 * `XKE`: √GM [er/s]^(3/2).
@@ -611,6 +629,8 @@ end
 """
 Structure that holds the information related to the SGP4 propagator.
 
+# Fields
+
 * `orb`: Current orbit (see `Orbit`).
 * `sgp4_gc`: Gravitational contents of the SGP4 algorithm (see `SGP4_GravCte`).
 * `sgp4d`: Structure that stores the SGP4 data (see `SGP4_Structure`).
@@ -653,8 +673,3 @@ Union of all *of date* Earth-Centered Inertial (ECI) frames supported.
 T_ECIs_of_date = Union{Type{Val{:TOD}},
                        Type{Val{:MOD}},
                        Type{Val{:TEME}}}
-
-################################################################################
-#                                Space Indices
-################################################################################
-

@@ -15,17 +15,6 @@ export @tle_str, @tlenc_str
 Parse the string `str` using the type `T`. If it is not succeeded, then throw an
 error indicating the line `line_num` with the problem.
 
-# Args
-
-* `T`: Type of the output.
-* `str`: Input string.
-* `line_num`: Line number that is being analyzed.
-
-# Returns
-
-The `str` parsed to the type `T`. If an error occurred, then an exception is
-thrown.
-
 """
 macro parse_value(T, str, line_num)
     quote
@@ -44,18 +33,11 @@ end
 """
     function compute_checksum(str::AbstractString)
 
-Compute the checksum of the line `str` modulo 10. The algorithm is simple: add
-all the numbers in the line, ignoring letters, spaces, periods, and plus signs,
-but assigning +1 to the minus signs. The checksum is the remainder of the
-division by 10.
+Compute the checksum of the line `str` modulo 10.
 
-# Args
-
-* `str`: String to be checked, the checksum **must not** be in this string.
-
-# Returns
-
-The computed checksum.
+The algorithm is simple: add all the numbers in the line, ignoring letters,
+spaces, periods, and plus signs, but assigning +1 to the minus signs. The
+checksum is the remainder of the division by 10.
 
 """
 function compute_checksum(str::AbstractString)
@@ -79,19 +61,14 @@ function compute_checksum(str::AbstractString)
 end
 
 """
-    @inline function read_tle(tle_filename::String)
+    @inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
-Read the TLEs in the file `tle_filename`.
+Read the TLEs in the file `tle_filename` and return an array of `TLE` with the
+parsed TLEs.
 
-# Args
-
-* `tle_filename`: TLE file name.
-* `verify_checksum`: (OPTIONAL) If false, then the checksum will not be verified
-                     (**Default** = true).
-
-# Returns
-
-An array with all the TLEs that were parsed.
+If `verify_checksum` if `true`, then the checksum of both TLE lines will be
+verified. Otherwise, the checksum will not be checked. If `verify_checksum` is
+omitted, then it defaults to `true`.
 
 """
 @inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
@@ -106,20 +83,12 @@ end
     @inline function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
 
 Parse a set of TLEs in the string `tles` or one TLE with first line `tle_l1` and
-second line `tle_l2`.
+second line `tle_l2`. This function returns an array of `TLE` with the parsed
+TLEs.
 
-# Args
-
-* `tles`: TLEs that will be parsed.
-* `verify_checksum`: (OPTIONAL) If false, then the checksum will not be verified
-                     (**Default** = true).
-
-* `tle_l1`: First line of the TLE.
-* `tle_l2`: Second line of the TLE.
-
-# Returns
-
-An array with all the TLEs that were parsed.
+If `verify_checksum` if `true`, then the checksum of both TLE lines will be
+verified. Otherwise, the checksum will not be checked. If `verify_checksum` is
+omitted, then it defaults to `true`.
 
 """
 @inline function read_tle_from_string(tles::String,
@@ -138,17 +107,9 @@ end
 """
     macro tle_str(str)
 
-Parse a set of TLEs in the string `tles` and return as an array of TLES. This
+Parse a set of TLEs in the string `str` and return as an array of `TLE`. This
 version verifies the checksum of the TLE. If the checksum verification is not
 desired, see `@tlenc_str`.
-
-# Args
-
-* `str`: String containing the TLEs.
-
-# Returns
-
-An array of TLEs.
 
 # Example
 
@@ -173,17 +134,9 @@ end
 """
     macro tlenc_str(str)
 
-Parse a set of TLEs in the string `tles` and return as an array of TLES. This
+Parse a set of TLEs in the string `str` and return as an array of `TLE`. This
 version **does not** verify the checksum of the TLE. If the checksum
 verification is required, see `@tle_str`.
-
-# Args
-
-* `str`: String containing the TLEs.
-
-# Returns
-
-An array of TLEs.
 
 # Example
 
@@ -468,15 +421,12 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
 end
 
 """
-    function print_tle(io::IO, tle::TLE)
+    function print_tle(io::IO, tle::TLE, color::Bool = true)
 
 Print the TLE `tle` in the IO `io`.
 
-# Args
-
-* `io`: IO to print the TLE.
-* `tle`: TLE to be printed.
-* `color`: If true, then the text will be printed with colors.
+If `color` is `true`, then the text will be printed using colors. If `color` is
+omitted, then it defaults to `true`.
 
 """
 function print_tle(io::IO, tle::TLE, color::Bool = true)

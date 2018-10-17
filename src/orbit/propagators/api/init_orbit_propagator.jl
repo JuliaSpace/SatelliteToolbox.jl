@@ -27,9 +27,11 @@ export init_orbit_propagator
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number = 0, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
     function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
-Initialize the orbit propagator `orbp_type` using the initial orbit specified by
-the elements `epoch`, `n_0`, `e_0`, `i_0`, `Ω_0`, `ω_0`, and `M_0`, and the
-additional configuration parameters related to the selected propagator.
+Initialize the orbit propagator `orbp_type`, which can be:
+
+* `Val{:J2}`: J2 orbit propagator;
+* `Val{:sgp4}`: SGP4 orbit propagator; or
+* `Val{:twobody}`: Two-body orbit propagator.
 
 # Args
 
@@ -50,7 +52,7 @@ additional configuration parameters related to the selected propagator.
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants (**Default** =
            `j2_gc_wgs84`).
 
-## SG4 orbit propagator
+## SGP4 orbit propagator
 
 * `bstar`: (OPTIONAL) Initial B* parameter of the SGP4 (**Default** = 0).
 * `sgp4_gc`: (OPTIONAL) Gravitational constants (**Default** = `sgp4_gc_wgs84`).
@@ -158,9 +160,11 @@ end
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
     function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)
 
-Initialize the orbit propagator `orbp_type` using the initial orbit specified in
-`orb_0`, and the additional configuration parameters related to the selected
-propagator.
+Initialize the orbit propagator `orbp_type`, which can be:
+
+* `Val{:J2}`: J2 orbit propagator;
+* `Val{:sgp4}`: SGP4 orbit propagator; or
+* `Val{:twobody}`: Two-body orbit propagator.
 
 # Args
 
@@ -255,11 +259,13 @@ end
 """
     function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)
-    function init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
+    function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)
 
-Initialize the orbit propagator `orbp_type` using the initial orbit specified in
-the TLE `tle`, and the additional configuration parameters related to the
-selected propagator.
+Initialize the orbit propagator `orbp_type`, which can be:
+
+* `Val{:J2}`: J2 orbit propagator;
+* `Val{:sgp4}`: SGP4 orbit propagator; or
+* `Val{:twobody}`: Two-body orbit propagator.
 
 # Args
 

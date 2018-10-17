@@ -91,20 +91,15 @@ end
 """
     function twobody!(tbd::TwoBody_Structure, t::Number)
 
-Propagate the orbit defined in `tbd` until the time `t`. Notice that the values
-in `tbd` will be modified.
-
-# Args
-
-* `tbd`: Two Body orbit propagator structure (see `TwoBody_Structure`).
-* `t`: Time in which the elements will be propagated [s].
+Propagate the orbit defined in `tbd` (see `TwoBody_Structure`) until the time
+`t` [s]. Notice that the values in `tbd` will be modified.
 
 # Returns
 
 * The position vector represented in the inertial frame at time `t` [m].
 * The velocity vector represented in the inertial frame at time `t` [m/s]
 
-###### Remarks
+# Remarks
 
 The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. If the orbit parameters are obtained

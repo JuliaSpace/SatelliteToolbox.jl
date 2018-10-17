@@ -11,13 +11,8 @@ export step!
 """
     function step!(orbp, Δt::Number)
 
-Propagate the orbit in `orbp` by `Δt` s using the algorithm of `orbp`. The new
+Propagate the orbit in `orbp` by `Δt` [s] using the algorithm of `orbp`. The new
 parameters will be written in `orbp`.
-
-# Args
-
-* `orbp`: Propagator structure.
-* `Δt`: Step time [s].
 
 # Returns
 

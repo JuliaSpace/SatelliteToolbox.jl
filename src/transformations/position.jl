@@ -32,7 +32,7 @@ elements.
 * The unit vector perpendicular to the satellite position vector that lies on
   the orbit plane represented in the ECI reference frame.
 
-###### Remarks
+# Remarks
 
 The satellite position vector will have the same unit of the semi-major axis.
 
