@@ -13,7 +13,7 @@
 #                             Jacchia-Bowman 2008
 # ==============================================================================
 
-export JB2008_Structure
+export JB2008_Output
 
 """
 Output structure of the Jacchia-Bowman 2008.
@@ -31,7 +31,7 @@ Output structure of the Jacchia-Bowman 2008.
 * `Tz`: Temperature at the selected altitude [K].
 
 """
-@with_kw struct JB2008_Structure{T}
+@with_kw struct JB2008_Output{T}
     nN2::T
     nO2::T
     nO::T

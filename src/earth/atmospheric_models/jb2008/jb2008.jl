@@ -73,7 +73,7 @@ http://sol.spacenvironment.net/jb2008/
 
 # Returns
 
-An instance of the structure `JB2008_Structure` with the computed values.
+An instance of the structure `JB2008_Output` with the computed values.
 
 """
 function jb2008(JD::Number, glat::Number, glon::Number, h::Number)
@@ -491,7 +491,7 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
     ρ   = sum_mn/A
 
     # Create and return the output structure.
-    JB2008_Structure{Float64}(nN₂, nO₂, nO, nAr, nHe, nH, ρ, T_exo, Tz)
+    JB2008_Output{Float64}(nN₂, nO₂, nO, nAr, nHe, nH, ρ, T_exo, Tz)
 end
 
 ################################################################################
