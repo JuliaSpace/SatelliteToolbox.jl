@@ -13,6 +13,9 @@ using SatelliteToolbox
     cd("./earth/atmospheric_models/jb2008/")
     include("./earth/atmospheric_models/jb2008/jb2008.jl")
     cd("../../../")
+    cd("./earth/atmospheric_models/jr1971/")
+    include("./earth/atmospheric_models/jr1971/jr1971.jl")
+    cd("../../../")
 end
 println("")
 
