@@ -10,6 +10,7 @@ using DelimitedFiles
 using LinearAlgebra
 using OptionalData
 using Parameters
+using PolynomialRoots
 using Printf
 using ReferenceFrameRotations
 using RemoteFiles
@@ -52,6 +53,7 @@ include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
 include("earth/atmospheric_models/jb2008/jb2008.jl")
+include("earth/atmospheric_models/jr1971/jr1971.jl")
 include("earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
 include("earth/gravity_models/embedded_gravity_models.jl")
 include("earth/gravity_models/gravity_model.jl")

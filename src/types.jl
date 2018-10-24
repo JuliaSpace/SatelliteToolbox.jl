@@ -43,6 +43,39 @@ Output structure of the Jacchia-Bowman 2008.
     Tz::T
 end
 
+#                             Jacchia-Roberts 1971
+# ==============================================================================
+
+export JR1971_Output
+
+"""
+Output structure of the Jacchia-Roberts 1971 model.
+
+# Fields
+
+* `nN2`: Number density of N₂ [1/m³].
+* `nO2`: Number density of O₂ [1/m³].
+* `nO`: Number density of O [1/m³].
+* `nAr`: Number density of Ar [1/m³].
+* `nHe`: Number density of He [1/m³].
+* `nH`: Number density of H [1/m³].
+* `rho`: Total density [kg/m³].
+* `T_exo`: Exospheric temperature [K].
+* `Tz`: Temperature at the selected altitude [K].
+
+"""
+@with_kw struct JR1971_Output{T}
+    nN2::T
+    nO2::T
+    nO::T
+    nAr::T
+    nHe::T
+    nH::T
+    rho::T
+    T_exo::T
+    Tz::T
+end
+
 #                                 NRLMSISE-00
 # ==============================================================================
 

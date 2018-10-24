@@ -3,6 +3,7 @@ HTTP 0.6.13
 Interpolations 0.8.0
 Parameters 0.10.1
 OptionalData 0.2.0
+PolynomialRoots 0.2.0
 ReferenceFrameRotations 0.2.1
 RemoteFiles 0.2.1
 StaticArrays 0.8.3
