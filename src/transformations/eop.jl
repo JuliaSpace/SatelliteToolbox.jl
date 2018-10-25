@@ -50,10 +50,10 @@ function get_iers_eop(data_type::Symbol = :IAU1980)
 end
 
 """
-    function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
+    function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
 
 Get the IERS EOP C04 IAU1980 data from the URL `url`. If `url` is omitted, then
-it defaults to https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213.
+it defaults to https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
 
 # Returns
 
@@ -67,7 +67,7 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213")
+function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
     r = HTTP.request("GET", url)
 
     # Parse the data removing the header.
@@ -79,10 +79,10 @@ end
 
 
 """
-    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
+    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt")
 
 Get the IERS EOP C04 IAU2000A data from the URL `url`. If `url` is omitted, then
-it defaults to https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214.
+it defaults to https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
 
 # Returns
 
@@ -96,7 +96,7 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214")
+function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt")
     r = HTTP.request("GET", url)
 
     # Parse the data removing the header.
@@ -126,13 +126,13 @@ download it using the following commands:
 
 * IAU 1980
 
-        curl -O https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213
-        wget https://datacenter.iers.org/eop/-/somos/5Rgv/latest/213
+        curl -O https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
+        wget https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
 
 * IAU 2000A
 
-        curl -O https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214
-        wget https://datacenter.iers.org/eop/-/somos/5Rgv/latest/214
+        curl -O https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
+        wget https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
 
 """
 function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
