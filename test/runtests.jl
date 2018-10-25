@@ -7,6 +7,9 @@ using ReferenceFrameRotations
 using SatelliteToolbox
 
 @testset "Atmospheric Models" begin
+    cd("./earth/atmospheric_models/expatmosphere/")
+    include("./earth/atmospheric_models/expatmosphere/expatmosphere.jl")
+    cd("../../../")
     cd("./earth/atmospheric_models/nrlmsise00/")
     include("./earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
     cd("../../../")
