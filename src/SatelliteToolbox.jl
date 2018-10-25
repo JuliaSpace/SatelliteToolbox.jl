@@ -52,6 +52,7 @@ include("analysis/satellite_position_groundstations.jl")
 include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
+include("earth/atmospheric_models/expatmosphere/expatmosphere.jl")
 include("earth/atmospheric_models/jb2008/jb2008.jl")
 include("earth/atmospheric_models/jr1971/jr1971.jl")
 include("earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
