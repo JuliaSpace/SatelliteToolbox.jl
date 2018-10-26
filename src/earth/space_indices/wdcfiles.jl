@@ -114,6 +114,14 @@ end
 #                              Private Functions
 ################################################################################
 
+"""
+    function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
+
+Parse the WDC files with paths in `filepaths` related to the years in `years`.
+
+**Notice that the files must be sorted by the year!**
+
+"""
 function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
     # Allocate the raw data.
     JD = Float64[]
@@ -161,6 +169,19 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
     _WDC_Structure(itp_Kp, itp_Ap)
 end
 
+"""
+    function _prepare_wdc_remote_files(oldest_year::Number)
+
+Configure all the WDC remote files between current year and `oldest_year`.
+Notice that previous years will never be updated whereas the current year will
+be updated daily.
+
+If `oldest_year` is greater than current year, then only the files from the
+current year will be downloaded.
+
+This function modifies the global variable `_wdcfiles`.
+
+"""
 function _prepare_wdc_remote_files(oldest_year::Number)
     # Get the current year.
     current_year = year(now())
