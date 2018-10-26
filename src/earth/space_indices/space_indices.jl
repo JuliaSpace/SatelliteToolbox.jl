@@ -66,7 +66,7 @@ function init_space_indices(;force_download = false, dtcfile_path = nothing,
 
     if wdcfiles_dir == nothing
         _prepare_wdc_remote_files(wdcfiles_oldest_year)
-        download(_wdcfiles)
+        download(_wdcfiles; force = force_download)
 
         # Get the files available and sort them by the year.
         for (sym,wdcfile) in _wdcfiles.files
