@@ -42,6 +42,8 @@ _wdcfiles = RemoteFileSet(".wdc files", Dict{Symbol,RemoteFile}())
 #                               Public Functions
 ################################################################################
 
+export get_Kp, get_Ap
+
 #                                   Getters
 # ==============================================================================
 
