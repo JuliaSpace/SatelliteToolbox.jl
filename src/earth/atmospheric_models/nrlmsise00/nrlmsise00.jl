@@ -112,7 +112,7 @@ const NRLMSISE00_DEFAULT_FLAGS =
 ################################################################################
 
 """
-    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number, f107A::Number, f107::Number, ap::Union{Number,AbstractVector}; output_si::Bool = true, dversion::Bool = true)
+    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number [, f107A::Number, f107::Number, ap::Union{Number,AbstractVector}]; output_si::Bool = true, dversion::Bool = true)
 
 **NRLMSISE-00**
 
@@ -127,6 +127,9 @@ Notice that the NRLMSISE-00 will be run using the default flags (see
 must be converted to SI units. If more control is needed, then the user must
 manually call the function `conf_nrlmsise00` and then call `gtd7` or `gtd7d`
 with the desired flags.
+
+If the space indices `f107A`, `f107`, and `ap` are missing, then they will be
+obtained from the online databases (see `init_space_indices()`).
 
 # Args
 
@@ -200,6 +203,41 @@ is the effective total mass density for drag and is the sum of the mass
 densities of all species in this model **including** the anomalous oxygen.
 
 """
+function nrlmsise00(JD::Number,
+                    alt::Number,
+                    g_lat::Number,
+                    g_long::Number;
+                    output_si::Bool = true,
+                    dversion::Bool = true)
+
+    # Get the space indices. If the altitude is lower than 80km, set to default
+    # according to the instructions in NRLMSISE-00 source code.
+    if alt < 80e3
+        f107A = f107 = 150.0
+        ap = 4.0
+    else
+        f107A     = get_F81a(JD)
+        f107      = get_F10(JD)
+        Ap_daily  = get_Ap(JD, daily = true)
+        Ap_0h     = get_Ap(JD)
+        Ap_3h     = get_Ap(JD - 3/24)
+        Ap_6h     = get_Ap(JD - 6/24)
+        Ap_9h     = get_Ap(JD - 9/24)
+        Ap_12_33h = get_Ap(JD; mean = (12,33))
+        Ap_36_57h = get_Ap(JD; mean = (36,57))
+
+        # Assemble the Ap vector.
+        ap = [Ap_daily, Ap_0h, Ap_3h, Ap_6h, Ap_9h, Ap_12_33h, Ap_36_57h]
+        display(ap)
+        display(f107A)
+        display(f107)
+    end
+
+    # Call the NRLMSISE-00 model.
+    nrlmsise00(JD, alt, g_lat, g_long, f107A, f107, ap; output_si = output_si,
+               dversion = dversion)
+end
+
 function nrlmsise00(JD::Number,
                     alt::Number,
                     g_lat::Number,
