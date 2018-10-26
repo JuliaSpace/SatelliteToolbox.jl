@@ -82,13 +82,13 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number)
     # Get the data in the desired Julian Day considering the tabular time of the
     # model.
     F10    = get_F10(JD-1)
-    F10ₐ   = get_F10ₐ(JD-1)
+    F10ₐ   = get_F81a(JD-1)
     S10    = get_S10(JD-1)
-    S10ₐ   = get_S10ₐ(JD-1)
+    S10ₐ   = get_S81a(JD-1)
     M10    = get_M10(JD-2)
-    M10ₐ   = get_M10ₐ(JD-2)
+    M10ₐ   = get_M81a(JD-2)
     Y10    = get_Y10(JD-5)
-    Y10ₐ   = get_Y10ₐ(JD-5)
+    Y10ₐ   = get_Y81a(JD-5)
     DstΔTc = get_DstΔTc(JD)
 
     jb2008(JD, glat, glon, h, F10, F10ₐ, S10, S10ₐ, M10, M10ₐ, Y10, Y10ₐ, DstΔTc)
