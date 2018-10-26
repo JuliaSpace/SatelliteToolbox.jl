@@ -7,6 +7,7 @@ import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, sin, show
 
 using Dates
 using DelimitedFiles
+using Interpolations
 using LinearAlgebra
 using OptionalData
 using Parameters
