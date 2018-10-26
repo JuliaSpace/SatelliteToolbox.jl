@@ -39,6 +39,7 @@ keywords can be used for this:
 
 * `dtcfile_path`: Path to `DTCFILE.TXT`.
 * `solfsmy_path`: Path to `SOLFSMY.TXT`.
+* `wdcfiles_dir`: Path to the directory containing the WDC files.
 
 For the WDC files, which contains the information about `Kp` and `Ap` indices,
 the user can select what is the oldest year in which the data will be downloaded
