@@ -213,24 +213,13 @@ function nrlmsise00(JD::Number,
     # Get the space indices. If the altitude is lower than 80km, set to default
     # according to the instructions in NRLMSISE-00 source code.
     if alt < 80e3
-        f107A = f107 = 150.0
-        ap = 4.0
+        f107A = 150.0
+        f107  = 150.0
+        ap    = 4.0
     else
-        f107A     = get_F81a(JD)
-        f107      = get_F10(JD)
-        Ap_daily  = get_Ap(JD, daily = true)
-        Ap_0h     = get_Ap(JD)
-        Ap_3h     = get_Ap(JD - 3/24)
-        Ap_6h     = get_Ap(JD - 6/24)
-        Ap_9h     = get_Ap(JD - 9/24)
-        Ap_12_33h = get_Ap(JD; mean = (12,33))
-        Ap_36_57h = get_Ap(JD; mean = (36,57))
-
-        # Assemble the Ap vector.
-        ap = [Ap_daily, Ap_0h, Ap_3h, Ap_6h, Ap_9h, Ap_12_33h, Ap_36_57h]
-        display(ap)
-        display(f107A)
-        display(f107)
+        f107A = get_F81a(JD)
+        f107  = get_F10(JD)
+        ap    = get_Ap(JD, daily = true)
     end
 
     # Call the NRLMSISE-00 model.
