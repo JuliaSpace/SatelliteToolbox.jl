@@ -44,7 +44,11 @@
 
     # Initialize the space indices with the local files.
     init_space_indices(dtcfile_path = "./DTCFILE_DEMO.TXT",
-                       solfsmy_path = "./SOLFSMY_DEMO.TXT")
+                       solfsmy_path = "./SOLFSMY_DEMO.TXT",
+                       wdcfiles_dir = "./")
+    # TODO: The last line is a workaround to do not download the WDC files,
+    # which we do not need for this test. This must be modified once a way to
+    # avoid those unnecessary downloads is implemented.
 
     # Files with the test results.
     test_list = ["JB2008_AUTO_OUTPUT_01.DAT",
