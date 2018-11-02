@@ -1,5 +1,5 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
+#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Description
 #
 #   This file contains functions to retrieve space indices for many models.
@@ -11,16 +11,167 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export init_space_indices
+export get_space_index, init_space_indices
 
 include("./dtcfile.jl")
 include("./fluxtable.jl")
 include("./solfsmy.jl")
 include("./wdcfiles.jl")
+include("./space_indices_helpers.jl")
+
+################################################################################
+#                                Private Macros
+################################################################################
+
+macro _check_data(itp, JD)
+    quote
+        if ($(esc(JD)) < $(esc(itp)).knots[1][1]) ||
+           ($(esc(JD)) > $(esc(itp)).knots[1][end])
+            error("The data for the requested Julian Day is not available!")
+        end
+    end
+end
 
 ################################################################################
 #                               Public Functions
 ################################################################################
+
+"""
+    function get_space_index(T, JD::Number; ...)
+
+Return the space index `T` at the day `JD` [Julian Day]. `T` can be:
+
+## Daily 10.7-cm solar flux
+
+The daily 10.7-cm solar flux can be obtained using:
+
+* `F10()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10adj()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10obs()`: 10.7-cm observed solar flux \\[10⁻²² W/(M² Hz)].
+
+These indices require `fluxtable` (see `init_space_indices`).
+
+## Daily average 10.7-cm solar flux
+
+The daily average 10.7-cm solar flux, centered at `JD`, can be obtained using:
+
+* `F10()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10adj()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10obs()`: 10.7-cm observed solar flux \\[10⁻²² W/(M² Hz)].
+
+In this case, the keyword `window::Int` can be passed to select the size of the
+window. By default, it is selected as 81.
+
+These indices require `fluxtable` (see `init_space_indices`).
+
+# Daily Kp and Ap
+
+* `Kp()`: Kp index.
+* `Ap()`: Ap index.
+
+These indices require `wdcfiles` (see `init_space_indices`).
+
+# Daily S10, M10, and Y10
+
+* `S10()`: EUV index (26-34 nm) scaled to F10.7.
+* `M10()`: MG2 index scaled to F10.7.
+* `Y10()`: Solar X-ray & Lya index scaled to F10.7.
+
+These indices require `solfsmy` (see `init_space_indices`).
+
+# 81-day centered average of S10, M10, and Y10.
+
+* `S81a`: EUV 81-day averaged centered index.
+* `M81a`: MG2 81-day averaged centered index.
+* `Y81a`: Solar X-ray & Lya 81-day averaged centered index.
+
+These indices require `solfsmy` (see `init_space_indices`).
+
+# Exospheric temperature variation due to Dst
+
+* `DstΔTc`: Exospheric temperature variation due to `Dst` [K].
+
+This index requires `dtcfile` (see `init_space_indices`).
+
+"""
+@inline get_space_index(::Type{Val{:F10}}, JD::Number) =
+    get_space_index(Val{:F10adj}, JD)
+
+@inline function get_space_index(::Type{Val{:F10obs}}, JD::Number)
+    @_check_data(get(_fluxtable_data).F10obs, JD)
+    get(_fluxtable_data).F10obs(JD)
+end
+
+@inline function get_space_index(::Type{Val{:F10adj}}, JD::Number)
+    @_check_data(get(_fluxtable_data).F10adj, JD)
+    get(_fluxtable_data).F10adj(JD)
+end
+
+@inline get_space_index(::Type{Val{:F10M}}, JD::Number; window::Int = 81) =
+    get_space_index(Val{:F10Madj}, JD; window = window)
+
+@inline function get_space_index(::Type{Val{:F10Mobs}}, JD::Number;
+                                 window::Int = 81)
+
+    Δ = floor( Int, (window-1)/2 )
+    @_check_data(get(_fluxtable_data).F10obs, JD-Δ)
+    @_check_data(get(_fluxtable_data).F10obs, JD+Δ)
+    mean( get(_fluxtable_data).F10obs( JD-Δ:1:JD+Δ ) )
+end
+
+@inline function get_space_index(::Type{Val{:F10Madj}}, JD::Number;
+                                 window::Int = 81)
+
+    Δ = floor( Int, (window-1)/2 )
+    @_check_data(get(_fluxtable_data).F10adj, JD-Δ)
+    @_check_data(get(_fluxtable_data).F10adj, JD+Δ)
+    mean( get(_fluxtable_data).F10adj( JD-Δ:1:JD+Δ ) )
+end
+
+@inline function get_space_index(::Type{Val{:Kp}}, JD::Number)
+    @_check_data(get(_wdc_data).Kp, JD)
+    get(_wdc_data).Kp(JD)
+end
+
+@inline function get_space_index(::Type{Val{:Ap}}, JD::Number)
+    @_check_data(get(_wdc_data).Ap, JD)
+    get(_wdc_data).Ap(JD)
+end
+
+@inline function get_space_index(::Type{Val{:S10}}, JD::Number)
+    @_check_data(get(_solfsmy_data).S10, JD)
+    get(_solfsmy_data).S10(JD)
+end
+
+@inline function get_space_index(::Type{Val{:S81a}}, JD::Number)
+    @_check_data(get(_solfsmy_data).S81a, JD)
+    get(_solfsmy_data).S81a(JD)
+end
+
+@inline function get_space_index(::Type{Val{:M10}}, JD::Number)
+    @_check_data(get(_solfsmy_data).M10, JD)
+    get(_solfsmy_data).M10(JD)
+end
+
+@inline function get_space_index(::Type{Val{:M81a}}, JD::Number)
+    @_check_data(get(_solfsmy_data).M81a, JD)
+    get(_solfsmy_data).M81a(JD)
+end
+
+@inline function get_space_index(::Type{Val{:Y10}}, JD::Number)
+    @_check_data(get(_solfsmy_data).Y10, JD)
+    get(_solfsmy_data).Y10(JD)
+end
+
+@inline function get_space_index(::Type{Val{:Y81a}}, JD::Number)
+    @_check_data(get(_solfsmy_data).Y81a, JD)
+    get(_solfsmy_data).Y81a(JD)
+end
+
+@inline function get_space_index(::Type{Val{:DstΔTc}}, JD::Number)
+    @_check_data(get(_dtcfile_data).DstΔTc, JD)
+    get(_dtcfile_data).DstΔTc(JD)
+end
 
 """
     function init_space_indices(...)
