@@ -26,8 +26,8 @@ Structure to store the interpolations of the data in WDC files.
 
 """
 struct _WDC_Structure
-    Kp::AbstractInterpolation
-    Ap::AbstractInterpolation
+    Kp::_space_indices_itp_constant{SVector{8,Float64}}
+    Ap::_space_indices_itp_constant{SVector{8,Float64}}
 end
 
 # Remote files: *.wdc
@@ -200,8 +200,8 @@ Parse the WDC files with paths in `filepaths` related to the years in `years`.
 function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
     # Allocate the raw data.
     JD = Float64[]
-    Kp = Vector{Float64}[]
-    Ap = Vector{Int}[]
+    Kp = SVector{8,Float64}[]
+    Ap = SVector{8,Float64}[]
 
     for (filepath, year) in zip(filepaths, years)
 
@@ -218,7 +218,7 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
                 JD_k  = DatetoJD(year, month, day, 12, 0, 0)
 
                 # Get the vector of Kps and Aps.
-                Ap_k = zeros(Int,    8)
+                Ap_k = zeros(Float64,8)
                 Kp_k = zeros(Float64,8)
 
                 for i = 1:8
@@ -228,8 +228,8 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
 
                 # Add data to the vector.
                 push!(JD, JD_k)
-                push!(Kp, Kp_k)
-                push!(Ap, Ap_k)
+                push!(Kp, SVector{8,Float64}(Kp_k))
+                push!(Ap, SVector{8,Float64}(Ap_k))
             end
         end
     end

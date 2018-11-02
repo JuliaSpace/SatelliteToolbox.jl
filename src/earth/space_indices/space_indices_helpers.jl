@@ -5,8 +5,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-for sym in [:F10, :F10obs, :F10adj, :F10M, :F10Mobs, :F10Madj, :Kp, :Ap, :S10,
-            :S81a, :M10, :M81a, :Y10, :Y81a, :DstΔTc]
+for sym in [:F10, :F10obs, :F10adj, :F10M, :F10Mobs, :F10Madj, :Kp, :Ap,
+            :Kp_vect, :Ap_vect, :S10, :S81a, :M10, :M81a, :Y10, :Y81a, :DstΔTc]
 
     qsym = Meta.quot(sym)
 

@@ -31,15 +31,15 @@ Structure to store the interpolations of the data in `SOLFSMY.TXT` file.
 * `Y81a`: Solar X-ray & Lya 81-day averaged centered index.
 
 """
-struct _SOLFSMY_Structure{T}
-    F10::T
-    F81a::T
-    S10::T
-    S81a::T
-    M10::T
-    M81a::T
-    Y10::T
-    Y81a::T
+struct _SOLFSMY_Structure
+    F10::_space_indices_itp_constant{Float64}
+    F81a::_space_indices_itp_constant{Float64}
+    S10::_space_indices_itp_constant{Float64}
+    S81a::_space_indices_itp_constant{Float64}
+    M10::_space_indices_itp_constant{Float64}
+    M81a::_space_indices_itp_constant{Float64}
+    Y10::_space_indices_itp_constant{Float64}
+    Y81a::_space_indices_itp_constant{Float64}
 end
 
 # Remote file: SOLFSMY.TXT

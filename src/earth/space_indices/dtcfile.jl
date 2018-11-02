@@ -20,8 +20,8 @@ Structure to store the interpolations of the data in `DTCFILE.TXT` file.
 * `DstΔTc`: Temperature variation due to Dst [K].
 
 """
-struct _DTCFILE_Structure{T}
-    DstΔTc::T
+struct _DTCFILE_Structure
+    DstΔTc::_space_indices_itp_linear{Float64}
 end
 
 # Remote file: DTCFILE.TXT

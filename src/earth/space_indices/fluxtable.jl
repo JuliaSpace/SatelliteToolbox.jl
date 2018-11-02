@@ -8,9 +8,9 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-struct _fluxtable_Structure{T}
-    F10obs::T
-    F10adj::T
+struct _fluxtable_Structure
+    F10obs::_space_indices_itp_constant{Float64}
+    F10adj::_space_indices_itp_constant{Float64}
 end
 
 # Remote file: fluxtable.txt
