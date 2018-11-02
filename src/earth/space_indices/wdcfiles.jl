@@ -36,7 +36,8 @@ end
 _wdcfiles = RemoteFileSet(".wdc files", Dict{Symbol,RemoteFile}())
 
 # Optional variable that will store the WDC data.
-@OptionalData _wdc_data _WDC_Structure "Run `init_space_indices()` to initialize the space indices structures."
+@OptionalData(_wdc_data, _WDC_Structure,
+              "Run `init_space_indices()` with `:wdcfiles` in `enabled_files` array to initialize required data.")
 
 ################################################################################
 #                               Public Functions
@@ -115,6 +116,78 @@ end
 ################################################################################
 #                              Private Functions
 ################################################################################
+
+"""
+    function _init_wdcfiles(;force_download = false, local_dir = nothing, wdcfiles_oldest_year = year(now())-3)
+
+Initialize the data in the WDC files by creating `_wdcfiles_data`. The
+initialization process is composed of:
+
+1. Download the files, if it is necessary;
+2. Parse the files;
+3. Create the interpolations and the structures.
+
+If the keyword `force_download` is `true`, then the files will always be
+downloaded.
+
+The user can also specify a location for the directory with the WDC files using
+the keyword `local_dir`. If it is `nothing`, which is the default, then the
+file will be downloaded.
+
+The user can select what is the oldest year in which the data will be downloaded
+by the keyword `wdcfiles_oldest_year`. By default, it will download the data
+from 3 previous years.
+
+"""
+function _init_wdcfiles(;force_download = false, local_dir = nothing,
+                        wdcfiles_oldest_year = year(now())-3)
+
+    years     = Int[]
+    filepaths = String[]
+
+    if wdcfiles_dir == nothing
+        _prepare_wdc_remote_files(wdcfiles_oldest_year)
+        download(_wdcfiles; force = force_download)
+
+        # Get the files available and sort them by the year.
+        for (sym,wdcfile) in _wdcfiles.files
+            #
+            # The year must not be obtained by the data inside the file,
+            # because it contains only 2 digits and will break in 2032.
+            # We will obtain the year by the symbol of the remote file. The
+            # symbol name is:
+            #
+            #       kpYYYY
+            #
+            # where `YYYY` is the year.
+            push!(years, parse(Int, String(sym)[3:6]))
+            push!(filepaths, path(wdcfile))
+        end
+    else
+        # If the user provided a directory, check what files are available.
+        # Notice that the name must be the same as the ones online.
+        for (root, dirs, files) in walkdir(local_dir)
+            for file in files
+                if occursin(r"^kp[1-2][0-9][0-9][0-9].wdc$", file)
+                    year = parse(Int, file[3:6])
+
+                    # Check if the year is not older than the oldest year.
+                    if year >= wdcfiles_oldest_year
+                        @info "Found WDC file `$file` related to the year `$year`."
+                        push!(filepaths, joinpath(root, file))
+                        push!(years,     year)
+                    end
+                end
+            end
+        end
+    end
+
+    p = sortperm(years)
+
+    push!(_wdc_data,       _parse_wdcfiles(filepaths[p], years[p]))
+
+    nothing
+end
 
 """
     function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})

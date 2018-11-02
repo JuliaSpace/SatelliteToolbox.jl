@@ -22,7 +22,8 @@ _fluxtable = @RemoteFile(
    )
 
 # Optional variable that will store the `fluxtable.txt` data.
-@OptionalData _fluxtable_data _fluxtable_Structure "Run `init_space_indices()` to initialize the space indices structures."
+@OptionalData(_fluxtable_data, _fluxtable_Structure,
+              "Run `init_space_indices()` with `:fluxtable` in `enabled_files` array to initialize required data.")
 
 ################################################################################
 #                              Private Functions

@@ -14,6 +14,7 @@
 export init_space_indices
 
 include("./dtcfile.jl")
+include("./fluxtable.jl")
 include("./solfsmy.jl")
 include("./wdcfiles.jl")
 
@@ -22,92 +23,104 @@ include("./wdcfiles.jl")
 ################################################################################
 
 """
-    function init_space_indices(;force_download = false, dtcfile_path = nothing, solfsmy_path = nothing)
+    function init_space_indices(...)
 
-Initialize all space indices. The initialization process is composed of:
+Initialize all space indices. The files that will be initialized must be
+indicated by the array of symbols passed to the keyword argument
+`enabled_files`. If this is `nothing`, which is the default, then all files will
+be initialized. The symbol related to each file is described next.
 
-1. Download all the files, if is necessary;
-2. Parse all the files;
-3. Create the interpolations and the structures.
+Notice that the initialization process can be changed by a set of keywords as
+described next.
 
-If the keyword `force_download` is `true`, then the files will always be
-downloaded.
+## DTCFILE
 
-The user can also specify the location for each required file to retrieve the
-space indices. In this case, the download will not be performed. The following
-keywords can be used for this:
+**Symbol**: `:dtcfile`
 
-* `dtcfile_path`: Path to `DTCFILE.TXT`.
-* `solfsmy_path`: Path to `SOLFSMY.TXT`.
-* `wdcfiles_dir`: Path to the directory containing the WDC files.
+This file contains the exospheric temperature variation caused by the Dst index.
+This is used for the JB2008 atmospheric model.
 
-For the WDC files, which contains the information about `Kp` and `Ap` indices,
-the user can select what is the oldest year in which the data will be downloaded
-by the keyword `wdcfiles_oldest_year`. By default, it will download the data
-from 3 previous years.
+### Keywords
+
+* `dtcfile_path`: Path for the file `DTCFILE.TXT`. If `nothing`, then it will be
+                  downloaded. (**Default** = `nothing`)
+* `dtcfile_force_download`: If `true`, then the file will always be downloaded
+                            if the path is not specified. (**Default** =
+                            `false`).
+
+## fluxtable
+
+**Symbol**: `:fluxtable`
+
+This file contains the F10.7 flux data in different formats.
+
+### Keywords
+
+* `fluxtable_path`: Path for the file `fluxtable.txt`. If `nothing`, then it
+                    will be downloaded. (**Default** = `nothing`)
+* `fluxtable_force_download`: If `true`, then the file will always be downloaded
+                              if the path is not specified.
+                              (**Default** = `false`).
+
+## SOLFSMY
+
+**Symbol**: `:solfsmy`
+
+This files contains the indices necessary for the JB2008 atmospheric model.
+
+### Keywords
+
+* `solfsmy_path`: Path for the file `SOLFSMY.TXT`. If `nothing`, then it will be
+                  downloaded. (**Default** = `nothing`)
+* `solfsmy_force_download`: If `true`, then the file will always be downloaded
+                            if the path is not specified. (**Default** =
+                            `false`).
+
+## WDC Files
+
+**Symbol**: `:wdcfiles`
+
+This set of files contain the Kp and Ap indices.
+
+### Keywords
+
+* `wdcfiles_path`: Path for the directory with the WDC files. If `nothing`, then
+                   they will be downloaded. (**Default** = `nothing`)
+* `wdcfiles_force_download`: If `true`, then the files will always be downloaded
+                            if the path is not specified. (**Default** =
+                            `false`).
+* `wdcfiles_oldest_year`: Oldest year in which the WDC file will be obtained.
+                          (**Default** = past 3 years).
 
 """
-function init_space_indices(;force_download = false, dtcfile_path = nothing,
-                             solfsmy_path = nothing, wdcfiles_dir = nothing,
+function init_space_indices(;enabled_files = nothing,
+                             dtcfile_path = nothing,
+                             dtcfile_force_download = false,
+                             fluxtable_path = nothing,
+                             fluxtable_force_download = false,
+                             solfsmy_path = nothing,
+                             solfsmy_force_download = false,
+                             wdcfiles_dir = nothing,
+                             wdcfiles_force_download = false,
                              wdcfiles_oldest_year = year(now())-3)
 
-    # Update the remote files if no path is given.
-    if dtcfile_path == nothing
-        download(_dtcfile; force = force_download)
-        dtcfile_path = path(_dtcfile)
-    end
+    dtcfile   = (enabled_files == nothing) || (:dtcfile in enabled_files)
+    fluxtable = (enabled_files == nothing) || (:fluxtable in enabled_files)
+    solfsmy   = (enabled_files == nothing) || (:solfsmy in enabled_files)
+    wdcfiles  = (enabled_files == nothing) || (:wdcfiles in enabled_files)
 
-    if solfsmy_path == nothing
-        download(_solfsmy; force = force_download)
-        solfsmy_path = path(_solfsmy)
-    end
+    dtcfile && _init_dtcfile(local_path = dtcfile_path,
+                             force_download = dtcfile_force_download)
 
-    years     = Int[]
-    filepaths = String[]
+    fluxtable && _init_fluxtable(local_path = fluxtable_path,
+                                 force_download = fluxtable_force_download)
 
-    if wdcfiles_dir == nothing
-        _prepare_wdc_remote_files(wdcfiles_oldest_year)
-        download(_wdcfiles; force = force_download)
+    solfsmy && _init_solfsmy(local_path = solfsmy_path,
+                             force_download = solfsmy_force_download)
 
-        # Get the files available and sort them by the year.
-        for (sym,wdcfile) in _wdcfiles.files
-            #
-            # The year must not be obtained by the data inside the file,
-            # because it contains only 2 digits and will break in 2032.
-            # We will obtain the year by the symbol of the remote file. The
-            # symbol name is:
-            #
-            #       kpYYYY
-            #
-            # where `YYYY` is the year.
-            push!(years, parse(Int, String(sym)[3:6]))
-            push!(filepaths, path(wdcfile))
-        end
-    else
-        # If the user provided a directory, check what files are available.
-        # Notice that the name must be the same as the ones online.
-        for (root, dirs, files) in walkdir(wdcfiles_dir)
-            for file in files
-                if occursin(r"^kp[1-2][0-9][0-9][0-9].wdc$", file)
-                    year = parse(Int, file[3:6])
-
-                    # Check if the year is not older than the oldest year.
-                    if year >= wdcfiles_oldest_year
-                        @info "Found WDC file `$file` related to the year `$year`."
-                        push!(filepaths, joinpath(root, file))
-                        push!(years,     year)
-                    end
-                end
-            end
-        end
-    end
-
-    p = sortperm(years)
-
-    # Parse each remote file.
-    push!(_dtcfile_data, _parse_dtcfile(dtcfile_path))
-    push!(_solfsmy_data, _parse_solfsmy(solfsmy_path))
-    push!(_wdc_data,     _parse_wdcfiles(filepaths[p], years[p]))
+    wdcfiles && _init_wdcfiles(local_dir = wdcfiles_dir,
+                               force_download = wdcfiles_force_download,
+                               wdcfiles_oldest_year = wdcfiles_oldest_year)
 
     nothing
 end

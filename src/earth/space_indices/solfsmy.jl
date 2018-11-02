@@ -50,7 +50,8 @@ _solfsmy = @RemoteFile(
    )
 
 # Optional variable that will store the `SOLFSMY.TXT` data.
-@OptionalData _solfsmy_data _SOLFSMY_Structure "Run `init_space_indices()` to initialize the space indices structures."
+@OptionalData(_solfsmy_data, _SOLFSMY_Structure,
+              "Run `init_space_indices()` with `:solfsmy` in `enabled_files` array to initialize required data.")
 
 ################################################################################
 #                               Public Functions
@@ -87,10 +88,40 @@ end
 ################################################################################
 
 """
+    function _init_solfsmy(;force_download = false, local_path = nothing)
+
+Initialize the data in the file `SOLFSMY.TXT` by creating `_solfsmy_data`. The
+initialization process is composed of:
+
+1. Download the file, if it is necessary;
+2. Parse the file;
+3. Create the interpolations and the structures.
+
+If the keyword `force_download` is `true`, then the file will always be
+downloaded.
+
+The user can also specify a location for the file using the keyword
+`local_path`. If it is `nothing`, which is the default, then the file will be
+downloaded.
+
+"""
+function _init_solfsmy(;force_download = false, local_path = nothing)
+    # Update the remote files if no path is given.
+    if local_path == nothing
+        download(_solfsmy; force = force_download)
+        local_path = path(_solfsmy)
+    end
+
+    push!(_solfsmy_data,   _parse_solfsmy(local_path))
+
+    nothing
+end
+
+"""
     function _parse_solfsmy(path::AbstractString)
 
-Parse the `SOLFSMY.TXT` file in `path` and returning an instance of the
-structure `_SOLFSMY_Structure` with the initialized interpolations.
+Parse the `SOLFSMY.TXT` file in `path` and retur an instance of the structure
+`_SOLFSMY_Structure` with the initialized interpolations.
 
 The format of the file `SOLFSMY.TXT` must be:
 

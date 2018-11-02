@@ -32,7 +32,8 @@ _dtcfile = @RemoteFile(
    )
 
 # Optional variable that will store the `DTCFILE.TXT` data.
-@OptionalData _dtcfile_data _DTCFILE_Structure "Run `init_space_indices()` to initialize the space indices structures."
+@OptionalData(_dtcfile_data, _DTCFILE_Structure,
+              "Run `init_space_indices()` with `:dtcfile` in `enabled_files` array to initialize required data.")
 
 ################################################################################
 #                               Public Functions
@@ -69,10 +70,40 @@ end
 ################################################################################
 
 """
+    function _init_dctfile(;force_download = false, local_path = nothing)
+
+Initialize the data in the file `DTCFILE.TXT` by creating `_dtcfile_data`. The
+initialization process is composed of:
+
+1. Download the file, if it is necessary;
+2. Parse the file;
+3. Create the interpolations and the structures.
+
+If the keyword `force_download` is `true`, then the file will always be
+downloaded.
+
+The user can also specify a location for the file using the keyword
+`local_path`. If it is `nothing`, which is the default, then the file will be
+downloaded.
+
+"""
+function _init_dtcfile(;force_download = false, local_path = nothing)
+    # Update the remote files if no path is given.
+    if local_path == nothing
+        download(_dtcfile; force = force_download)
+        local_path = path(_dtcfile)
+    end
+
+    push!(_dtcfile_data,   _parse_dtcfile(local_path))
+
+    nothing
+end
+
+"""
     function _parse_dtcfile(path::AbstractString)
 
-Parse the `DTCFILE.TXT` file in `path` and returning an instance of the
-structure `_DTCFILE_Structure` with the initialized interpolations.
+Parse the `DTCFILE.TXT` file in `path` and return an instance of the structure
+`_DTCFILE_Structure` with the initialized interpolations.
 
 The format of the file `DTCFILE.TXT` must be:
 
