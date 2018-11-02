@@ -260,6 +260,9 @@ This set of files contain the Kp and Ap indices.
                             `false`).
 * `wdcfiles_oldest_year`: Oldest year in which the WDC file will be obtained.
                           (**Default** = past 3 years).
+* `wdcfiles_newest_year`: Newest year in which the WDC file will be obtained. If
+                          it is `nothing`, then it defaults to the current year.
+                          (**Default** = `nothing`).
 
 """
 function init_space_indices(;enabled_files = nothing,
@@ -271,7 +274,8 @@ function init_space_indices(;enabled_files = nothing,
                              solfsmy_force_download = false,
                              wdcfiles_dir = nothing,
                              wdcfiles_force_download = false,
-                             wdcfiles_oldest_year = year(now())-3)
+                             wdcfiles_oldest_year = year(now())-3,
+                             wdcfiles_newest_year = nothing)
 
     dtcfile   = (enabled_files == nothing) || (:dtcfile in enabled_files)
     fluxtable = (enabled_files == nothing) || (:fluxtable in enabled_files)
@@ -289,7 +293,8 @@ function init_space_indices(;enabled_files = nothing,
 
     wdcfiles && _init_wdcfiles(local_dir = wdcfiles_dir,
                                force_download = wdcfiles_force_download,
-                               wdcfiles_oldest_year = wdcfiles_oldest_year)
+                               wdcfiles_oldest_year = wdcfiles_oldest_year,
+                               wdcfiles_newest_year = wdcfiles_newest_year)
 
     nothing
 end

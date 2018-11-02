@@ -138,15 +138,21 @@ The user can select what is the oldest year in which the data will be downloaded
 by the keyword `wdcfiles_oldest_year`. By default, it will download the data
 from 3 previous years.
 
+The user can select what is the newest year in which the data will be downloaded
+by the keyword `wdcfiles_newest_year`. It it is `nothing`, which is the default,
+then it is set to the current year.
+
 """
 function _init_wdcfiles(;force_download = false, local_dir = nothing,
-                        wdcfiles_oldest_year = year(now())-3)
+                        wdcfiles_oldest_year = year(now())-3,
+                        wdcfiles_newest_year = nothing)
 
     years     = Int[]
     filepaths = String[]
 
     if local_dir == nothing
-        _prepare_wdc_remote_files(wdcfiles_oldest_year)
+        (wdcfiles_newest_year == nothing) && (wdcfiles_newest_year = year(now()))
+        _prepare_wdc_remote_files(wdcfiles_oldest_year, wdcfiles_newest_year)
         download(_wdcfiles; force = force_download)
 
         # Get the files available and sort them by the year.
@@ -245,29 +251,34 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
 end
 
 """
-    function _prepare_wdc_remote_files(oldest_year::Number)
+    function _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
 
-Configure all the WDC remote files between current year and `oldest_year`.
+Configure all the WDC remote files between `newest_year` and `oldest_year`.
 Notice that previous years will never be updated whereas the current year will
 be updated daily.
 
 If `oldest_year` is greater than current year, then only the files from the
 current year will be downloaded.
 
+If `newest_year` is smaller than `oldest_year`, then only the files from the
+`oldest_year` will be downloaded.
+
 This function modifies the global variable `_wdcfiles`.
 
 """
-function _prepare_wdc_remote_files(oldest_year::Number)
+function _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
     # Get the current year.
     current_year = year(now())
 
     # If `oldest_year` is greater than current year, then consider only the
     # current year.
     (oldest_year > current_year) && (oldest_year = current_year)
+    (newest_year < oldest_year)  && (newest_year = oldest_year)
+    (newest_year > current_year) && (newest_year = current_year)
 
     # For the current year, we must update the remote file every day. Otherwise,
     # we do not need to update at all.
-    for y = oldest_year:current_year
+    for y = oldest_year:newest_year
 		filename = "kp$y"
         sym = Symbol(filename)
         file_y = @RemoteFile("ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/$filename.wdc",
