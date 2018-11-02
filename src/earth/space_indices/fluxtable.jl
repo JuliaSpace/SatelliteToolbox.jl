@@ -11,7 +11,6 @@
 struct _fluxtable_Structure{T}
     F10obs::T
     F10adj::T
-    F10ursi::T
 end
 
 # Remote file: fluxtable.txt
@@ -71,7 +70,6 @@ function _parse_fluxtable(path::AbstractString)
     JD      = Float64[]
     F10obs  = Float64[]
     F10adj  = Float64[]
-    F10ursi = Float64[]
 
     open(path) do file
         line_num = 0
@@ -105,7 +103,6 @@ function _parse_fluxtable(path::AbstractString)
             push!(JD,      JD_k)
             push!(F10obs,  parse(Float64, tokens[5]))
             push!(F10adj,  parse(Float64, tokens[6]))
-            push!(F10ursi, parse(Float64, tokens[7]))
         end
     end
 
@@ -113,7 +110,6 @@ function _parse_fluxtable(path::AbstractString)
     knots = (JD,)
     itp_F10obs  = interpolate( knots, F10obs,  Gridded(Constant()) )
     itp_F10adj  = interpolate( knots, F10adj,  Gridded(Constant()) )
-    itp_F10ursi = interpolate( knots, F10ursi, Gridded(Constant()) )
 
-    _fluxtable_Structure(itp_F10obs, itp_F10adj, itp_F10ursi)
+    _fluxtable_Structure(itp_F10obs, itp_F10adj)
 end
