@@ -26,8 +26,8 @@ Structure to store the interpolations of the data in WDC files.
 
 """
 struct _WDC_Structure
-    Kp::AbstractExtrapolation
-    Ap::AbstractExtrapolation
+    Kp::AbstractInterpolation
+    Ap::AbstractInterpolation
 end
 
 # Remote files: *.wdc
@@ -145,7 +145,7 @@ function _init_wdcfiles(;force_download = false, local_dir = nothing,
     years     = Int[]
     filepaths = String[]
 
-    if wdcfiles_dir == nothing
+    if local_dir == nothing
         _prepare_wdc_remote_files(wdcfiles_oldest_year)
         download(_wdcfiles; force = force_download)
 
@@ -238,8 +238,8 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
     knots    = (JD,)
 
     # Create the interpolations.
-    itp_Kp = extrapolate(interpolate(knots, Kp, Gridded(Constant())), Flat())
-    itp_Ap = extrapolate(interpolate(knots, Ap, Gridded(Constant())), Flat())
+    itp_Kp = interpolate(knots, Kp, Gridded(Constant()))
+    itp_Ap = interpolate(knots, Ap, Gridded(Constant()))
 
     _WDC_Structure(itp_Kp, itp_Ap)
 end
