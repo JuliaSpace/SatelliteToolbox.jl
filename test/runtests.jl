@@ -36,6 +36,13 @@ println("")
 end
 println("")
 
+@testset "Space Indices" begin
+    cd("./earth/space_indices/")
+    include("./earth/space_indices/space_indices.jl")
+    cd("../../")
+end
+println("")
+
 @testset "General orbit functions" begin
     include("./orbit/general.jl")
 end
