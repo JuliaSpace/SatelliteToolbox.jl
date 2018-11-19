@@ -67,7 +67,7 @@ function satellite_beta_angle(JD0::Number,
         RAAN_d = RAAN + dOmega*t
 
         # Compute the versor N represented in the Inertial ref. frame.
-        Dio = angle2dcm(-i, -RAAN_d, 0.0, :XZX)
+        Dio = angle_to_dcm(-i, -RAAN_d, 0.0, :XZX)
         N_i = Dio*SVector{3}(0,0,1)
 
         # Compute the Sun position at noon (UT) represented in the Inertial ref.

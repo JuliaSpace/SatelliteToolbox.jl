@@ -135,7 +135,7 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
             if (lighting == SAT_LIGHTING_SUNLIGHT)
                 # Convert the sun vector from the Inertial coordinate frame to
                 # the body coordinate frame.
-                Doi = angle2dcm(RAAN_d, i, w_d+f, :ZXZ)
+                Doi = angle_to_dcm(RAAN_d, i, w_d+f, :ZXZ)
                 s_b = Dbo*Doi*(s_i/norm_s_i)
 
                 # Vector normal to the solar panel.

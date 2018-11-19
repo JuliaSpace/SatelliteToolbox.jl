@@ -192,7 +192,7 @@ function kepler_to_rv(a::Number,
 
     # Compute the matrix that rotates the orbit reference frame into the
     # inertial reference frame.
-    Dio = angle2dcm(-ω, -i, -Ω, :ZXZ)
+    Dio = angle_to_dcm(-ω, -i, -Ω, :ZXZ)
 
     # Compute the position and velocity represented in the inertial frame.
     r_i = Dio*r_o

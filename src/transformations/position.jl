@@ -56,7 +56,7 @@ function satellite_position_i(a::Number, e::Number, i::Number, RAAN::Number,
 
     # Compute the matrix that rotates from the S coordinate frame to the
     # Inertial coordinate Frame.
-    Dis = angle2dcm(RAAN, i, w+f, :ZXZ)'
+    Dis = angle_to_dcm(RAAN, i, w+f, :ZXZ)'
 
     # Compute the satellite vector represented in the Inertial coordinate
     # frame.

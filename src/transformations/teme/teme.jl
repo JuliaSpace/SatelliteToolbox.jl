@@ -88,7 +88,7 @@ function rTEMEtoTOD(T::Type,
         ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
 
     # Compute the rotation.
-    angle2rot(T, -Eq_equinox1982, 0, 0, :ZYX)
+    angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
 end
 
 """
@@ -183,10 +183,10 @@ function rTEMEtoMOD(T::Type,
         ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
 
     # Compute the rotation TEME => TOD.
-    r_TOD_TEME = angle2rot(T, -Eq_equinox1982, 0, 0, :ZYX)
+    r_TOD_TEME = angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
 
     # Compute the rotation TOD => MOD.
-    r_MOD_TOD = angle2rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    r_MOD_TOD = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
     # Return the full rotation.
     compose_rotation(r_TOD_TEME, r_MOD_TOD)
@@ -328,7 +328,7 @@ function rTEMEtoPEF(T::Type, JD_UT1::Number)
     θ_gmst = JDtoGMST(JD_UT1)
 
     # Compute the rotation.
-    angle2rot(T, θ_gmst, 0, 0, :ZYX)
+    angle_to_rot(T, θ_gmst, 0, 0, :ZYX)
 end
 
 """

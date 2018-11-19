@@ -94,7 +94,7 @@ rITRFtoPEF_fk5(T::Type, x_p::Number, y_p::Number) =
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    smallangle2rot(T, +y_p, +x_p, 0)
+    smallangle_to_rot(T, +y_p, +x_p, 0)
 
 """
     function rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
@@ -134,7 +134,7 @@ rPEFtoITRF_fk5(T::Type, x_p::Number, y_p::Number) =
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    smallangle2rot(T, -y_p, -x_p, 0)
+    smallangle_to_rot(T, -y_p, -x_p, 0)
 
 #                                 PEF <=> TOD
 # ==============================================================================
@@ -211,7 +211,7 @@ function rPEFtoTOD_fk5(T::Type,
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation matrix.
-    angle2rot(T, -θ_gast, 0, 0, :ZYX)
+    angle_to_rot(T, -θ_gast, 0, 0, :ZYX)
 end
 
 """
@@ -313,7 +313,7 @@ function rTODtoMOD_fk5(T::Type,
     ϵ_1980 = mϵ_1980 + Δϵ_1980
 
     # Compute and return the Direction Cosine DCM.
-    angle2rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 end
 
 """
@@ -394,7 +394,7 @@ rMODtoGCRF_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)
 
 function rMODtoGCRF_fk5(T::Type, JD_TT::Number)
     (ζ,Θ,z) = precession_fk5(JD_TT)
-    angle2rot(T, z, -Θ, ζ, :ZYZ)
+    angle_to_rot(T, z, -Θ, ζ, :ZYZ)
 end
 
 """
@@ -673,10 +673,10 @@ function rPEFtoMOD_fk5(T::Type,
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation PEF => TOD.
-    r_TOD_PEF = angle2rot(T, -θ_gast, 0, 0, :ZYX)
+    r_TOD_PEF = angle_to_rot(T, -θ_gast, 0, 0, :ZYX)
 
     # Compute the rotation TOD => MOD.
-    r_MOD_TOD = angle2rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    r_MOD_TOD = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
     compose_rotation(r_TOD_PEF, r_MOD_TOD)
 end

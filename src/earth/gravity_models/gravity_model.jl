@@ -188,7 +188,7 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     # frame in the ECEF reference frame. This can be accomplished by the
     # following rotations matrix.
 
-    Del = angle2dcm(0, ϕ_gc, -λ_gc, :XYZ)
+    Del = angle_to_dcm(0, ϕ_gc, -λ_gc, :XYZ)
     a_ITRF = Del*a_l
 
     a_ITRF
