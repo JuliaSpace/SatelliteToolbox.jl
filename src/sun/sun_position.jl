@@ -53,13 +53,19 @@ function sun_position_i(JD::Number)
     # Here, we are also approximating T_TBD ≈ T_UT1.
     ϵ = mod(23.439291 - 0.0130042*T_UT1, 360.0)
 
+    # Auxiliary variables.
+    sin_Ms         , cos_Ms         = sincos(Ms*deg2rad)
+    sin_2Ms        , cos_2Ms        = sincos(2Ms*deg2rad)
+    sin_ϵ          , cos_ϵ          = sincos(ϵ*deg2rad)
+    sin_λ_ecliptic , cos_λ_ecliptic = sincos(λ_ecliptic*deg2rad)
+
     # Distance of the Sun from Earth [m].
-    r = (1.000140612 - 0.016708617*cos(Ms) - 0.000139589*cos(2*Ms))*au2m
+    r = ( 1.000140612 - 0.016708617cos_Ms - 0.000139589cos_2Ms )*au2m
 
     # Compute the Sun vector represented in the Mean Equinox of Date (MOD).
-    S_MOD = [r*cos(λ_ecliptic*deg2rad);
-             r*cos(ϵ*deg2rad)*sin(λ_ecliptic*deg2rad);
-             r*sin(ϵ*deg2rad)*sin(λ_ecliptic*deg2rad);]
+    S_MOD = [      r*cos_λ_ecliptic;
+             r*cos_ϵ*sin_λ_ecliptic;
+             r*sin_ϵ*sin_λ_ecliptic;]
 
     # TODO: This vector must be transformed to the inertial reference frame that
     # will be used in this toolbox (J2000, True of Date, etc.).
