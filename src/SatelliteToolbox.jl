@@ -69,6 +69,7 @@ include("./misc/dlegendre.jl")
 
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
+include("sun/sun_velocity.jl")
 
 include("orbit/general.jl")
 include("orbit/anomalies.jl")
