@@ -116,6 +116,7 @@ This index requires `dtcfile` (see `init_space_indices`).
 end
 
 @inline function get_space_index(::Type{Val{:F10adj}}, JD::Number)
+    @_check_data(get(_fluxtable_data).F10adj, JD)
     get(_fluxtable_data).F10adj(JD)
 end
 
