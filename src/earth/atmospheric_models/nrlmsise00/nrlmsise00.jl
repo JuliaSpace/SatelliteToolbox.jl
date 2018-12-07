@@ -137,7 +137,7 @@ obtained from the online databases (see `init_space_indices()`).
 * `alt`: Altitude [m].
 * `g_lat`: Geodetic latitude [rad].
 * `g_long`: Geodetic longitude [rad].
-* `f107A`: 81 day average of F10.7 flux (centered on day of year `doy`).
+* `f107A`: 81 day average of F10.7 flux (centered on day of year `JD`).
 * `f107`: Daily F10.7 flux for previous day.
 * `ap`: Magnetic index (daily) if it is a number. If it is an array, then see
         **Remarks**.
@@ -749,7 +749,7 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 end
 
 """
-    function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    function gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 **NRLMSISE-00**
 

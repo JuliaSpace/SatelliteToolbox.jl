@@ -140,10 +140,10 @@ Output structure for NRLMSISE00 model.
 * `den_H`: Hydrogen number density [U].
 * `den_He`: Helium number density [U].
 * `den_Ar`: Argon number density [U].
-* `den_Total`: Total mass density [T/U] (this value has different meanings for
+* `den_Total`: Total mass density \\[T/U] (this value has different meanings for
                routines `gtd7` and `gtd7d`).
-* `T_exo`: Exospheric temperature.
-* `T_alt`: Temperature at the selected altitude.
+* `T_exo`: Exospheric temperature [K].
+* `T_alt`: Temperature at the selected altitude [K].
 * `flags`: Flags used to compute NRLMSISE-00 model.
 
 Notice that:

@@ -18,7 +18,7 @@ export expatmosphere
 """
     function expatmosphere(h::Number)
 
-Compute the atmospheric density [kg/m³] at the altitude `h` (above the
+Compute the atmospheric density [kg/m³] at the altitude `h` \\[m] (above the
 ellipsoid) using the exponential atmospheric model:
 
                     ┌            ┐

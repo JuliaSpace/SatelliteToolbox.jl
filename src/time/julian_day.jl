@@ -61,7 +61,7 @@ Day.
 
 # Remarks
 
-The algorithm was obtained from [2] (Accessed on 2018-04-11).
+The algorithm was obtained from \\[2] (Accessed on 2018-04-11).
 
 """
 function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
@@ -159,7 +159,7 @@ If `T` is `DateTime`, then it will return the Julia structure `DateTime`.
 
 # Remarks
 
-The algorithm was obtained from [2] (Accessed on 2018-04-11). In [2], there is
+The algorithm was obtained from \\[2] (Accessed on 2018-04-11). In [2], there is
 the following warning:
 
 > Note: This method will not give dates accurately on the Gregorian Proleptic
