@@ -427,14 +427,14 @@ function _globe7!(p::AbstractVector{T},
     # ============
 
     t[1] = p[20]*df*(1 + p[60]*dfa) + p[21]*df^2 + p[22]*dfa + p[30]*dfa^2
-    f1   = 1 + (p[48]*dfa + p[20]*df + p[21]*df^2)*flags[:F107_Mean]
-    f2   = 1 + (p[50]*dfa + p[20]*df + p[21]*df^2)*flags[:F107_Mean]
+    f1   = 1 + (p[48]*dfa + p[20]*df + p[21]*df^2)*flags.F107_Mean
+    f2   = 1 + (p[50]*dfa + p[20]*df + p[21]*df^2)*flags.F107_Mean
 
     # Time Independent
     # ================
 
     t[2] =  p[2]*plg[1,3] + p[3]*plg[1,5] + p[23]*plg[1,7] + p[27]*plg[1,2] +
-           p[15]*plg[1,3]*dfa*flags[:F107_Mean]
+            p[15]*plg[1,3]*dfa*flags.F107_Mean
 
     # Symmetrical Annual
     # ==================
@@ -459,9 +459,9 @@ function _globe7!(p::AbstractVector{T},
     # Diurnal
     # =======
 
-    if flags[:diurnal]
-        t71  = ( p[12]*plg[2,3] )*cd14*flags[:asym_annual]
-        t72  = ( p[13]*plg[2,3] )*cd14*flags[:asym_annual]
+    if flags.diurnal
+        t71  = ( p[12]*plg[2,3] )*cd14*flags.asym_annual
+        t72  = ( p[13]*plg[2,3] )*cd14*flags.asym_annual
 
         t[7] = f2*( (p[4]*plg[2,2] + p[5]*plg[2,4] + p[28]*plg[2,6] + t71 ) *
                    ctloc + ( p[7]*plg[2,2] +
@@ -472,9 +472,9 @@ function _globe7!(p::AbstractVector{T},
     # Semidiurnal
     # ===========
 
-    if flags[:semidiurnal]
-        t81  = ( p[24]*plg[3,4] + p[36]*plg[3,6])*cd14*flags[:asym_annual]
-        t82  = ( p[34]*plg[3,4] + p[37]*plg[3,6])*cd14*flags[:asym_annual]
+    if flags.semidiurnal
+        t81  = ( p[24]*plg[3,4] + p[36]*plg[3,6])*cd14*flags.asym_annual
+        t82  = ( p[34]*plg[3,4] + p[37]*plg[3,6])*cd14*flags.asym_annual
 
         t[8] = f2*( (p[6]*plg[3,3] + p[42]*plg[3,5] + t81)*c2tloc +
                     (p[9]*plg[3,3] + p[43]*plg[3,5] + t82)*s2tloc)
@@ -483,9 +483,9 @@ function _globe7!(p::AbstractVector{T},
     # Terdiurnal
     # ==========
 
-    if flags[:terdiurnal]
-        t91 = (p[94]*plg[4,5] + p[47]*plg[4,7])*cd14*flags[:asym_annual]
-        t92 = (p[95]*plg[4,5] + p[49]*plg[4,7])*cd14*flags[:asym_annual]
+    if flags.terdiurnal
+        t91 = (p[94]*plg[4,5] + p[47]*plg[4,7])*cd14*flags.asym_annual
+        t92 = (p[95]*plg[4,5] + p[49]*plg[4,7])*cd14*flags.asym_annual
 
         t[14] = f2 * ( ( p[40]*plg[4,4] + t91 ) * s3tloc +
                        ( p[41]*plg[4,4] + t92 ) * c3tloc )
@@ -494,7 +494,7 @@ function _globe7!(p::AbstractVector{T},
     # Magnetic activity based on daily AP
     # ===================================
 
-    if flags[:use_ap_array]
+    if flags.use_ap_array
         ap = ap_array
 
         if p[52] != 0
@@ -506,8 +506,8 @@ function _globe7!(p::AbstractVector{T},
             apt = _sg0(exp1,p,ap)
 
             t[9] = apt*( p[51] + p[97]*plg[1,3]+p[55]*plg[1,5] +
-                        ( p[126]*plg[1,2] + p[127]*plg[1,4] + p[128]*plg[1,6] )*cd14*flags[:asym_annual] +
-                        ( p[129]*plg[2,2] + p[130]*plg[2,4] + p[131]*plg[2,6] )*flags[:diurnal]*cos(hr*(tloc-p[132])))
+                        ( p[126]*plg[1,2] + p[127]*plg[1,4] + p[128]*plg[1,6] )*cd14*flags.asym_annual +
+                        ( p[129]*plg[2,2] + p[130]*plg[2,4] + p[131]*plg[2,6] )*flags.diurnal*cos(hr*(tloc-p[132])))
         end
     else
         apd = ap - 4
@@ -518,27 +518,27 @@ function _globe7!(p::AbstractVector{T},
 
         apdf = apd + ( p45 - 1 )*( apd + ( exp(-p44 * apd) - 1 )/p44 )
 
-        if flags[:daily_ap]
+        if flags.daily_ap
             t[9] = apdf*( p[33] + p[46]*plg[1,3] + p[35]*plg[1,5] +
-                         ( p[101]*plg[1,2] + p[102]*plg[1,4] + p[103]*plg[1,6])*cd14*flags[:asym_annual] +
-                         ( p[122]*plg[2,2] + p[123]*plg[2,4] + p[124]*plg[2,6])*flags[:diurnal]*cos(hr*(tloc-p[125])))
+                         ( p[101]*plg[1,2] + p[102]*plg[1,4] + p[103]*plg[1,6])*cd14*flags.asym_annual +
+                         ( p[122]*plg[2,2] + p[123]*plg[2,4] + p[124]*plg[2,6])*flags.diurnal*cos(hr*(tloc-p[125])))
         end
     end
 
-    if flags[:all_ut_long_effects] && (g_long > - 1000)
+    if flags.all_ut_long_effects && (g_long > - 1000)
         # Longitudinal
         # ============
 
-        if flags[:longitudinal]
-            t[11] = (1 + p[81]*dfa*flags[:F107_Mean]) * (
+        if flags.longitudinal
+            t[11] = (1 + p[81]*dfa*flags.F107_Mean) * (
                      (  p[65]*plg[2,3] +  p[66]*plg[2,5] + p[67]*plg[2,7]  +
                        p[104]*plg[2,2] + p[105]*plg[2,4] + p[106]*plg[2,6] +
-                       flags[:asym_annual]*( p[110]*plg[2,2] +
+                         flags.asym_annual*( p[110]*plg[2,2] +
                                              p[111]*plg[2,4] +
                                              p[112]*plg[2,6])*cd14)*cos(dgtr*g_long) +
                      (  p[91]*plg[2,3] +  p[92]*plg[2,5] +  p[93]*plg[2,7] +
                        p[107]*plg[2,2] + p[108]*plg[2,4] + p[109]*plg[2,6] +
-                       flags[:asym_annual]*( p[113]*plg[2,2] +
+                         flags.asym_annual*( p[113]*plg[2,2] +
                                              p[114]*plg[2,4] +
                                              p[115]*plg[2,6])*cd14)*sin(dgtr*g_long)
                     )
@@ -547,36 +547,36 @@ function _globe7!(p::AbstractVector{T},
         # UT and Mixed UT, Longitude
         # ==========================
 
-        if flags[:ut_mixed_ut_long]
-            t[12]  = ( 1 +  p[96]*plg[1,2] )*(1 + p[82]*dfa*flags[:F107_Mean] )*
-                     ( 1 + p[120]*plg[1,2]*flags[:asym_annual]*cd14)*
+        if flags.ut_mixed_ut_long
+            t[12]  = ( 1 +  p[96]*plg[1,2] )*(1 + p[82]*dfa*flags.F107_Mean )*
+                     ( 1 + p[120]*plg[1,2]*flags.asym_annual*cd14)*
                      ( ( p[69]*plg[1,2] + p[70]*plg[1,4] + p[71]*plg[1,6])*cos(sr*(sec-p[72])))
 
-            t[12] += flags[:longitudinal]*
+            t[12] += flags.longitudinal*
                      ( p[77]*plg[3,4] + p[78]*plg[3,6] + p[79]*plg[3,8])*
                      cos(sr*(sec-p[80]) + 2*dgtr*g_long)*
-                     (1 +p[138]*dfa*flags[:F107_Mean])
+                     (1 +p[138]*dfa*flags.F107_Mean)
                  end
 
         # UT, Longitude Magnetic Activity
         # ===============================
 
-        if flags[:mixed_ap_ut_long]
-            if flags[:use_ap_array]
+        if flags.mixed_ap_ut_long
+            if flags.use_ap_array
                 if p[52] != 0
-                    t[13]=apt*flags[:longitudinal]*( 1 + p[133]*plg[1,2] )*
+                    t[13] = apt*flags.longitudinal*( 1 + p[133]*plg[1,2] )*
                         (  p[53]*plg[2,3] +  p[99]*plg[2,5] +  p[68]*plg[2,7] )*cos(dgtr*(g_long-p[98])) +
-                        apt*flags[:longitudinal]*flags[:asym_annual]*
+                        apt*flags.longitudinal*flags.asym_annual*
                         ( p[134]*plg[2,2] + p[135]*plg[2,4] + p[136]*plg[2,6])*cd14*cos(dgtr*(g_long-p[137])) +
-                        apt*flags[:ut_mixed_ut_long]*
+                        apt*flags.ut_mixed_ut_long*
                         (  p[56]*plg[1,2] + p[57]*plg[1,4]  +  p[58]*plg[1,6])*cos(sr*(sec-p[59]))
                 end
             else
-                t[13] = apdf*flags[:longitudinal]*(1 + p[121]*plg[1,2] )*
+                t[13] = apdf*flags.longitudinal*(1 + p[121]*plg[1,2] )*
                     (  p[61]*plg[2,3] +  p[62]*plg[2,5] +  p[63]*plg[2,7])*cos(dgtr*(g_long-p[64])) +
-                    apdf*flags[:longitudinal]*flags[:asym_annual]*
+                    apdf*flags.longitudinal*flags.asym_annual*
                     ( p[116]*plg[2,2] + p[117]*plg[2,4] + p[118]*plg[2,6])*cd14*cos(dgtr*(g_long-p[119])) +
-                    apdf*flags[:ut_mixed_ut_long]*
+                    apdf*flags.ut_mixed_ut_long*
                     (  p[84]*plg[1,2] +  p[85]*plg[1,4] +  p[86]*plg[1,6])*cos(sr*(sec-p[76]))
             end
         end
@@ -587,20 +587,20 @@ function _globe7!(p::AbstractVector{T},
 
     # Parameters not used: 82, 89, 99, 139-149.
     tinf = p[31] +
-           flags[:F107_Mean]*t[1] +
-           flags[:time_independent]*t[2] +
-           flags[:sym_annual]*t[3] +
-           flags[:sym_semiannual]*t[4] +
-           flags[:asym_annual]*t[5] +
-           flags[:asym_semiannual]*t[6] +
-           flags[:diurnal]*t[7] +
-           flags[:semidiurnal]*t[8] +
-           flags[:daily_ap]*t[9] +
-           flags[:all_ut_long_effects]*t[10] +
-           flags[:longitudinal]*t[11] +
-           flags[:ut_mixed_ut_long]*t[12] +
-           flags[:mixed_ap_ut_long]*t[13] +
-           flags[:terdiurnal]*t[14]
+           flags.F107_Mean*t[1] +
+           flags.time_independent*t[2] +
+           flags.sym_annual*t[3] +
+           flags.sym_semiannual*t[4] +
+           flags.asym_annual*t[5] +
+           flags.asym_semiannual*t[6] +
+           flags.diurnal*t[7] +
+           flags.semidiurnal*t[8] +
+           flags.daily_ap*t[9] +
+           flags.all_ut_long_effects*t[10] +
+           flags.longitudinal*t[11] +
+           flags.ut_mixed_ut_long*t[12] +
+           flags.mixed_ap_ut_long*t[13] +
+           flags.terdiurnal*t[14]
 
     tinf
 end
@@ -678,9 +678,9 @@ function _glob7s(p::AbstractVector{T},
     # Diurnal
     # =======
 
-    if flags[:diurnal]
-        t71  = p[12]*plg[2,3]*cd14*flags[:asym_annual]
-        t72  = p[13]*plg[2,3]*cd14*flags[:asym_annual]
+    if flags.diurnal
+        t71  = p[12]*plg[2,3]*cd14*flags.asym_annual
+        t72  = p[13]*plg[2,3]*cd14*flags.asym_annual
         t[7] = ( p[4]*plg[2,2] + p[5]*plg[2,4] + t71 ) * ctloc +
                ( p[7]*plg[2,2] + p[8]*plg[2,4] + t72 ) * stloc
     end
@@ -688,9 +688,9 @@ function _glob7s(p::AbstractVector{T},
     # Semidiurnal
     # ===========
 
-    if flags[:semidiurnal]
-        t81  = (p[24]*plg[3,4]+p[36]*plg[3,6])*cd14*flags[:asym_annual]
-        t82  = (p[34]*plg[3,4]+p[37]*plg[3,6])*cd14*flags[:asym_annual]
+    if flags.semidiurnal
+        t81  = (p[24]*plg[3,4]+p[36]*plg[3,6])*cd14*flags.asym_annual
+        t82  = (p[34]*plg[3,4]+p[37]*plg[3,6])*cd14*flags.asym_annual
         t[8] = (p[6]*plg[3,3] + p[42]*plg[3,5] + t81) * c2tloc +
                (p[9]*plg[3,3] + p[43]*plg[3,5] + t82) * s2tloc
     end
@@ -698,29 +698,27 @@ function _glob7s(p::AbstractVector{T},
     # Terdiurnal
     # ==========
 
-    if flags[:terdiurnal]
+    if flags.terdiurnal
         t[14] = p[40] * plg[4,4] * s3tloc + p[41] * plg[4,4] * c3tloc
     end
 
     # Magnetic Activity
     # =================
-    if flags[:use_ap_array]
-        t[9] = p[51]*apt + p[97]*plg[1,3] * apt * flags[:time_independent]
-    elseif flags[:daily_ap]
-        t[9] = apdf * (p[33] + p[46] * plg[1,3] * flags[:time_independent])
+    if flags.use_ap_array
+        t[9] = p[51]*apt + p[97]*plg[1,3] * apt * flags.time_independent
+    elseif flags.daily_ap
+        t[9] = apdf * (p[33] + p[46] * plg[1,3] * flags.time_independent)
     end
 
     # Longitudinal
     # ============
 
-    if !( !flags[:all_ut_long_effects] ||
-          !flags[:longitudinal] ||
-          (g_long<=-1000.0) )
+    if !( !flags.all_ut_long_effects || !flags.longitudinal || (g_long<=-1000.0) )
 
-        t[11] = ( 1 + plg[1,2]*( p[81]*flags[    :asym_annual]*cos( 1dr*(doy-p[82]) ) +
-                                 p[86]*flags[:asym_semiannual]*cos( 2dr*(doy-p[87]) ) )+
-                     p[84]*flags[    :sym_annual]*cos( 1dr*(doy-p[85]) ) +
-                     p[88]*flags[:sym_semiannual]*cos( 2dr*(doy-p[89]) ) )*
+        t[11] = ( 1 + plg[1,2]*( p[81]*flags.asym_annual*    cos( 1dr*(doy-p[82]) ) +
+                                 p[86]*flags.asym_semiannual*cos( 2dr*(doy-p[87]) ) )+
+                     p[84]*flags.sym_annual*    cos( 1dr*(doy-p[85]) ) +
+                     p[88]*flags.sym_semiannual*cos( 2dr*(doy-p[89]) ) )*
                 ( ( p[65]*plg[2,3] + p[66]*plg[2,5] +
                     p[67]*plg[2,7] + p[75]*plg[2,2] +
                     p[76]*plg[2,4] + p[77]*plg[2,6])*cos(dgtr*g_long) +
@@ -729,20 +727,20 @@ function _glob7s(p::AbstractVector{T},
                     p[79]*plg[2,4] + p[80]*plg[2,6])*sin(dgtr*g_long))
     end
 
-    tinf = flags[:F107_Mean]*t[1] +
-           flags[:time_independent]*t[2] +
-           flags[:sym_annual]*t[3] +
-           flags[:sym_semiannual]*t[4] +
-           flags[:asym_annual]*t[5] +
-           flags[:asym_semiannual]*t[6] +
-           flags[:diurnal]*t[7] +
-           flags[:semidiurnal]*t[8] +
-           flags[:daily_ap]*t[9] +
-           flags[:all_ut_long_effects]*t[10] +
-           flags[:longitudinal]*t[11] +
-           flags[:ut_mixed_ut_long]*t[12] +
-           flags[:mixed_ap_ut_long]*t[13] +
-           flags[:terdiurnal]*t[14]
+    tinf = flags.F107_Mean*t[1] +
+           flags.time_independent*t[2] +
+           flags.sym_annual*t[3] +
+           flags.sym_semiannual*t[4] +
+           flags.asym_annual*t[5] +
+           flags.asym_semiannual*t[6] +
+           flags.diurnal*t[7] +
+           flags.semidiurnal*t[8] +
+           flags.daily_ap*t[9] +
+           flags.all_ut_long_effects*t[10] +
+           flags.longitudinal*t[11] +
+           flags.ut_mixed_ut_long*t[12] +
+           flags.mixed_ap_ut_long*t[13] +
+           flags.terdiurnal*t[14]
 
     tinf
 end
@@ -786,7 +784,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Tinf variations not important below `za` or `zn1[1]`
     # ====================================================
 
-    tinf = (alt > zn1[1]) ? ptm[1] * pt[1] * ( 1 + flags[:all_tinf_var]*_globe7!(pt,nrlmsise00d) ) :
+    tinf = (alt > zn1[1]) ? ptm[1] * pt[1] * ( 1 + flags.all_tinf_var*_globe7!(pt,nrlmsise00d) ) :
                             ptm[1] * pt[1]
 
     T_exo = tinf
@@ -794,10 +792,10 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Gradient variations not important below `zn1[5]`
     # ================================================
 
-    g0 = (alt > zn1[5]) ? ptm[4] * ps[1] * ( 1 + flags[:all_s_var]*_globe7!(ps,nrlmsise00d) ) :
+    g0 = (alt > zn1[5]) ? ptm[4] * ps[1] * ( 1 + flags.all_s_var*_globe7!(ps,nrlmsise00d) ) :
                           ptm[4] * ps[1]
 
-    tlb = ptm[2] * (1 + flags[:all_tlb_var]*_globe7!(pd[4,:],nrlmsise00d))*pd[4,1]
+    tlb = ptm[2] * (1 + flags.all_tlb_var*_globe7!(pd[4,:],nrlmsise00d))*pd[4,1]
     s = g0 / (tinf - tlb)
 
     # Lower thermosphere temperature variations not significant for density
@@ -805,15 +803,15 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
     if alt < 300
         meso_tn1[2]  = ptm[7]*ptl[1,1]/
-                       (1-flags[:all_tn1_var]*_glob7s(ptl[1,:], nrlmsise00d))
+                       (1-flags.all_tn1_var*_glob7s(ptl[1,:], nrlmsise00d))
         meso_tn1[3]  = ptm[3]*ptl[2,1]/
-                       (1-flags[:all_tn1_var]*_glob7s(ptl[2,:], nrlmsise00d))
+                       (1-flags.all_tn1_var*_glob7s(ptl[2,:], nrlmsise00d))
         meso_tn1[4]  = ptm[8]*ptl[3,1]/
-                       (1-flags[:all_tn1_var]*_glob7s(ptl[3,:], nrlmsise00d))
+                       (1-flags.all_tn1_var*_glob7s(ptl[3,:], nrlmsise00d))
         meso_tn1[5]  = ptm[5]*ptl[4,1]/
-                       (1-flags[:all_tn1_var]*flags[:all_tn2_var]*_glob7s(ptl[4,:], nrlmsise00d))
+                       (1-flags.all_tn1_var*flags.all_tn2_var*_glob7s(ptl[4,:], nrlmsise00d))
         meso_tgn1[2] = ptm[9]*pma[9,1]*
-                       (1 + flags[:all_tn1_var]*flags[:all_tn2_var]*_glob7s(pma[9,:], nrlmsise00d))*
+                       (1 + flags.all_tn1_var*flags.all_tn2_var*_glob7s(pma[9,:], nrlmsise00d))*
                        meso_tn1[5]^2/(ptm[5]*ptl[4,1])^2
     else
         meso_tn1[2]  = ptm[7]*ptl[1,1]
@@ -824,13 +822,13 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     end
 
     # N2 variation factor at Zlb.
-    g28 = flags[:all_nlb_var]*_globe7!(pd[3,:], nrlmsise00d)
+    g28 = flags.all_nlb_var*_globe7!(pd[3,:], nrlmsise00d)
 
     # Variation of Turbopause Height
     # ==============================
 
     zhf = pdl[2,25]*
-          (1 + flags[:asym_annual]*pdl[1,25]*sin(dgtr*g_lat)*cos(dr*(doy-pt[14])))
+          (1 + flags.asym_annual*pdl[1,25]*sin(dgtr*g_lat)*cos(dr*(doy-pt[14])))
     xmm = pdm[3,5]
 
     # N2 Density
@@ -874,7 +872,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                      meso_tn1,
                      meso_tgn1)
 
-    if flags[:departures_from_eq] && (alt < altl[3])
+    if flags.departures_from_eq && (alt < altl[3])
         # Mixed density at Alt.
         dm28, tz = _densu(re,
                           gsurf,
@@ -898,7 +896,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # ==========
 
     # Density variation factor at Zlb.
-    g4   = flags[:all_nlb_var]*_globe7!(pd[1,:], nrlmsise00d)
+    g4   = flags.all_nlb_var*_globe7!(pd[1,:], nrlmsise00d)
 
     # Diffusive density at Zlb.
     db04 = pdm[1,1]*exp(g4)*pd[1,1]
@@ -918,7 +916,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                            meso_tn1,
                            meso_tgn1)
 
-    if flags[:departures_from_eq] && (alt < altl[3])
+    if flags.departures_from_eq && (alt < altl[3])
         # Turbopause.
         zh04 = pdm[1,3]
 
@@ -970,7 +968,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # =========
 
     # Density variation factor at Zlb.
-    g16 = flags[:all_nlb_var]*_globe7!(pd[2,:], nrlmsise00d)
+    g16 = flags.all_nlb_var*_globe7!(pd[2,:], nrlmsise00d)
 
     #  Diffusive density at Zlb.
     db16 = pdm[2,1]*exp(g16)*pd[2,1]
@@ -990,7 +988,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                           meso_tn1,
                           meso_tgn1)
 
-    if flags[:departures_from_eq] && (alt <= altl[2])
+    if flags.departures_from_eq && (alt <= altl[2])
         # Turbopause.
         zh16 = pdm[2,3]
 
@@ -1028,7 +1026,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
         # Net density at Alt.
         den_O  = _dnet(den_O, dm16, zhm16, xmm, T(16))
-        rl     = pdm[2,2]*pdl[2,17]*(1+flags[:F107_Mean]*pdl[1,24]*dfa)
+        rl     = pdm[2,2]*pdl[2,17]*(1+flags.F107_Mean*pdl[1,24]*dfa)
         hc16   = pdm[2,6]*pdl[2,4]
         zc16   = pdm[2,5]*pdl[2,3]
         hc216  = pdm[2,6]*pdl[2,5]
@@ -1047,7 +1045,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # ==========
 
     # Density variation factor at Zlb.
-    g32 = flags[:all_nlb_var]*_globe7!(pd[5,:], nrlmsise00d)
+    g32 = flags.all_nlb_var*_globe7!(pd[5,:], nrlmsise00d)
 
     # Diffusive density at Zlb.
     db32 = pdm[4,1]*exp(g32)*pd[5,1];
@@ -1067,7 +1065,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                            meso_tn1,
                            meso_tgn1)
 
-    if flags[:departures_from_eq]
+    if flags.departures_from_eq
         if alt <= altl[4]
             # Turbopause.
             zh32=pdm[4,3]
@@ -1118,7 +1116,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         hcc32  = pdm[4,8]*pdl[2,23]
         hcc232 = pdm[4,8]*pdl[1,23]
         zcc32  = pdm[4,7]*pdl[2,22]
-        rc32   = pdm[4,4]*pdl[2,24]*(1 + flags[:F107_Mean]*pdl[1,24]*dfa)
+        rc32   = pdm[4,4]*pdl[2,24]*(1 + flags.F107_Mean*pdl[1,24]*dfa)
 
         # Net density corrected at Alt.
         den_O2 *= _ccor2(alt, rc32, hcc32, zcc32, hcc232)
@@ -1128,7 +1126,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # ==========
 
     # Density variation factor at Zlb.
-    g40 = flags[:all_nlb_var]*_globe7!(pd[6,:], nrlmsise00d)
+    g40 = flags.all_nlb_var*_globe7!(pd[6,:], nrlmsise00d)
 
     # Diffusive density at Zlb.
     db40 = pdm[5,1]*exp(g40)*pd[6,1];
@@ -1148,7 +1146,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                            meso_tn1,
                            meso_tgn1)
 
-    if flags[:departures_from_eq] && ( alt <= altl[5] )
+    if flags.departures_from_eq && ( alt <= altl[5] )
         # Turbopause.
         zh40=pdm[5,3]
 
@@ -1200,7 +1198,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # =========
 
     # Density variation factor at Zlb.
-    g1 = flags[:all_nlb_var]*_globe7!(pd[7,:], nrlmsise00d)
+    g1 = flags.all_nlb_var*_globe7!(pd[7,:], nrlmsise00d)
 
     # Diffusive density at Zlb.
     db01 = pdm[6,1]*exp(g1)*pd[7,1];
@@ -1220,7 +1218,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                           meso_tn1,
                           meso_tgn1)
 
-    if flags[:departures_from_eq] && ( alt <= altl[7] )
+    if flags.departures_from_eq && ( alt <= altl[7] )
         # Turbopause.
         zh01=pdm[6,3]
 
@@ -1278,7 +1276,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # =========
 
     # Density variation factor at Zlb.
-    g14 = flags[:all_nlb_var]*_globe7!(pd[8,:],nrlmsise00d)
+    g14 = flags.all_nlb_var*_globe7!(pd[8,:],nrlmsise00d)
 
     # Diffusive density at Zlb.
     db14 = pdm[7,1]*exp(g14)*pd[8,1]
@@ -1298,7 +1296,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                          meso_tn1,
                          meso_tgn1)
 
-    if flags[:departures_from_eq] && ( alt <= altl[8] )
+    if flags.departures_from_eq && ( alt <= altl[8] )
         # Turbopause.
         zh14 = pdm[7,3]
 
@@ -1355,7 +1353,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # Anomalous O Density
     # ===================
 
-    g16h          = flags[:all_nlb_var]*_globe7!(pd[9,:], nrlmsise00d)
+    g16h          = flags.all_nlb_var*_globe7!(pd[9,:], nrlmsise00d)
     db16h         = pdm[8,1]*exp(g16h)*pd[9,1]
     tho           = pdm[8,10]*pdl[1,7]
     den_aO, T_alt = _densu(re,
@@ -1410,7 +1408,7 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     # ======
 
     # Check if we should change the unit.
-    if flags[:output_m_kg]
+    if flags.output_m_kg
         den_He    *= 1e6
         den_O     *= 1e6
         den_N2    *= 1e6

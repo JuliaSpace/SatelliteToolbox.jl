@@ -49,64 +49,6 @@ export conf_nrlmsise00, gtd7, gtd7d, nrlmsise00
 
 include("./nrlmsise00_coefs.jl")
 
-"""
-Default values for NRLMSISE-00 flags.
-
-* `:output_m_kg`
-* `:F107_Mean`
-* `:time_independent`
-* `:sym_annual`
-* `:sym_semiannual`
-* `:asym_annual`
-* `:asyn_semiannual`
-* `:diurnal`
-* `:semidiurnal`
-* `:daily_ap`
-* `:all_ut_long_effects`
-* `:longitudinal`
-* `:ut_mixed_ut_long`
-* `:mixed_ap_ut_long`
-* `:terdiurnal`
-* `:departures_from_eq`
-* `:all_tinf_var`
-* `:all_tlb_var`
-* `:all_tn1_var`
-* `:all_s_var`
-* `:all_tn2_var`
-* `:all_nlb_var`
-* `:all_tn3_var`
-* `:turbo_scale_height`
-* `:use_ap_array`
-
-"""
-const NRLMSISE00_DEFAULT_FLAGS =
-    Dict(:output_m_kg         => false,
-         :F107_Mean           => true,
-         :time_independent    => true,
-         :sym_annual          => true,
-         :sym_semiannual      => true,
-         :asym_annual         => true,
-         :asym_semiannual     => true,
-         :diurnal             => true,
-         :semidiurnal         => true,
-         :daily_ap            => true,
-         :all_ut_long_effects => true,
-         :longitudinal        => true,
-         :ut_mixed_ut_long    => true,
-         :mixed_ap_ut_long    => true,
-         :terdiurnal          => true,
-         :departures_from_eq  => true,
-         :all_tinf_var        => true,
-         :all_tlb_var         => true,
-         :all_tn1_var         => true,
-         :all_s_var           => true,
-         :all_tn2_var         => true,
-         :all_nlb_var         => true,
-         :all_tn3_var         => true,
-         :turbo_scale_height  => true,
-         :use_ap_array        => false,
-        )
-
 ################################################################################
 #                                     API
 ################################################################################
@@ -242,9 +184,6 @@ function nrlmsise00(JD::Number,
     # Constant
     dgtr = 1.74533e-2 # Convert degrees to radians.
 
-    # Check if the user wants the output in SI units.
-    new_flags = output_si ? Dict(:output_m_kg => true) : Dict{Symbol,Bool}()
-
     # Convert the Julian Day to Date.
     (Y, M, D, h, m, s) = JDtoDate(JD)
 
@@ -274,7 +213,7 @@ function nrlmsise00(JD::Number,
                                   f107A,
                                   f107,
                                   ap,
-                                  new_flags)
+                                  NRLMSISE00_Flags(output_m_kg = output_si))
 
     # Call the NRLMSISE-00 model.
     nrlmsise00_out = (dversion) ? gtd7d(nrlmsise00d) : gtd7(nrlmsise00d)
@@ -287,7 +226,7 @@ end
 ################################################################################
 
 """
-    function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector], new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+    function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector], flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
 
 Create the structure with the proper configuration to call the NRLMSISE-00
 model.
@@ -307,9 +246,9 @@ Notice that the input variables have the same units of the original model.
 * `f107`: Daily F10.7 flux for previous day.
 * `ap`: Magnetic index (daily) if it is a number. If it is an array, then see
         **Remarks**.
-* `new_flags`: (OPTIONAL) A dictionary containing the flags that differs from
-                the defaults (see `NRLMSISE00_DEFAULT_FLAGS`) (**DEFAULT** =
-                `empty`).
+* `flags`: (OPTIONAL) An instance of the structure `NRLMSISE00_Flags` with the
+            configuration flags for NRLMSISE00. If omitted, then the default
+            configurations will be used.
 
 # Returns
 
@@ -358,19 +297,13 @@ function conf_nrlmsise00(year::Int,
                          f107A::Number,
                          f107::Number,
                          ap::Number,
-                         new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+                         flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
 
     # Constants
     # =========
 
     dgtr = 1.74533e-2 # Convert degrees to radians.
     hr   = 0.2618     # Convert hour angle to radians.
-
-    # Compute the new flags
-    # =====================
-    flags = merge(NRLMSISE00_DEFAULT_FLAGS,
-                  new_flags,
-                  Dict(:use_ap_array => false))
 
     # Compute auxiliary variables
     # ===========================
@@ -392,8 +325,8 @@ function conf_nrlmsise00(year::Int,
     # Latitude variation of gravity
     # =============================
     #
-    # None for flags[:time_independent] = false.
-    xlat      = (!flags[:time_independent]) ? 45.0 : Float64(g_lat)
+    # None for flags.time_independent = false.
+    xlat      = (!flags.time_independent) ? 45.0 : Float64(g_lat)
     gsurf, re = _glatf(xlat)
 
     # Create and return the structure
@@ -440,7 +373,7 @@ function conf_nrlmsise00(year::Int,
                          f107A::Number,
                          f107::Number,
                          ap::AbstractVector,
-                         new_flags::Dict{Symbol,Bool} = Dict{Symbol,Bool}())
+                         flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
 
     # Constants
     # =========
@@ -450,9 +383,7 @@ function conf_nrlmsise00(year::Int,
 
     # Compute the new flags
     # =====================
-    flags = merge(NRLMSISE00_DEFAULT_FLAGS,
-                  new_flags,
-                  Dict(:use_ap_array => true))
+    flags.use_ap_array = true
 
     # Compute auxiliary variables
     # ===========================
@@ -474,8 +405,8 @@ function conf_nrlmsise00(year::Int,
     # Latitude variation of gravity
     # =============================
     #
-    # None for flags[:time_independent] = false.
-    xlat      = (!flags[:time_independent]) ? 45.0 : Float64(g_lat)
+    # None for flags.time_independent = false.
+    xlat      = (!flags.time_independent) ? 45.0 : Float64(g_lat)
     gsurf, re = _glatf(xlat)
 
     # Create and return the structure
@@ -566,7 +497,6 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
     # Initialization of variables
     # ===========================
-
     meso_tn2  = zeros(MVector{4,T})
     meso_tn3  = zeros(MVector{5,T})
     meso_tgn2 = zeros(MVector{2,T})
@@ -595,7 +525,7 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     @unpack_NRLMSISE00_Output out_thermo
 
     # Check if we must convert to SI.
-    dm28m = (flags[:output_m_kg]) ?  dm28*1.0e6 : dm28
+    dm28m = (flags.output_m_kg) ?  dm28*1.0e6 : dm28
 
     # Lower Mesosphere / Upper Stratosphere (between `zn3[1]` and `zn2[1]`)
     # =====================================================================
@@ -605,15 +535,15 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     meso_tn2[1]  = meso_tn1_5
 
     meso_tn2[2]  =  pma[1,1]*pavgm[1]/
-                    ( 1 - flags[:all_tn2_var]*_glob7s(pma[1,:], nrlmsise00d) )
+                    ( 1 - flags.all_tn2_var*_glob7s(pma[1,:], nrlmsise00d) )
     meso_tn2[3]  =  pma[2,1]*pavgm[2]/
-                    ( 1 - flags[:all_tn2_var]*_glob7s(pma[2,:], nrlmsise00d) )
+                    ( 1 - flags.all_tn2_var*_glob7s(pma[2,:], nrlmsise00d) )
     meso_tn2[4]  =  pma[3,1]*pavgm[3]/
-                    ( 1 - flags[:all_tn2_var]*flags[:all_tn3_var]*_glob7s(pma[3,:], nrlmsise00d) )
+                    ( 1 - flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[3,:], nrlmsise00d) )
     meso_tn3[1]  = meso_tn2[4]
 
     meso_tgn2[2] = pavgm[9]*pma[10,1]*
-                    ( 1 + flags[:all_tn2_var]*flags[:all_tn3_var]*_glob7s(pma[10,:], nrlmsise00d))*
+                    ( 1 + flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[10,:], nrlmsise00d))*
                     meso_tn2[4]^2/(pma[3,1]*pavgm[3])^2
 
     # Lower Stratosphere and Troposphere (below `zn3[1]`)
@@ -622,15 +552,15 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     if alt < zn3[1]
         meso_tgn3[1] = meso_tgn2[2]
 		meso_tn3[2]  = pma[4,1]*pavgm[4]/
-                       ( 1 - flags[:all_tn3_var]*_glob7s(pma[4,:], nrlmsise00d) )
+                       ( 1 - flags.all_tn3_var*_glob7s(pma[4,:], nrlmsise00d) )
 		meso_tn3[3]  = pma[5,1]*pavgm[5]/
-                       ( 1 - flags[:all_tn3_var]*_glob7s(pma[5,:], nrlmsise00d) )
+                       ( 1 - flags.all_tn3_var*_glob7s(pma[5,:], nrlmsise00d) )
 		meso_tn3[4]  = pma[6,1]*pavgm[6]/
-                       ( 1 - flags[:all_tn3_var]*_glob7s(pma[6,:], nrlmsise00d) )
+                       ( 1 - flags.all_tn3_var*_glob7s(pma[6,:], nrlmsise00d) )
 		meso_tn3[5]  = pma[7,1]*pavgm[7]/
-                       ( 1 - flags[:all_tn3_var]*_glob7s(pma[7,:], nrlmsise00d) )
+                       ( 1 - flags.all_tn3_var*_glob7s(pma[7,:], nrlmsise00d) )
 		meso_tgn3[2] = pma[8,1]*pavgm[8]*
-                       ( 1 + flags[:all_tn3_var]*_glob7s(pma[8,:], nrlmsise00d))*
+                       ( 1 + flags.all_tn3_var*_glob7s(pma[8,:], nrlmsise00d))*
                        meso_tn3[5]*meso_tn3[5]/(pma[7,1]*pavgm[7])^2
     end
 
@@ -706,7 +636,7 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                          14den_N)
 
     # Check if we must convert the units to SI.
-    (flags[:output_m_kg]) && (den_Total /= 1000)
+    (flags.output_m_kg) && (den_Total /= 1000)
 
     # Temperature at Selected Altitude
     # ================================
@@ -798,7 +728,7 @@ function gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
                          16out.den_aO)
 
     # Check if we must convert the units to SI.
-    (nrlmsise00d.flags[:output_m_kg]) && (den_Total /= 1000)
+    (nrlmsise00d.flags.output_m_kg) && (den_Total /= 1000)
 
     # Create the new output and return.
     #

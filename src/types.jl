@@ -79,7 +79,67 @@ end
 #                                 NRLMSISE-00
 # ==============================================================================
 
-export NRLMSISE00_Structure, NRLMSISE00_Output
+export NRLMSISE00_Structure, NRLMSISE00_Flags, NRLMSISE00_Output
+
+"""
+Flags to configure NRLMSISE-00.
+
+# Fields
+
+* `output_m_kg`
+* `F107_Mean`
+* `time_independent`
+* `sym_annual`
+* `sym_semiannual`
+* `asym_annual`
+* `asyn_semiannual`
+* `diurnal`
+* `semidiurnal`
+* `daily_ap`
+* `all_ut_long_effects`
+* `longitudinal`
+* `ut_mixed_ut_long`
+* `mixed_ap_ut_long`
+* `terdiurnal`
+* `departures_from_eq`
+* `all_tinf_var`
+* `all_tlb_var`
+* `all_tn1_var`
+* `all_s_var`
+* `all_tn2_var`
+* `all_nlb_var`
+* `all_tn3_var`
+* `turbo_scale_height`
+* `use_ap_array`
+
+"""
+@with_kw mutable struct NRLMSISE00_Flags
+    output_m_kg::Bool         = false
+    F107_Mean::Bool           = true
+    time_independent::Bool    = true
+    sym_annual::Bool          = true
+    sym_semiannual::Bool      = true
+    asym_annual::Bool         = true
+    asym_semiannual::Bool     = true
+    diurnal::Bool             = true
+    semidiurnal::Bool         = true
+    daily_ap::Bool            = true
+    all_ut_long_effects::Bool = true
+    longitudinal::Bool        = true
+    ut_mixed_ut_long::Bool    = true
+    mixed_ap_ut_long::Bool    = true
+    terdiurnal::Bool          = true
+    departures_from_eq::Bool  = true
+    all_tinf_var::Bool        = true
+    all_tlb_var::Bool         = true
+    all_tn1_var::Bool         = true
+    all_s_var::Bool           = true
+    all_tn2_var::Bool         = true
+    all_nlb_var::Bool         = true
+    all_tn3_var::Bool         = true
+    turbo_scale_height::Bool  = true
+    use_ap_array::Bool        = false
+end
 
 """
 Structure with the configuration parameters for NRLMSISE-00 model. It can be
@@ -100,7 +160,7 @@ created using the function `conf_nrlmsise00`.
     f107::T   = 0
     ap::T     = 0
     ap_array::Vector{T} = zeros(T, 7)
-    flags::Dict{Symbol, Bool} = NRLMSISE00_DEFAULT_FLAGS
+    flags::NRLMSISE00_Flags = NRLMSISE00_Flags()
 
     # Auxiliary variables to improve code performance
     # ===============================================
@@ -148,8 +208,8 @@ Output structure for NRLMSISE00 model.
 
 Notice that:
 
-* If `flags[:output_m_kg]` is `false`, then [U] is [cm⁻³] and [T] is [g/cm⁻³].
-* If `flags[:output_m_kg]` is `true`, then [U] is [m⁻³] and [T] is [kg/m⁻³].
+* If `flags.output_m_kg` is `false`, then [U] is [cm⁻³] and [T] is [g/cm⁻³].
+* If `flags.output_m_kg` is `true`, then [U] is [m⁻³] and [T] is [kg/m⁻³].
 
 # Remarks
 
@@ -177,7 +237,7 @@ presently separable with the drag data used to define this model component.
     T_alt::T
 
     # Flags.
-    flags::Dict{Symbol, Bool}
+    flags::NRLMSISE00_Flags
 end
 
 ################################################################################
