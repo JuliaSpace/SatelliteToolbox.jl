@@ -124,8 +124,8 @@ function _densm(re::T, gsurf::T, alt::T, d0::T, xm::T, tz::T,
         zgdif = _zeta(re, z2, z1)
 
         # Set up spline nodes.
-        xs2 = zeros(MVector{N2, T})
-        ys2 = zeros(MVector{N2, T})
+        xs2 = MVector{N2, T}(undef)
+        ys2 = MVector{N2, T}(undef)
 
         for k = 1:N2
             xs2[k] = _zeta(re, zn2[k], z1)/zgdif
@@ -173,8 +173,8 @@ function _densm(re::T, gsurf::T, alt::T, d0::T, xm::T, tz::T,
         zgdif = _zeta(re, z2, z1)
 
         # Set up spline nodes.
-        xs3 = zeros(MVector{N3, T})
-        ys3 = zeros(MVector{N3, T})
+        xs3 = MVector{N3, T}(undef)
+        ys3 = MVector{N3, T}(undef)
 
         for k = 1:N3
             xs3[k] = _zeta(re, zn3[k], z1) / zgdif
