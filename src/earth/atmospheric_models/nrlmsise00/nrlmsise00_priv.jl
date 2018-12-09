@@ -790,7 +790,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         g0 = (alt > zn1[5]) ? ptm[4] * ps[1] * ( 1 + flags.all_s_var*_globe7!(ps,nrlmsise00d) ) :
                               ptm[4] * ps[1]
 
-        tlb = ptm[2] * (1 + flags.all_tlb_var*_globe7!(pd[4,:],nrlmsise00d))*pd[4,1]
+        #                                              pd_TLB = pd[4,:]
+        tlb = ptm[2] * (1 + flags.all_tlb_var*_globe7!(pd_TLB, nrlmsise00d))*pd[4,1]
         s   = g0 / (tinf - tlb)
 
         # Lower thermosphere temperature variations not significant for density
@@ -798,15 +799,15 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
         if alt < 300
             meso_tn1[2]  = ptm[7]*ptl[1,1]/
-                           (1-flags.all_tn1_var*_glob7s(ptl[1,:], nrlmsise00d))
+                           (1-flags.all_tn1_var*_glob7s(ptl_1, nrlmsise00d))
             meso_tn1[3]  = ptm[3]*ptl[2,1]/
-                           (1-flags.all_tn1_var*_glob7s(ptl[2,:], nrlmsise00d))
+                           (1-flags.all_tn1_var*_glob7s(ptl_2, nrlmsise00d))
             meso_tn1[4]  = ptm[8]*ptl[3,1]/
-                           (1-flags.all_tn1_var*_glob7s(ptl[3,:], nrlmsise00d))
+                           (1-flags.all_tn1_var*_glob7s(ptl_3, nrlmsise00d))
             meso_tn1[5]  = ptm[5]*ptl[4,1]/
-                           (1-flags.all_tn1_var*flags.all_tn2_var*_glob7s(ptl[4,:], nrlmsise00d))
+                           (1-flags.all_tn1_var*flags.all_tn2_var*_glob7s(ptl_4, nrlmsise00d))
             meso_tgn1[2] = ptm[9]*pma[9,1]*
-                           (1 + flags.all_tn1_var*flags.all_tn2_var*_glob7s(pma[9,:], nrlmsise00d))*
+                           (1 + flags.all_tn1_var*flags.all_tn2_var*_glob7s(pma_9, nrlmsise00d))*
                            meso_tn1[5]^2/(ptm[5]*ptl[4,1])^2
         else
             meso_tn1[2]  = ptm[7]*ptl[1,1]
@@ -816,8 +817,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
             meso_tgn1[2] = ptm[9]*pma[9,1]*meso_tn1[5]^2/(ptm[5]*ptl[4,1])^2
         end
 
-        # N2 variation factor at Zlb.
-        g28 = flags.all_nlb_var*_globe7!(pd[3,:], nrlmsise00d)
+        # N2 variation factor at Zlb.    pd_N2 = pd[3,:]
+        g28 = flags.all_nlb_var*_globe7!(pd_N2, nrlmsise00d)
 
         # Variation of Turbopause Height
         # ==============================
@@ -856,8 +857,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # He Density
         # ==========
 
-        # Density variation factor at Zlb.
-        g4   = flags.all_nlb_var*_globe7!(pd[1,:], nrlmsise00d)
+        # Density variation factor at Zlb. pd_He = pd[1,:]
+        g4   = flags.all_nlb_var*_globe7!(pd_He, nrlmsise00d)
 
         # Diffusive density at Zlb.
         db04 = pdm[1,1]*exp(g4)*pd[1,1]
@@ -895,8 +896,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # O Density
         # =========
 
-        # Density variation factor at Zlb.
-        g16 = flags.all_nlb_var*_globe7!(pd[2,:], nrlmsise00d)
+        # Density variation factor at Zlb. pd_O = pd[2,:]
+        g16 = flags.all_nlb_var*_globe7!(pd_O, nrlmsise00d)
 
         #  Diffusive density at Zlb.
         db16 = pdm[2,1]*exp(g16)*pd[2,1]
@@ -939,8 +940,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # O2 Density
         # ==========
 
-        # Density variation factor at Zlb.
-        g32 = flags.all_nlb_var*_globe7!(pd[5,:], nrlmsise00d)
+        # Density variation factor at Zlb. pd_O2 = pd[5,:]
+        g32 = flags.all_nlb_var*_globe7!(pd_O2, nrlmsise00d)
 
         # Diffusive density at Zlb.
         db32 = pdm[4,1]*exp(g32)*pd[5,1];
@@ -988,8 +989,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # Ar Density
         # ==========
 
-        # Density variation factor at Zlb.
-        g40 = flags.all_nlb_var*_globe7!(pd[6,:], nrlmsise00d)
+        # Density variation factor at Zlb. pd_Ar = pd[6,:]
+        g40 = flags.all_nlb_var*_globe7!(pd_Ar, nrlmsise00d)
 
         # Diffusive density at Zlb.
         db40 = pdm[5,1]*exp(g40)*pd[6,1];
@@ -1027,8 +1028,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # H Density
         # =========
 
-        # Density variation factor at Zlb.
-        g1 = flags.all_nlb_var*_globe7!(pd[7,:], nrlmsise00d)
+        # Density variation factor at Zlb. pd_H = pd[7,:]
+        g1 = flags.all_nlb_var*_globe7!(pd_H, nrlmsise00d)
 
         # Diffusive density at Zlb.
         db01 = pdm[6,1]*exp(g1)*pd[7,1];
@@ -1072,8 +1073,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # N Density
         # =========
 
-        # Density variation factor at Zlb.
-        g14 = flags.all_nlb_var*_globe7!(pd[8,:],nrlmsise00d)
+        # Density variation factor at Zlb. pd_N = pd[8,:]
+        g14 = flags.all_nlb_var*_globe7!(pd_N,nrlmsise00d)
 
         # Diffusive density at Zlb.
         db14 = pdm[7,1]*exp(g14)*pd[8,1]
@@ -1117,7 +1118,8 @@ function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
         # Anomalous O Density
         # ===================
 
-        g16h          = flags.all_nlb_var*_globe7!(pd[9,:], nrlmsise00d)
+        #                                          pd_hotO = pd[9,:]
+        g16h          = flags.all_nlb_var*_globe7!(pd_hotO, nrlmsise00d)
         db16h         = pdm[8,1]*exp(g16h)*pd[9,1]
         tho           = pdm[8,10]*pdl[1,7]
         den_aO, T_alt = _densu(re, gsurf, alt, db16h, tho, tho, T(16), alpha[9],
