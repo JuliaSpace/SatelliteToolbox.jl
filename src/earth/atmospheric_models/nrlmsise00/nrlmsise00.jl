@@ -145,12 +145,8 @@ is the effective total mass density for drag and is the sum of the mass
 densities of all species in this model **including** the anomalous oxygen.
 
 """
-function nrlmsise00(JD::Number,
-                    alt::Number,
-                    g_lat::Number,
-                    g_long::Number;
-                    output_si::Bool = true,
-                    dversion::Bool = true)
+function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number;
+                    output_si::Bool = true, dversion::Bool = true)
 
     # Get the space indices. If the altitude is lower than 80km, set to default
     # according to the instructions in NRLMSISE-00 source code.
@@ -171,14 +167,9 @@ function nrlmsise00(JD::Number,
                dversion = dversion)
 end
 
-function nrlmsise00(JD::Number,
-                    alt::Number,
-                    g_lat::Number,
-                    g_long::Number,
-                    f107A::Number,
-                    f107::Number,
-                    ap::Union{Number,AbstractVector};
-                    output_si::Bool = true,
+function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number,
+                    f107A::Number, f107::Number,
+                    ap::Union{Number,AbstractVector}; output_si::Bool = true,
                     dversion::Bool = true)
 
     # Constant
@@ -203,16 +194,8 @@ function nrlmsise00(JD::Number,
     # Create the input structure for NRLMSISE-00 converting the arguments.
     #
     # Notice that, for this algorithm, the year **is not** used.
-    nrlmsise00d = conf_nrlmsise00(Y,
-                                  doy,
-                                  Δds,
-                                  alt/1000,
-                                  g_lat/dgtr,
-                                  g_long/dgtr,
-                                  lst,
-                                  f107A,
-                                  f107,
-                                  ap,
+    nrlmsise00d = conf_nrlmsise00(Y, doy, Δds, alt/1000, g_lat/dgtr,
+                                  g_long/dgtr, lst, f107A, f107, ap,
                                   NRLMSISE00_Flags(output_m_kg = output_si))
 
     # Call the NRLMSISE-00 model.
@@ -307,14 +290,12 @@ function conf_nrlmsise00(year::Int,
 
     # Compute auxiliary variables
     # ===========================
-    df     = f107  - f107A
-    dfa    = f107A - 150
-    stloc  = sin(1hr*lst)
-    ctloc  = cos(1hr*lst)
-    s2tloc = sin(2hr*lst)
-    c2tloc = cos(2hr*lst)
-    s3tloc = sin(3hr*lst)
-    c3tloc = cos(3hr*lst)
+    df  = f107  - f107A
+    dfa = f107A - 150
+
+    stloc, ctloc  = sincos(1hr*lst)
+    s2tloc,c2tloc = sincos(2hr*lst)
+    s3tloc,c3tloc = sincos(3hr*lst)
 
     # Compute Legendre polynomials.
     #
@@ -363,16 +344,9 @@ function conf_nrlmsise00(year::Int,
     nrlmsise00d
 end
 
-function conf_nrlmsise00(year::Int,
-                         doy::Int,
-                         sec::Number,
-                         alt::Number,
-                         g_lat::Number,
-                         g_long::Number,
-                         lst::Number,
-                         f107A::Number,
-                         f107::Number,
-                         ap::AbstractVector,
+function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number,
+                         g_lat::Number, g_long::Number, lst::Number,
+                         f107A::Number, f107::Number, ap::AbstractVector,
                          flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
 
     # Constants
@@ -389,12 +363,10 @@ function conf_nrlmsise00(year::Int,
     # ===========================
     df     = f107  - f107A
     dfa    = f107A - 150
-    stloc  = sin(1hr*lst)
-    ctloc  = cos(1hr*lst)
-    s2tloc = sin(2hr*lst)
-    c2tloc = cos(2hr*lst)
-    s3tloc = sin(3hr*lst)
-    c3tloc = cos(3hr*lst)
+
+    stloc, ctloc  = sincos(1hr*lst)
+    s2tloc,c2tloc = sincos(2hr*lst)
+    s3tloc,c3tloc = sincos(3hr*lst)
 
     # Compute Legendre polynomials.
     #
@@ -497,183 +469,165 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
     # Initialization of variables
     # ===========================
-    meso_tn2  = zeros(MVector{4,T})
-    meso_tn3  = zeros(MVector{5,T})
-    meso_tgn2 = zeros(MVector{2,T})
-    meso_tgn3 = zeros(MVector{2,T})
+    meso_tn2  = MVector{4,T}(undef)
+    meso_tn3  = MVector{5,T}(undef)
+    meso_tgn2 = MVector{2,T}(undef)
+    meso_tgn3 = MVector{2,T}(undef)
 
-    # Latitude variation of gravity
-    # =============================
+    @inbounds begin
+        # Latitude variation of gravity
+        # =============================
 
-    xmm = pdm[3,5]
+        xmm = pdm[3,5]
 
-    # Thermosphere / Mesosphere (above zn2[1])
-    # ========================================
+        # Thermosphere / Mesosphere (above zn2[1])
+        # ========================================
 
-    (alt < zn2[1]) && (nrlmsise00d.alt = zn2[1])
+        (alt < zn2[1]) && (nrlmsise00d.alt = zn2[1])
 
-    out_thermo = gts7(nrlmsise00d)
-    nrlmsise00d.alt = alt
+        out_thermo = gts7(nrlmsise00d)
+        nrlmsise00d.alt = alt
 
-    # Unpack the values again because `gts7` may have modified `nrlmsise00d`.
-    @unpack_NRLMSISE00_Structure nrlmsise00d
+        # Unpack the values again because `gts7` may have modified `nrlmsise00d`.
+        @unpack_NRLMSISE00_Structure nrlmsise00d
 
-    # If we are above `zn2[1]`, then we do not need to compute anything else.
-    (alt >= zn2[1]) && return out_thermo
+        # If we are above `zn2[1]`, then we do not need to compute anything else.
+        (alt >= zn2[1]) && return out_thermo
 
-    # Unpack the output values from the thermospheric portion.
-    @unpack_NRLMSISE00_Output out_thermo
+        # Unpack the output values from the thermospheric portion.
+        @unpack_NRLMSISE00_Output out_thermo
 
-    # Check if we must convert to SI.
-    dm28m = (flags.output_m_kg) ?  dm28*1.0e6 : dm28
+        # Check if we must convert to SI.
+        dm28m = (flags.output_m_kg) ?  dm28*1e6 : dm28
 
-    # Lower Mesosphere / Upper Stratosphere (between `zn3[1]` and `zn2[1]`)
-    # =====================================================================
+        # Lower Mesosphere / Upper Stratosphere (between `zn3[1]` and `zn2[1]`)
+        # =====================================================================
 
-    meso_tgn2[1] = meso_tgn1_2
+        meso_tgn2[1] = meso_tgn1_2
 
-    meso_tn2[1]  = meso_tn1_5
+        meso_tn2[1]  = meso_tn1_5
 
-    meso_tn2[2]  =  pma[1,1]*pavgm[1]/
-                    ( 1 - flags.all_tn2_var*_glob7s(pma[1,:], nrlmsise00d) )
-    meso_tn2[3]  =  pma[2,1]*pavgm[2]/
-                    ( 1 - flags.all_tn2_var*_glob7s(pma[2,:], nrlmsise00d) )
-    meso_tn2[4]  =  pma[3,1]*pavgm[3]/
-                    ( 1 - flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[3,:], nrlmsise00d) )
-    meso_tn3[1]  = meso_tn2[4]
+        meso_tn2[2]  =  pma[1,1]*pavgm[1]/
+                        ( 1 - flags.all_tn2_var*_glob7s(pma[1,:], nrlmsise00d) )
+        meso_tn2[3]  =  pma[2,1]*pavgm[2]/
+                        ( 1 - flags.all_tn2_var*_glob7s(pma[2,:], nrlmsise00d) )
+        meso_tn2[4]  =  pma[3,1]*pavgm[3]/
+                        ( 1 - flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[3,:], nrlmsise00d) )
+        meso_tn3[1]  = meso_tn2[4]
 
-    meso_tgn2[2] = pavgm[9]*pma[10,1]*
-                    ( 1 + flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[10,:], nrlmsise00d))*
-                    meso_tn2[4]^2/(pma[3,1]*pavgm[3])^2
+        meso_tgn2[2] = pavgm[9]*pma[10,1]*
+                        ( 1 + flags.all_tn2_var*flags.all_tn3_var*_glob7s(pma[10,:], nrlmsise00d))*
+                        meso_tn2[4]^2/(pma[3,1]*pavgm[3])^2
 
-    # Lower Stratosphere and Troposphere (below `zn3[1]`)
-    # ===================================================
+        # Lower Stratosphere and Troposphere (below `zn3[1]`)
+        # ===================================================
 
-    if alt < zn3[1]
-        meso_tgn3[1] = meso_tgn2[2]
-		meso_tn3[2]  = pma[4,1]*pavgm[4]/
-                       ( 1 - flags.all_tn3_var*_glob7s(pma[4,:], nrlmsise00d) )
-		meso_tn3[3]  = pma[5,1]*pavgm[5]/
-                       ( 1 - flags.all_tn3_var*_glob7s(pma[5,:], nrlmsise00d) )
-		meso_tn3[4]  = pma[6,1]*pavgm[6]/
-                       ( 1 - flags.all_tn3_var*_glob7s(pma[6,:], nrlmsise00d) )
-		meso_tn3[5]  = pma[7,1]*pavgm[7]/
-                       ( 1 - flags.all_tn3_var*_glob7s(pma[7,:], nrlmsise00d) )
-		meso_tgn3[2] = pma[8,1]*pavgm[8]*
-                       ( 1 + flags.all_tn3_var*_glob7s(pma[8,:], nrlmsise00d))*
-                       meso_tn3[5]*meso_tn3[5]/(pma[7,1]*pavgm[7])^2
+        if alt < zn3[1]
+            meso_tgn3[1] = meso_tgn2[2]
+	    	meso_tn3[2]  = pma[4,1]*pavgm[4]/
+                           ( 1 - flags.all_tn3_var*_glob7s(pma[4,:], nrlmsise00d) )
+	    	meso_tn3[3]  = pma[5,1]*pavgm[5]/
+                           ( 1 - flags.all_tn3_var*_glob7s(pma[5,:], nrlmsise00d) )
+	    	meso_tn3[4]  = pma[6,1]*pavgm[6]/
+                           ( 1 - flags.all_tn3_var*_glob7s(pma[6,:], nrlmsise00d) )
+	    	meso_tn3[5]  = pma[7,1]*pavgm[7]/
+                           ( 1 - flags.all_tn3_var*_glob7s(pma[7,:], nrlmsise00d) )
+	    	meso_tgn3[2] = pma[8,1]*pavgm[8]*
+                           ( 1 + flags.all_tn3_var*_glob7s(pma[8,:], nrlmsise00d))*
+                           meso_tn3[5]*meso_tn3[5]/(pma[7,1]*pavgm[7])^2
+        end
+
+        # Linear Transition to Full Mixing Below `zn2[1]`
+        # ===============================================
+
+        dmc  = (alt > zmix) ? 1 - (zn2[1]-alt)/(zn2[1] - zmix) : T(0)
+        dz28 = den_N2
+
+        # N2 Density
+        # ==========
+
+        dmr = den_N2 / dm28m - 1
+
+        den_N2, tz = _densm(re, gsurf, alt, dm28m, xmm, T(0), zn3, meso_tn3,
+                            meso_tgn3, zn2, meso_tn2, meso_tgn2)
+
+        den_N2 *= 1 + dmr*dmc
+
+        # He Density
+        # ==========
+
+        dmr    = den_He / (dz28 * pdm[1,2]) - 1
+        den_He = den_N2 * pdm[1,2] * ( 1 + dmr*dmc )
+
+        # O Density
+        # =========
+
+        den_O  = T(0)
+        den_aO = T(0)
+
+        # O2 Density
+        # ==========
+
+        dmr    = den_O2 / (dz28 * pdm[4,2]) - 1
+        den_O2 = den_N2 * pdm[4,2] * ( 1 + dmr*dmc )
+
+        # Ar Density
+        # ==========
+
+        dmr    = den_Ar / (dz28 * pdm[5,2]) - 1
+        den_Ar = den_N2 * pdm[5,2] * ( 1 + dmr*dmc )
+
+        # H Density
+        # =========
+
+        den_H = T(0)
+
+        # N Density
+        # =========
+
+        den_N = T(0)
+
+        # Total Mass Density
+        # ==================
+
+        den_Total = 1.66e-24( 4den_He +
+                             16den_O  +
+                             28den_N2 +
+                             32den_O2 +
+                             40den_Ar +
+                               den_H  +
+                             14den_N)
+
+        # Check if we must convert the units to SI.
+        (flags.output_m_kg) && (den_Total /= 1000)
+
+        # Temperature at Selected Altitude
+        # ================================
+
+        dd, T_alt = _densm(re, gsurf, alt, T(1), T(0), tz, zn3, meso_tn3,
+                           meso_tgn3, zn2, meso_tn2, meso_tgn2)
+
+        # Create output structure and return.
+        #
+        # This is necessary to avoid type instability as reported here:
+        #
+        #   https://github.com/mauro3/Parameters.jl/issues/58
+        #
+
+        nrlmsise00_out::NRLMSISE00_Output{T} =
+            NRLMSISE00_Output{T}(den_N     = den_N,
+                                 den_N2    = den_N2,
+                                 den_O     = den_O,
+                                 den_aO    = den_aO,
+                                 den_O2    = den_O2,
+                                 den_H     = den_H,
+                                 den_He    = den_He,
+                                 den_Ar    = den_Ar,
+                                 den_Total = den_Total,
+                                 T_exo     = T_exo,
+                                 T_alt     = T_alt,
+                                 flags     = flags)
     end
-
-    # Linear Transition to Full Mixing Below `zn2[1]`
-    # ===============================================
-
-    dmc  = (alt > zmix) ? 1 - (zn2[1]-alt)/(zn2[1] - zmix) : T(0)
-    dz28 = den_N2
-
-    # N2 Density
-    # ==========
-
-    dmr = den_N2 / dm28m - 1
-
-    den_N2, tz = _densm(re,
-                        gsurf,
-                        alt,
-                        dm28m,
-                        xmm,
-                        T(0),
-                        zn3,
-                        meso_tn3,
-                        meso_tgn3,
-                        zn2,
-                        meso_tn2,
-                        meso_tgn2)
-
-    den_N2 *= 1 + dmr*dmc
-
-    # He Density
-    # ==========
-
-    dmr    = den_He / (dz28 * pdm[1,2]) - 1
-    den_He = den_N2 * pdm[1,2] * ( 1 + dmr*dmc )
-
-    # O Density
-    # =========
-
-    den_O  = T(0)
-    den_aO = T(0)
-
-    # O2 Density
-    # ==========
-
-    dmr    = den_O2 / (dz28 * pdm[4,2]) - 1
-    den_O2 = den_N2 * pdm[4,2] * ( 1 + dmr*dmc )
-
-    # Ar Density
-    # ==========
-
-    dmr    = den_Ar / (dz28 * pdm[5,2]) - 1
-    den_Ar = den_N2 * pdm[5,2] * ( 1 + dmr*dmc )
-
-    # H Density
-    # =========
-
-    den_H = T(0)
-
-    # N Density
-    # =========
-
-    den_N = T(0)
-
-    # Total Mass Density
-    # ==================
-
-    den_Total = 1.66e-24( 4den_He +
-                         16den_O  +
-                         28den_N2 +
-                         32den_O2 +
-                         40den_Ar +
-                           den_H  +
-                         14den_N)
-
-    # Check if we must convert the units to SI.
-    (flags.output_m_kg) && (den_Total /= 1000)
-
-    # Temperature at Selected Altitude
-    # ================================
-
-    dd, T_alt = _densm(re,
-                       gsurf,
-                       alt,
-                       T(1),
-                       T(0),
-                       tz,
-                       zn3,
-                       meso_tn3,
-                       meso_tgn3,
-                       zn2,
-                       meso_tn2,
-                       meso_tgn2)
-
-    # Create output structure and return.
-    #
-    # This is necessary to avoid type instability as reported here:
-    #
-    #   https://github.com/mauro3/Parameters.jl/issues/58
-    #
-
-    nrlmsise00_out::NRLMSISE00_Output{T} =
-        NRLMSISE00_Output{T}(den_N     = den_N,
-                             den_N2    = den_N2,
-                             den_O     = den_O,
-                             den_aO    = den_aO,
-                             den_O2    = den_O2,
-                             den_H     = den_H,
-                             den_He    = den_He,
-                             den_Ar    = den_Ar,
-                             den_Total = den_Total,
-                             T_exo     = T_exo,
-                             T_alt     = T_alt,
-                             flags     = flags)
 
     nrlmsise00_out
 end
@@ -737,8 +691,27 @@ function gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
     #   https://github.com/mauro3/Parameters.jl/issues/58
     #
 
+    # Densities.
+    #
+    # Originally, we were using `reconstruct` to copy all values except one:
+    #
+    #   NRLMSISE00_Output(out; den_Total = den_Total)
+    #
+    # However, it turns out to be a very slow method. Hence, it was change to
+    # this version.
     nrlmsise00_out::NRLMSISE00_Output{T} =
-        NRLMSISE00_Output(out; den_Total = den_Total)
+        NRLMSISE00_Output(den_N     = out.den_N,
+                          den_N2    = out.den_N2,
+                          den_O     = out.den_O,
+                          den_aO    = out.den_aO,
+                          den_O2    = out.den_O2,
+                          den_H     = out.den_H,
+                          den_He    = out.den_He,
+                          den_Ar    = out.den_Ar,
+                          den_Total = den_Total,
+                          T_exo     = out.T_exo,
+                          T_alt     = out.T_alt,
+                          flags     = out.flags)
 
     nrlmsise00_out
 end
