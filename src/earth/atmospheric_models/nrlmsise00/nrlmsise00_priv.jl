@@ -403,7 +403,7 @@ function _globe7!(p::AbstractVector{T},
     @inbounds begin
         # Initialization of variables
         # ===========================
-        t    = zeros(T,15)
+        t    = zeros(MVector{14,T})
         tloc = lst
 
         cd32 = cos( 1dr*(doy-p[32]) )
@@ -621,12 +621,13 @@ function _glob7s(p::AbstractVector{T},
     dr   = T(1.72142e-2)
     hr   = T(0.2618)
 
-    # Initialization of variables
-    # ===========================
-    t    = MVector{14,T}(undef)
     tinf = T(0)
 
     @inbounds begin
+        # Initialization of variables
+        # ===========================
+        t = zeros(MVector{14,T})
+
         # Confirm parameter set.
         (p[100] == 0) && (p[100] = T(2))
         (p[100] != 2) && error("Wrong parameter set for glob7s.")
