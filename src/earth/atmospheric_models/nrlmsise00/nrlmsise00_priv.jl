@@ -388,7 +388,6 @@ The temperature (?).
 """
 function _globe7!(p::AbstractVector{T},
                   nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
-    T<:Number
 
     @unpack_NRLMSISE00_Structure nrlmsise00d
 
@@ -1201,7 +1200,7 @@ end
 end
 
 """
-    @inline function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where T<:Number where N
+    @inline function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the integral of the cubic spline function from `xa[1]` to `x`.
 
@@ -1217,10 +1216,8 @@ Compute the integral of the cubic spline function from `xa[1]` to `x`.
 The integral of cubic spline function from `xa[1]` to `x`.
 
 """
-@inline function _splini(xa::StaticVector{N,T},
-                         ya::StaticVector{N,T},
-                         y2a::StaticVector{N,T},
-                         x::T) where T<:Number where N
+@inline function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T},
+                         y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
     yi  = T(0)
     klo = 1
     khi = 2
@@ -1256,7 +1253,7 @@ end
 
 
 """
-    @inline function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where T<:Number where N
+    @inline function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}
 
 Compute the 2nd derivatives of cubic spline interpolation function tabulated by
 `x` and `y` given the 2nd derivatives values at `x[1]` (`yp1`) and at `x[N]`
@@ -1281,10 +1278,8 @@ Values higher than `1e30` in the 2nd derivatives at the borders (`yp1` and
 `ypn`) are interpreted as `0`.
 
 """
-@inline function _spline(x::StaticVector{N,T},
-                         y::StaticVector{N,T},
-                         yp1::T,
-                         ypn::T) where T<:Number where N
+@inline function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T,
+                         ypn::T) where {T<:Number,N}
 
     u  = MVector{N,T}(undef)
     y2 = MVector{N,T}(undef)
@@ -1326,7 +1321,7 @@ Values higher than `1e30` in the 2nd derivatives at the borders (`yp1` and
 end
 
 """
-    @inline function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where T<:Number where N
+    @inline function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the cubic spline interpolation value at `x`.
 
@@ -1344,10 +1339,8 @@ This function was adapted from Numerical Recipes.
 The cubic spline interpolation value at `x`.
 
 """
-@inline function _splint(xa::StaticVector{N,T},
-                         ya::StaticVector{N,T},
-                         y2a::StaticVector{N,T},
-                         x::T) where T<:Number where N
+@inline function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T},
+                         y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
     klo = 1
     khi = N
     yi  = T(0)
