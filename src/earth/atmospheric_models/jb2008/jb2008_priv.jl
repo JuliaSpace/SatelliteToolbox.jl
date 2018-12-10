@@ -101,7 +101,7 @@ function _jb2008_highaltitude(h::Number, F10ₐ::Number)
 
     # Compute the high-altitude density correction.
     FρH = 1.0
-    if 1000 <= h <= 1500
+    @inbounds if 1000 <= h <= 1500
         z = (h - 1000)/500
 
         # In this case, the `F₁₅₀₀` is the density factor at 1500 km.
@@ -164,7 +164,7 @@ function _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Nu
 
     # For each integration step, use the Newton-Cotes 4th degree formula to
     # integrate (Boole's rule).
-    for i = 1:n
+    @inbounds for i = 1:n
         zi₀   = zi₁                   # The beginning of the i-th integration step.
         zi₁   = zr*zi₁                # The end of the i-th integration step.
         Δz    = (zi₁ - zi₀)/4         # Step for the i-th integration step.
@@ -238,7 +238,7 @@ function _jb2008_semiannual(doy::Number, h::Number, F10ₐ::Number, S10ₐ::Numb
     Fsmjₐ = 1F10ₐ - 0.7S10ₐ - 0.04M10ₐ
 
     # Compute the semiannual F(z) height function according to eq. 5 [1].
-    Fz = B[1] + B[2]*Fsmjₐ + B[3]*z*Fsmjₐ + B[4]*z^2*Fsmjₐ + B[5]*z*Fsmjₐ^2
+    @inbounds Fz = B[1] + B[2]*Fsmjₐ + B[3]*z*Fsmjₐ + B[4]*z^2*Fsmjₐ + B[5]*z*Fsmjₐ^2
 
     # Compute the new 81-day centered solar index for G(t) according to eq. 6
     # [1].
@@ -249,8 +249,8 @@ function _jb2008_semiannual(doy::Number, h::Number, F10ₐ::Number, S10ₐ::Numb
     sω,  cω  = sincos(1ω)
     s2ω, c2ω = sincos(2ω)
 
-    Gt =        C[1] + C[2]*sω + C[3]*cω + C[4]*s2ω + C[5]*c2ω +
-         Fsmₐ*( C[6] + C[7]*sω + C[8]*cω + C[9]*s2ω + C[10]*c2ω )
+    @inbounds Gt =        C[1] + C[2]*sω + C[3]*cω + C[4]*s2ω + C[5]*c2ω +
+                   Fsmₐ*( C[6] + C[7]*sω + C[8]*cω + C[9]*s2ω + C[10]*c2ω )
 
     (Fz < 1e-6) && (Fz = 1e-6)
 
@@ -341,7 +341,7 @@ function _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
     ΔTc = 0.0
 
     # Compute the temperature variation given the altitude.
-    if 120 <= h <= 200
+    @inbounds if 120 <= h <= 200
         ΔTc200 = C[17]     + C[18]*θ*ϕ   + C[19]*θ²*ϕ   + C[20]*θ³*ϕ +
                  C[21]*F*ϕ + C[22]*θ*F*ϕ + C[23]*θ²*F*ϕ
 
