@@ -125,16 +125,25 @@ function _jb2008_highaltitude(h::Number, F10ₐ::Number)
 end
 
 """
-    function _jb2008_int(z₀::Number, z₁::Number, R::Number, δf::Function)
+    function _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Number, δf::Function)
 
 Compute the integral of the function `δf` between `z₀` and `z₁` using the
-Newton-Cotes 4th degree method. `R` is a number that defined the step size.
+Newton-Cotes 4th degree method. `R` is a number that defines the step size, `Tx`
+is the temperature at the inflection point, and `T∞` is the exospheric
+temperature.
+
+The signature of the function `δf` is:
+
+    δf(z, Tx, T∞)
+
+and it must be `_jb2008_δf1` or `_jb2008_δf2`.
 
 This function returns a tuple containing the integral and last value of `z` used
 in the numerical algorithm.
 
 """
-function _jb2008_int(z₀::Number, z₁::Number, R::Number, δf::Function)
+function _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Number,
+                     δf::Function)
     # Weights for the Newton-Cotes Five-Point Quad. Formula.
     WT = (14/45, 64/45, 24/45, 64/45, 14/45)
 
@@ -156,17 +165,17 @@ function _jb2008_int(z₀::Number, z₁::Number, R::Number, δf::Function)
     # For each integration step, use the Newton-Cotes 4th degree formula to
     # integrate (Boole's rule).
     for i = 1:n
-        zi₀   = zi₁           # The beginning of the i-th integration step.
-        zi₁   = zr*zi₁        # The end of the i-th integration step.
-        Δz    = (zi₁ - zi₀)/4 # Step for the i-th integration step.
-        int_i = WT[1]*δf(zi₀) # First term of the Newton-Cotes 4th degree sum.
+        zi₀   = zi₁                   # The beginning of the i-th integration step.
+        zi₁   = zr*zi₁                # The end of the i-th integration step.
+        Δz    = (zi₁ - zi₀)/4         # Step for the i-th integration step.
+        int_i = WT[1]*δf(zi₀, Tx, T∞) # First term of the Newton-Cotes 4th degree sum.
 
         # Compute the Newton-Cotes 4th degree sum.
         for j = 2:5
             zj  = zi₀ + (j-1)*Δz
 
             # Value of the integrand at `zj`.
-            int_i += WT[j] * δf(zj)
+            int_i += WT[j] * δf(zj, Tx, T∞)
         end
         int += int_i * Δz
     end
@@ -412,3 +421,29 @@ function _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
 
     ΔTc
 end
+
+"""
+    @inline function _jb2008_δf1(z, Tx, T∞)
+
+Auxiliary function to compute the integrand in `_jb2008_int`.
+
+"""
+@inline function _jb2008_δf1(z, Tx, T∞)
+    Mb = _jb2008_M(z)
+    Tl = _jb2008_T(z, Tx, T∞)
+    g  = _jb2008_grav(z)
+    Mb * g / Tl
+end
+
+"""
+    @inline function _jb2008_δf2(z, Tx, T∞)
+
+Auxiliary function to compute the integrand in `_jb2008_int`.
+
+"""
+@inline function _jb2008_δf2(z, Tx, T∞)
+    Tl = _jb2008_T(z, Tx, T∞)
+    g  = _jb2008_grav(z)
+    g / Tl
+end
+

@@ -262,12 +262,7 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
 
     z₂ = min(h, 105.0)
 
-    int, z₂ = _jb2008_int(z₁, z₂, R1, (z)->begin
-                              Mb = _jb2008_M(z)
-                              Tl = _jb2008_T(z, Tx, T∞)
-                              g  = _jb2008_grav(z)
-                              Mb * g / Tl
-                          end::Float64)
+    int, z₂ = _jb2008_int(z₁, z₂, R1, Tx, T∞, _jb2008_δf1)
 
     Mb₁ = _jb2008_M(z₁)
     Tl₁ = _jb2008_T(z₁, Tx, T∞)
@@ -333,11 +328,7 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
 
         z₃ = min(h, 500.0)
 
-        int_1, z₃ = _jb2008_int(z₂, z₃, R1, (z)->begin
-                                    Tl = _jb2008_T(z, Tx, T∞)
-                                    g  = _jb2008_grav(z)
-                                    g / Tl
-                                end::Float64)
+        int_1, z₃ = _jb2008_int(z₂, z₃, R1, Tx, T∞, _jb2008_δf2)
 
         Tl₃ = _jb2008_T(z₃, Tx, T∞)
 
@@ -358,11 +349,7 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
 
         z₄ = max(h, 500.0)
 
-        int_2, z₄ = _jb2008_int(z₃, z₄, (h <= 500) ? R2 : R3, (z)->begin
-                                    Tl = _jb2008_T(z, Tx, T∞)
-                                    g  = _jb2008_grav(z)
-                                    g / Tl
-                                end::Float64)
+        int_2, z₄ = _jb2008_int(z₃, z₄, (h <= 500) ? R2 : R3, Tx, T∞, _jb2008_δf2)
 
         Tl₄ = _jb2008_T(z₄, Tx, T∞)
 
