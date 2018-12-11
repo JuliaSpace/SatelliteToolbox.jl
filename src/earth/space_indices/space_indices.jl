@@ -64,9 +64,9 @@ These indices require `fluxtable` (see `init_space_indices`).
 
 The daily average 10.7-cm solar flux, centered at `JD`, can be obtained using:
 
-* `F10()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
-* `F10adj()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
-* `F10obs()`: 10.7-cm observed solar flux \\[10⁻²² W/(M² Hz)].
+* `F10M()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10Madj()`: 10.7-cm adjusted solar flux \\[10⁻²² W/(M² Hz)].
+* `F10Mobs()`: 10.7-cm observed solar flux \\[10⁻²² W/(M² Hz)].
 
 In this case, the keyword `window::Int` can be passed to select the size of the
 window. By default, it is selected as 81.
