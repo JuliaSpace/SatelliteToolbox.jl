@@ -271,7 +271,7 @@ function igrf12(date::Number,
     y = (θ == 0) ? -1/r*dVϕ : -1/(r*sin(θ))*dVϕ
     z = dVr
 
-    B_gc = [x;y;z]
+    B_gc = SVector{3,Float64}(x,y,z)
 end
 
 function igrf12(date::Number,
