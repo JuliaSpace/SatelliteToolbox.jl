@@ -77,7 +77,7 @@ function igrf12(date::Number,
                 λ::Number,
                 Ω::Number,
                 ::Type{Val{:geocentric}};
-                show_warns = true)
+                show_warns::Bool = true)
     # Input verification
     # ==================
 
@@ -133,17 +133,15 @@ function igrf12(date::Number,
     # ==================================
 
     # Auxiliary variables to select the IGRF coefficients.
-    H     = H_igrf12
-    G     = G_igrf12
+    H = H_igrf12
+    G = G_igrf12
 
     # Reference radius [km].
     a = 6371.2
 
     # Auxiliary variables to decrease the computational burden.
-    sin_ϕ   = sin(1*ϕ)
-    cos_ϕ   = cos(1*ϕ)
-    sin_2ϕ  = sin(2*ϕ)
-    cos_2ϕ  = cos(2*ϕ)
+    sin_ϕ,  cos_ϕ  = sincos(1ϕ)
+    sin_2ϕ, cos_2ϕ = sincos(2ϕ)
     ratio   = a/r
     fact    = ratio
 
@@ -161,108 +159,106 @@ function igrf12(date::Number,
     # Geomagnetic potential
     # =====================
 
-    for n = 1:n_max
-        @inbounds begin
-            aux_dVr = 0.0
-            aux_dVθ = 0.0
-            aux_dVϕ = 0.0
+    @inbounds for n = 1:n_max
+        aux_dVr = 0.0
+        aux_dVθ = 0.0
+        aux_dVϕ = 0.0
 
-            # Compute the contributions when `m = 0`.
-            # =======================================
+        # Compute the contributions when `m = 0`.
+        # =======================================
 
-            # Get the coefficients in the epoch and interpolate to the desired
-            # time.
+        # Get the coefficients in the epoch and interpolate to the desired
+        # time.
+        Gnm_e0 = G[kg,idx+2]
+
+        if date < 2015
+            Gnm_e1 = G[kg,idx+3]
+            ΔG     = (Gnm_e1-Gnm_e0)/5
+        else
+            ΔG     = G[kg,27]
+        end
+
+        Gnm  = Gnm_e0 + ΔG*Δt
+        kg  += 1
+
+        aux_dVr += -(n+1)/r*Gnm*P[n+1,1]
+        aux_dVθ += Gnm*dP[n+1,1]
+
+        # Sine and cosine with m = 1.
+        # ===========================
+        #
+        # This values will be used to update recursively `sin(m*ϕ)` and
+        # `cos(m*ϕ)`, reducing the computational burden.
+        sin_mϕ   = +sin_ϕ    # sin( 1*λ_gc)
+        sin_m_1ϕ = 0.0       # sin( 0*λ_gc)
+        sin_m_2ϕ = -sin_ϕ    # sin(-1*λ_gc)
+        cos_mϕ   = +cos_ϕ    # cos( 1*λ_gc)
+        cos_m_1ϕ = 1.0       # cos( 0*λ_gc)
+        cos_m_2ϕ = +cos_ϕ    # cos(-2*λ_gc)
+
+        # Compute the contributions when `m ∈ [1,n]`.
+        # ===========================================
+
+        for m = 1:n
+            # Compute recursively `sin(m*ϕ)` and `cos(m*ϕ)`.
+            sin_mϕ = 2cos_ϕ*sin_m_1ϕ-sin_m_2ϕ
+            cos_mϕ = 2cos_ϕ*cos_m_1ϕ-cos_m_2ϕ
+
+            # Compute the coefficients `G_nm` and `H_nm`.
+            # ===========================================
+
+            # Get the coefficients in the epoch and interpolate to the
+            # desired time.
             Gnm_e0 = G[kg,idx+2]
+            Hnm_e0 = H[kh,idx+2]
 
             if date < 2015
                 Gnm_e1 = G[kg,idx+3]
+                Hnm_e1 = H[kh,idx+3]
                 ΔG     = (Gnm_e1-Gnm_e0)/5
+                ΔH     = (Hnm_e1-Hnm_e0)/5
             else
                 ΔG     = G[kg,27]
+                ΔH     = H[kh,27]
             end
 
             Gnm    = Gnm_e0 + ΔG*Δt
+            Hnm    = Hnm_e0 + ΔH*Δt
             kg    += 1
+            kh    += 1
 
-            aux_dVr += -(n+1)/r*Gnm*P[n+1,1]
-            aux_dVθ += Gnm*dP[n+1,1]
+            GcHs_nm = Gnm*cos_mϕ + Hnm*sin_mϕ
+            GsHc_nm = Gnm*sin_mϕ - Hnm*cos_mϕ
 
-            # Sine and cosine with m = 1.
-            # ===========================
-            #
-            # This values will be used to update recursively `sin(m*ϕ)` and
-            # `cos(m*ϕ)`, reducing the computational burden.
-            sin_mϕ   = +sin_ϕ    # sin( 1*λ_gc)
-            sin_m_1ϕ = 0.0       # sin( 0*λ_gc)
-            sin_m_2ϕ = -sin_ϕ    # sin(-1*λ_gc)
-            cos_mϕ   = +cos_ϕ    # cos( 1*λ_gc)
-            cos_m_1ϕ = 1.0       # cos( 0*λ_gc)
-            cos_m_2ϕ = +cos_ϕ    # cos(-2*λ_gc)
+            # Compute the contributions for `m`.
+            # ==================================
+            aux_dVr += -(n+1)/r*GcHs_nm*P[n+1,m+1]
+            aux_dVθ += GcHs_nm*dP[n+1,m+1]
+            aux_dVϕ += (θ == 0) ? -m*GsHc_nm*dP[n+1,m+1] : -m*GsHc_nm*P[n+1,m+1]
 
-            # Compute the contributions when `m ∈ [1,n]`.
-            # ===========================================
+            # Update the values for the next step.
+            # ====================================
 
-            for m = 1:n
-                # Compute recursively `sin(m*ϕ)` and `cos(m*ϕ)`.
-                sin_mϕ = 2*cos_ϕ*sin_m_1ϕ-sin_m_2ϕ
-                cos_mϕ = 2*cos_ϕ*cos_m_1ϕ-cos_m_2ϕ
-
-                # Compute the coefficients `G_nm` and `H_nm`.
-                # ===========================================
-
-                # Get the coefficients in the epoch and interpolate to the
-                # desired time.
-                Gnm_e0 = G[kg,idx+2]
-                Hnm_e0 = H[kh,idx+2]
-
-                if date < 2015
-                    Gnm_e1 = G[kg,idx+3]
-                    Hnm_e1 = H[kh,idx+3]
-                    ΔG     = (Gnm_e1-Gnm_e0)/5
-                    ΔH     = (Hnm_e1-Hnm_e0)/5
-                else
-                    ΔG     = G[kg,27]
-                    ΔH     = H[kh,27]
-                end
-
-                Gnm    = Gnm_e0 + ΔG*Δt
-                Hnm    = Hnm_e0 + ΔH*Δt
-                kg    += 1
-                kh    += 1
-
-                GcHs_nm = Gnm*cos_mϕ + Hnm*sin_mϕ
-                GsHc_nm = Gnm*sin_mϕ - Hnm*cos_mϕ
-
-                # Compute the contributions for `m`.
-                # ==================================
-                aux_dVr += -(n+1)/r*GcHs_nm*P[n+1,m+1]
-                aux_dVθ += GcHs_nm*dP[n+1,m+1]
-                aux_dVϕ += (θ == 0) ? -m*GsHc_nm*dP[n+1,m+1] : -m*GsHc_nm*P[n+1,m+1]
-
-                # Update the values for the next step.
-                # ====================================
-
-                sin_m_2ϕ = sin_m_1ϕ
-                sin_m_1ϕ = sin_mϕ
-                cos_m_2ϕ = cos_m_1ϕ
-                cos_m_1ϕ = cos_mϕ
-            end
-
-            # Perform final computations related to the summation in `n`.
-            # ===========================================================
-
-            # fact = (a/r)^(n+1)
-            fact    *= ratio
-
-            # aux_<> *= (a/r)^(n+1)
-            aux_dVr *= fact
-            aux_dVϕ *= fact
-            aux_dVθ *= fact
-
-            dVr += aux_dVr
-            dVϕ += aux_dVϕ
-            dVθ += aux_dVθ
+            sin_m_2ϕ = sin_m_1ϕ
+            sin_m_1ϕ = sin_mϕ
+            cos_m_2ϕ = cos_m_1ϕ
+            cos_m_1ϕ = cos_mϕ
         end
+
+        # Perform final computations related to the summation in `n`.
+        # ===========================================================
+
+        # fact = (a/r)^(n+1)
+        fact    *= ratio
+
+        # aux_<> *= (a/r)^(n+1)
+        aux_dVr *= fact
+        aux_dVϕ *= fact
+        aux_dVθ *= fact
+
+        dVr += aux_dVr
+        dVϕ += aux_dVϕ
+        dVθ += aux_dVθ
     end
 
     dVr *= a
