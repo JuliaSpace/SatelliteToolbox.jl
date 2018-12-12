@@ -78,6 +78,7 @@ function igrf12(date::Number,
                 Ω::Number,
                 ::Type{Val{:geocentric}};
                 show_warns::Bool = true)
+
     # Input verification
     # ==================
 
@@ -164,8 +165,8 @@ function igrf12(date::Number,
         aux_dVθ = 0.0
         aux_dVϕ = 0.0
 
-        # Compute the contributions when `m = 0`.
-        # =======================================
+        # Compute the contributions when `m = 0`
+        # ======================================
 
         # Get the coefficients in the epoch and interpolate to the desired
         # time.
@@ -184,8 +185,8 @@ function igrf12(date::Number,
         aux_dVr += -(n+1)/r*Gnm*P[n+1,1]
         aux_dVθ += Gnm*dP[n+1,1]
 
-        # Sine and cosine with m = 1.
-        # ===========================
+        # Sine and cosine with m = 1
+        # ==========================
         #
         # This values will be used to update recursively `sin(m*ϕ)` and
         # `cos(m*ϕ)`, reducing the computational burden.
@@ -201,16 +202,16 @@ function igrf12(date::Number,
 
         fact_dVr = (n+1)/r
 
-        # Compute the contributions when `m ∈ [1,n]`.
-        # ===========================================
+        # Compute the contributions when `m ∈ [1,n]`
+        # ==========================================
 
         for m = 1:n
             # Compute recursively `sin(m*ϕ)` and `cos(m*ϕ)`.
             sin_mϕ = 2cos_ϕ*sin_m_1ϕ-sin_m_2ϕ
             cos_mϕ = 2cos_ϕ*cos_m_1ϕ-cos_m_2ϕ
 
-            # Compute the coefficients `G_nm` and `H_nm`.
-            # ===========================================
+            # Compute the coefficients `G_nm` and `H_nm`
+            # ==========================================
 
             # Get the coefficients in the epoch and interpolate to the
             # desired time.
@@ -235,14 +236,15 @@ function igrf12(date::Number,
             GcHs_nm = Gnm*cos_mϕ + Hnm*sin_mϕ
             GsHc_nm = Gnm*sin_mϕ - Hnm*cos_mϕ
 
-            # Compute the contributions for `m`.
-            # ==================================
+            # Compute the contributions for `m`
+            # =================================
+
             aux_dVr += -fact_dVr*GcHs_nm*P[n+1,m+1]
             aux_dVθ += GcHs_nm*dP[n+1,m+1]
             aux_dVϕ += (θ == 0) ? -m*GsHc_nm*dP[n+1,m+1] : -m*GsHc_nm*P[n+1,m+1]
 
-            # Update the values for the next step.
-            # ====================================
+            # Update the values for the next step
+            # ===================================
 
             sin_m_2ϕ = sin_m_1ϕ
             sin_m_1ϕ = sin_mϕ
@@ -250,8 +252,8 @@ function igrf12(date::Number,
             cos_m_1ϕ = cos_mϕ
         end
 
-        # Perform final computations related to the summation in `n`.
-        # ===========================================================
+        # Perform final computations related to the summation in `n`
+        # ==========================================================
 
         # fact = (a/r)^(n+1)
         fact    *= ratio
@@ -270,8 +272,9 @@ function igrf12(date::Number,
     dVϕ *= a
     dVθ *= a
 
-    # Compute the Geomagnetic field vector in the geocentric reference frame.
-    # =======================================================================
+    # Compute the Geomagnetic field vector in the geocentric reference frame
+    # ======================================================================
+
     x = +1/r*dVθ
     y = (θ == 0) ? -1/r*dVϕ : -1/(r*sin(θ))*dVϕ
     z = dVr
