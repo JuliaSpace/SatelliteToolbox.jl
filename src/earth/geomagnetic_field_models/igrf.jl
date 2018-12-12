@@ -46,7 +46,12 @@ coordinates:
 If `T` is omitted, then it defaults to `Val{:geocentric}`.
 
 Notice that the output vector will be represented in the same reference system
-selected by the parameter `T` (geocentric or geodetic).
+selected by the parameter `T` (geocentric or geodetic). The Y-axis of the output
+reference system always points East. In case of **geocentric coordinates**, the
+Z-axis points toward the center of Earth and the X-axis completes a right-handed
+coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
+the ellipsoid at the selected location and points toward North, whereas the
+Z-axis completes a right-hand coordinate system.
 
 # Keywords
 
