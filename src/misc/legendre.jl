@@ -164,7 +164,14 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
         for m = 0:n-1
             a_nm = sqrt( ( (2n-1)*(2n+1) ) / ( (n-m)*(n+m) ) )
             b_nm = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( (n-m)*(n+m)*(2n-3) ) )
-            P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+
+            # We assume that the matrix is not initialized. Hence, we must not
+            # access elements on the upper triangle.
+            if m != n-1
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+            else
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+            end
         end
 
         if !ph_term
@@ -278,7 +285,14 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
             aux = (n-m)*(n+m)
             a_nm = sqrt( ( (2n-1)*(2n-1) ) / aux )
             b_nm = sqrt( ( (n+m-1)*(n-m-1) ) / aux )
-            P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+
+            # We assume that the matrix is not initialized. Hence, we must not
+            # access elements on the upper triangle.
+            if m != n-1
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+            else
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+            end
         end
 
         if !ph_term
@@ -375,7 +389,14 @@ function legendre_conventional!(P::Matrix,
             aux = (n-m)*(n-m)
             a_nm = sqrt( (2n-1)*(2n-1) / aux )
             b_nm = sqrt( (n+m-1)*(n+m-1) / aux )
-            P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+
+            # We assume that the matrix is not initialized. Hence, we must not
+            # access elements on the upper triangle.
+            if m != n-1
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+            else
+                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+            end
         end
 
         if !ph_term
