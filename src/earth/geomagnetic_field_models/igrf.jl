@@ -196,6 +196,11 @@ function igrf12(date::Number,
         cos_m_1ϕ = 1.0       # cos( 0*λ_gc)
         cos_m_2ϕ = +cos_ϕ    # cos(-2*λ_gc)
 
+        # Other auxiliary variables that depend only on `n`
+        # =================================================
+
+        fact_dVr = (n+1)/r
+
         # Compute the contributions when `m ∈ [1,n]`.
         # ===========================================
 
@@ -232,7 +237,7 @@ function igrf12(date::Number,
 
             # Compute the contributions for `m`.
             # ==================================
-            aux_dVr += -(n+1)/r*GcHs_nm*P[n+1,m+1]
+            aux_dVr += -fact_dVr*GcHs_nm*P[n+1,m+1]
             aux_dVθ += GcHs_nm*dP[n+1,m+1]
             aux_dVϕ += (θ == 0) ? -m*GsHc_nm*dP[n+1,m+1] : -m*GsHc_nm*P[n+1,m+1]
 
@@ -294,7 +299,7 @@ function igrf12(date::Number,
     B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric}; show_warns = show_warns)
 
     # Convert to geodetic coordinates.
-    D_gd_gc = angle_to_dcm(λ_gc - λ, 0., 0., :YXZ)
+    D_gd_gc = create_rotation_matrix(λ_gc - λ,:Y)
     B_gd    = D_gd_gc*B_gc
 end
 
