@@ -33,7 +33,7 @@ export legendre_schmidt_quasi_normalized!, legendre_schmidt_quasi_normalized
 export legendre_conventional!, legendre_conventional
 
 """
-    function legendre!([N,] P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre!([N,] P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the associated Legendre function `P_n,m[cos(ϕ)]`. The maximum degree
 and order that will be computed are given by the dimensions of matrix `P`.
@@ -57,16 +57,25 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-legendre!(P::Matrix, ϕ::Number, ph_term::Bool = false) =
+legendre!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
     legendre_fully_normalized!(P, ϕ, ph_term)
 
-legendre!(::Type{Val{:full}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
+legendre!(::Type{Val{:full}},
+          P::AbstractMatrix,
+          ϕ::Number,
+          ph_term::Bool = false) =
     legendre_fully_normalized!(P, ϕ, ph_term)
 
-legendre!(::Type{Val{:schmidt}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
+legendre!(::Type{Val{:schmidt}},
+          P::AbstractMatrix,
+          ϕ::Number,
+          ph_term::Bool = false) =
     legendre_schmidt_quasi_normalized!(P, ϕ, ph_term)
 
-legendre!(::Type{Val{:conv}}, P::Matrix, ϕ::Number, ph_term::Bool = false) =
+legendre!(::Type{Val{:conv}},
+          P::AbstractMatrix,
+          ϕ::Number,
+          ph_term::Bool = false) =
     legendre_conventional!(P, ϕ, ph_term)
 
 """
@@ -112,7 +121,7 @@ legendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, ph_term::Bool = false) =
 ################################################################################
 
 """
-    function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree and order that will be computed are given by the dimensions
@@ -140,7 +149,8 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
     where P_n,m is the fully normalized Legendre associated function.
 
 """
-function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
+                                    ph_term::Bool = false)
     (rows, cols) = size(P)
 
     # Check if the matrix P is a square matrix.
@@ -153,14 +163,14 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
+    fact = !ph_term ? +1 : -1
+
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +sqrt(3)*c
-    P[1+1,1+1] = -sqrt(3)*s
+    P[1+1,1+1] = +sqrt(3)*s*fact
 
-    (!ph_term) && (P[1+1,1+1] *= -1)
-
-    for n = 2:rows-1
+    @inbounds for n = 2:rows-1
         for m = 0:n-1
             a_nm = sqrt( ( (2n-1)*(2n+1) ) / ( (n-m)*(n+m) ) )
             b_nm = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( (n-m)*(n+m)*(2n-3) ) )
@@ -174,11 +184,7 @@ function legendre_fully_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false
             end
         end
 
-        if !ph_term
-            P[n+1,n+1] = +s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
-        else
-            P[n+1,n+1] = -s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
-        end
+        P[n+1,n+1] = fact*s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
     end
 
     nothing
@@ -229,7 +235,7 @@ end
 ################################################################################
 
 """
-    function legendre_schmidt_quasi_normalized!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the Schmidt quasi-normalized associated Legendre function
 `P_n,m[cos(ϕ)]` [3,4].  The maximum degree and order that will be computed are
@@ -258,7 +264,7 @@ This algorithm was based on [3,4]. The conversion is obtained by:
     where P_n,m is the quasi-normalized normalized Legendre associated function.
 
 """
-function legendre_schmidt_quasi_normalized!(P::Matrix,
+function legendre_schmidt_quasi_normalized!(P::AbstractMatrix,
                                             ϕ::Number,
                                             ph_term::Bool = false)
     (rows, cols) = size(P)
@@ -273,14 +279,14 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
+    fact = !ph_term ? +1 : -1
+
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +c
-    P[1+1,1+1] = -s
+    P[1+1,1+1] = +s*fact
 
-    (!ph_term) && (P[1+1,1+1] *= -1)
-
-    for n = 2:rows-1
+    @inbounds for n = 2:rows-1
         for m = 0:n-1
             aux = (n-m)*(n+m)
             a_nm = sqrt( ( (2n-1)*(2n-1) ) / aux )
@@ -295,11 +301,7 @@ function legendre_schmidt_quasi_normalized!(P::Matrix,
             end
         end
 
-        if !ph_term
-            P[n+1,n+1] = +s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
-        else
-            P[n+1,n+1] = -s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
-        end
+        P[n+1,n+1] = fact*s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
     end
 
     nothing
@@ -350,7 +352,7 @@ end
 ################################################################################
 
 """
-    function legendre_conventional!(P::Matrix, ϕ::Number, ph_term::Bool = false)
+    function legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
 
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`.
 The maximum degree and order that will be computed are given by the dimensions
@@ -362,7 +364,7 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-function legendre_conventional!(P::Matrix,
+function legendre_conventional!(P::AbstractMatrix,
                                 ϕ::Number,
                                 ph_term::Bool = false)
     (rows, cols) = size(P)
@@ -377,14 +379,14 @@ function legendre_conventional!(P::Matrix,
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
+    fact = !ph_term ? +1 : -1
+
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +c
-    P[1+1,1+1] = -s
+    P[1+1,1+1] = +s*fact
 
-    (!ph_term) && (P[1+1,1+1] *= -1)
-
-    for n = 2:rows-1
+    @inbounds for n = 2:rows-1
         for m = 0:n-1
             aux = (n-m)*(n-m)
             a_nm = sqrt( (2n-1)*(2n-1) / aux )
@@ -399,11 +401,7 @@ function legendre_conventional!(P::Matrix,
             end
         end
 
-        if !ph_term
-            P[n+1,n+1] = +s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
-        else
-            P[n+1,n+1] = -s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
-        end
+        P[n+1,n+1] = fact*s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
     end
 
     nothing
