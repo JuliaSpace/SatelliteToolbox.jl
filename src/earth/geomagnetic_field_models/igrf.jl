@@ -55,7 +55,7 @@ selected by the parameter `T` (geocentric or geodetic).
 # Remarks
 
 The `date` must be greater or equal to 1900 and less than or equal 2025. Notice
-that a warning message is printed for dates grated than 2020.
+that a warning message is printed for dates greater than 2020.
 
 # Disclaimer
 
