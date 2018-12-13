@@ -163,17 +163,18 @@ function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
-    fact = !ph_term ? +1 : -1
+    s_fact = !ph_term ? +s : -s
 
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +sqrt(3)*c
-    P[1+1,1+1] = +sqrt(3)*s*fact
+    P[1+1,1+1] = +sqrt(3)*s_fact
 
     @inbounds for n = 2:rows-1
         for m = 0:n-1
-            a_nm = sqrt( ( (2n-1)*(2n+1) ) / ( (n-m)*(n+m) ) )
-            b_nm = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( (n-m)*(n+m)*(2n-3) ) )
+            aux_nm = (n-m)*(n+m)
+            a_nm   = sqrt( ( (2n-1)*(2n+1) ) / aux_nm )
+            b_nm   = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( aux_nm*(2n-3) ) )
 
             # We assume that the matrix is not initialized. Hence, we must not
             # access elements on the upper triangle.
@@ -184,7 +185,7 @@ function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
             end
         end
 
-        P[n+1,n+1] = fact*s*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
+        P[n+1,n+1] = s_fact*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
     end
 
     nothing
@@ -279,18 +280,20 @@ function legendre_schmidt_quasi_normalized!(P::AbstractMatrix,
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
-    fact = !ph_term ? +1 : -1
+    s_fact = !ph_term ? +s : -s
 
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +c
-    P[1+1,1+1] = +s*fact
+    P[1+1,1+1] = +s_fact
 
     @inbounds for n = 2:rows-1
+        aux_n = sqrt( (2n-1)*(2n-1) )
+
         for m = 0:n-1
-            aux = (n-m)*(n+m)
-            a_nm = sqrt( ( (2n-1)*(2n-1) ) / aux )
-            b_nm = sqrt( ( (n+m-1)*(n-m-1) ) / aux )
+            aux_nm = sqrt( (n-m)*(n+m) )
+            a_nm   = aux_n / aux_nm
+            b_nm   = sqrt( (n+m-1)*(n-m-1) ) / aux_nm
 
             # We assume that the matrix is not initialized. Hence, we must not
             # access elements on the upper triangle.
@@ -301,7 +304,7 @@ function legendre_schmidt_quasi_normalized!(P::AbstractMatrix,
             end
         end
 
-        P[n+1,n+1] = fact*s*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
+        P[n+1,n+1] = s_fact*sqrt( (2n-1)/(2n) )*P[n-1+1,n-1+1]
     end
 
     nothing
@@ -379,18 +382,20 @@ function legendre_conventional!(P::AbstractMatrix,
     c = cos(ϕ)
     s = sqrt(1-c^2)
 
-    fact = !ph_term ? +1 : -1
+    s_fact = !ph_term ? +s : -s
 
     # Starting values.
     P[0+1,0+1] = 1
     P[1+1,0+1] = +c
-    P[1+1,1+1] = +s*fact
+    P[1+1,1+1] = +s_fact
 
     @inbounds for n = 2:rows-1
+        aux_n = sqrt( (2n-1)*(2n-1) )
+
         for m = 0:n-1
-            aux = (n-m)*(n-m)
-            a_nm = sqrt( (2n-1)*(2n-1) / aux )
-            b_nm = sqrt( (n+m-1)*(n+m-1) / aux )
+            aux_nm = sqrt( (n-m)*(n-m) )
+            a_nm   = aux_n / aux_nm
+            b_nm   = sqrt( (n+m-1)*(n+m-1) ) / aux_nm
 
             # We assume that the matrix is not initialized. Hence, we must not
             # access elements on the upper triangle.
@@ -401,7 +406,7 @@ function legendre_conventional!(P::AbstractMatrix,
             end
         end
 
-        P[n+1,n+1] = fact*s*sqrt( (2n-1)*(2n-1) )*P[n-1+1,n-1+1]
+        P[n+1,n+1] = s_fact*aux_n*P[n-1+1,n-1+1]
     end
 
     nothing
