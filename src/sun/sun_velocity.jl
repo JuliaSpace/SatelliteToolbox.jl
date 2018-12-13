@@ -80,7 +80,9 @@ function sun_velocity_i(JD::Number)
 
     # Compute the Sun velocity vector represented in the Mean Equinox of Date
     # (MOD).
-    vs_MOD = [       ∂r*cos_λ_e -                            r*sin_λ_e*∂λ_e;
-               ∂r*cos_ϵ*sin_λ_e - r*sin_ϵ*sin_λ_e*∂ϵ + r*cos_ϵ*cos_λ_e*∂λ_e;
-               ∂r*sin_ϵ*sin_λ_e + r*cos_ϵ*sin_λ_e*∂ϵ + r*sin_ϵ*cos_λ_e*∂λ_e; ]
+    vs_MOD = SVector{3,Float64}(
+               ∂r*cos_λ_e -                            r*sin_λ_e*∂λ_e,
+               ∂r*cos_ϵ*sin_λ_e - r*sin_ϵ*sin_λ_e*∂ϵ + r*cos_ϵ*cos_λ_e*∂λ_e,
+               ∂r*sin_ϵ*sin_λ_e + r*cos_ϵ*sin_λ_e*∂ϵ + r*sin_ϵ*cos_λ_e*∂λ_e
+              )
 end

@@ -62,9 +62,9 @@ function sun_position_i(JD::Number)
     r = ( 1.000140612 - 0.016708617cos_Ms - 0.000139589cos_2Ms )*au2m
 
     # Compute the Sun vector represented in the Mean Equinox of Date (MOD).
-    S_MOD = [      r*cos_λ_e;
-             r*cos_ϵ*sin_λ_e;
-             r*sin_ϵ*sin_λ_e;]
+    S_MOD = SVector{3,Float64}(      r*cos_λ_e,
+                               r*cos_ϵ*sin_λ_e,
+                               r*sin_ϵ*sin_λ_e)
 
     # TODO: This vector must be transformed to the inertial reference frame that
     # will be used in this toolbox (J2000, True of Date, etc.).
