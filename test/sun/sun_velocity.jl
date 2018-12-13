@@ -30,7 +30,7 @@
 #
 ################################################################################
 
-@testset "Function sun_position_i" begin
+@testset "Function sun_velocity_i" begin
     JD_start = DatetoJD(1950, 1, 1, 0, 0, 0)
     JD_stop  = DatetoJD(2019, 1, 1, 0, 0, 0)
 
