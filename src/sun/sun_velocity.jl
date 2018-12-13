@@ -31,7 +31,7 @@ the Sun position in [3, p. 277-279].
 """
 function sun_velocity_i(JD::Number)
     # Constants
-    cen2s   = 1/(36525*86400)
+    cen2s = 1/(36525.0*86400.0)
 
     # Sun position
     # ==========================================================================
