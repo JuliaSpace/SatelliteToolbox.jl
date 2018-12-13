@@ -244,7 +244,33 @@ end
 #                                Gravity Model
 ################################################################################
 
-export GravityModel_Coefs
+export ICGEM, GravityModel_Coefs
+
+"""
+Structure to store the information contained in ICGEM files.
+
+"""
+@with_kw struct ICGEM
+    # Mandatory keywords.
+    product_type::String
+    modelname::String
+    gravity_constant::Float64
+    radius::Float64
+    max_degree::Int
+    errors::Symbol
+
+    # Optional keywords.
+    tide_system::Symbol
+    norm::Symbol
+
+    # Coefficients.
+    Clm::Matrix{Float64}           = Matrix{Float64}(undef,0,0)
+    Slm::Matrix{Float64}           = Matrix{Float64}(undef,0,0)
+    sigmaC::Matrix{Float64}        = Matrix{Float64}(undef,0,0)
+    sigmaC_formal::Matrix{Float64} = Matrix{Float64}(undef,0,0)
+    sigmaS::Matrix{Float64}        = Matrix{Float64}(undef,0,0)
+    sigmaS_formal::Matrix{Float64} = Matrix{Float64}(undef,0,0)
+end
 
 """
 Structure to store the information about a gravity model.

@@ -17,11 +17,33 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export compute_dU, compute_U, compute_g, parse_gfc
+export create_gravity_model_coefs, compute_dU, compute_U, compute_g
 
 ################################################################################
 #                               Public Functions
 ################################################################################
+
+"""
+    function create_gravity_model_coefs(icgem::ICGEM)
+
+Return an instance of the structure `GravityModel_Coefs` based on the
+information obtained from an ICGEM file in `icgem` (see `parse_icgem`).
+
+"""
+function create_gravity_model_coefs(icgem::ICGEM)
+
+    legendre_norm = (icgem.norm == :fully_normalized) ? :full : :conv
+
+    # Create and return the gravity model coefficients.
+    gm_coefs::GravityModel_Coefs{Float64} =
+        GravityModel_Coefs(name          = icgem.modelname,
+                           μ             = icgem.gravity_constant,
+                           R0            = icgem.radius,
+                           n_max         = icgem.max_degree,
+                           C             = copy(icgem.Clm),
+                           S             = copy(icgem.Slm),
+                           legendre_norm = legendre_norm)
+end
 
 """
     function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = 0) where T<:Number
@@ -278,86 +300,3 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     U *= μ/r_gc
 end
 
-"""
-    function parse_gfc(filename::String)
-
-Parse a `gfc` (*Gravity Field Coefficient*) file `filename` and return an
-instance of the structure `GravityModel_Coefs` with the parsed values. More
-information about this format can be seen in [2].
-
-"""
-function parse_gfc(filename::String)
-    # Open the file and count how many lines the header has.
-    file = open(filename, "r")
-
-    header_lines = 0
-
-    # Information to be acquired at the header.
-    name  = ""
-    μ     = 0.0
-    R₀    = 0.0
-    n_max = 0
-
-    while !eof(file)
-        str = readline(file)
-        header_lines += 1
-
-        # Check if we are at the end of the header.
-        occursin("end_of_head", str) && break
-
-        # Check if the line contains the required information.
-        if occursin("product_type", str)
-            aux = split(str)
-
-            (aux[2] != "gravity_field") && error("The gfc file $filename has a wrong format.")
-
-        elseif occursin("modelname", str)
-            aux  = split(str)
-            name = aux[2]
-
-        elseif occursin("earth_gravity_constant", str)
-            aux = split(str)
-            μ   = parse(Float64, aux[2])
-
-        elseif occursin("radius", str)
-            aux = split(str)
-            R₀  = parse(Float64, aux[2])
-
-        elseif occursin("max_degree", str)
-            aux   = split(str)
-            n_max = parse(Int64, aux[2])
-        end
-    end
-
-    # Check if all information was obtained from the header.
-    if (name == "") || (μ == 0) || (R₀ == 0) || (n_max == 0)
-        error("The gfc file $filename has a wrong header.")
-    end
-
-    # Close the file.
-    close(file)
-
-    # Read and parse the coefficients.
-    raw = readdlm(filename; skipstart = header_lines)
-
-    # The file will be parsed using Sparse matrices because it is much easier.
-    # Perhaps, there is a method with better performance, but this function is
-    # called only once per execution.
-    I = map(x->Int(x)+1, raw[:,2])
-    J = map(x->Int(x)+1, raw[:,3])
-
-    C = sparse(I, J, convert(Vector{Float64}, raw[:,4]))
-    S = sparse(I, J, convert(Vector{Float64}, raw[:,5]))
-
-    # Create and return the gravity model coefficients.
-    gm_coefs::GravityModel_Coefs{Float64} =
-        GravityModel_Coefs(name          = name,
-                           μ             = μ,
-                           R0            = R₀,
-                           n_max         = n_max,
-                           C             = Matrix(C),
-                           S             = Matrix(S),
-                           legendre_norm = :full)
-
-    gm_coefs
-end

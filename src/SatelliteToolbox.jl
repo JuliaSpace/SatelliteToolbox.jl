@@ -66,6 +66,7 @@ include("earth/space_indices/space_indices.jl")
 
 include("./misc/legendre.jl")
 include("./misc/dlegendre.jl")
+include("./misc/icgem.jl")
 
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
@@ -103,5 +104,7 @@ include("transformations/teme/teme.jl")
 
 include("time/julian_day.jl")
 include("time/time.jl")
+
+include("deprecations.jl")
 
 end # module

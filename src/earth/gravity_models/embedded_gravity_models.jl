@@ -38,28 +38,28 @@ For other models, you can downlad the `gfc` file at
 
     http://icgem.gfz-potsdam.de/home
 
-and load it using the function `parse_gfc`.
+and load it using the functions `parse_icgem` and `create_gravity_model_coefs`.
 
 """
 function load_gravity_model(::Type{Val{:egm96}})
     dir      = @__DIR__
     filename = dir * "/coefficients/EGM96.gfc"
 
-    return parse_gfc(filename)
+    return create_gravity_model_coefs(parse_icgem(filename))
 end
 
 function load_gravity_model(::Type{Val{:jgm2}})
     dir      = @__DIR__
     filename = dir * "/coefficients/JGM2.gfc"
 
-    return parse_gfc(filename)
+    return create_gravity_model_coefs(parse_icgem(filename))
 end
 
 function load_gravity_model(::Type{Val{:jgm3}})
     dir      = @__DIR__
     filename = dir * "/coefficients/JGM3.gfc"
 
-    return parse_gfc(filename)
+    return create_gravity_model_coefs(parse_icgem(filename))
 end
 
 ################################################################################
