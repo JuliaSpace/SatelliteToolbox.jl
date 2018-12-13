@@ -56,8 +56,8 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
         n_max = size(C,1)-1
     end
 
-    # Get the geocentric latitude and longitude.
-    # ==========================================
+    # Get the geocentric latitude and longitude
+    # =========================================
     r_gc = norm(r)
     ρ_gc = sqrt(r[1]^2 + r[2]^2)
     ϕ_gc = atan(r[3], ρ_gc)
@@ -70,13 +70,11 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
     #
     # This values were be used in the algorithm to decrease the computational
     # burden.
-    sin_λ   = sin(1λ_gc)
-    cos_λ   = cos(1λ_gc)
-    sin_2λ  = sin(2λ_gc)
-    cos_2λ  = cos(2λ_gc)
+    sin_λ,  cos_λ  = sincos(1λ_gc)
+    sin_2λ, cos_2λ = sincos(2λ_gc)
 
-    # First derivative of the non-spherical portion of the grav. field.
-    # =================================================================
+    # First derivative of the non-spherical portion of the grav. field
+    # ================================================================
     ∂Ur = T(1)  # Derivative w.r.t. the radius.
     ∂Uϕ = T(0)  # Derivative w.r.t. the geocentric latitude.
     ∂Uλ = T(0)  # Derivative w.r.t. the geocentric longitude.
@@ -88,9 +86,13 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
     P  =  legendre(Val{legendre_norm}, ϕ_gc-pi/2, n_max, false)
     dP = dlegendre(Val{legendre_norm}, ϕ_gc-pi/2, P    , false)
 
+    # Auxiliary variables.
+    rn_fact = R0/r_gc
+    rn      = rn_fact
+
     # Compute the derivatives.
     @inbounds for n = 2:n_max
-        rn = (R0/r_gc)^n
+        rn *= rn_fact # -> rn = (R0/r_gc)^n
 
         aux_∂Ur = T(0)
         aux_∂Uϕ = T(0)
@@ -107,10 +109,10 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T},
         cos_m_1λ = cos_λ     # cos(-1*λ_gc)
         cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
 
-        @inbounds for m = 0:n
+        for m = 0:n
             # Compute recursively `sin(m*λ_gc)` and `cos(m*λ_gc)`.
-            sin_mλ = 2*cos_λ*sin_m_1λ-sin_m_2λ
-            cos_mλ = 2*cos_λ*cos_m_1λ-cos_m_2λ
+            sin_mλ = 2cos_λ*sin_m_1λ-sin_m_2λ
+            cos_mλ = 2cos_λ*cos_m_1λ-cos_m_2λ
 
             CcSs_nm = C[n+1,m+1]*cos_mλ + S[n+1,m+1]*sin_mλ
 
@@ -161,13 +163,13 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     ∂Ur, ∂Uϕ, ∂Uλ = compute_dU(gm_coefs, r, n_max)
 
     # Auxiliary variables.
-    r_gc     = norm(r)
-    ρ_gc     = sqrt(r[1]^2 + r[2]^2)
-    ϕ_gc     = atan(r[3], ρ_gc)
-    λ_gc     = atan(r[2], r[1])
+    r_gc = norm(r)
+    ρ_gc = sqrt(r[1]^2 + r[2]^2)
+    ϕ_gc = atan(r[3], ρ_gc)
+    λ_gc = atan(r[2], r[1])
 
-    # Compute the acceleration represented in the ITRF.
-    # =================================================
+    # Compute the acceleration represented in the ITRF
+    # ================================================
 
     # Compute the partial derivatives in spherical coordinate systems:
     #
@@ -179,9 +181,9 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
     # `cos(pi/2)` a very small number will be returned and `∂U/∂λ` is 0. Hence,
     # the 2nd component will be 0.
 
-    a_l = [∂Ur;
-           ∂Uλ/(r_gc*cos(ϕ_gc));
-           ∂Uϕ/r_gc]
+    a_l = SVector{3,T}(∂Ur,
+                       ∂Uλ/(r_gc*cos(ϕ_gc)),
+                       ∂Uϕ/r_gc)
 
     # The vector `a_l` is represented in the local UEN (Up-Earth-North)
     # reference frame. Hence, we need to describe the unitary vectors of this
@@ -216,19 +218,17 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     end
 
     # Auxiliary variables.
-    r_gc     = norm(r)
-    ρ_gc     = sqrt(r[1]^2 + r[2]^2)
-    ϕ_gc     = atan(r[3], ρ_gc)
-    λ_gc     = atan(r[2], r[1])
+    r_gc = norm(r)
+    ρ_gc = sqrt(r[1]^2 + r[2]^2)
+    ϕ_gc = atan(r[3], ρ_gc)
+    λ_gc = atan(r[2], r[1])
 
     # Sine and cosine of the geocentric longitude.
     #
     # This values were be used in the algorithm to decrease the computational
     # burden.
-    sin_λ   = sin(1λ_gc)
-    cos_λ   = cos(1λ_gc)
-    sin_2λ  = sin(2λ_gc)
-    cos_2λ  = cos(2λ_gc)
+    sin_λ,  cos_λ  = sincos(1λ_gc)
+    sin_2λ, cos_2λ = sincos(2λ_gc)
 
     # Consider the zero degree term.
     U = T(1)
@@ -238,6 +238,10 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
     #
     # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
     P = legendre(Val{legendre_norm}, ϕ_gc-pi/2, n_max, false)
+
+    # Auxiliary variables.
+    rn_fact = R0/r_gc
+    rn      = rn_fact
 
     @inbounds for n = 2:n_max
         aux_U = T(0)
@@ -253,10 +257,10 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
         cos_m_1λ = cos_λ     # cos(-1*λ_gc)
         cos_m_2λ = cos_2λ    # cos(-2*λ_gc)
 
-        @inbounds for m = 0:n
+        for m = 0:n
             # Compute recursively `sin(m*λ_gc)` and `cos(m*λ_gc)`.
-            sin_mλ = 2*cos_λ*sin_m_1λ-sin_m_2λ
-            cos_mλ = 2*cos_λ*cos_m_1λ-cos_m_2λ
+            sin_mλ = 2cos_λ*sin_m_1λ-sin_m_2λ
+            cos_mλ = 2cos_λ*cos_m_1λ-cos_m_2λ
 
             aux_U += P[n+1,m+1]*(C[n+1,m+1]*cos_mλ + S[n+1,m+1]*sin_mλ)
 
@@ -267,7 +271,8 @@ function compute_U(gm_coefs::GravityModel_Coefs{T},
             cos_m_1λ = cos_mλ
         end
 
-        U += (R0/r_gc)^n*aux_U
+        rn *= rn_fact # -> rn = (R0/r_gc)^n
+        U  += rn*aux_U
     end
 
     U *= μ/r_gc
