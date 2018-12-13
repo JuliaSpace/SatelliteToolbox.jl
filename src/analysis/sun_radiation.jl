@@ -126,7 +126,7 @@ function satellite_sun_radiation_earth_pointing(JD0::Number,
             if (!meanAnomaly)
                 f = ang[k]-w_d
             else
-                f = satellite_orbit_compute_f(a, e, i, ang[k])
+                f = M_to_f(e, ang[k])
             end
 
             (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)

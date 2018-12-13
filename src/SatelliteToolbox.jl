@@ -74,7 +74,6 @@ include("sun/sun_velocity.jl")
 
 include("orbit/general.jl")
 include("orbit/anomalies.jl")
-include("orbit/orbit_aux.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
 include("orbit/tle.jl")

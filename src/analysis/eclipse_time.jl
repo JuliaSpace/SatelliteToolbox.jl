@@ -105,7 +105,7 @@ function satellite_eclipse_time(JD0::Number,
         for m_k in M
             # Get the satellite position vector represented in the Inertial coordinate
             # frame.
-            f = satellite_orbit_compute_f(a, e, i, m_k)
+            f = M_to_f(e, m_k)
 
             (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
 
