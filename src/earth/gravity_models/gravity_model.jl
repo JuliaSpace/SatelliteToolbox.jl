@@ -197,7 +197,7 @@ function compute_g(gm_coefs::GravityModel_Coefs{T},
 end
 
 """
-    function compute_U(gm_coefs::GravityModel_Coefs{T}, ϕ_gc::Number, λ_gc::Number, r_gc::Number [, n_max::Number]) where T<:Number
+    function compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = 0) where T<:Number
 
 Compute the gravitational potential [J/kg] at `r` (ITRF) \\[m] using the
 coefficients `gm_coefs` (see `GravityModel_Coefs`). The maximum degree that will
