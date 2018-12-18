@@ -55,14 +55,14 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_gcrf = [5102.50895790; 6123.01140070; 6378.13692820]
 
-    D_ITRF_GCRF = rECItoECEF(FK5(), GCRF(), ITRF(), JD_UTC, eop)
+    D_ITRF_GCRF = rECItoECEF(GCRF(), ITRF(), JD_UTC, eop)
     r_itrf = D_ITRF_GCRF*r_gcrf
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
 
-    q_ITRF_GCRF = rECItoECEF(Quaternion, FK5(), GCRF(), ITRF(), JD_UTC, eop)
+    q_ITRF_GCRF = rECItoECEF(Quaternion, GCRF(), ITRF(), JD_UTC, eop)
     r_itrf = vect(conj(q_ITRF_GCRF)*r_gcrf*q_ITRF_GCRF)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
@@ -111,14 +111,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
 
-    D_ITRF_J2000 = rECItoECEF(FK5(), J2000(), ITRF(), JD_UTC, eop)
+    D_ITRF_J2000 = rECItoECEF(J2000(), ITRF(), JD_UTC, eop)
     r_itrf = D_ITRF_J2000*r_j2000
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
 
-    q_ITRF_J2000 = rECItoECEF(Quaternion, FK5(), J2000(), ITRF(), JD_UTC, eop)
+    q_ITRF_J2000 = rECItoECEF(Quaternion, J2000(), ITRF(), JD_UTC, eop)
     r_itrf = vect(conj(q_ITRF_J2000)*r_j2000*q_ITRF_J2000)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
@@ -167,14 +167,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_tod = [5094.51620300; 6127.36527840; 6380.34453270]
 
-    D_ITRF_TOD = rECItoECEF(FK5(), TOD(), ITRF(), JD_UTC, eop)
+    D_ITRF_TOD = rECItoECEF(TOD(), ITRF(), JD_UTC, eop)
     r_itrf = D_ITRF_TOD*r_tod
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
 
-    q_ITRF_TOD = rECItoECEF(Quaternion, FK5(), TOD(), ITRF(), JD_UTC, eop)
+    q_ITRF_TOD = rECItoECEF(Quaternion, TOD(), ITRF(), JD_UTC, eop)
     r_itrf = vect(conj(q_ITRF_TOD)*r_tod*q_ITRF_TOD)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
@@ -223,14 +223,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_mod  = [5094.02837450; 6127.87081640; 6380.24851640]
 
-    D_ITRF_MOD = rECItoECEF(FK5(), MOD(), ITRF(), JD_UTC, eop)
+    D_ITRF_MOD = rECItoECEF(MOD(), ITRF(), JD_UTC, eop)
     r_itrf = D_ITRF_MOD*r_mod
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
 
-    q_ITRF_MOD = rECItoECEF(Quaternion, FK5(), MOD(), ITRF(), JD_UTC, eop)
+    q_ITRF_MOD = rECItoECEF(Quaternion, MOD(), ITRF(), JD_UTC, eop)
     r_itrf = vect(conj(q_ITRF_MOD)*r_mod*q_ITRF_MOD)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
@@ -279,14 +279,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
 
-    D_ITRF_TEME = rECItoECEF(FK5(), TEME(), ITRF(), JD_UTC, eop)
+    D_ITRF_TEME = rECItoECEF(TEME(), ITRF(), JD_UTC, eop)
     r_itrf = D_ITRF_TEME*r_teme
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
 
-    q_ITRF_TEME = rECItoECEF(Quaternion, FK5(), TEME(), ITRF(), JD_UTC, eop)
+    q_ITRF_TEME = rECItoECEF(Quaternion, TEME(), ITRF(), JD_UTC, eop)
     r_itrf = vect(conj(q_ITRF_TEME)*r_teme*q_ITRF_TEME)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
@@ -335,14 +335,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_gcrf = [5102.50895790; 6123.01140070; 6378.13692820]
 
-    D_PEF_GCRF = rECItoECEF(FK5(), GCRF(), PEF(), JD_UTC, eop)
+    D_PEF_GCRF = rECItoECEF(GCRF(), PEF(), JD_UTC, eop)
     r_pef = D_PEF_GCRF*r_gcrf
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 
-    q_PEF_GCRF = rECItoECEF(Quaternion, FK5(), GCRF(), PEF(), JD_UTC, eop)
+    q_PEF_GCRF = rECItoECEF(Quaternion, GCRF(), PEF(), JD_UTC, eop)
     r_pef = vect(conj(q_PEF_GCRF)*r_gcrf*q_PEF_GCRF)
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
@@ -391,14 +391,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
 
-    D_PEF_J2000 = rECItoECEF(FK5(), J2000(), PEF(), JD_UTC, eop)
+    D_PEF_J2000 = rECItoECEF(J2000(), PEF(), JD_UTC, eop)
     r_pef = D_PEF_J2000*r_j2000
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 
-    q_PEF_J2000 = rECItoECEF(Quaternion, FK5(), J2000(), PEF(), JD_UTC, eop)
+    q_PEF_J2000 = rECItoECEF(Quaternion, J2000(), PEF(), JD_UTC, eop)
     r_pef = vect(conj(q_PEF_J2000)*r_j2000*q_PEF_J2000)
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
@@ -447,14 +447,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_tod  = [5094.51620300; 6127.36527840; 6380.34453270]
 
-    D_PEF_TOD = rECItoECEF(FK5(), TOD(), PEF(), JD_UTC, eop)
+    D_PEF_TOD = rECItoECEF(TOD(), PEF(), JD_UTC, eop)
     r_pef = D_PEF_TOD*r_tod
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 
-    q_PEF_TOD = rECItoECEF(Quaternion, FK5(), TOD(), PEF(), JD_UTC, eop)
+    q_PEF_TOD = rECItoECEF(Quaternion, TOD(), PEF(), JD_UTC, eop)
     r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
@@ -503,14 +503,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_mod  = [5094.02837450; 6127.87081640; 6380.24851640]
 
-    D_PEF_MOD = rECItoECEF(FK5(), MOD(), PEF(), JD_UTC, eop)
+    D_PEF_MOD = rECItoECEF(MOD(), PEF(), JD_UTC, eop)
     r_pef = D_PEF_MOD*r_mod
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 
-    q_PEF_MOD = rECItoECEF(Quaternion, FK5(), MOD(), PEF(), JD_UTC, eop)
+    q_PEF_MOD = rECItoECEF(Quaternion, MOD(), PEF(), JD_UTC, eop)
     r_pef = vect(conj(q_PEF_MOD)*r_mod*q_PEF_MOD)
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
@@ -559,14 +559,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
 
-    D_PEF_TEME = rECItoECEF(FK5(), TEME(), PEF(), JD_UTC, eop)
+    D_PEF_TEME = rECItoECEF(TEME(), PEF(), JD_UTC, eop)
     r_pef = D_PEF_TEME*r_teme
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
 
-    q_PEF_TEME = rECItoECEF(Quaternion, FK5(), TEME(), PEF(), JD_UTC, eop)
+    q_PEF_TEME = rECItoECEF(Quaternion, TEME(), PEF(), JD_UTC, eop)
     r_pef = vect(conj(q_PEF_TEME)*r_teme*q_PEF_TEME)
 
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
