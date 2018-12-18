@@ -21,8 +21,12 @@ export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
 export read_iers_eop
 
+################################################################################
+#                       Private Structures and Variables
+################################################################################
+
 """
-    function get_iers_eop(data_type::Symbol = :IAU1980)
+    function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
 
 Download and parse the IERS EOP C04 data. The data type is specified by
 `data_type` symbol. Supported values are:
@@ -32,6 +36,10 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 
 If `data_type` is omitted, then it defaults to `IAU1980`.
 
+The files are downloaded using the `RemoteFile` package with daily updates.
+Hence, if one desires to force a download before the scheduled time, then set
+the keyword `force_download` to `true`.
+
 # Returns
 
 A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
@@ -39,11 +47,11 @@ with the interpolations of the EOP parameters. Notice that the interpolation
 indexing is set to the Julian Day.
 
 """
-function get_iers_eop(data_type::Symbol = :IAU1980)
+function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
     if data_type == :IAU1980
-        return get_iers_eop_iau_1980()
+        return get_iers_eop_iau_1980(force_download = force_download)
     elseif data_type == :IAU2000A
-        return get_iers_eop_iau_2000A()
+        return get_iers_eop_iau_2000A(force_download = force_download)
     else
         throw(ArgumentError("Unknow EOP type. It must be :IAU1980 or :IAU2000A."))
     end
@@ -54,6 +62,10 @@ end
 
 Get the IERS EOP C04 IAU1980 data from the URL `url`. If `url` is omitted, then
 it defaults to https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
+
+The file is downloaded using the `RemoteFile` package with daily updates. Hence,
+if one desires to force a download before the scheduled time, then set the
+keyword `force_download` to `true`.
 
 # Returns
 
@@ -67,11 +79,16 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
-    r = HTTP.request("GET", url)
+function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt";
+                               force_download = false)
+
+    _eop_iau1980 = @RemoteFile(@eval($url),
+                               file="EOP_IAU1980.TXT",
+                               updates=:daily)
+    download(_eop_iau1980; force = force_download)
 
     # Parse the data removing the header.
-    eop = readdlm(r.body; skipblanks=true, skipstart=14)
+    eop = readdlm(path(_eop_iau1980); skipblanks=true, skipstart=14)
 
     # Return the parsed EOP data.
     parse_iers_eop_iau_1980(eop)
@@ -79,10 +96,14 @@ end
 
 
 """
-    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt")
+    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt"; force_download = false)
 
 Get the IERS EOP C04 IAU2000A data from the URL `url`. If `url` is omitted, then
 it defaults to https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
+
+The file is downloaded using the `RemoteFile` package with daily updates. Hence,
+if one desires to force a download before the scheduled time, then set the
+keyword `force_download` to `true`.
 
 # Returns
 
@@ -96,11 +117,16 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt")
-    r = HTTP.request("GET", url)
+function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt";
+                                force_download = false)
+
+    _eop_iau2000A = @RemoteFile(@eval($url),
+                                file="EOP_IAU2000A.TXT",
+                                updates=:daily)
+    download(_eop_iau2000A; force = force_download)
 
     # Parse the data removing the header.
-    eop = readdlm(r.body; skipblanks=true, skipstart=14)
+    eop = readdlm(path(_eop_iau2000A); skipblanks=true, skipstart=14)
 
     # Return the parsed EOP data.
     parse_iers_eop_iau_2000A(eop)
