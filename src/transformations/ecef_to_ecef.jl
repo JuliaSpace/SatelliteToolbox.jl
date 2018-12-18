@@ -17,15 +17,15 @@
 export rECEFtoECEF
 
 """
-    function rECEFtoECEF([T,] [M,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
+    function rECEFtoECEF([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
 frame to another ECEF reference frame at the Julian Day [UTC] `JD_UTC`. The
 rotation description that will be used is given by `T`, which can be `DCM` or
-`Quaternion`. The model used to compute the rotation is specified by `M`.
-Currently, only IAU-76/FK5 is supported (`M = FK5()`). The origin ECEF frame is
-selected by the input `ECEFo` and the destination ECEF frame is selected by the
-input `ECEFf`.
+`Quaternion`. The origin ECEF frame is selected by the input `ECEFo` and the
+destination ECEF frame is selected by the input `ECEFf`. The model used to
+compute the rotation is specified by the selection of the origin and destination
+frames. Currently, only IAU-76/FK5 is supported.
 
 # Rotation description
 
@@ -42,12 +42,9 @@ If no value is specified, then it falls back to `DCM`.
 
 # Conversion model
 
-The model that will be used to compute the rotation is given by `M`. The
-possible values are:
-
-* `FK5()`: Use the IAU-76/FK5 model.
-
-If no value is specified, then it falls back to `FK5()`.
+The model that will be used to compute the rotation is automatically inferred
+given the selection of the origin and destination frames. Currently, only the
+IAU-76/FK5 model is supported.
 
 # ECEF Frame
 
@@ -87,21 +84,7 @@ Quaternion{Float64}:
                     T_ECEFf::T_ECEFs,
                     JD_UTC::Number,
                     eop_data::EOPData_IAU1980) =
-    rECEFtoECEF(DCM, Val{:FK5}, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
-
-@inline rECEFtoECEF(T::Union{Type{DCM}, Type{Quaternion}},
-                    T_ECEFo::T_ECEFs,
-                    T_ECEFf::T_ECEFs,
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980) =
-    rECEFtoECEF(T, Val{:FK5}, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
-
-@inline rECEFtoECEF(M::Type{Val{:FK5}},
-                    T_ECEFo::T_ECEFs,
-                    T_ECEFf::T_ECEFs,
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980) =
-    rECEFtoECEF(DCM, M, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+    rECEFtoECEF(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
 
 ################################################################################
 #                                  IAU-76/FK5
@@ -110,8 +93,7 @@ Quaternion{Float64}:
 #                                 ITRF <=> PEF
 # ==============================================================================
 
-function rECEFtoECEF(T::Type,
-                     ::Type{Val{:FK5}},
+function rECEFtoECEF(T::T_ROT,
                      ::Type{Val{:ITRF}},
                      ::Type{Val{:PEF}},
                      JD_UTC::Number,
@@ -126,11 +108,10 @@ function rECEFtoECEF(T::Type,
     rITRFtoPEF_fk5(T, x_p, y_p)
 end
 
-@inline rECEFtoECEF(T::Type,
-                    M::Type{Val{:FK5}},
+@inline rECEFtoECEF(T::T_ROT,
                     T_ECEFo::Type{Val{:PEF}},
                     T_ECEFf::Type{Val{:ITRF}},
                     JD_UTC::Number,
                     eop_data::EOPData_IAU1980) =
-    inv_rotation(rECEFtoECEF(T, M, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+    inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
 

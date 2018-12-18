@@ -17,15 +17,16 @@
 export rECEFtoECI
 
 """
-    function rECEFtoECI([T,] [M,] ECEF, ECI, JD_UTC::Number [, eop_data])
+    function rECEFtoECI([T,] ECEF, ECI, JD_UTC::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
 frame to an Earth-Centered Inertial (`ECI`) reference frame at the Julian Day
 [UTC] `JD_UTC`. The rotation description that will be used is given by `T`,
-which can be `DCM` or `Quaternion`. The model used to compute the rotation is
-specified by `M`. Currently, only IAU-76/FK5 is supported (`M = FK5()`). The
-ECEF frame is selected by the input `ECEF` and the `ECI` frame is selected by
-the input `ECI`. The possible values are listed below.
+which can be `DCM` or `Quaternion`. The ECEF frame is selected by the input
+`ECEF` and the `ECI` frame is selected by the input `ECI`. The possible values
+are listed below. The model used to compute the rotation is specified by the
+selection of the origin and destination frames. Currently, only IAU-76/FK5 is
+supported.
 
 # Rotation description
 
@@ -40,12 +41,9 @@ If no value is specified, then it falls back to `DCM`.
 
 # Conversion model
 
-The model that will be used to compute the rotation is given by `M`. The
-possible values are:
-
-* `FK5()`: Use the IAU-76/FK5 model.
-
-If no value is specified, then it falls back to `FK5()`.
+The model that will be used to compute the rotation is automatically inferred
+given the selection of the origin and destination frames. Currently, only the
+IAU-76/FK5 model is supported.
 
 # ECEF Frame
 
@@ -108,18 +106,7 @@ frame into alignment with the ECI reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980)
-julia> rECEFtoECI(DCM, FK5(), ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267      0.78518     -0.00132979
- -0.78518      -0.619267     3.33483e-5
- -0.000797314   0.00106478   0.999999
-
-julia> rECEFtoECI(FK5(), ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267      0.78518     -0.00132979
- -0.78518      -0.619267     3.33483e-5
- -0.000797314   0.00106478   0.999999
+julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
 julia> rECEFtoECI(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
@@ -154,51 +141,22 @@ Quaternion{Float64}:
                    T_ECI::T_ECIs,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
-
-@inline rECEFtoECI(T::Type,
-                   T_ECEF::T_ECEFs,
-                   T_ECI::T_ECIs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
+    rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
                    T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
                    JD_UTC::Number) =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
-
-@inline rECEFtoECI(T::Type,
-                   T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
-                   JD_UTC::Number) =
-    rECEFtoECI(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
+    rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
 ################################################################################
 #                                  IAU-76/FK5
 ################################################################################
 
-# Specialization related to the default type of the rotation representation.
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   T_ECEF::T_ECEFs,
-                   T_ECI::T_ECIs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC, eop_data)
-
-# Specializations for those cases that EOP Data is not needed.
-@inline rECEFtoECI(::Type{Val{:FK5}},
-                   T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
-                   JD_UTC::Number) =
-    rECEFtoECI(DCM, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
-
 #                                 ITRF => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:ITRF}},
                     ::Type{Val{:GCRF}},
                     JD_UTC::Number,
@@ -223,8 +181,7 @@ end
 #                                ITRF => J2000
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:ITRF}},
                     ::Type{Val{:J2000}},
                     JD_UTC::Number,
@@ -247,8 +204,7 @@ end
 #                                 ITRF => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:ITRF}},
                     ::Type{Val{:MOD}},
                     JD_UTC::Number,
@@ -276,8 +232,7 @@ end
 #                                 ITRF => TOD
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:ITRF}},
                     ::Type{Val{:TOD}},
                     JD_UTC::Number,
@@ -304,8 +259,7 @@ end
 #                                 ITRF => TEME
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:ITRF}},
                     ::Type{Val{:TEME}},
                     JD_UTC::Number,
@@ -331,8 +285,7 @@ end
 #                                 PEF => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:GCRF}},
                     JD_UTC::Number,
@@ -360,8 +313,7 @@ end
 #                                PEF => J2000
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:J2000}},
                     JD_UTC::Number,
@@ -378,8 +330,7 @@ function rECEFtoECI(T::Type,
     compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:J2000}},
                     JD_UTC::Number)
@@ -398,12 +349,12 @@ end
 #                                 PEF => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:MOD}},
                     JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
+
     # Get the time in UT1 and TT.
     JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
     JD_TT  = JD_UTCtoTT(JD_UTC)
@@ -423,8 +374,7 @@ end
 #                                 PEF => TOD
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:TOD}},
                     JD_UTC::Number,
@@ -449,12 +399,12 @@ end
 #                                 PEF => TEME
 # ==============================================================================
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:TEME}},
                     JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
+
     # Get the time in UT1.
     JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
 
@@ -462,8 +412,7 @@ function rECEFtoECI(T::Type,
     rPEFtoTEME(T, JD_UT1)
 end
 
-function rECEFtoECI(T::Type,
-                    ::Type{Val{:FK5}},
+function rECEFtoECI(T::T_ROT,
                     ::Type{Val{:PEF}},
                     ::Type{Val{:TEME}},
                     JD_UTC::Number)

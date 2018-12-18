@@ -767,7 +767,7 @@ end
 #                               Reference Frames
 ################################################################################
 
-export T_ECEFs, T_ECIs, T_ECIs_of_date
+export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ROT
 
 """
 Union of all Earth-Centered Earth-Fixed (ECEF) frames supported.
@@ -792,3 +792,10 @@ Union of all *of date* Earth-Centered Inertial (ECI) frames supported.
 T_ECIs_of_date = Union{Type{Val{:TOD}},
                        Type{Val{:MOD}},
                        Type{Val{:TEME}}}
+
+"""
+Union of all supported rotation descriptions.
+
+"""
+T_ROT = Union{Type{DCM}, Type{Quaternion}}
+

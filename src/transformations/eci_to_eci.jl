@@ -17,8 +17,8 @@
 export rECItoECI
 
 """
-    function rECEFtoECI([T,] [M,] ECIo, ECIf, JD_UTC::Number [, eop_data])
-    function rECEFtoECI([T,] [M,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
+    function rECEFtoECI([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
+    function rECEFtoECI([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 another ECI reference frame. If the origin and destination frame contain only
@@ -29,10 +29,10 @@ in which `JD_UTCo` is the epoch of the origin frame and `JD_UTCf` is the epoch
 of the destination frame.
 
 The rotation description that will be used is given by `T`, which can be `DCM`
-or `Quaternion`. The model used to compute the rotation is specified by `M`.
-Currently, only IAU-76/FK5 is supported (`M = FK5()`). The origin ECI frame is
-selected by the input `ECIo` and the destination ECI frame is selected by the
-input `ECIf`.
+or `Quaternion`. The origin ECI frame is selected by the input `ECIo` and the
+destination ECI frame is selected by the input `ECIf`. The model used to compute
+the rotation is specified by the selection of the origin and destination frames.
+Currently, only IAU-76/FK5 is supported.
 
 [^1]: TEME is an *of date* frame.
 
@@ -51,12 +51,9 @@ If no value is specified, then it falls back to `DCM`.
 
 # Conversion model
 
-The model that will be used to compute the rotation is given by `M`. The
-possible values are:
-
-* `FK5()`: Use the IAU-76/FK5 model.
-
-If no value is specified, then it falls back to `FK5()`.
+The model that will be used to compute the rotation is automatically inferred
+given the selection of the origin and destination frames. Currently, only the
+IAU-76/FK5 model is supported.
 
 # ECI Frame
 
@@ -115,7 +112,8 @@ reference frame into alignment with the destination ECI reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980)
+julia> eop_IAU1980 = get_iers_eop(:IAU1980);
+
 julia> rECItoECI(DCM, GCRF(), J2000(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          -1.94091e-12   5.56251e-10
@@ -147,21 +145,7 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
                   T_ECIf::T_ECIs,
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    rECItoECI(DCM, Val{:FK5}, T_ECIo, T_ECIf, JD_UTC, eop_data)
-
-@inline rECItoECI(T::Union{Type{DCM}, Type{Quaternion}},
-                  T_ECIo::T_ECIs,
-                  T_ECIf::T_ECIs,
-                  JD_UTC::Number,
-                  eop_data::EOPData_IAU1980) =
-    rECItoECI(T, Val{:FK5}, T_ECIo, T_ECIf, JD_UTC, eop_data)
-
-@inline rECItoECI(M::Type{Val{:FK5}},
-                  T_ECIo::T_ECIs,
-                  T_ECIf::T_ECIs,
-                  JD_UTC::Number,
-                  eop_data::EOPData_IAU1980) =
-    rECItoECI(DCM, M, T_ECIo, T_ECIf, JD_UTC, eop_data)
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC, eop_data)
 
 # Specializations for those cases in which we have two *of dates* frames.
 @inline rECItoECI(T_ECIo::T_ECIs_of_date,
@@ -169,41 +153,13 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
                   T_ECIf::T_ECIs_of_date,
                   JD_UTCf::Number,
                   eop_data::EOPData_IAU1980) =
-    rECItoECI(DCM, Val{:FK5}, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
-
-@inline rECItoECI(T::Union{Type{DCM}, Type{Quaternion}},
-                  T_ECIo::T_ECIs_of_date,
-                  JD_UTCo::Number,
-                  T_ECIf::T_ECIs_of_date,
-                  JD_UTCf::Number,
-                  eop_data::EOPData_IAU1980) =
-    rECItoECI(T, Val{:FK5}, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
-
-@inline rECItoECI(M::Type{Val{:FK5}},
-                  T_ECIo::T_ECIs_of_date,
-                  JD_UTCo::Number,
-                  T_ECIf::T_ECIs_of_date,
-                  JD_UTCf::Number,
-                  eop_data::EOPData_IAU1980) =
-    rECItoECI(DCM, M, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
+    rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                   T_ECIf::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                   JD_UTC::Number) =
-    rECItoECI(DCM, Val{:FK5}, T_ECIo, T_ECIf, JD_UTC)
-
-@inline rECItoECI(T::Union{Type{DCM}, Type{Quaternion}},
-                  T_ECIo::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                  T_ECIf::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                  JD_UTC::Number) =
-    rECItoECI(T, Val{:FK5}, T_ECIo, T_ECIf, JD_UTC)
-
-@inline rECItoECI(M::Type{Val{:FK5}},
-                  T_ECIo::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                  T_ECIf::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                  JD_UTC::Number) =
-    rECItoECI(DCM, M, T_ECIo, T_ECIf, JD_UTC)
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
 
 ################################################################################
 #                                  IAU-76/FK5
@@ -212,8 +168,7 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
 #                                GCRF <=> J2000
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:GCRF}},
                    ::Type{Val{:J2000}},
                    JD_UTC::Number,
@@ -244,19 +199,17 @@ function rECItoECI(T::Type,
     compose_rotation(r_MOD_GCRF, r_PEF_MOD, r_MOD_PEF, r_J2000_MOD)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:J2000}},
                   T_ECIf::Type{Val{:GCRF}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                 GCRF <=> MOD
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:GCRF}},
                    ::Type{Val{:MOD}},
                    JD_UTC::Number,
@@ -269,19 +222,17 @@ function rECItoECI(T::Type,
     rGCRFtoMOD_fk5(T, JD_TT)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:MOD}},
                   T_ECIf::Type{Val{:GCRF}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                 GCRF <=> TOD
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:GCRF}},
                    ::Type{Val{:TOD}},
                    JD_UTC::Number,
@@ -304,19 +255,17 @@ function rECItoECI(T::Type,
     compose_rotation(r_MOD_GCRF, r_TOD_MOD)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TOD}},
                   T_ECIf::Type{Val{:GCRF}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                GCRF <=> TEME
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:GCRF}},
                    ::Type{Val{:TEME}},
                    JD_UTC::Number,
@@ -339,19 +288,17 @@ function rECItoECI(T::Type,
     compose_rotation(r_MOD_GCRF, r_TEME_MOD)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TEME}},
                   T_ECIf::Type{Val{:GCRF}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                J2000 <=> MOD
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:J2000}},
                    ::Type{Val{:MOD}},
                    JD_UTC::Number,
@@ -381,19 +328,17 @@ function rECItoECI(T::Type,
     compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:MOD}},
                   T_ECIf::Type{Val{:J2000}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                J2000 <=> TOD
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:J2000}},
                    ::Type{Val{:TOD}},
                    JD_UTC::Number,
@@ -423,35 +368,31 @@ function rECItoECI(T::Type,
     compose_rotation(r_TOD_J2000, r_PEF_MOD, r_MOD_PEF, r_TOD_MOD)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TOD}},
                   T_ECIf::Type{Val{:J2000}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC, eop_data))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
 
 #                                J2000 <=> TEME
 # ==============================================================================
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:J2000}},
                   T_ECEFf::Type{Val{:TEME}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    rECItoECI(T, M, T_ECIo, T_ECEFf, JD_UTC)
+    rECItoECI(T, T_ECIo, T_ECEFf, JD_UTC)
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TEME}},
                   T_ECEFf::Type{Val{:J2000}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
-    rECItoECI(T, M, T_ECIo, T_ECEFf, JD_UTC)
+    rECItoECI(T, T_ECIo, T_ECEFf, JD_UTC)
 
-function rECItoECI(T::Type,
-                   ::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    ::Type{Val{:J2000}},
                    ::Type{Val{:TEME}},
                    JD_UTC::Number)
@@ -463,18 +404,16 @@ function rECItoECI(T::Type,
     rGCRFtoTEME(T, JD_TT, 0, 0)
 end
 
-@inline rECItoECI(T::Type,
-                  M::Type{Val{:FK5}},
+@inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TEME}},
                   T_ECIf::Type{Val{:J2000}},
                   JD_UTC::Number) =
-    inv_rotation(rECItoECI(T, M, T_ECIf, T_ECIo, JD_UTC))
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC))
 
 #                          Between MOD, TOD, and TEME
 # ==============================================================================
 
-function rECItoECI(T::Type,
-                   M::Type{Val{:FK5}},
+function rECItoECI(T::T_ROT,
                    T_ECIo::T_ECIs_of_date,
                    JD_UTCo::Number,
                    T_ECIf::T_ECIs_of_date,

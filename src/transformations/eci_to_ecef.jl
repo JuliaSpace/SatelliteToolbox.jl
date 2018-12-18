@@ -17,15 +17,15 @@
 export rECItoECEF
 
 """
-    function rECItoECEF([T,] [M,] ECI, ECEF, JD_UTC::Number [, eop_data])
+    function rECItoECEF([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 an Earth-Centered, Earth-Fixed (`ECEF`) reference frame at the Julian Day [UTC]
 `JD_UTC`. The rotation description that will be used is given by `T`, which can
-be `DCM` or `Quaternion`. The model used to compute the rotation is specified by
-`M`. Currently, only IAU-76/FK5 is supported (`M = FK5()`). The ECI frame is
-selected by the input `ECI` and the `ECEF` frame is selected by the input
-`ECEF`. The possible values are listed below.
+be `DCM` or `Quaternion`. The ECI frame is selected by the input `ECI` and the
+`ECEF` frame is selected by the input `ECEF`. The possible values are listed
+below. The model used to compute the rotation is specified by the selection of
+the origin and destination frames. Currently, only IAU-76/FK5 is supported.
 
 # Rotation description
 
@@ -40,12 +40,9 @@ If no value is specified, then it falls back to `DCM`.
 
 # Conversion model
 
-The model that will be used to compute the rotation is given by `M`. The
-possible values are:
-
-* `FK5()`: Use the IAU-76/FK5 model.
-
-If no value is specified, then it falls back to `FK5()`.
+The model that will be used to compute the rotation is automatically inferred
+given the selection of the origin and destination frames. Currently, only the
+IAU-76/FK5 model is supported.
 
 # ECI Frame
 
@@ -107,18 +104,7 @@ into alignment with the ECEF reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980)
-julia> rECItoECEF(DCM, FK5(), GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267    -0.78518     -0.000797314
-  0.78518     -0.619267     0.00106478
- -0.00132979   3.33483e-5   0.999999
-
-julia> rECItoECEF(FK5(), GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267    -0.78518     -0.000797314
-  0.78518     -0.619267     0.00106478
- -0.00132979   3.33483e-5   0.999999
+julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
 julia> rECItoECEF(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
@@ -153,51 +139,23 @@ Quaternion{Float64}:
                    T_ECEF::T_ECEFs,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU1980) =
-    rECItoECEF(DCM, Val{:FK5}, T_ECI, T_ECEF, JD_UTC, eop_data)
+    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
 
-@inline rECItoECEF(T::Union{Type{DCM},Type{Quaternion}},
+@inline rECItoECEF(T::T_ROT,
                    T_ECI::T_ECIs,
                    T_ECEF::T_ECEFs,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU1980) =
-    rECItoECEF(T, Val{:FK5}, T_ECI, T_ECEF, JD_UTC, eop_data)
-
-@inline rECItoECEF(M::Type{Val{:FK5}},
-                   T_ECI::T_ECIs,
-                   T_ECEF::T_ECEFs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECItoECEF(DCM, M, T_ECI, T_ECEF, JD_UTC, eop_data)
-
-@inline rECItoECEF(T::Union{Type{DCM},Type{Quaternion}},
-                   M::Type{Val{:FK5}},
-                   T_ECI::T_ECIs,
-                   T_ECEF::T_ECEFs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    inv_rotation(rECEFtoECI(T, M, T_ECEF, T_ECI, JD_UTC, eop_data))
+    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}},
                    JD_UTC::Number) =
-    rECItoECEF(DCM, Val{:FK5}, T_ECI, T_ECEF, JD_UTC)
+    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
-@inline rECItoECEF(M::Type{Val{:FK5}},
+@inline rECItoECEF(T::T_ROT,
                    T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}},
                    JD_UTC::Number) =
-    rECItoECEF(DCM, M, T_ECEF, T_ECI, JD_UTC)
-
-@inline rECItoECEF(T::Union{Type{DCM},Type{Quaternion}},
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}},
-                   JD_UTC::Number) =
-    rECItoECEF(T, Val{:FK5}, T_ECEF, T_ECI, JD_UTC)
-
-@inline rECItoECEF(T::Union{Type{DCM},Type{Quaternion}},
-                   M::Type{Val{:FK5}},
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}},
-                   JD_UTC::Number) =
-    inv_rotation(rECEFtoECI(T, M, T_ECEF, T_ECI, JD_UTC))
+    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
