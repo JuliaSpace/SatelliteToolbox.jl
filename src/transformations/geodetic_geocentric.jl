@@ -48,15 +48,27 @@ function ECEFtoGeodetic(r_e::AbstractVector)
     Y = r_e[2]
     Z = r_e[3]
 
+    # Auxiliary variables.
     p = sqrt(X^2 + Y^2)
     θ = atan(Z*a_wgs84, p*b_wgs84)
+    e_wgs84² = e_wgs84^2
 
     # Compute Geodetic.
     lon = atan(Y, X)
     lat = atan(Z + el_wgs84^2*b_wgs84*sin(θ)^3,
-               p -  e_wgs84^2*a_wgs84*cos(θ)^3)
-    N   = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
-    h   = p/cos(lat) - N
+               p -   e_wgs84²*a_wgs84*cos(θ)^3)
+
+    sin_lat, cos_lat = sincos(lat)
+
+    N = a_wgs84/sqrt(1 - e_wgs84²*sin_lat^2)
+
+    # Avoid singularity if we are near the poles (~ 1 deg according to [1,
+    # p.172]). Note that `cosd(1) = -0.01745240643728351`.
+    if !(-0.01745240643728351 < cos_lat < 0.01745240643728351)
+        h = p/cos_lat - N
+    else
+        h = Z/sin_lat - N*(1 - e_wgs84²)
+    end
 
     (lat, lon, h)
 end
