@@ -182,7 +182,7 @@ function JDtoDate(JD::Number)
 
     # In this case, `dayf` will have the fractional part of the day.
     dayf   = B-D-F+(Q-Z)
-    monthf = (E-1 < 12) ? E-1 : E-13
+    monthf = (E-1 <= 12) ? E-1 : E-13
     yearf  = ( (monthf == 1) || (monthf == 2) ) ? C-4715 : C-4716
 
     # Get the hour, minute, and second from the day.

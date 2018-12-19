@@ -379,3 +379,31 @@ JD_UTC = JD_TTtoUTC(JD_TT)
 @test JDtoDate(Int,2415020.500000) == (1900,01,01,00,00,00)
 @test JDtoDate(Int,2451544.500000) == (2000,01,01,00,00,00)
 @test JDtoDate(Int,2456585.416667) == (2013,10,19,22,00,00)
+
+# Function DatetoJD
+# -----------------
+
+# Issue #19
+# ==============================================================================
+
+let
+    year_i = rand(1900:2100)
+
+    year, month, day, hour, min, sec = JDtoDate(DatetoJD(year_i,12,31,23,59,59))
+
+    @test year  == year_i
+    @test month == 12
+    @test day   == 31
+    @test hour  == 23
+    @test min   == 59
+    @test sec    ≈ 59 rtol = 1e-5
+
+    year, month, day, hour, min, sec = JDtoDate(DatetoJD(year_i,1,1,0,0,0))
+
+    @test year  == year_i
+    @test month == 1
+    @test day   == 1
+    @test hour  == 0
+    @test min   == 0
+    @test sec    ≈ 0 rtol = 1e-5
+end
