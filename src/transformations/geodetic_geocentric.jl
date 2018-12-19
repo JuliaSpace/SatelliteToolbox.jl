@@ -86,13 +86,17 @@ Based on algorithm in [3].
 
 """
 function GeodetictoECEF(lat::Number, lon::Number, h::Number)
+    # Auxiliary variables.
+    sin_lat, cos_lat = sincos(lat)
+    sin_lon, cos_lon = sincos(lon)
+
     # Radius of curvature [m].
-    N = a_wgs84/sqrt(1 - e_wgs84^2*sin(lat)^2 )
+    N = a_wgs84/sqrt(1 - e_wgs84^2*sin_lat^2 )
 
     # Compute the position in ECEF frame.
-    [ (                     N + h)*cos(lat)*cos(lon);
-      (                     N + h)*cos(lat)*sin(lon);
-      ( (b_wgs84/a_wgs84)^2*N + h)*sin(lat);]
+    [ (                     N + h)*cos_lat*cos_lon;
+      (                     N + h)*cos_lat*sin_lon;
+      ( (b_wgs84/a_wgs84)^2*N + h)*sin_lat;]
 end
 
 """
