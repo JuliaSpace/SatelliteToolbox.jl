@@ -214,5 +214,5 @@ function JDtoDate(::Type{Date}, JD::Number)
 end
 
 function JDtoDate(::Type{DateTime}, JD::Number)
-    DateTime(JDtoDate(JD)...)
+    DateTime(JDtoDate(Int,JD)...)
 end

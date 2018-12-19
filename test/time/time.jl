@@ -406,4 +406,9 @@ let
     @test hour  == 0
     @test min   == 0
     @test sec    ≈ 0 rtol = 1e-5
+
+    date_time_1 = JDtoDate(DateTime, DatetoJD(year_i,12,31,23,59,59))
+    date_time_2 = DateTime(year_i,12,31,23,59,59)
+
+    @test date_time_1 === date_time_2
 end
