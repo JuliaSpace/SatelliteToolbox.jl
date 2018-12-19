@@ -72,11 +72,6 @@ println("")
     include("./transformations/teme/teme.jl")
     cd("../../")
     cd("./transformations/")
-    # These tests cannot pass with julia 0.7 due to the following issue of
-    # Interpolations.jl:
-    #
-    #   https://github.com/JuliaMath/Interpolations.jl/issues/204
-    #
     include("./transformations/ecef_to_ecef.jl")
     include("./transformations/ecef_to_eci.jl")
     include("./transformations/eci_to_ecef.jl")
