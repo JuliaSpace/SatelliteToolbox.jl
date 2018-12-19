@@ -94,9 +94,9 @@ function GeodetictoECEF(lat::Number, lon::Number, h::Number)
     N = a_wgs84/sqrt(1 - e_wgs84^2*sin_lat^2 )
 
     # Compute the position in ECEF frame.
-    [ (                     N + h)*cos_lat*cos_lon;
-      (                     N + h)*cos_lat*sin_lon;
-      ( (b_wgs84/a_wgs84)^2*N + h)*sin_lat;]
+    SVector{3}((                     N + h)*cos_lat*cos_lon,
+               (                     N + h)*cos_lat*sin_lon,
+               ( (b_wgs84/a_wgs84)^2*N + h)*sin_lat)
 end
 
 """
