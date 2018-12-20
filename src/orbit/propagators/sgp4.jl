@@ -376,24 +376,28 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
     # Check if perigee is above 220 km.
     elseif algorithm == :sgp4
+
+        sin_M_0, cos_M_0 = sincos(M_0)
+
         δω  = bstar*C3*cos(ω_0)*Δt
 
         δM  = (e_0 > 1e-4) ?
             -2/3*QOMS2T*bstar*ξ^4*AE/(e_0*η)*( (1 + η*cos(M_k))^3 -
-                                               (1 + η*cos(M_0) )^3 ) : T(0)
+                                               (1 + η*cos_M_0 )^3 ) : T(0)
 
         M_k += +δω + δM
 
         ω_k += -δω - δM
 
-        e_k = e_0 - bstar*C4*Δt - bstar*C5*(sin(M_k) - sin(M_0))
+        e_k = e_0 - bstar*C4*Δt - bstar*C5*(sin(M_k) - sin_M_0)
 
-        a_k = all_0*(1 - C1*Δt - D2*Δt^2 - D3*Δt^3 - D4*Δt^4)^2
+        a_k = all_0*( @evalpoly(Δt, 1, -C1, -D2, -D3, -D4) )^2
 
         IL  = M_k + ω_k + Ω_k + nll_0*
-              ( (3/2)C1*Δt^2 + (D2 + 2C1^2)*Δt^3 +
-                (1/4)*(3D3 + 12C1*D2 + 10C1^3)*Δt^4 +
-                (1/5)*(3D4 + 12C1*D3 + 6*D2^2 + 30*C1^2*D2 + 15*C1^4)*Δt^5 )
+              ( @evalpoly(Δt, 0, 0, 3/2*C1, +(D2 + 2C1^2),
+                          +(1/4)*(3D3 + 12C1*D2 + 10C1^3),
+                          +(1/5)*(3D4 + 12C1*D3 + 6D2^2 + 30C1^2*D2 + 15C1^4) ) )
+
     elseif algorithm == :sgp4_lowper
         # If so, then
         #     1. Drop all terms after C1 in `a` and `IL`.
@@ -404,7 +408,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
         a_k = all_0*(1 - C1*Δt)^2
 
-        IL  = M_k + ω_k + Ω_k + nll_0*(3/2)C1*Δt^2
+        IL  = M_k + ω_k + Ω_k + nll_0*(3/2)*C1*Δt^2
     else
         error("Unknown algorithm :$algorithm. Possible values are :sgp4, :sgp4_lowper, :sdp4.")
     end
@@ -851,34 +855,34 @@ function dsinit(epoch::T,
         g201 = -0.306 - 0.44(e_0 - 0.64)
 
         if e_0 <= 0.65
-            g211 =    3.6160 -  13.2470e_0 + 16.29000e_0²
-            g310 = - 19.3020 + 117.3900e_0 - 228.4190e_0² + 156.5910e_0³
-            g322 = - 18.9068 + 109.7927e_0 - 214.6334e_0² + 146.5816e_0³
-            g410 = - 41.1220 + 242.6940e_0 - 471.0940e_0² + 313.9530e_0³
-            g422 = - 146.407 + 841.8800e_0 - 1629.014e_0² + 1083.435e_0³
-            g520 = - 532.114 + 3017.977e_0 - 5740.032e_0² + 3708.276e_0³
+            g211 = @evalpoly(e_0, + 3.6160, - 13.2470, + 16.29000)
+            g310 = @evalpoly(e_0, -19.3020, +117.3900, -228.4190, +156.5910)
+            g322 = @evalpoly(e_0, -18.9068, +109.7927, -214.6334, +146.5816)
+            g410 = @evalpoly(e_0, -41.1220, +242.6940, -471.0940, +313.9530)
+            g422 = @evalpoly(e_0, -146.407, +841.8800, -1629.014, +1083.435)
+            g520 = @evalpoly(e_0, -532.114, +3017.977, -5740.032, +3708.276)
         else
-            g211 = -   72.099 + 331.8190e_0 - 508.7380e_0² + 266.7240e_0³
-            g310 = -  346.844 + 1582.851e_0 - 2415.925e_0² + 1246.113e_0³
-            g322 = -  342.585 + 1554.908e_0 - 2366.899e_0² + 1215.972e_0³
-            g410 = - 1052.797 + 4758.686e_0 - 7193.992e_0² + 3651.957e_0³
-            g422 = - 3581.690 + 16178.11e_0 - 24462.77e_0² + 12422.52e_0³
+            g211 = @evalpoly(e_0, -  72.099, +331.8190, -508.7380, +266.7240)
+            g310 = @evalpoly(e_0, - 346.844, +1582.851, -2415.925, +1246.113)
+            g322 = @evalpoly(e_0, - 342.585, +1554.908, -2366.899, +1215.972)
+            g410 = @evalpoly(e_0, -1052.797, +4758.686, -7193.992, +3651.957)
+            g422 = @evalpoly(e_0, -3581.690, +16178.11, -24462.77, +12422.52)
 
             if e_0 <= 0.715
-                g520 = 1464.74 - 4664.75e_0 + 3763.64e_0²
+                g520 = @evalpoly(e_0, +1464.74, -4664.75, +3763.64)
             else
-                g520 = - 5149.66 + 29936.92e_0 - 54087.36e_0² + 31324.56e_0³
+                g520 = @evalpoly(e_0, -5149.66, +29936.92, -54087.36, +31324.56)
             end
         end
 
         if e_0 < 0.7
-            g533 = - 919.22770 + 4988.6100e_0 - 9064.7700e_0² + 5542.210e_0³
-            g521 = - 822.71072 + 4568.6173e_0 - 8491.4146e_0² + 5337.524e_0³
-            g532 = - 853.66600 + 4690.2500e_0 - 8624.7700e_0² + 5341.400e_0³
+            g533 = @evalpoly(e_0, -919.22770, +4988.6100, -9064.7700, +5542.210)
+            g521 = @evalpoly(e_0, -822.71072, +4568.6173, -8491.4146, +5337.524)
+            g532 = @evalpoly(e_0, -853.66600, +4690.2500, -8624.7700, +5341.400)
         else
-            g533 = - 37995.780 + 161616.52e_0 - 229838.20e_0² + 109377.94e_0³
-            g521 = - 51752.104 + 218913.95e_0 - 309468.16e_0² + 146349.42e_0³
-            g532 = - 40023.880 + 170470.89e_0 - 242699.48e_0² + 115605.82e_0³
+            g533 = @evalpoly(e_0, -37995.780, +161616.52, -229838.20, +109377.94)
+            g521 = @evalpoly(e_0, -51752.104, +218913.95, -309468.16, +146349.42)
+            g532 = @evalpoly(e_0, -40023.880, +170470.89, -242699.48, +115605.82)
         end
 
         f220 = +0.75(1 + 2cos_i_0 + cos_i_0²)
@@ -939,37 +943,35 @@ function dsinit(epoch::T,
         # ========================
 
         if (isynfl)
-            xndot =  del1 * sin(  xli - fasx2 ) +
-                     del2 * sin(2(xli - fasx4)) +
-                     del3 * sin(2(xli - fasx6))
+            sin_1, cos_1 = sincos(  (xli - fasx2) )
+            sin_2, cos_2 = sincos( 2(xli - fasx4) )
+            sin_3, cos_3 = sincos( 3(xli - fasx6) )
 
-            xnddt =  del1 * cos(  xli - fasx2 ) +
-                    2del2 * cos(2(xli - fasx4)) +
-                    3del3 * cos(3(xli - fasx6))
+            xndot = del1 * sin_1 +  del2 * sin_2 +  del3 * sin_3
+            xnddt = del1 * cos_1 + 2del2 * cos_2 + 3del3 * cos_3
         else
             ω     = ω_0 + dotω * atime
 
-            xndot = d2201 * sin(2ω + xli  - G22) +
-                    d2211 * sin(   + xli  - G22) +
-                    d3210 * sin(+ω + xli  - G32) +
-                    d3222 * sin(-ω + xli  - G32) +
-                    d5220 * sin(+ω + xli  - G52) +
-                    d5232 * sin(-ω + xli  - G52) +
-                    d4410 * sin(2ω + 2xli - G44) +
-                    d4422 * sin(     2xli - G44) +
-                    d5421 * sin(+ω + 2xli - G54) +
-                    d5433 * sin(-ω + 2xli - G54)
+            sin_1,  cos_1  = sincos(2ω + xli  - G22)
+            sin_2,  cos_2  = sincos(   + xli  - G22)
+            sin_3,  cos_3  = sincos(+ω + xli  - G32)
+            sin_4,  cos_4  = sincos(-ω + xli  - G32)
+            sin_5,  cos_5  = sincos(+ω + xli  - G52)
+            sin_6,  cos_6  = sincos(-ω + xli  - G52)
+            sin_7,  cos_7  = sincos(2ω + 2xli - G44)
+            sin_8,  cos_8  = sincos(     2xli - G44)
+            sin_9,  cos_9  = sincos(+ω + 2xli - G54)
+            sin_10, cos_10 = sincos(-ω + 2xli - G54)
 
-            xnddt = d2201 * cos(2ω + xli - G22) +
-                    d2211 * cos(      xli - G22) +
-                    d3210 * cos(+ω + xli - G32) +
-                    d3222 * cos(-ω + xli - G32) +
-                    d5220 * cos(+ω + xli - G52) +
-                    d5232 * cos(-ω + xli - G52) +
-                    2(d4410 * cos(2ω + 2xli - G44) +
-                      d4422 * cos(     2xli - G44) +
-                      d5421 * cos(+ω + 2xli - G54) +
-                      d5433 * cos(-ω + 2xli - G54))
+            xndot = d2201 * sin_1 + d2211 * sin_2 + d3210 * sin_3 +
+                    d3222 * sin_4 + d5220 * sin_5 + d5232 * sin_6 +
+                    d4410 * sin_7 + d4422 * sin_8 + d5421 * sin_9 +
+                    d5433 * sin_10
+
+            xnddt =   d2201 * cos_1 + d2211 * cos_2 + d3210 * cos_3 +
+                      d3222 * cos_4 + d5220 * cos_5 + d5232 * cos_6 +
+                    2(d4410 * cos_7 + d4422 * cos_8 + d5421 * cos_9 +
+                      d5433 * cos_10)
         end
 
         xldot  = xni + xfact
@@ -1081,37 +1083,36 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
     while true
         # Compute the dot terms.
         if (isynfl)
-            xndot =  del1 * sin(  xli - fasx2 ) +
-                     del2 * sin(2(xli - fasx4)) +
-                     del3 * sin(3(xli - fasx6))
 
-            xnddt =  del1 * cos(  xli - fasx2 ) +
-                    2del2 * cos(2(xli - fasx4)) +
-                    3del3 * cos(3(xli - fasx6))
+            sin_1, cos_1 = sincos(  (xli - fasx2) )
+            sin_2, cos_2 = sincos( 2(xli - fasx4) )
+            sin_3, cos_3 = sincos( 3(xli - fasx6) )
+
+            xndot = del1 * sin_1 +  del2 * sin_2 +  del3 * sin_3
+            xnddt = del1 * cos_1 + 2del2 * cos_2 + 3del3 * cos_3
         else
             ω     = ω_0 + dotω * atime
 
-            xndot = d2201 * sin(2ω + xli  - G22) +
-                    d2211 * sin(   + xli  - G22) +
-                    d3210 * sin(+ω + xli  - G32) +
-                    d3222 * sin(-ω + xli  - G32) +
-                    d5220 * sin(+ω + xli  - G52) +
-                    d5232 * sin(-ω + xli  - G52) +
-                    d4410 * sin(2ω + 2xli - G44) +
-                    d4422 * sin(     2xli - G44) +
-                    d5421 * sin(+ω + 2xli - G54) +
-                    d5433 * sin(-ω + 2xli - G54)
+            sin_1,  cos_1  = sincos(2ω + xli  - G22)
+            sin_2,  cos_2  = sincos(   + xli  - G22)
+            sin_3,  cos_3  = sincos(+ω + xli  - G32)
+            sin_4,  cos_4  = sincos(-ω + xli  - G32)
+            sin_5,  cos_5  = sincos(+ω + xli  - G52)
+            sin_6,  cos_6  = sincos(-ω + xli  - G52)
+            sin_7,  cos_7  = sincos(2ω + 2xli - G44)
+            sin_8,  cos_8  = sincos(     2xli - G44)
+            sin_9,  cos_9  = sincos(+ω + 2xli - G54)
+            sin_10, cos_10 = sincos(-ω + 2xli - G54)
 
-            xnddt = d2201 * cos(2ω + xli - G22) +
-                    d2211 * cos(     xli - G22) +
-                    d3210 * cos(+ω + xli - G32) +
-                    d3222 * cos(-ω + xli - G32) +
-                    d5220 * cos(+ω + xli - G52) +
-                    d5232 * cos(-ω + xli - G52) +
-                    2(d4410 * cos(2ω + 2xli - G44) +
-                      d4422 * cos(     2xli - G44) +
-                      d5421 * cos(+ω + 2xli - G54) +
-                      d5433 * cos(-ω + 2xli - G54))
+            xndot = d2201 * sin_1 + d2211 * sin_2 + d3210 * sin_3 +
+                    d3222 * sin_4 + d5220 * sin_5 + d5232 * sin_6 +
+                    d4410 * sin_7 + d4422 * sin_8 + d5421 * sin_9 +
+                    d5433 * sin_10
+
+            xnddt =   d2201 * cos_1 + d2211 * cos_2 + d3210 * cos_3 +
+                      d3222 * cos_4 + d5220 * cos_5 + d5232 * cos_6 +
+                    2(d4410 * cos_7 + d4422 * cos_8 + d5421 * cos_9 +
+                      d5433 * cos_10)
         end
 
         xldot  = xni + xfact
@@ -1180,8 +1181,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
 	zm    = zmos +  ZNS * Δt
 	zf    = zm   + 2ZES * sin(zm)
 
-    sinzf = sin(zf)
-    coszf = cos(zf)
+    sinzf, coszf = sincos(zf)
 
 	f2    = +sinzf * sinzf / 2 - 0.25
 	f3    = -sinzf * coszf / 2
@@ -1198,8 +1198,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
 	zm    = zmol +  ZNL * Δt
 	zf    = zm   + 2ZEL * sin(zm)
 
-    sinzf = sin(zf)
-    coszf = cos(zf)
+    sinzf, coszf = sincos(zf)
 
 	f2    = +sinzf * sinzf / 2 - 0.25
 	f3    = -sinzf * coszf / 2
@@ -1223,8 +1222,7 @@ function dsper!(sgp4_ds::SGP4_DeepSpace{T},
     e_per = e_k + pe
     i_per = i_k + pinc
 
-    sinis = sin(i_per)
-    cosis = cos(i_per)
+    sinis, cosis = sincos(i_per)
 
     # The original algorithm considered the original inclination to select the
     # Lyddane Lunar-Solar perturbations algorithm. However, Vallado's
