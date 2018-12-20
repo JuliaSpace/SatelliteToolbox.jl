@@ -36,14 +36,10 @@ export dsinit, dsper!, dssec!
 ################################################################################
 
 # Copy for SGP4_Structure.
-function Base.copy(m::SGP4_Structure)
-    SGP4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
-end
+Base.copy(m::SGP4_Structure) = SGP4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
 
 # Deepcopy for SGP4_Structure.
-function Base.deepcopy(m::SGP4_Structure)
-    SGP4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
-end
+Base.deepcopy(m::SGP4_Structure) = SGP4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
 
 ################################################################################
 #                                  Constants
@@ -165,12 +161,10 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 
     e_0² = e_0^2
 
-    sin_i_0 = sin(i_0)
-
-    θ   = cos(i_0)
-    θ²  = θ^2
-    θ³  = θ^3
-    θ⁴  = θ^4
+    sin_i_0, θ = sincos(i_0)
+    θ²         = θ^2
+    θ³         = θ^3
+    θ⁴         = θ^4
 
     # ==========================================================================
 
@@ -442,15 +436,14 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
         # Make sure that the inclination is always positive.
         if i_k < 0
             i_k = -i_k
-            Ω_k += pi
-            ω_k -= pi
+            Ω_k += π
+            ω_k -= π
         end
 
         # The inclination was changed, hence some auxiliary variables must be
         # recomputed.
-        sin_i_k = sin(i_k)
-        θ       = cos(i_k)
-        θ²      = θ^2
+        sin_i_k, θ = sincos(i_k)
+        θ²         = θ^2
     end
 
     # Vallado's code does not let the eccentricity to be smaller than 1e-6.
@@ -466,13 +459,15 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     # Long-period periodic terms.
     # ===========================
 
-    a_xN = e_k*cos(ω_k)
+    sin_ω_k, cos_ω_k = sincos(ω_k)
+
+    a_xN = e_k*cos_ω_k
 
     # TODO: Vallado's implementation of SGP4 uses another equation here.
     # However, both produces the same result. Verify which one is better.
     #
     a_yNL = A_30*sin_i_k/(4*k_2*a_k*β^2)
-    a_yN = e_k*sin(ω_k) + a_yNL
+    a_yN = e_k*sin_ω_k + a_yNL
 
     IL_L =  (1/2)a_yNL*a_xN*(3 + 5θ)/(1 + θ)
 
@@ -491,8 +486,7 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     cos_E_ω = T(0)
 
     for k = 1:10
-        sin_E_ω = sin(E_ω)
-        cos_E_ω = cos(E_ω)
+        sin_E_ω, cos_E_ω = sincos(E_ω)
 
         ΔE_ω = (U - a_yN*cos_E_ω + a_xN*sin_E_ω - E_ω)/
                (1 - a_yN*sin_E_ω - a_xN*cos_E_ω)
@@ -565,20 +559,17 @@ function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
     r_dot_f_k = r_dot_f + Δr_dot_f
 
     # Orientation vectors.
-    sin_Ω_k = sin(Ω_k)
-    cos_Ω_k = cos(Ω_k)
-    sin_i_k = sin(i_k)
-    cos_i_k = cos(i_k)
-    sin_u_k = sin(u_k)
-    cos_u_k = cos(u_k)
+    sin_Ω_k, cos_Ω_k = sincos(Ω_k)
+    sin_i_k, cos_i_k = sincos(i_k)
+    sin_u_k, cos_u_k = sincos(u_k)
 
-    M = SVector(-sin_Ω_k*cos_i_k,
-                +cos_Ω_k*cos_i_k,
-                    sin_i_k     )
+    M = SVector{3}(-sin_Ω_k*cos_i_k,
+                   +cos_Ω_k*cos_i_k,
+                            sin_i_k )
 
-    N = SVector(+cos_Ω_k,
-                +sin_Ω_k,
-                +T(0)   )
+    N = SVector{3}(+cos_Ω_k,
+                   +sin_Ω_k,
+                   +T(0)   )
 
     Uv = M*sin_u_k + N*cos_u_k
     Vv = M*cos_u_k - N*sin_u_k
@@ -652,26 +643,25 @@ function dsinit(epoch::T,
     sqrt_1_e_0² = sqrt((1 - e_0²))
     inv_all_0   = 1/all_0
     inv_nll_0   = 1/nll_0
-    se          = zero(T)
-    si          = zero(T)
-    sl          = zero(T)
-    sgh         = zero(T)
-    shdq        = zero(T)
-    sin_i_0     = sin(i_0)
+    se          = T(0)
+    si          = T(0)
+    sl          = T(0)
+    sgh         = T(0)
+    shdq        = T(0)
+
+    sin_i_0, cos_i_0 = sincos(i_0)
+    sin_Ω_0, cos_Ω_0 = sincos(Ω_0)
+    sin_ω_0, cos_ω_0 = sincos(ω_0)
+
     sin_i_0²    = sin_i_0^2
-    cos_i_0     = cos(i_0)
     cos_i_0²    = cos_i_0^2
-    sin_Ω_0     = sin(Ω_0)
-    cos_Ω_0     = cos(Ω_0)
-    sin_ω_0     = sin(ω_0)
-    cos_ω_0     = cos(ω_0)
     xpidot      = dotω + dotΩ
 
     #                        Initial Configuration
     # ==========================================================================
 
     # Drop terms if inclination is smaller than 3 deg.
-    ishq = (i_0 >= 3*pi/180) ? true : false
+    ishq = (i_0 >= 3π/180) ? true : false
 
     # Do not let `sin_i_0` be 0.
     (abs(sin_i_0) < 1e-12) && (sin_i_0 = sign(sin_i_0)*1e-12)
@@ -685,9 +675,8 @@ function dsinit(epoch::T,
     # `day` is the number of days since Jan 0, 1900 at 12h.
     day    = epoch - (DatetoJD(1900,1,1,12,0,0)-1)
 
-    xnodce = mod(4.5236020 - 9.2422029e-4day, 2*pi)
-    stem   = sin(xnodce)
-    ctem   = cos(xnodce)
+    xnodce     = mod(4.5236020 - 9.2422029e-4day, 2π)
+    stem, ctem = sincos(xnodce)
 
     zcosil = 0.91375164 - 0.03568096ctem
     zsinil = sqrt(1 - zcosil^2)
@@ -701,8 +690,8 @@ function dsinit(epoch::T,
     zy     = zcoshl*ctem + 0.91744867zsinhl*stem
     zx     = atan(zx,zy)
     zx     = gam + zx - xnodce
-    zcosgl = cos(zx)
-    zsingl = sin(zx)
+
+    zsingl, zcosgl = sincos(zx)
 
     zmol   = mod(4.7199672 + 0.22997150day - gam, 2π)
     zmos   = mod(6.2565837 + 0.017201977day,      2π)
@@ -1069,7 +1058,7 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
     # This verification is different between Vallado's [2] and [3]. We will use
     # [2] since it seems more recent.
     if  (atime == 0) || (Δt * atime <= 0) || (abs(Δt) < abs(atime))
-        atime = zero(T)
+        atime = T(0)
         xni   = nll_0
         xli   = xlamo
     end
@@ -1140,12 +1129,7 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
 
     xl    = xli + ft * (xldot + ft * xndot / 2)
     n_sec = xni + ft * (xndot + ft * xnddt / 2)
-
-    if !isynfl
-        M_sec = xl - 2Ω_sec + 2θ
-    else
-        M_sec = xl - Ω_sec - ω_sec + θ
-    end
+    M_sec = !isynfl ? xl - 2Ω_sec + 2θ : xl - Ω_sec - ω_sec + θ
 
     @pack! sgp4_ds = atime, xni, xli, xnddt, xndot, xldot
 
