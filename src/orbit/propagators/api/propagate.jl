@@ -57,7 +57,7 @@ function propagate!(orbp::OrbitPropagatorJ2{T}, t::Number) where T
     orb.f = j2d.f_k
 
     # Return.
-    (orb, r_i, v_i)
+    (copy(orb), r_i, v_i)
 end
 
 function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
@@ -83,7 +83,7 @@ function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
     orb.f = M_to_f(sgp4d.e_k, sgp4d.M_k)
 
     # Return.
-    (orb, r_teme, v_teme)
+    (copy(orb), r_teme, v_teme)
 end
 
 function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Number) where T
@@ -98,7 +98,7 @@ function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Number) where T
     orb.t = tbd.epoch + t/86400
     orb.f = tbd.f_k
 
-    (orb, r_i, v_i)
+    (copy(orb), r_i, v_i)
 end
 
 function propagate!(orbp::Union{OrbitPropagatorJ2{T},
@@ -115,7 +115,7 @@ function propagate!(orbp::Union{OrbitPropagatorJ2{T},
         # Propagate the orbit.
         (orb, r_i_k, v_i_k) = propagate!(orbp, t[k])
 
-        result_orb[k] = orb
+        result_orb[k] = copy(orb)
         result_r[k]   = r_i_k
         result_v[k]   = v_i_k
     end
