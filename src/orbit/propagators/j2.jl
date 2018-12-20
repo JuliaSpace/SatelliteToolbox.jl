@@ -108,6 +108,7 @@ function j2_init(j2_gc::J2_GravCte{T},
                  M_0::Number,
                  dn_o2::Number,
                  ddn_o6::Number) where T
+
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
 
@@ -127,10 +128,6 @@ function j2_init(j2_gc::J2_GravCte{T},
     f_ei = sqrt(1-e_0^2)*(3cos(i_0)^2-1) + (5cos(i_0)^2-1)
     K    = 3/4*J2*f_ei/(1-e_0^2)^2
 
-    # Declare the function in which the zero must be find.
-    f(a)  = n_0 - μm/a^(3/2) - K*μm/a^(7/2)
-    df(a) = +3/2*μm/a^(5/2) + 7/2*K*μm/a^(11/2)
-
     # Initial guess using a non-perturbed orbit.
     a_0 = (μm/n_0)^(2/3)
 
@@ -138,14 +135,26 @@ function j2_init(j2_gc::J2_GravCte{T},
     #
     # Notice that we will allow, at most, 20 iterations.
     for k = 1:20
-        res = f(a_0)
-        a_0 = a_0 - res/df(a_0)
+        # Auxiliary variables.
+        a_0p3o2  = a_0^(3/2)
+        a_0p5o2  = a_0p3o2*a_0 # -> a_0^(5/2)
+        a_0p7o2  = a_0p5o2*a_0 # -> a_0^(7/2)
+        a_0p11o2 = a_0p7o2*a_0 # -> a_0^(11/2)
+
+        # Compute the residue.
+        res = n_0 - μm/a_0p3o2 - K*μm/a_0p7o2
+
+        # Compute the Jacobian of the function.
+        df = +3/2*μm/a_0p5o2 + 7/2*K*μm/a_0p11o2
+
+        # Compute the new estimate.
+        a_0 = a_0 - res/df
 
         (abs(res) < 1e-10) && break
     end
 
     # Auxiliary variables.
-    dn  = dn_o2*2
+    dn  = 2dn_o2
     p_0 = a_0*(1-e_0^2)
     f_0 = M_to_f(e_0, M_0)
 
@@ -194,13 +203,16 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Time elapsed since epoch.
     Δt = t
 
+    # Auxiliary variables.
+    sin_i_k, cos_i_k = sincos(i_k)
+
     # Propagate the orbital elements.
     a_k = a_0 - C1*Δt
     e_k = e_0 - C2*Δt
     i_k = i_0
-    Ω_k = mod(Ω_0 - C3*cos(i_k)*Δt,                    2*pi)
-    ω_k = mod(ω_0 + C4*(4 - 5sin(i_k)^2)*Δt,           2*pi)
-    M_k = mod(M_0 + n_0*Δt + dn_o2*Δt^2 + ddn_o6*Δt^3, 2*pi)
+    Ω_k = mod(Ω_0 - C3*cos_i_k*Δt,                    2π)
+    ω_k = mod(ω_0 + C4*(4 - 5sin_i_k^2)*Δt,           2π)
+    M_k = mod(@evalpoly(Δt, M_0, n_0, dn_o2, ddn_o6), 2π)
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
