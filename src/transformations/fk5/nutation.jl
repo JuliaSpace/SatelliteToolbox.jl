@@ -255,7 +255,15 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
 
     @inbounds for i = 1:n_max
         # Unpack values.
-        @views an1, an2, an3, an4, an5, Ai, Bi, Ci, Di = nut_coefs_1980[i,:]
+        an1 = nut_coefs_1980[i,1]
+        an2 = nut_coefs_1980[i,2]
+        an3 = nut_coefs_1980[i,3]
+        an4 = nut_coefs_1980[i,4]
+        an5 = nut_coefs_1980[i,5]
+        Ai  = nut_coefs_1980[i,6]
+        Bi  = nut_coefs_1980[i,7]
+        Ci  = nut_coefs_1980[i,8]
+        Di  = nut_coefs_1980[i,9]
 
         a_pi = an1*M_m + an2*M_s + an3*u_Mm + an4*D_s + an5*Ω_m
 
