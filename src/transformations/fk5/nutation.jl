@@ -197,17 +197,15 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     # ===================
 
     d2r   = pi/180
-    T_TT² = T_TT^2
-    T_TT³ = T_TT^3
 
     # Mean obliquity of the ecliptic
     # ==============================
 
     # Compute the mean obliquity of the ecliptic [s].
-    mϵ_1980 = 23.439291 - 0.0130042*T_TT - 1.64e-7*T_TT² + 5.04e-7*T_TT³
+    mϵ_1980 = @evalpoly(T_TT, 23.439291, -0.0130042, -1.64e-7, +5.04e-7)
 
     # Reduce to the interval [0, 2π]°.
-    mϵ_1980 = mod(mϵ_1980, 360)*pi/180
+    mϵ_1980 = mod(mϵ_1980, 360)*d2r
 
     # Delaunay parameters of the Sun and Moon
     # =======================================
@@ -218,29 +216,34 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     # The parameters here were updated as stated in the errata [2].
     r = 360
 
-    M_m = 134.96298139 + (1325r + 198.8673981)*T_TT +
-                         0.0086972*T_TT² +
-                         1.78e-5*T_TT³
+    M_m = @evalpoly(T_TT, + 134.96298139,
+                          + (1325r + 198.8673981),
+                          + 0.0086972,
+                          + 1.78e-5)
     M_m = mod(M_m, 360)*d2r
 
-    M_s = 357.52772333 + (99r + 359.0503400)*T_TT -
-                         0.0001603*T_TT² -
-                         3.3e-6*T_TT³
+    M_s = @evalpoly(T_TT, + 357.52772333,
+                          + (99r + 359.0503400),
+                          - 0.0001603,
+                          - 3.3e-6)
     M_s = mod(M_s, 360)*d2r
 
-    u_Mm = 93.27191028 + (1342r + 82.0175381)*T_TT -
-                         0.0036825*T_TT² +
-                         3.1e-6*T_TT³
+    u_Mm = @evalpoly(T_TT, + 93.27191028,
+                           + (1342r + 82.0175381),
+                           - 0.0036825,
+                           + 3.1e-6)
     u_Mm = mod(u_Mm, 360)*d2r
 
-    D_s = 297.85036306 + (1236r + 307.1114800)*T_TT -
-                         0.0019142*T_TT² +
-                         5.3e-6*T_TT³
+    D_s = @evalpoly(T_TT, + 297.85036306,
+                          + (1236r + 307.1114800),
+                          - 0.0019142,
+                          + 5.3e-6)
     D_s = mod(D_s, 360)*d2r
 
-    Ω_m = 125.04452222 - (5r + 134.1362608)*T_TT +
-                         0.0020708*T_TT² +
-                         2.2e-6*T_TT³
+    Ω_m = @evalpoly(T_TT, + 125.04452222,
+                          - (5r + 134.1362608),
+                          + 0.0020708,
+                          + 2.2e-6)
     Ω_m = mod(Ω_m, 360)*d2r
 
     # Nutation in longitude and obliquity
