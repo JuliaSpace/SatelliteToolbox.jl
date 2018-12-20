@@ -33,7 +33,7 @@ only on `h`.
 """
 function expatmosphere(h::Number)
     # Check the bounds.
-    (h < 0) && @error "h must be positive."
+    (h < 0) && error("h must be positive.")
 
     # Transform `h` to km.
     h /= 1000
@@ -41,9 +41,11 @@ function expatmosphere(h::Number)
     # Get the values for the exponential model.
     id = (h >= 1000) ? 28 : findfirst( (x)->x > 0 , _expatmosphere_h₀ .- h ) - 1
 
-    h₀ = _expatmosphere_h₀[id]
-    ρ₀ = _expatmosphere_ρ₀[id]
-    H  = _expatmosphere_H[id]
+    @inbounds begin
+        h₀ = _expatmosphere_h₀[id]
+        ρ₀ = _expatmosphere_ρ₀[id]
+        H  = _expatmosphere_H[id]
+    end
 
     # Compute the density.
     ρ₀ * exp( - ( h - h₀ )/H )
