@@ -216,8 +216,8 @@ end
 @inline dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
 
 """
-    function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function period(orb::Orbit, pert::Symbol = :J2)
+    @inline function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    @inline function period(orb::Orbit, pert::Symbol = :J2)
 
 Compute the period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e`, and inclination `i` [rad], using the perturbation terms
@@ -232,9 +232,9 @@ is an instance of the structure `Orbit`.
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     n = angvel(a, e, i, pert)
     2π/n
 end
 
-period(orb::Orbit, pert::Symbol = :J2) = period(orb.a, orb.e, orb.i, pert)
+@inline period(orb::Orbit, pert::Symbol = :J2) = period(orb.a, orb.e, orb.i, pert)
