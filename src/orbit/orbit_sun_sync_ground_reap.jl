@@ -167,11 +167,17 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
     # Integer part of the number of orbits per day.
     intNumOrb = (13, 14, 15, 16, 17)
 
+    # Check if the altitude interval must be verified.
+    check_altitude = (minAlt > 0) && (maxAlt > 0)
+    check_altitude && (minAlt > maxAlt) && throw(ArgumentError("The minimum altitude must be lower than the maximum altitude."))
+
     # Loop for the possible repetition times.
     for den = minRep:maxRep
         for num = 0:den-1
+
             # Check if the fraction num/den is irreducible.
-            if ( gcd(num, den) == 1.0 )
+            if gcd(num, den) == 1
+
                 # Loop through the integer parts.
                 for ino in intNumOrb
                     addOrbit = false
@@ -186,7 +192,7 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                     !(@check_orbit(a,e)) && continue
 
                     # Check if the altitude interval must be verified.
-                    if (minAlt > 0) && (maxAlt > 0)
+                    if check_altitude
                         if (minAlt < a-R0) && (a-R0 < maxAlt) && (converged)
                             addOrbit = true
                         end
