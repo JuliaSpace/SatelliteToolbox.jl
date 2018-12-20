@@ -178,8 +178,8 @@ end
 @inline dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
 
 """
-    function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function dRAAN(orb::Orbit, pert::Symbol = :J2)
+    @inline function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    @inline function dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
@@ -194,7 +194,7 @@ can also be specified by `orb`, which is an instance of the structure `Orbit`.
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
@@ -213,7 +213,7 @@ function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     end
 end
 
-dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
+@inline dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
 
 """
     function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
