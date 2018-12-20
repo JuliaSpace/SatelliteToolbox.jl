@@ -216,65 +216,89 @@ The algorithm was adapted from [1].
 
 """
 function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
-    # Position and velocity vector norms.
-    r2 = r_i'*r_i
-    v2 = v_i'*v_i
+    # Check inputs.
+    length(r_i) != 3 && error("The vector r_i must have 3 dimensions.")
+    length(v_i) != 3 && error("The vector v_i must have 3 dimensions.")
 
-    r  = sqrt(r2)
-    v  = sqrt(v2)
+    @inbounds begin
 
-    # Angular momentum vector.
-    h_i = cross( r_i, v_i )
-    h   = norm(h_i)
+        # Position and velocity vector norms and auxiliary dot products.
+        r2 = dot(r_i,r_i)
+        v2 = dot(v_i,v_i)
 
-    # Vector that points to the right ascension of the ascending node (RAAN).
-    n_i = cross( [0;0;1], h_i )
-    n   = norm(n_i)
+        r  = sqrt(r2)
+        v  = sqrt(v2)
 
-    # Eccentricity vector.
-    e_i = ( (v2 - m0/r)*r_i - dot(r_i, v_i)*v_i )/m0
+        rv = dot(r_i,v_i)
 
-    # Orbit energy.
-    ξ = v2/2 - m0/r
+        # Angular momentum vector.
+        h_i = cross( r_i, v_i )
+        h   = norm(h_i)
 
-    # Eccentricity
-    # ============
+        # Vector that points to the right ascension of the ascending node (RAAN).
+        n_i = SVector{3}(0,0,1) × h_i
+        n   = norm(n_i)
 
-    ecc = norm(e_i)
+        # Eccentricity vector.
+        e_i = ( (v2 - m0/r)*r_i - rv*v_i )/m0
 
-    # Semi-major axis
-    # ===============
+        # Orbit energy.
+        ξ = v2/2 - m0/r
 
-    if abs(ecc) <= 1.0-1e-6
-        a = -m0/(2*ξ)
-    else
-        error("Could not convert the provided Cartesian values to Kepler elements.\n" *
-              "The computed eccentricity was not between 0 and 1");
+        # Eccentricity
+        # ============
+
+        ecc = norm(e_i)
+
+        # Semi-major axis
+        # ===============
+
+        if abs(ecc) <= 1.0-1e-6
+            a = -m0/(2ξ)
+        else
+            error("Could not convert the provided Cartesian values to Kepler elements.\n" *
+                  "The computed eccentricity was not between 0 and 1");
+        end
+
+        # Inclination
+        # ===========
+
+        cos_i = h_i[3]/h
+        cos_i = abs(cos_i) > 1 ? sign(cos_i) : cos_i
+        i     = acos(cos_i)
+
+        # Right Ascension of the Ascending Node.
+        # ======================================
+
+        cos_Ω = n_i[1]/n
+        cos_Ω = abs(cos_Ω) > 1 ? sign(cos_Ω) : cos_Ω
+        Ω     = acos(cos_Ω)
+
+        (n_i[2] < 0) && (Ω = 2π - Ω)
+
+        # Argument of Perigee
+        # ===================
+
+        cos_ω = dot(n_i,e_i)/(n*ecc)
+        cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
+        ω     = acos(cos_ω)
+
+        (e_i[3] < 0) && (ω = 2π - ω)
+
+        # True anomaly
+        # ============
+
+        cos_v = dot(e_i,r_i)/(ecc*r)
+        cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
+        v     = acos(cos_v)
+
+        (rv < 0) && (v = 2π - v)
     end
-
-    # Inclination
-    # ===========
-    i = acos(h_i[3]/h)
-
-    # Right Ascension of the Ascending Node.
-    # ======================================
-    Ω = acos(n_i[1]/n)
-    (n_i[2] < 0) && (Ω = 2*pi - Ω)
-
-    # Argument of Perigee
-    # ===================
-    ω = acos(n_i'*e_i/(n*ecc))
-    (e_i[3] < 0) && (ω = 2*pi - ω)
-
-    # True anomaly
-    # ============
-    v = acos(e_i'*r_i/(ecc*r))
-    (r_i'*v_i < 0) && (v = 2*pi - v)
 
     # Return the Keplerian elements.
     # ==============================
 
-    Orbit(0.0,a,ecc,i,Ω,ω,v)
+    Orbit(0,a,ecc,i,Ω,ω,v)
 end
 
 """
