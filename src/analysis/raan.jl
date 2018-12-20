@@ -10,27 +10,6 @@
 export compute_RAAN_lt, sim_RAAN_J2
 
 """
-    function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
-
-Compute the RAAN (0,2π) \\[rad] so that the orbit plane local time is
-`asc_node_lt` [hour] at the date `t0`, which is specified as a number of days
-from January 1st, 2000.
-
-# Remarks
-
-The sun position is computed at noon of the day `t0`.
-
-"""
-function compute_RAAN_lt(t0::Int, asc_node_lt::Number)
-    println("WARNING: The function compute_RAAN_lt(t0::Int, asc_node_lt::Real) is deprecated!")
-    println("Use the function compute_RAAN_lt(JD::Real, asc_node_lt::Real) instead.\n")
-
-    JD = JD_J2000 + t0
-
-    compute_RAAN_lt(JD, asc_node_lt)
-end
-
-"""
     function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 
 Compute the RAAN (0,2π) \\[rad] so that the orbit plane local time is
