@@ -249,21 +249,10 @@ Reference Systems (GCRS).
 
 """
 rTODtoPEF_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)'
+    rTODtoPEF_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
 
-function rTODtoPEF_fk5(::Type{DCM},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔψ_1980::Number = 0)
-    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)'
-end
-
-function rTODtoPEF_fk5(::Type{Quaternion},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔψ_1980::Number = 0)
-    conj(rPEFtoTOD_fk5(Quaternion, JD_UT1, JD_TT, δΔψ_1980))
-end
+rTODtoPEF_fk5(T::T_ROT, JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
+    inv_rotation(rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980))
 
 #                                 TOD <=> MOD
 # ==============================================================================
@@ -345,21 +334,10 @@ Reference Systems (GCRS).
 
 """
 rMODtoTOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rMODtoTOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rMODtoTOD_fk5(::Type{DCM},
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)'
-end
-
-function rMODtoTOD_fk5(::Type{Quaternion},
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    conj(rTODtoMOD_fk5(Quaternion, JD_TT, δΔϵ_1980, δΔψ_1980))
-end
+rMODtoTOD_fk5(T::T_ROT, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
+    inv_rotation(rTODtoMOD_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980))
 
 #                                 MOD <=> GCRF
 # ==============================================================================
@@ -425,15 +403,9 @@ the EOP corrections, then the GCRF in this rotation is what is usually called
 the J2000 reference frame.
 
 """
-rGCRFtoMOD_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)'
+rGCRFtoMOD_fk5(JD_TT::Number) = rGCRFtoMOD_fk5(DCM,JD_TT)
 
-function rGCRFtoMOD_fk5(::Type{DCM},JD_TT::Number)
-    rMODtoGCRF_fk5(DCM, JD_TT)'
-end
-
-function rGCRFtoMOD_fk5(::Type{Quaternion},JD_TT::Number)
-    conj(rMODtoGCRF_fk5(Quaternion, JD_TT))
-end
+rGCRFtoMOD_fk5(T::T_ROT,JD_TT::Number) = inv_rotation(rMODtoGCRF_fk5(T, JD_TT))
 
 ################################################################################
 #                              Multiple Rotations
@@ -563,33 +535,16 @@ rGCRFtoITRF_fk5(JD_UT1::Number,
                 y_p::Number,
                 δΔϵ_1980::Number = 0,
                 δΔψ_1980::Number = 0) =
-    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
+    rGCRFtoITRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 
-function rGCRFtoITRF_fk5(::Type{DCM},
-                         JD_UT1::Number,
-                         JD_TT::Number,
-                         x_p::Number,
-                         y_p::Number,
-                         δΔϵ_1980::Number = 0,
-                         δΔψ_1980::Number = 0)
-    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)'
-end
-
-function rGCRFtoITRF_fk5(::Type{Quaternion},
-                         JD_UT1::Number,
-                         JD_TT::Number,
-                         x_p::Number,
-                         y_p::Number,
-                         δΔϵ_1980::Number = 0,
-                         δΔψ_1980::Number = 0)
-    conj(rITRFtoGCRF_fk5(Quaternion,
-                         JD_UT1,
-                         JD_TT,
-                         x_p,
-                         y_p,
-                         δΔϵ_1980,
-                         δΔψ_1980))
-end
+rGCRFtoITRF_fk5(T::T_ROT,
+                JD_UT1::Number,
+                JD_TT::Number,
+                x_p::Number,
+                y_p::Number,
+                δΔϵ_1980::Number = 0,
+                δΔψ_1980::Number = 0) =
+    inv_rotation(rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980))
 
 #                                 PEF <=> MOD
 # ==============================================================================
@@ -713,20 +668,11 @@ rMODtoPEF_fk5(JD_UT1::Number,
               JD_TT::Number,
               δΔϵ_1980::Number = 0,
               δΔψ_1980::Number = 0) =
-    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
+    rMODtoPEF_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rMODtoPEF_fk5(::Type{DCM},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)'
-end
-
-function rMODtoPEF_fk5(::Type{Quaternion},
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-    conj(rPEFtoMOD_fk5(Quaternion, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
-end
+rMODtoPEF_fk5(T::T_ROT,
+              JD_UT1::Number,
+              JD_TT::Number,
+              δΔϵ_1980::Number = 0,
+              δΔψ_1980::Number = 0) =
+    inv_rotation(rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
