@@ -124,9 +124,7 @@ The semi-major axis of the Sun-synchronous orbit [m].
 
 """
 function compute_ss_orbit_by_inclination(i::Number, e::Number)
-    if !( 0. <= e < 1. )
-        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-    end
+    !( 0. <= e < 1. ) && throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
 
     # Auxiliary variables.
     sqrt_m0 = sqrt(m0)
@@ -138,9 +136,7 @@ function compute_ss_orbit_by_inclination(i::Number, e::Number)
     a = (-2*cos(i)*K1/ne)^(2.0/7.0)
 
     # Check if the orbit is valid.
-    if ( a*(1.0-e) <  R0 )
-        throw(ErrorException("It was not possible to find a valid Sun-synchronous orbit with the inclination given."))
-    end
+    ( a*(1-e) <  R0 ) && throw(ErrorException("It was not possible to find a valid Sun-synchronous orbit with the inclination given."))
 
     # Return.
     a
@@ -149,13 +145,8 @@ end
 """
     function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
 
-Compute the Sun-synchronous orbit given the semi-major axis `a` and the
+Compute the Sun-synchronous orbit given the semi-major axis `a` [m] and the
 eccentricity `e`.
-
-# Args
-
-* `a`: Semi-major axis [m].
-* `e`: Eccentricity.
 
 # Returns
 
@@ -164,27 +155,20 @@ The inclination of the Sun-synchronous orbit [rad].
 """
 function compute_ss_orbit_by_semi_major_axis(a::Number, e::Number)
     # Check if the arguments are valid.
-    if (a*(1.0-e) <= R0)
-        throw(ArgumentError("The perigee must be larger than the Earth radius."))
-    end
-
-    if !( 0. <= e < 1. )
-        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-    end
+    (a*(1-e) <= R0)   && throw(ArgumentError("The perigee must be larger than the Earth radius."))
+    !( 0. <= e < 1. ) && throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
 
     # Auxiliary variables.
     sqrt_m0 = sqrt(m0)
 
     # Auxiliary constant.
-    K1 = 3.0*R0^2*J2*sqrt_m0/(4.0*(1-e^2)^2)
+    K1 = 3R0^2*J2*sqrt_m0/(4(1-e^2)^2)
 
     # Compute the inclination.
-    cos_i = -ne*a^3*sqrt(a)/(2*K1)
+    cos_i = -ne*a^3*sqrt(a)/(2K1)
 
     # Check if -1 <= cos_i <= 1.
-    if ( (cos_i < -1) || (cos_i > 1) )
-        throw(ErrorException("It was not possible to find a Sun-synchronous orbit with the semi-major axis given."))
-    end
+    ( (cos_i < -1) || (cos_i > 1) ) && throw(ErrorException("It was not possible to find a Sun-synchronous orbit with the semi-major axis given."))
 
     # Return.
     acos(cos_i)
