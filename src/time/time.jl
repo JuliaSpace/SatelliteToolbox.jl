@@ -76,16 +76,16 @@ because it is not possible yet to predict when leap seconds will be added.
 """
 function get_ΔAT(JD::Number)
     # If `JD` is before `ΔAT_Data[1,1]`, then return 10.0.
-    if JD < ΔAT_Data[1,1]
+    @inbounds if JD < ΔAT_Data[1,1]
         return 10.0
     else
         for i = 2:size(ΔAT_Data,1)
-            @inbounds (JD < ΔAT_Data[i,1]) && return ΔAT_Data[i-1,2]
+            (JD < ΔAT_Data[i,1]) && return ΔAT_Data[i-1,2]
         end
     end
 
     # In this case, `JD` is after `ΔAT_Data[end,1]`.
-    return ΔAT_Data[end,2]
+    return @inbounds ΔAT_Data[end,2]
 end
 
 ################################################################################
