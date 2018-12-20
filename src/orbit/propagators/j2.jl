@@ -18,6 +18,9 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
+export j2_gc_wgs84, j2_gc_wgs72
+export j2_init, j2!
+
 ################################################################################
 #                                     TODO
 ################################################################################
@@ -45,14 +48,10 @@
 ################################################################################
 
 # Copy for J2_Structure
-function Base.copy(m::J2_Structure)
-    J2_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
-end
+Base.copy(m::J2_Structure) = J2_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
 
 # Deepcopy for J2_Structure.
-function Base.deepcopy(m::J2_Structure)
-    J2_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
-end
+Base.deepcopy(m::J2_Structure) = J2_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
 
 ################################################################################
 #                                  Constants
