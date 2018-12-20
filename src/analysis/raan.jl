@@ -42,7 +42,7 @@ function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
     s_i = sun_position_i(JD)
 
     # Get the desired angle between the Sun and the ascending node [deg].
-    alpha = (asc_node_lt-12.0)*float(pi)/12.0
+    alpha = (asc_node_lt-12)*π/12
 
     # Get the right ascension of the Sun in the Inertial ref. frame. This is the
     # Sun apparent local time.
@@ -55,7 +55,7 @@ function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
     SMLT = SALT + eot
 
     # Compute the desired RAAN in the interval 0, 2*pi.
-    RAAN = mod(SMLT+alpha, 2*pi)
+    RAAN = mod(SMLT+alpha, 2π)
 end
 
 """
@@ -83,10 +83,10 @@ function sim_RAAN_J2(a::Number,
                                   # simulated.
 
     # RAAN rotation rate [rad/day].
-    dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0
+    dOmega = dRAAN(a, e, i, :J2)*24*3600
 
     # Simulate the RAAN for each day considering just the J2 perturbations.
-    RAAN = mod.(RAAN_0 .+ dOmega.*days,2*pi)
+    RAAN = mod.(RAAN_0 .+ dOmega.*days, 2π)
 
     [days RAAN]
 end
