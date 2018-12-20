@@ -35,14 +35,16 @@ function precession_fk5(JD_TT::Number)
     T_TT = (JD_TT - JD_J2000)/36525
 
     # Compute the angles [arcsec].
-    ζ = 2306.2181*T_TT + 0.30188*T_TT^2 + 0.017998*T_TT^3
-    Θ = 2004.3109*T_TT - 0.42665*T_TT^2 - 0.041833*T_TT^3
-    z = 2306.2181*T_TT + 1.09468*T_TT^2 + 0.018203*T_TT^3
+    ζ = @evalpoly(T_TT, 0, +2306.2181, +0.30188, +0.017998)
+    Θ = @evalpoly(T_TT, 0, +2004.3109, -0.42665, -0.041833)
+    z = @evalpoly(T_TT, 0, +2306.2181, +1.09468, +0.018203)
 
     # Normalize the angles in the interval [0, 86400]s and convert to rad.
-    ζ = mod(ζ*pi/648000, 2*pi)
-    Θ = mod(Θ*pi/648000, 2*pi)
-    z = mod(z*pi/648000, 2*pi)
+    s2r = π/648000
+
+    ζ = mod(ζ*s2r, 2π)
+    Θ = mod(Θ*s2r, 2π)
+    z = mod(z*s2r, 2π)
 
     # Return the date.
     (ζ, Θ, z)
