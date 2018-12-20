@@ -609,9 +609,10 @@ function rPEFtoMOD_fk5(T::Type,
     # The parameters here were updated as stated in the errata [2].
     T_TT = (JD_TT - JD_J2000)/36525
     r    = 360
-    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
-                          0.0020708*T_TT^2 +
-                          2.2e-6*T_TT^3
+    Ω_m  = @evalpoly(T_TT, + 125.04452222,
+                           - (5r + 134.1362608),
+                           + 0.0020708,
+                           + 2.2e-6)
     Ω_m  = mod(Ω_m, 360)*pi/180
 
     # Compute the equation of Equinoxes.
