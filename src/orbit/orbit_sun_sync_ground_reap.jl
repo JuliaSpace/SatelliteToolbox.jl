@@ -156,27 +156,16 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                                       minAlt::Number=-1.0, maxAlt::Number=-1.0,
                                       e::Number=0.0)
     # Check if the arguments are valid.
-    if (minRep <= 0)
-        throw(ArgumentError("The minimum repetition time must be greater than 0."))
-    end
-
-    if (maxRep <= 0)
-        throw(ArgumentError("The maximum repetition time must be greater than 0."))
-    end
-
-    if (minRep > maxRep)
-        throw(ArgumentError("The minimum repetition time must be smaller or equal to the maximum repetition time."))
-    end
-
-    if !( 0. <= e < 1. )
-        throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-    end
+    minRep <= 0       && throw(ArgumentError("The minimum repetition time must be greater than 0."))
+    maxRep <= 0       && throw(ArgumentError("The maximum repetition time must be greater than 0."))
+    minRep > maxRep   && throw(ArgumentError("The minimum repetition time must be smaller or equal to the maximum repetition time."))
+    !( 0. <= e < 1. ) && throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
 
     # Matrix to store the available orbits.
     ss_orbits = Matrix{Float64}(undef, 0, 7)
 
     # Integer part of the number of orbits per day.
-    intNumOrb = [13., 14., 15., 16., 17.]
+    intNumOrb = (13, 14, 15, 16, 17)
 
     # Loop for the possible repetition times.
     for den = minRep:maxRep
@@ -188,7 +177,7 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                     addOrbit = false
 
                     # Number of revolutions per day.
-                    numRevPD = ino+Float64(num)/Float64(den)
+                    numRevPD = ino + num/den
 
                     (a, i, f1r, f2r, converged) =
                         compute_ss_orbit_by_num_rev_per_day(numRevPD, e)
@@ -210,13 +199,12 @@ function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
                     end
 
                     # Check if the orbit must be added to the list.
-                    if (addOrbit)
+                    if addOrbit
                         # Compute the period of the orbit considering
                         # perturbations (J2).
                         T = period(a, e, i, :J2)
 
-                        ss_orbits =
-                            vcat(ss_orbits, [a a-R0 i T ino num den])
+                        ss_orbits = vcat(ss_orbits, [a a-R0 i T ino num den])
                     end
                 end
             end
