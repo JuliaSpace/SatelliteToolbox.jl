@@ -174,8 +174,7 @@ function kepler_to_rv(a::Number,
     end
 
     # Auxiliary variables.
-    sin_f     = sin(f)
-    cos_f     = cos(f)
+    sin_f, cos_f = sincos(f)
 
     # Compute the geocentric distance.
     r = a*(1-e^2)/(1+e*cos_f)
