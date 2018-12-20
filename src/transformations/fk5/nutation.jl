@@ -181,14 +181,30 @@ defaults to 106.
 
 """
 function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
+    # Check inputs.
+    if n_max > 106
+        @warn("The maximum number of coefficients to compute nutation using IAU-76/FK5 theory is 106.")
+        n_max = 106
+    elseif n_max <= 0
+        @warn("n_max must greater than 0. The default value will be used (106).")
+        n_max = 106
+    end
+
     # Compute the Julian Centuries from `JD_TT`.
     T_TT = (JD_TT - JD_J2000)/36525
+
+    # Auxiliary variables
+    # ===================
+
+    d2r   = pi/180
+    T_TT² = T_TT^2
+    T_TT³ = T_TT^3
 
     # Mean obliquity of the ecliptic
     # ==============================
 
     # Compute the mean obliquity of the ecliptic [s].
-    mϵ_1980 = 23.439291 - 0.0130042*T_TT - 1.64e-7*T_TT^2 + 5.04e-7*T_TT^3
+    mϵ_1980 = 23.439291 - 0.0130042*T_TT - 1.64e-7*T_TT² + 5.04e-7*T_TT³
 
     # Reduce to the interval [0, 2π]°.
     mϵ_1980 = mod(mϵ_1980, 360)*pi/180
@@ -203,29 +219,29 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     r = 360
 
     M_m = 134.96298139 + (1325r + 198.8673981)*T_TT +
-                         0.0086972*T_TT^2 +
-                         1.78e-5*T_TT^3
-    M_m = mod(M_m, 360)*pi/180
+                         0.0086972*T_TT² +
+                         1.78e-5*T_TT³
+    M_m = mod(M_m, 360)*d2r
 
     M_s = 357.52772333 + (99r + 359.0503400)*T_TT -
-                         0.0001603*T_TT^2 -
-                         3.3e-6*T_TT^3
-    M_s = mod(M_s, 360)*pi/180
+                         0.0001603*T_TT² -
+                         3.3e-6*T_TT³
+    M_s = mod(M_s, 360)*d2r
 
     u_Mm = 93.27191028 + (1342r + 82.0175381)*T_TT -
-                         0.0036825*T_TT^2 +
-                         3.1e-6*T_TT^3
-    u_Mm = mod(u_Mm, 360)*pi/180
+                         0.0036825*T_TT² +
+                         3.1e-6*T_TT³
+    u_Mm = mod(u_Mm, 360)*d2r
 
     D_s = 297.85036306 + (1236r + 307.1114800)*T_TT -
-                         0.0019142*T_TT^2 +
-                         5.3e-6*T_TT^3
-    D_s = mod(D_s, 360)*pi/180
+                         0.0019142*T_TT² +
+                         5.3e-6*T_TT³
+    D_s = mod(D_s, 360)*d2r
 
     Ω_m = 125.04452222 - (5r + 134.1362608)*T_TT +
-                         0.0020708*T_TT^2 +
-                         2.2e-6*T_TT^3
-    Ω_m = mod(Ω_m, 360)*pi/180
+                         0.0020708*T_TT² +
+                         2.2e-6*T_TT³
+    Ω_m = mod(Ω_m, 360)*d2r
 
     # Nutation in longitude and obliquity
     # ===================================
@@ -234,20 +250,22 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     ΔΨ_1980 = 0.0
     Δϵ_1980 = 0.0
 
-    for i = 1:n_max
+    @inbounds for i = 1:n_max
         # Unpack values.
-        an1, an2, an3, an4, an5, Ai, Bi, Ci, Di = nut_coefs_1980[i,:]
+        @views an1, an2, an3, an4, an5, Ai, Bi, Ci, Di = nut_coefs_1980[i,:]
 
         a_pi = an1*M_m + an2*M_s + an3*u_Mm + an4*D_s + an5*Ω_m
 
-        ΔΨ_1980 += (Ai + Bi*T_TT)*sin(a_pi)
-        Δϵ_1980 += (Ci + Di*T_TT)*cos(a_pi)
+        sin_a_pi, cos_a_pi = sincos(a_pi)
+
+        ΔΨ_1980 += (Ai + Bi*T_TT)*sin_a_pi
+        Δϵ_1980 += (Ci + Di*T_TT)*cos_a_pi
     end
 
     # The nutation coefficients in `nut_coefs_1980` lead to angles with unit
     # 0.0001". Hence, we must convert to [rad].
-    ΔΨ_1980 *= 0.0001/3600*pi/180
-    Δϵ_1980 *= 0.0001/3600*pi/180
+    ΔΨ_1980 *= 0.0001/3600*d2r
+    Δϵ_1980 *= 0.0001/3600*d2r
 
     # Return the values.
     (mϵ_1980, Δϵ_1980, ΔΨ_1980)
