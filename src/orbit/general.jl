@@ -54,18 +54,18 @@ macro check_orbit(a, e)
     quote
         # Check if the arguments are valid.
         if $(esc(a)) < 0
-            throw(ArgumentError("The semi-major axis must be greater than 0."))
-        end
+            false
+        elseif !( 0 <= $(esc(e)) < 1 )
+            false
+        else
+            # Compute the orbit perigee and check if it is inside Earth.
+            perigee = $(esc(a))*(1-$(esc(e)))
 
-        if !( 0 <= $(esc(e)) < 1 )
-            throw(ArgumentError("The eccentricity must be within the interval 0 <= e < 1."))
-        end
-
-        # Compute the orbit perigee and check if it is inside Earth.
-        perigee = $(esc(a))*(1-$(esc(e)))
-
-        if perigee < R0
-            throw(ArgumentError("The orbit perigee ($perigee m) is inside Earth!"))
+            if perigee < R0
+                false
+            else
+                true
+            end
         end
     end
 end
