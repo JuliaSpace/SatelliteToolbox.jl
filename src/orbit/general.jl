@@ -139,8 +139,8 @@ end
 @inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
-    function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function dArgPer(orb::Orbit, pert::Symbol = :J2)
+    @inline function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    @inline function dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -155,14 +155,14 @@ specified by `orb`, which is an instance of the structure `Orbit`.
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
     # Perturbation computed using perturbations terms up to J2.
     elseif pert == :J2
         # Semi-lactum rectum.
-        p = a*(1.0-e^2)
+        p = a*(1-e^2)
 
         # Unperturbed orbit period.
         n0 = angvel(a, e, i, :J0)
@@ -175,7 +175,7 @@ function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 end
 
-dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
+@inline dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
 
 """
     function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
