@@ -34,26 +34,24 @@ function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
     # ==============================================================
 
     # Make sure that M is in the interval [0,2π].
-    M = mod(M,2*pi)
+    M = mod(M,2π)
 
     # Initial guess.
     #
     # See [1, p. 75].
-    E = (M > pi) ? M - e : M + e
+    E = (M > π) ? M - e : M + e
 
-    sin_E = sin(E)
-    cos_E = cos(E)
+    sin_E, cos_E = sincos(E)
 
     # Newton-Raphson iterations.
     while ( abs(E - e*sin_E - M) > tol )
         E = E - (E - e*sin_E - M)/(1-e*cos_E)
 
-        sin_E = sin(E)
-        cos_E = cos(E)
+        sin_E, cos_E = sincos(E)
     end
 
-    # Return the eccentric anomaly in the interval [0, 2*π].
-    mod(E, 2*pi)
+    # Return the eccentric anomaly in the interval [0, 2π].
+    mod(E, 2π)
 end
 
 """
@@ -84,8 +82,10 @@ eccentric anomaly `E` [rad].
 
 """
 function E_to_f(e::Number, E::Number)
+    sin_Eo2, cos_Eo2 = sincos(E/2)
+
     # Compute the true anomaly in the interval [0, 2*π].
-    mod(2*atan( sqrt(1+e)*sin(E/2), sqrt(1-e)*cos(E/2) ), 2*pi)
+    mod( 2atan(sqrt(1+e)*sin_Eo2, sqrt(1-e)*cos_Eo2) , 2π )
 end
 
 """
