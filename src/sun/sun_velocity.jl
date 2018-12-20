@@ -40,24 +40,24 @@ function sun_velocity_i(JD::Number)
     T_UT1 = (JD-JD_J2000)/36525.0
 
     # Mean longitude of the Sun [deg].
-    λ_m = mod(280.460 + 36000.771*T_UT1, 360.0)
+    λ_m = mod(280.460 + 36000.771T_UT1, 360)
 
     # Mean anomaly of the Sun [deg].
     #
     # Here, we should use T_TBD (Barycentric Dynamical Time). However, it is
     # sufficient to use T_UT1 because this is a low precision computation [1].
-    Ms = mod(357.5291092 + 35999.05034*T_UT1, 360.0)
+    Ms = mod(357.5291092 + 35999.05034T_UT1, 360)
 
     # Convert Ms to [rad].
     Ms = deg2rad(Ms)
 
     # Ecliptic latitude of the Sun [deg].
-    λ_e = mod(λ_m + 1.914666471*sin(Ms) + 0.019994643*sin(2Ms), 360.0)
+    λ_e = mod(λ_m + 1.914666471sin(Ms) + 0.019994643sin(2Ms), 360)
 
     # Obliquity of the ecliptic [deg].
     #
     # Here, we are also approximating T_TBD ≈ T_UT1.
-    ϵ = mod(23.439291 - 0.0130042*T_UT1, 360.0)
+    ϵ = mod(23.439291 - 0.0130042T_UT1, 360)
 
     # Auxiliary variables.
     sin_Ms  , cos_Ms  = sincos(Ms)
@@ -75,8 +75,8 @@ function sun_velocity_i(JD::Number)
     ∂λ_m = deg2rad(36000.771)   * cen2s
     ∂Ms  = deg2rad(35999.05034) * cen2s
     ∂ϵ   = deg2rad(-0.0130042)  * cen2s
-    ∂r   = (+0.016708617*sin_Ms*∂Ms + 2*0.000139589*cos_2Ms*∂Ms)*au2m
-    ∂λ_e = ∂λ_m + deg2rad(1.914666471*cos_Ms*∂Ms + 2*0.019994643*cos_2Ms*∂Ms)
+    ∂r   = (+0.016708617sin_Ms*∂Ms + 2*0.000139589cos_2Ms*∂Ms)*au2m
+    ∂λ_e = ∂λ_m + deg2rad(1.914666471cos_Ms*∂Ms + 2*0.019994643cos_2Ms*∂Ms)
 
     # Compute the Sun velocity vector represented in the Mean Equinox of Date
     # (MOD).
