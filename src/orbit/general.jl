@@ -96,8 +96,8 @@ Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number) =
 ################################################################################
 
 """
-    function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function angvel(orb::Orbit, pert::Symbol = :J2)
+    @inline function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    @inline function angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
 axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -112,7 +112,7 @@ specified by `orb`, which is an instance of the structure `Orbit`.
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Unperturbed orbit period.
     n0 = sqrt(m0/Float64(a)^3)
 
@@ -121,18 +121,22 @@ function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
         return n0
     # Perturbation computed using perturbations terms up to J2.
     elseif pert == :J2
+        # Auxiliary variables.
+        cos_i² = cos(i)^2
+        aux   = 1-e^2
+
         # Semi-lactum rectum.
-        p = a*(1-e^2)
+        p = a*aux
 
         # Orbit period considering the perturbations (up to J2).
-        return n0 + 3R0^2*J2/(4p^2)*n0*(sqrt(1-e^2)*(3cos(i)^2-1) + (5cos(i)^2-1))
+        return n0 + 3R0^2*J2/(4p^2)*n0*(sqrt(aux)*(3cos_i²-1) + (5cos_i²-1))
     else
         throw(ArgumentError("The perturbation parameter $pert is not defined."))
     end
 
 end
 
-angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
+@inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
     function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
