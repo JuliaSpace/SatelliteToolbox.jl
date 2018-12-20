@@ -32,15 +32,16 @@ function J2000toGMST(J2000_UT1::Number)
 	T_UT1 = J2000_UT1/36525
 
 	# Greenwich Mean Sideral Time at T_UT1 [s].
-    θ_GMST = 67310.54841 + (876600.0*3600 + 8640184.812866)*T_UT1 +
-                            0.093104*T_UT1^2 -
-                            6.2e-6*T_UT1^3
+    θ_GMST = @evalpoly(T_UT1, + 67310.54841,
+                              + (876600.0*3600 + 8640184.812866),
+                              + 0.093104,
+                              - 6.2e-6)
 
     # Reduce to the interval [0, 86400]s.
     θ_GMST = mod(θ_GMST, 86400)
 
     # Convert to radian and return.
-    θ_GMST*pi/43200
+    θ_GMST*π/43200
 end
 
 """
