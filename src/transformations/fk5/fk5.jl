@@ -425,10 +425,10 @@ rGCRFtoMOD_fk5(T::T_ROT,JD_TT::Number) = inv_rotation(rMODtoGCRF_fk5(T, JD_TT))
     function rITRFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
-(ITRF) with the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` [UT1]
-and `JD_TT` [Terrestrial Time], and considering the IERS EOP Data `x_p` [rad],
-`y_p` [rad], `δΔϵ_1980` [rad], and `δΔψ_1980` [rad] \\(see `get_iers_eop`). This
-algorithm uses the IAU-76/FK5 theory.
+(ITRF) with the Geocentric Celestial Reference Frame (GCRF) at the Julian Day
+`JD_UT1` [UT1] and `JD_TT` [Terrestrial Time], and considering the IERS EOP Data
+`x_p` [rad], `y_p` [rad], `δΔϵ_1980` [rad], and `δΔψ_1980` [rad] \\(see
+`get_iers_eop`). This algorithm uses the IAU-76/FK5 theory.
 
 `x_p` is the polar motion displacement about X-axis, which is the IERS Reference
 Meridian direction (positive south along the 0˚ longitude meridian). `y_p` is
@@ -492,10 +492,10 @@ end
 """
     function rGCRFtoITRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
-Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
-International Terrestrial Reference Frame (ITRF) at the Julian Day `JD_UT1`
-[UT1] and `JD_TT` [Terrestrial Time], and considering the IERS EOP Data `x_p`
-[rad], `y_p` [rad], `δΔϵ_1980` [rad], and `δΔψ_1980` [rad] \\(see
+Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
+with the International Terrestrial Reference Frame (ITRF) at the Julian Day
+`JD_UT1` [UT1] and `JD_TT` [Terrestrial Time], and considering the IERS EOP Data
+`x_p` [rad], `y_p` [rad], `δΔϵ_1980` [rad], and `δΔψ_1980` [rad] \\(see
 `get_iers_eop`). This algorithm uses the IAU-76/FK5 theory.
 
 `x_p` is the polar motion displacement about X-axis, which is the IERS Reference
