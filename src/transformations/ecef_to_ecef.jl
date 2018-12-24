@@ -69,7 +69,9 @@ frame into alignment with the ECI reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980)
+julia> eop_IAU1980 = get_iers_eop(:IAU1980);
+
+julia> rECEFtoECEF(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          0.0         4.35684e-7
   0.0          1.0         1.44762e-6
@@ -77,7 +79,7 @@ julia> eop_IAU1980 = get_iers_eop(:IAU1980)
 
 julia> rECEFtoECEF(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
 Quaternion{Float64}:
-  + 0.9999999999997145 - 7.238122478179888e-7.i + 2.1784218985728488e-7.j + 0.0.k
+  + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
 ```
 """
 @inline rECEFtoECEF(T_ECEFo::T_ECEFs,
