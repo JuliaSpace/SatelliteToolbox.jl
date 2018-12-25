@@ -22,7 +22,6 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 ## Requirements
 
 * Julia >= 0.7
-* HTTP >= 0.6.13
 * Interpolations >= 0.8.0
 * Parameters >= 0.10.1
 * OptionalData >= 0.2.0

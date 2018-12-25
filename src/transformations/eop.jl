@@ -14,9 +14,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-using HTTP
-using Interpolations
-
 export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
 export read_iers_eop
