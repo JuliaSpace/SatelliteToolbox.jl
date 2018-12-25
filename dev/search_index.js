@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Requirements",
     "category": "section",
-    "text": "Julia >= 0.7\nHTTP >= 0.6.13\nInterpolations >= 0.8.0\nParameters >= 0.10.1\nOptionalData >= 0.2.0\nReferenceFrameRotations >= 0.5.0\nRemoteFiles >= 0.2.1\nStaticArrays >= 0.9.2"
+    "text": "Julia >= 0.7\nInterpolations >= 0.8.0\nParameters >= 0.10.1\nOptionalData >= 0.2.0\nReferenceFrameRotations >= 0.5.0\nRemoteFiles >= 0.2.1\nStaticArrays >= 0.9.2"
 },
 
 {
