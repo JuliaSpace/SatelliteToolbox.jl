@@ -32,7 +32,7 @@ julia> Pkg.add("SatelliteToolbox")
 
 ## Usage
 
-See the [package_documentation][docs-latest-url].
+See the [package documentation][docs-dev-url].
 
 [docs-dev-url]: https://juliaspace.github.io/SatelliteToolbox.jl/dev
 [docs-stable-url]: https://juliaspace.github.io/SatelliteToolbox.jl/stable
