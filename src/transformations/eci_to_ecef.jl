@@ -108,15 +108,15 @@ julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
 julia> rECItoECEF(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267    -0.78518     -0.000797314
+ -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
- -0.00132979   3.33483e-5   0.999999
+ -0.00132979   3.33492e-5   0.999999
 
 julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
- -0.619267    -0.78518     -0.000797314
+ -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
- -0.00132979   3.33483e-5   0.999999
+ -0.00132979   3.33492e-5   0.999999
 
 julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
@@ -130,9 +130,9 @@ julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980
   0.78518     -0.619267     0.00106623
  -0.00133066   3.45854e-5   0.999999
 
-julia> rECItoECEF(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> rECItoECEF(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
-  + 0.43630989232629747 + 0.0005909971869613186.i - 0.00030510471843995434.j - 0.8997962188693898.k
+  + 0.4363098936462618 + 0.0005909969666939257.i - 0.00030510511316206974.j - 0.8997962182293519.k
 ```
 """
 @inline rECItoECEF(T_ECI::T_ECIs,
