@@ -89,5 +89,7 @@ println("")
 
 @testset "Functions related with the Sun" begin
     include("./sun/equation_of_time.jl")
+    include("./sun/sun_position.jl")
+    include("./sun/sun_velocity.jl")
 end
 println("")
