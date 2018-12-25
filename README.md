@@ -4,7 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/x7ogyjfx1x5yj78j/branch/master?svg=true)](https://ci.appveyor.com/project/ronisbr/satellitetoolbox-jl/branch/master)
 [![codecov](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl)
 [![Coverage Status](https://coveralls.io/repos/github/JuliaSpace/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaSpace/SatelliteToolbox.jl?branch=master)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)][docs-latest-url]
+[![](https://img.shields.io/badge/docs-dev-blue.svg)][docs-dev-url]
 
 This package contains several functions to build simulations related with
 satellites. It is used on a daily basis on projects at the [Brazilian National
@@ -34,5 +34,5 @@ julia> Pkg.add("SatelliteToolbox")
 
 See the [package_documentation][docs-latest-url].
 
-[docs-latest-url]: https://juliaspace.github.io/SatelliteToolbox.jl/dev
+[docs-dev-url]: https://juliaspace.github.io/SatelliteToolbox.jl/dev
 [docs-stable-url]: https://juliaspace.github.io/SatelliteToolbox.jl/stable
