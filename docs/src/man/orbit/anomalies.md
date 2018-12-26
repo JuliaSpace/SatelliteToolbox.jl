@@ -1,6 +1,13 @@
 Anomalies
 =========
 
+```@meta
+CurrentModule = SatelliteToolbox
+DocTestSetup = quote
+    using SatelliteToolbox
+end
+```
+
 There are three types of anomalies[^1] that can be used to describe the position
 of the satellite in the orbit plane with respect to the argument of perigee:
 
