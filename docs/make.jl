@@ -18,6 +18,7 @@ makedocs(
            ],
         "Orbit" => Any[
             "Anomalies" => "man/orbit/anomalies.md",
+            "General analysis" => "man/orbit/general.md",
             "Orbit propagators" => "man/orbit/propagators.md",
             "TLE" => "man/orbit/tle.md",
         ],
