@@ -423,7 +423,7 @@ function _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
 end
 
 """
-    @inline function _jb2008_δf1(z, Tx, T∞)
+    function _jb2008_δf1(z, Tx, T∞)
 
 Auxiliary function to compute the integrand in `_jb2008_int`.
 
@@ -436,7 +436,7 @@ Auxiliary function to compute the integrand in `_jb2008_int`.
 end
 
 """
-    @inline function _jb2008_δf2(z, Tx, T∞)
+    function _jb2008_δf2(z, Tx, T∞)
 
 Auxiliary function to compute the integrand in `_jb2008_int`.
 

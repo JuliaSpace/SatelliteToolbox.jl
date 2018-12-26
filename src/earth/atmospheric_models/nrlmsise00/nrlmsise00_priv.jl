@@ -26,7 +26,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 """
-    @inline function _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number
+    function _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number
 
 Chemistry / Dissociation correction for MSIS models.
 
@@ -52,7 +52,7 @@ The chemistry / dissociation correction.
 end
 
 """
-    @inline function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number
+    function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number
 
 Chemistry / Dissociation correction for MSIS models.
 
@@ -322,7 +322,7 @@ function _densu(re::T, gsurf::T, alt::T, dlb::T, tinf::T, tlb::T, xm::T,
 end
 
 """
-    @inline function _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number
+    function _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number
 
 Turbopause correction for MSIS models.
 
@@ -1200,7 +1200,7 @@ end
 end
 
 """
-    @inline function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
+    function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the integral of the cubic spline function from `xa[1]` to `x`.
 
@@ -1253,7 +1253,7 @@ end
 
 
 """
-    @inline function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}
+    function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}
 
 Compute the 2nd derivatives of cubic spline interpolation function tabulated by
 `x` and `y` given the 2nd derivatives values at `x[1]` (`yp1`) and at `x[N]`
@@ -1321,7 +1321,7 @@ Values higher than `1e30` in the 2nd derivatives at the borders (`yp1` and
 end
 
 """
-    @inline function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
+    function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the cubic spline interpolation value at `x`.
 

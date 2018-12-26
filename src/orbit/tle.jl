@@ -61,7 +61,7 @@ function compute_checksum(str::AbstractString)
 end
 
 """
-    @inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
+    function read_tle(tle_filename::String, verify_checksum::Bool = true)
 
 Read the TLEs in the file `tle_filename` and return an array of `TLE` with the
 parsed TLEs.
@@ -79,8 +79,8 @@ omitted, then it defaults to `true`.
 end
 
 """
-    @inline function read_tle_from_string(tles::String, verify_checksum::Bool = true)
-    @inline function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
+    function read_tle_from_string(tles::String, verify_checksum::Bool = true)
+    function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
 
 Parse a set of TLEs in the string `tles` or one TLE with first line `tle_l1` and
 second line `tle_l2`. This function returns an array of `TLE` with the parsed

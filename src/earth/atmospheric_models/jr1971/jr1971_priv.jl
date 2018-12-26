@@ -208,7 +208,7 @@ const _jr1971_id = ( N₂ = 1, O₂ = 2, O  = 3, Ar = 4, He = 5, H  = 6 )
 ################################################################################
 
 """
-    @inline function _jr1971_M(z::R) where R
+    function _jr1971_M(z::R) where R
 
 Compute the mean molecular mass at altitude `z` [km] using the empirical profile
 in eq. 1 [3,4].

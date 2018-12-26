@@ -96,8 +96,8 @@ Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number) =
 ################################################################################
 
 """
-    @inline function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    @inline function angvel(orb::Orbit, pert::Symbol = :J2)
+    function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
 axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -139,8 +139,8 @@ end
 @inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
-    @inline function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    @inline function dArgPer(orb::Orbit, pert::Symbol = :J2)
+    function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -178,8 +178,8 @@ end
 @inline dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
 
 """
-    @inline function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    @inline function dRAAN(orb::Orbit, pert::Symbol = :J2)
+    function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
@@ -216,8 +216,8 @@ end
 @inline dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
 
 """
-    @inline function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    @inline function period(orb::Orbit, pert::Symbol = :J2)
+    function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    function period(orb::Orbit, pert::Symbol = :J2)
 
 Compute the period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e`, and inclination `i` [rad], using the perturbation terms
