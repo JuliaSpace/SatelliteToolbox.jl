@@ -17,6 +17,7 @@ makedocs(
             "Space indices" => "man/earth/space_indices.md",
            ],
         "Orbit" => Any[
+            "Anomalies" => "man/orbit/anomalies.md",
             "Orbit propagators" => "man/orbit/propagators.md",
             "TLE" => "man/orbit/tle.md",
         ],
