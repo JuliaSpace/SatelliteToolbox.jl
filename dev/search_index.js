@@ -129,6 +129,70 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "man/orbit/anomalies/#",
+    "page": "Anomalies",
+    "title": "Anomalies",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "man/orbit/anomalies/#Anomalies-1",
+    "page": "Anomalies",
+    "title": "Anomalies",
+    "category": "section",
+    "text": "CurrentModule = SatelliteToolbox\nDocTestSetup = quote\n    using SatelliteToolbox\nendThere are three types of anomalies[1] that can be used to describe the position of the satellite in the orbit plane with respect to the argument of perigee:The mean anomaly (M);\nThe eccentric anomaly (E); and\nThe true anomaly (f).This package contains the following functions that can be used to convert one to another:function M_to_E(e::Number, M::Number, tol::Number = 1e-10)\nfunction M_to_f(e::Number, M::Number, tol::Number = 1e-10)\nfunction E_to_f(e::Number, E::Number)\nfunction E_to_M(e::Number, E::Number)\nfunction f_to_E(e::Number,f::Number)\nfunction f_to_E(orb::Orbit)\nfunction f_to_M(e::Number, f::Number)\nfunction f_to_M(orb::Orbit)where:M is the mean anomaly [rad];\nE is the eccentric anomaly [rad];\nf is the true anomaly [rad];\ne is the eccentricity;\norb is an instance of the structure Orbit;\ntol is used to select the tolerance for the cases in which the conversion is performed by a numerical method, such as the Newton-Raphson algorithm.All the returned values are in [rad].julia> M_to_E(0.04, pi/4)\n0.8144932819286269\n\njulia> M_to_f(0.04, pi/4)\n0.8440031124631683\n\njulia> f_to_M(0.04, pi/4)\n0.7300148523821107\n\njulia> M_to_f(0, 0.343)\n0.3430000000000001\n\njulia> M_to_f(0.04, 0.343)\n0.37122803399203647[1]: In astronomy, anomaly is an angle."
+},
+
+{
+    "location": "man/orbit/general/#",
+    "page": "General analysis",
+    "title": "General analysis",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "man/orbit/general/#General-functions-1",
+    "page": "General analysis",
+    "title": "General functions",
+    "category": "section",
+    "text": "CurrentModule = SatelliteToolbox\nDocTestSetup = quote\n    using SatelliteToolbox\nendThis package contains some functions that helps in analysis of orbits."
+},
+
+{
+    "location": "man/orbit/general/#Angular-velocity-1",
+    "page": "General analysis",
+    "title": "Angular velocity",
+    "category": "section",
+    "text": "The angular velocity of an object in orbit when considering a Keplerian orbit (unperturbed model) is given by:n = n_0 = sqrt fracmu_0a^3 where mu_0 is the standard gravitational parameter for Earth, and a is the semi-major axis.If the perturbation terms up to J_2 are considered, then the angular velocity is computed by:n = n_0 + frac34 cdot fracR_0^2 cdot J_2a^2left(1-e^2right)^2 cdot n_0 cdot leftsqrt1-e^2cdot(3cos^2(i)-1) + (5cos^2(i) - 1) rightwhere e is the eccentricity, i is the inclination, and R_0 is the Earth equatorial radius.In this package, the angular velocity [rad/s] can be computed by the following functions:function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction angvel(orb::Orbit, pert::Symbol = :J2)where:a is the semi-major axis [m];\ne is the eccentricity;\ni is the inclination [rad];\npert selects the perturbation terms it should be used, it can be :J0 or :J2[1]; and\norb is an instance of Orbit.julia> angvel(7130982.0, 0.001111, deg2rad(98.405))\n0.0010471974485046116\n\njulia> angvel(7130982.0, 0.001111, deg2rad(98.405), :J0)\n0.0010484431282179"
+},
+
+{
+    "location": "man/orbit/general/#Time-derivative-of-the-argument-of-perigee-1",
+    "page": "General analysis",
+    "title": "Time-derivative of the argument of perigee",
+    "category": "section",
+    "text": "The time-derivative of the argument of perigee dotomega when considering perturbation terms up to J_2 is:dotomega = frac34 cdot fracR_0^2 cdot J_2a^2left(1-e^2right)^2 cdot n_0 cdot (5cos^2(i) - 1)where R_0 is the Earth equatorial radius, a is the semi-major axis, e is the eccentricity, i is the inclination, and n_0 is the unperturbed orbital angular velocity.In the unperturbed model (Keplerian orbit), the time-derivative of the argument of perigee is always 0.In this package, the time-derivative of the argument of perigee [rad/s] can be computed by the following functions:function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dArgPer(orb::Orbit, pert::Symbol = :J2)where:a is the semi-major axis [m];\ne is the eccentricity;\ni is the inclination [rad];\npert selects the perturbation terms it should be used, it can be :J0 or :J2[1]; and\norb is an instance of Orbit.julia> dArgPer(7130982, 0.001111, deg2rad(98.405))\n-6.082892348533058e-7\n\njulia> dArgPer(7130982, 0.001111, deg2rad(63.435))\n-2.433253158726004e-12\n\njulia> dArgPer(7130982, 0.001111, deg2rad(98.405), :J0)\n0.0"
+},
+
+{
+    "location": "man/orbit/general/#Time-derivative-of-the-RAAN-1",
+    "page": "General analysis",
+    "title": "Time-derivative of the RAAN",
+    "category": "section",
+    "text": "The time-derivative of the RAAN (right-ascension of the ascending node) dotOmega when considering perturbation terms up to J_2 is:dotOmega = -frac32 cdot fracR_0^2 cdot J_2a^2left(1-e^2right)^2 cdot n_0 cdot cos(i)where R_0 is the Earth equatorial radius, a is the semi-major axis, e is the eccentricity, i is the inclination, and n_0 is the unperturbed orbital angular velocity.In the unperturbed model (Keplerian orbit), the time-derivative of the RAAN is always 0.In this package, the time-derivative of the RAAN [rad/s] can be computed by the following functions:function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dRAAN(orb::Orbit, pert::Symbol = :J2)where:a is the semi-major axis [m];\ne is the eccentricity;\ni is the inclination [rad];\npert selects the perturbation terms it should be used, it can be :J0 or :J2[1]; and\norb is an instance of Orbit.julia> dRAAN(7130982, 0.001111, deg2rad(98.405))\n1.9909533223838115e-7\n\njulia> dRAAN(7130982, 0.001111, deg2rad(98.405), :J0)\n0.0"
+},
+
+{
+    "location": "man/orbit/general/#Period-1",
+    "page": "General analysis",
+    "title": "Period",
+    "category": "section",
+    "text": "The orbital period of an object in orbit is given by:T = frac2pinwhere n is the angular velocity as described in Angular velocity.In this package, the orbital period [s] can be computed by the following functions:function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction period(orb::Orbit, pert::Symbol = :J2)where:a is the semi-major axis [m];\ne is the eccentricity;\ni is the inclination [rad];\npert selects the perturbation terms it should be used, it can be :J0 or :J2[1]; and\norb is an instance of Orbit.julia> period(7130982, 0.001111, deg2rad(98.405))/60\n100.00000980636328\n\njulia> period(7130982, 0.001111, deg2rad(98.405), :J0)/60\n99.88119746433748[1]: If pert is :J0, then it will be consider a Keplerian, unperturbed orbit to compute the values. Otherwise, if pert is :J2, then it will be consider the perturbation terms up to J_2 to compute the values. It pert is omitted, then it defaults to :J2."
+},
+
+{
     "location": "man/orbit/propagators/#",
     "page": "Orbit propagators",
     "title": "Orbit propagators",
@@ -573,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.E_to_f",
     "category": "method",
-    "text": "@inline function E_to_f(e::Number, E::Number)\n\nCompute the true anomaly (0,2π) [rad] given the eccentricity e and the eccentric anomaly E [rad].\n\n\n\n\n\n"
+    "text": "function E_to_f(e::Number, E::Number)\n\nCompute the true anomaly (0,2π) [rad] given the eccentricity e and the eccentric anomaly E [rad].\n\n\n\n\n\n"
 },
 
 {
@@ -669,7 +733,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.M_to_E",
     "category": "function",
-    "text": "@inline function M_to_E(e::Number, M::Number, tol::Number = 1e-10)\n\nCompute the eccentric anomaly (0,2π) [rad] given the eccentricity e and the mean anomaly M [rad]. This function uses the Newton-Raphson algorithm and the tolerance to accept the solution is tol.\n\n\n\n\n\n"
+    "text": "function M_to_E(e::Number, M::Number, tol::Number = 1e-10)\n\nCompute the eccentric anomaly (0,2π) [rad] given the eccentricity e and the mean anomaly M [rad]. This function uses the Newton-Raphson algorithm and the tolerance to accept the solution is tol.\n\n\n\n\n\n"
 },
 
 {
@@ -677,7 +741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.M_to_f",
     "category": "function",
-    "text": "@inline function M_to_f(e::Number, M::Number, tol::Number = 1e-10)\n\nCompute the true anomaly (0,2π) [rad] given the eccentricity e and the mean anomaly M [rad]. This function uses the Newton-Raphson algorithm and the tolerance to accept the solution is tol.\n\n\n\n\n\n"
+    "text": "function M_to_f(e::Number, M::Number, tol::Number = 1e-10)\n\nCompute the true anomaly (0,2π) [rad] given the eccentricity e and the mean anomaly M [rad]. This function uses the Newton-Raphson algorithm and the tolerance to accept the solution is tol.\n\n\n\n\n\n"
 },
 
 {
@@ -717,7 +781,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.angvel",
     "category": "function",
-    "text": "@inline function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)\n@inline function angvel(orb::Orbit, pert::Symbol = :J2)\n\nCompute the angular velocity [rad/s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction angvel(orb::Orbit, pert::Symbol = :J2)\n\nCompute the angular velocity [rad/s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -813,7 +877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.dArgPer",
     "category": "function",
-    "text": "@inline function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)\n@inline function dArgPer(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the argument of perigee [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dArgPer(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the argument of perigee [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -821,7 +885,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.dRAAN",
     "category": "function",
-    "text": "@inline function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)\n@inline function dRAAN(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the right ascension of the ascending node [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dRAAN(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the right ascension of the ascending node [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -965,7 +1029,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.f_to_E",
     "category": "method",
-    "text": "@inline function f_to_E(e::Number,f::Number)\n\nCompute the eccentric anomaly (0,2π) [rad] given the eccentricity e and the true anomaly f [rad].\n\n\n\n\n\n"
+    "text": "function f_to_E(e::Number,f::Number)\n\nCompute the eccentric anomaly (0,2π) [rad] given the eccentricity e and the true anomaly f [rad].\n\n\n\n\n\n"
 },
 
 {
@@ -981,7 +1045,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.f_to_M",
     "category": "method",
-    "text": "@inline function f_to_M(e::Number, f::Number)\n\nCompute the mean anomaly (0,2π) [rad] given the eccentricity e and the true anomaly f [rad].\n\n\n\n\n\n"
+    "text": "function f_to_M(e::Number, f::Number)\n\nCompute the mean anomaly (0,2π) [rad] given the eccentricity e and the true anomaly f [rad].\n\n\n\n\n\n"
 },
 
 {
@@ -1373,7 +1437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.period",
     "category": "function",
-    "text": "@inline function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)\n@inline function period(orb::Orbit, pert::Symbol = :J2)\n\nCompute the period [s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction period(orb::Orbit, pert::Symbol = :J2)\n\nCompute the period [s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -1597,7 +1661,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.read_tle",
     "category": "function",
-    "text": "@inline function read_tle(tle_filename::String, verify_checksum::Bool = true)\n\nRead the TLEs in the file tle_filename and return an array of TLE with the parsed TLEs.\n\nIf verify_checksum if true, then the checksum of both TLE lines will be verified. Otherwise, the checksum will not be checked. If verify_checksum is omitted, then it defaults to true.\n\n\n\n\n\n"
+    "text": "function read_tle(tle_filename::String, verify_checksum::Bool = true)\n\nRead the TLEs in the file tle_filename and return an array of TLE with the parsed TLEs.\n\nIf verify_checksum if true, then the checksum of both TLE lines will be verified. Otherwise, the checksum will not be checked. If verify_checksum is omitted, then it defaults to true.\n\n\n\n\n\n"
 },
 
 {
@@ -1605,7 +1669,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.read_tle_from_string",
     "category": "function",
-    "text": "@inline function read_tle_from_string(tles::String, verify_checksum::Bool = true)\n@inline function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)\n\nParse a set of TLEs in the string tles or one TLE with first line tle_l1 and second line tle_l2. This function returns an array of TLE with the parsed TLEs.\n\nIf verify_checksum if true, then the checksum of both TLE lines will be verified. Otherwise, the checksum will not be checked. If verify_checksum is omitted, then it defaults to true.\n\n\n\n\n\n"
+    "text": "function read_tle_from_string(tles::String, verify_checksum::Bool = true)\nfunction read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)\n\nParse a set of TLEs in the string tles or one TLE with first line tle_l1 and second line tle_l2. This function returns an array of TLE with the parsed TLEs.\n\nIf verify_checksum if true, then the checksum of both TLE lines will be verified. Otherwise, the checksum will not be checked. If verify_checksum is omitted, then it defaults to true.\n\n\n\n\n\n"
 },
 
 {
@@ -1909,7 +1973,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._ccor",
     "category": "method",
-    "text": "@inline function _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number\n\nChemistry / Dissociation correction for MSIS models.\n\nArgs\n\nalt: Altitude.\nr: Target ratio.\nh1: Transition scale length.\nzh: Altitude of 1/2 r.\n\nReturns\n\nThe chemistry / dissociation correction.\n\n\n\n\n\n"
+    "text": "function _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number\n\nChemistry / Dissociation correction for MSIS models.\n\nArgs\n\nalt: Altitude.\nr: Target ratio.\nh1: Transition scale length.\nzh: Altitude of 1/2 r.\n\nReturns\n\nThe chemistry / dissociation correction.\n\n\n\n\n\n"
 },
 
 {
@@ -1917,7 +1981,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._ccor2",
     "category": "method",
-    "text": "@inline function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number\n\nChemistry / Dissociation correction for MSIS models.\n\nArgs\n\nalt: Altitude.\nr: Target ration.\nh1: Transition scale length.\nzh: Altitude of 1/2 r.\nh2: Transition scale length 2.\n\nReturns\n\nThe chemistry / dissociation correction.\n\n\n\n\n\n"
+    "text": "function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number\n\nChemistry / Dissociation correction for MSIS models.\n\nArgs\n\nalt: Altitude.\nr: Target ration.\nh1: Transition scale length.\nzh: Altitude of 1/2 r.\nh2: Transition scale length 2.\n\nReturns\n\nThe chemistry / dissociation correction.\n\n\n\n\n\n"
 },
 
 {
@@ -1941,7 +2005,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._dnet",
     "category": "method",
-    "text": "@inline function _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number\n\nTurbopause correction for MSIS models.\n\nArgs\n\ndd: Diffusive density.\ndm: Full mixed density.\nzhm: Transition scale length.\nxmm: Full mixed molecular weight.\nxm: Species molecular weight.\n\nReturns\n\nThe combined density.\n\n\n\n\n\n"
+    "text": "function _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number\n\nTurbopause correction for MSIS models.\n\nArgs\n\ndd: Diffusive density.\ndm: Full mixed density.\nzhm: Transition scale length.\nxmm: Full mixed molecular weight.\nxm: Species molecular weight.\n\nReturns\n\nThe combined density.\n\n\n\n\n\n"
 },
 
 {
@@ -2053,7 +2117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._jb2008_δf1",
     "category": "method",
-    "text": "@inline function _jb2008_δf1(z, Tx, T∞)\n\nAuxiliary function to compute the integrand in _jb2008_int.\n\n\n\n\n\n"
+    "text": "function _jb2008_δf1(z, Tx, T∞)\n\nAuxiliary function to compute the integrand in _jb2008_int.\n\n\n\n\n\n"
 },
 
 {
@@ -2061,7 +2125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._jb2008_δf2",
     "category": "method",
-    "text": "@inline function _jb2008_δf2(z, Tx, T∞)\n\nAuxiliary function to compute the integrand in _jb2008_int.\n\n\n\n\n\n"
+    "text": "function _jb2008_δf2(z, Tx, T∞)\n\nAuxiliary function to compute the integrand in _jb2008_int.\n\n\n\n\n\n"
 },
 
 {
@@ -2069,7 +2133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._jr1971_M",
     "category": "method",
-    "text": "@inline function _jr1971_M(z::R) where R\n\nCompute the mean molecular mass at altitude z [km] using the empirical profile in eq. 1 [3,4].\n\n\n\n\n\n"
+    "text": "function _jr1971_M(z::R) where R\n\nCompute the mean molecular mass at altitude z [km] using the empirical profile in eq. 1 [3,4].\n\n\n\n\n\n"
 },
 
 {
@@ -2133,7 +2197,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._spline",
     "category": "method",
-    "text": "@inline function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}\n\nCompute the 2nd derivatives of cubic spline interpolation function tabulated by x and y given the 2nd derivatives values at x[1] (yp1) and at x[N] (ypn).\n\nThis function was adapted from Numerical Recipes.\n\nArgs\n\nx: X components of the tabulated function in ascending order.\ny: Y components of the tabulated function evaluated at x.\nyp1: 2nd derivative value at x[1].\nypn: 2nd derivative value at x[N].\n\nReturns\n\nThe 2nd derivative of cubic spline interpolation function evaluated at x.\n\nRemarks\n\nValues higher than 1e30 in the 2nd derivatives at the borders (yp1 and ypn) are interpreted as 0.\n\n\n\n\n\n"
+    "text": "function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}\n\nCompute the 2nd derivatives of cubic spline interpolation function tabulated by x and y given the 2nd derivatives values at x[1] (yp1) and at x[N] (ypn).\n\nThis function was adapted from Numerical Recipes.\n\nArgs\n\nx: X components of the tabulated function in ascending order.\ny: Y components of the tabulated function evaluated at x.\nyp1: 2nd derivative value at x[1].\nypn: 2nd derivative value at x[N].\n\nReturns\n\nThe 2nd derivative of cubic spline interpolation function evaluated at x.\n\nRemarks\n\nValues higher than 1e30 in the 2nd derivatives at the borders (yp1 and ypn) are interpreted as 0.\n\n\n\n\n\n"
 },
 
 {
@@ -2141,7 +2205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._splini",
     "category": "method",
-    "text": "@inline function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}\n\nCompute the integral of the cubic spline function from xa[1] to x.\n\nArgs\n\nxa: X components of the tabulated function in ascending order.\nya: Y components of the tabulated function evaluated at xa.\ny2a: Second derivatives.\nx: Abscissa endpoint for integration.\n\nReturns\n\nThe integral of cubic spline function from xa[1] to x.\n\n\n\n\n\n"
+    "text": "function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}\n\nCompute the integral of the cubic spline function from xa[1] to x.\n\nArgs\n\nxa: X components of the tabulated function in ascending order.\nya: Y components of the tabulated function evaluated at xa.\ny2a: Second derivatives.\nx: Abscissa endpoint for integration.\n\nReturns\n\nThe integral of cubic spline function from xa[1] to x.\n\n\n\n\n\n"
 },
 
 {
@@ -2149,7 +2213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox._splint",
     "category": "method",
-    "text": "@inline function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}\n\nCompute the cubic spline interpolation value at x.\n\nThis function was adapted from Numerical Recipes.\n\nArgs\n\nxa: X components of the tabulated function in ascending order.\nya: Y components of the tabulated function evaluated at xa.\ny2a: Second derivatives.\nx: Abscissa endpoint for interpolation.\n\nReturns\n\nThe cubic spline interpolation value at x.\n\n\n\n\n\n"
+    "text": "function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}\n\nCompute the cubic spline interpolation value at x.\n\nThis function was adapted from Numerical Recipes.\n\nArgs\n\nxa: X components of the tabulated function in ascending order.\nya: Y components of the tabulated function evaluated at xa.\ny2a: Second derivatives.\nx: Abscissa endpoint for interpolation.\n\nReturns\n\nThe cubic spline interpolation value at x.\n\n\n\n\n\n"
 },
 
 {
