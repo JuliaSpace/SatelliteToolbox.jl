@@ -67,7 +67,7 @@ where:
 
 * `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
   `Val{:J2}` for **J2**, and `Val{:sgp4}` for **SGP4**).
-* `tle`: TLE that will be used to initialize the propagator (see `TLE`).
+* `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
 
 There are some optional parameters that depend on the orbit propagator type that
 can be used to customize the algorithm. Those options are listed as follows:
