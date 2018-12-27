@@ -36,8 +36,7 @@ then the input must be **geocentric** coordinates:
 1. Geocentric latitude `λ` (-π/2, +π/2) \\[rad]; and
 2. Geocentric longitude `Ω` (-π, +π) \\[rad].
 
-If `T` is `Val{:geodetic}`, then the input must be **geodetic**
-coordinates:
+If `T` is `Val{:geodetic}`, then the input must be **geodetic** coordinates:
 
 1. Altitude above the reference ellipsoid `h` (WGS-84) \\[m];
 2. Geodetic latitude `λ` (-π/2, +π/2) \\[rad]; and
