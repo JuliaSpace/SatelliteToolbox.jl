@@ -1,6 +1,95 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.5.0
+-------------
+
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] The NRLMSISE-00
+  configuration is not handle by a `Dict` anymore. The configuration is now
+  based on a new structure called `NRLMSISE00_Flags`. This reduced the execution
+  time of the algorithm by 50%.
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] The macro
+  `@check_orbit` that verifies whether an orbit is valid now returns a boolean
+  instead of throwing an exception. This provided a huge performance gain in the
+  functions that use it.
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] The function
+  `GeodetictoECEF` now returns an `SVector`. This yielded a performance gain of
+  27%.
+- ![BREAKING][badge-breaking] The `igrf12` function now always returns an
+  `SVector`.
+- ![BREAKING][badge-breaking] All the functions related to the Sun
+  (`sun_position_i` and `sun_velocity_i`) now returns an `SVector`.
+- ![BREAKING][badge-breaking] All deprecated functions that were defined prior
+  to this version were removed.
+- ![Deprecation][badge-deprecation] ![Enhancement][badge-enhancement] The frame
+  transformations API were simplified by removing the variable that specified
+  the model. The IAU2000A theory will be initially implemented using the CIO
+  approach. Hence, the model that must be used can be inferred only by looking
+  the selected frames and the EOP data. The old style functions are now
+  deprecated. (Issue #18)
+- ![Deprecation][badge-deprecation] The function `satellite_orbit_compute_f` is
+  now deprecated in favor of `M_to_f`. (Issue #16)
+- ![Bugfix][badge-bugfix] The `Orbit` structure returned by `propagate!`
+  function was not being copied before the assignment. Hence, if an array of
+  instants was passed, then all the returned values would have the same `Orbit`
+  structure.
+- ![Bugfix][badge-bugfix] The low level functions related to the J2 orbit
+  propagator were not being exported.
+- ![Bugfix][badge-bugfix] The conversion from ECEF to Geodetic had an bug due to
+  the singularity in the poles.
+- ![Bugfix][badge-bugfix] The conversion from Julian Day to `DateTime` by the
+  function `JDtoDate` was fixed.
+- ![Bugfix][badge-bugfix] The function `JDtoDate` was not allowing the month to
+  be 12. Hence, when the month was December, then it was returning 0. (Issue
+  #19).
+- ![Bugfix][badge-bugfix] The IAU2000A EOP data was not being parsed correctly.
+- ![Bugfix][badge-bugfix] The Sun position algorithm was computing a slightly
+  wrong value.
+- ![Feature][badge-feature] The initial version of the package documentation is
+  now available.
+- ![Feature][badge-feature] The EOP data is now downloaded by the package
+  RemoteFiles.jl. This modification was required because the HTTP.jl package was
+  failing to download EOP data for some reason, since the request was returning
+  the 403 error code. This is a temporary workaround until the issue #2 is
+  fixed.
+- ![Feature][badge-feature] A new generic parser to ICGEM files was added.
+  Hence, the user can now load any ICGEM file to compute the gravitational
+  force. (Issue #17)
+- ![Feature][badge-feature] It was added an algorithm to compute the Sun
+  velocity vector.
+- ![Feature][badge-feature] The exponential atmospheric model was added.
+- ![Feature][badge-feature] The Jacchia-Roberts 1971 atmospheric model was
+  added.
+- ![Feature][badge-feature] The Jacchia-Bowman 2008 atmospheric model was added.
+- ![Feature][badge-feature] It was added the support to automatically fetch the
+  necessary files to compute many space indices, like F10.7, Kp, Ap, etc.
+- ![Enhancement][badge-enhancement] The macro `@evalpoly` is now used every time
+  a polynomial must be evaluated, which provides a small performance gain and
+  also uses a more stable algorithm.
+- ![Enhancement][badge-enhancement] Huge performance increase. In the following,
+  it is presented the reduction of the computational time in some functions:
+    - `legendre (conv)`: 40.6% faster.
+    - `dlegendre (conv)`: 42.6% faster.
+    - `rECEFtoECI (ITRF -> GCRF)`: 99.5% faster.
+    - `rECItoECEF (GCRF -> ITRF)`: 99.5% faster.
+    - `rECEFtoECEF (ITRF -> PEF)`: 99.8% faster.
+    - `rECItoECI (MOD -> GCRF)`: 99.8% faster.
+    - `GeodetictoECEF`: 71.6% faster.
+    - `Two body orbit propagator`: 99.8% faster.
+    - `J2 orbit propagator`: 99.8% faster.
+    - `SGP4 orbit propagator`: 8.2% faster.
+    - `compute_g (full EGM96)`: 18.3% faster.
+    - `nrlmsise00`: 76.3% faster.
+    - `igrf12 (geocentric)`: 11.2% faster.
+    - `igrf12 (geodetic)`: 98.6% faster.
+    - `sun_position_i`: 20.2% faster.
+    - `angvel`: 59.3% faster.
+    - `compute_ss_orbit_by_ang_vel`: 90.8% faster.
+    - `list_ss_orbits_by_rep_period`: 79.4% faster.
+- ![Enhancement][badge-enhancement] The space indices required by the
+  atmospheric models can now be automatically fetched.
+- ![Enhancement][badge-enhancement] Improvements in the function documentation.
+
 Version 0.4.0
 -------------
 
@@ -88,3 +177,10 @@ Version 0.1.0
     * This version was based on the old package **SatToolbox.jl v0.3.7** that
       was renamed to **SatelliteToolbox** to be submitted to julia METADATA
       repo.
+
+[badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
+[badge-deprecation]: https://img.shields.io/badge/Deprecation-orange.svg
+[badge-feature]: https://img.shields.io/badge/Feature-green.svg
+[badge-enhancement]: https://img.shields.io/badge/Enhancement-blue.svg
+[badge-bugfix]: https://img.shields.io/badge/Bugfix-purple.svg
+[badge-info]: https://img.shields.io/badge/Info-gray.svg
