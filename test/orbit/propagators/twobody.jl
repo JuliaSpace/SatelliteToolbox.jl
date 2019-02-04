@@ -50,9 +50,42 @@
 ################################################################################
 
 @testset "Two Body orbit propagator" begin
-    orb = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
-    orbp = init_orbit_propagator(Val{:twobody}, orb)
+    aux     = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
+    orb     = Orbit(DatetoJD(1986,6,19,18,35,0), aux.a, aux.e, aux.i, aux.Ω,
+                    aux.ω, aux.f)
+    orbp    = init_orbit_propagator(Val{:twobody}, orb)
     (o,r,v) = step!(orbp,40*60)
+
+    # Testing position.
+    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
+    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
+    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
+
+    # Testing velocity.
+    @test v[1]/1000 ≈ +3.689866 atol=1e-6
+    @test v[2]/1000 ≈ -1.916735 atol=1e-6
+    @test v[3]/1000 ≈ -6.112511 atol=1e-6
+
+    # Test using the function `propagate!`
+    # ==========================================================================
+
+    (o,r,v) = propagate!(orbp, 40*60)
+
+    # Testing position.
+    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
+    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
+    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
+
+    # Testing velocity.
+    @test v[1]/1000 ≈ +3.689866 atol=1e-6
+    @test v[2]/1000 ≈ -1.916735 atol=1e-6
+    @test v[3]/1000 ≈ -6.112511 atol=1e-6
+
+    # Test using the function `propagate_to_epoch!`
+    # ==========================================================================
+
+    #                                        1986/6/19 18:35:00 + 40 min.
+    (o,r,v) = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,19,15,0))
 
     # Testing position.
     @test r[1]/1000 ≈ -4219.7527 atol=1e-3

@@ -82,6 +82,7 @@ include("orbit/propagators/sgp4.jl")
 include("orbit/propagators/twobody.jl")
 include("orbit/propagators/api/init_orbit_propagator.jl")
 include("orbit/propagators/api/propagate.jl")
+include("orbit/propagators/api/propagate_to_epoch.jl")
 include("orbit/propagators/api/step.jl")
 
 include("transformations/eop.jl")

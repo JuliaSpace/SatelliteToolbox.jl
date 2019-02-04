@@ -105,7 +105,7 @@ can be used to customize the algorithm. Those options are listed as follows:
 ## Propagation
 
 After the orbit propagator is initialized, the orbit can be propagated by the
-API functions `propagate!` and `step!`.
+API functions `propagate!`, `propagate_to_epoch!`, and `step!`.
 
 The function `propagate!` has two signature. The first one is
 
@@ -113,9 +113,9 @@ The function `propagate!` has two signature. The first one is
 function propagate!(orbp, t::Number) where T
 ```
 
-in which the orbit will be propagated until the instant `t` \[s] **with respect
-to the orbit epoch**, which is defined in the initialization and is never
-changed. This function returns a tuple with three values:
+in which the orbit will be propagated by `t` \[s] **from the orbit epoch**,
+which is defined in the initialization and is never changed. This function
+returns a tuple with three values:
 
 * The mean Keplerian elements represented in the inertial reference frame
   encapsulated in an instance of the structure `Orbit` \[SI units].
@@ -129,9 +129,26 @@ function propagate!(orbp, t::AbstractVector) where T
 ```
 
 where the orbit will be propagated for every value in the vector `t` \[s], which
-is an instant **with respect to the orbit epoch**. In this case, an array of
+is a number of seconds **from the orbit epoch**. In this case, an array of
 tuples with be returned with each element equivalent to that described for the
 first case.
+
+The function `propagate_to_epoch!` also have two signatures similar to
+`propagate!`:
+
+```julia
+function propagate_to_epoch!(orbp, JD::Number) where T
+function propagate_to_epoch!(orbp, JD::AbstractVector) where T
+```
+
+It also returns the same information. However, the input argument `JD` is an
+epoch \[Julian Day] to which the orbit will be propagated instead of the number
+of seconds from the orbit epoch.
+
+!!! warning
+
+    The conversion from Julian Day to seconds that `propagate_to_epoch!` must
+    perform can introduce numerical errors.
 
 The `step!` function has the following signature:
 
@@ -182,6 +199,24 @@ julia> r
 julia> orbp = init_orbit_propagator(Val{:J2}, Orbit(0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
 julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
+
+julia> r
+9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
+ [5.30372e-7, 7.12306e6, 3.58655e-6]
+ [-9.98335e5, 2.14179e6, -6.72549e6]
+ [-5.75909e5, -5.83674e6, -4.06734e6]
+ [6.65317e5, -5.69201e6, 4.2545e6]
+ [9.62557e5, 2.37418e6, 6.65228e6]
+ [-1.10605e5, 7.11845e6, -231186.0]
+ [-1.02813e6, 1.90664e6, -6.79145e6]
+ [-4.82921e5, -5.97389e6, -3.87579e6]
+ [750898.0, -5.53993e6, 4.43709e6]
+```
+
+```jldoctest
+julia> orbp = init_orbit_propagator(Val{:J2}, Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+
+julia> o,r,v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
 
 julia> r
 9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:

@@ -65,7 +65,9 @@
         end
     end
 
-    # Test using the function `read_tle_from_string`.
+    # Test using the function `read_tle_from_string`
+    # ==========================================================================
+
     tle = read_tle_from_string(
         "1 23599U 95029B   06171.76535463  .00085586  12891-6  12956-2 0  2905",
         "2 23599   6.9327   0.2849 5782022 274.4436  25.2425  4.47796565123555")
@@ -93,5 +95,29 @@
         @test st_sgp4_result[5] ≈  SGP4_results[k,5] atol=1e-9
         @test st_sgp4_result[6] ≈  SGP4_results[k,6] atol=1e-9
         @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-9
+    end
+
+    # Test using the function `propagate_to_epoch!`
+    # ==========================================================================
+
+    t = SGP4_results[:,1]   # [min.]
+    (orbm, r_TEME, v_TEME) = propagate_to_epoch!(orbp, tle[1].epoch .+ t/1440)
+
+    # Compare the results.
+    for k = 1:length(t)
+        # Assemble the result vector.
+        st_sgp4_result = [t[k] r_TEME[k]'/1000 v_TEME[k]'/1000]
+
+        # Compare the values.
+        #
+        # It was necessary to relax the tolerance due to the precision in the
+        # conversion from Julian Day to seconds.
+        @test st_sgp4_result[1] == SGP4_results[k,1]
+        @test st_sgp4_result[2] ≈  SGP4_results[k,2] atol=5e-4
+        @test st_sgp4_result[3] ≈  SGP4_results[k,3] atol=5e-4
+        @test st_sgp4_result[4] ≈  SGP4_results[k,4] atol=5e-4
+        @test st_sgp4_result[5] ≈  SGP4_results[k,5] atol=1e-6
+        @test st_sgp4_result[6] ≈  SGP4_results[k,6] atol=1e-6
+        @test st_sgp4_result[7] ≈  SGP4_results[k,7] atol=1e-6
     end
 end
