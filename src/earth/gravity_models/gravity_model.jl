@@ -70,12 +70,15 @@ longitude.
 function compute_dU(gm_coefs::GravityModel_Coefs{T},
                     r::AbstractVector,
                     n_max::Number = 0) where T<:Number
+
     # Unpack gravity model coefficients.
-    @unpack_GravityModel_Coefs gm_coefs
+    #
+    # We must not unpack all the variables because `n_max` will be overwritten.
+    @unpack μ, R0, C, S, legendre_norm = gm_coefs
 
     # Check if n_max is bigger than the maximum degree available.
-    if (n_max <= 0) || (size(C,1)-1 < n_max)
-        n_max = size(C,1)-1
+    if (n_max <= 0) || (gm_coefs.n_max < n_max)
+        n_max = gm_coefs.n_max
     end
 
     # Get the geocentric latitude and longitude
@@ -231,12 +234,15 @@ omitted, then it defaults to 0.
 function compute_U(gm_coefs::GravityModel_Coefs{T},
                    r::AbstractVector,
                    n_max::Number = 0) where T<:Number
+
     # Unpack gravity model coefficients.
-    @unpack_GravityModel_Coefs gm_coefs
+    #
+    # We must not unpack all the variables because `n_max` will be overwritten.
+    @unpack μ, R0, C, S, legendre_norm = gm_coefs
 
     # Check if n_max is bigger than the maximum degree available.
-    if (n_max <= 0) || (size(C,1)-1 < n_max)
-        n_max = size(C,1)-1
+    if (n_max <= 0) || (gm_coefs.n_max < n_max)
+        n_max = gm_coefs.n_max
     end
 
     # Auxiliary variables.
