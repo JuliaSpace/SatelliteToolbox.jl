@@ -248,7 +248,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix,
     #
     #           | 1, m  = 0
     #   C_{m} = |
-    #           | 0, m != 0
+    #           | 2, m != 0
     #
     # NOTE: The conversion of the coefficients between the full normalization
     # and the Schmidt normalization is performed using:
@@ -288,11 +288,19 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix,
                 #
                 dP[n+1,0+1] = -a_nm*P[n+1,1+1] + b_nm*P[n+1,0+1+1]
 
+            # We should consider the case `m == 1` separately from `n == m`
+            # because of the coefficient `C_{m}`.
             elseif m == 1
                 a_nm = +0.5*sqrt(2n*(n+1))
-                b_nm = -0.5*sqrt((n+2)*(n-1))
+                dP[n+1,1+1] = a_nm*P[n+1,1-1+1]
 
-                dP[n+1,1+1] = a_nm*P[n+1,1-1+1] + b_nm*P[n+1,1+1+1]
+                # Only compute `b_nm` if `n > 1`. Otherwise, we could access an
+                # invalid memory region if `P` is 2x2.
+                if n > 1
+                    b_nm = -0.5*sqrt((n+2)*(n-1))
+                    dP[n+1,1+1] += b_nm*P[n+1,1+1+1]
+                end
+
             elseif n != m
                 a_nm = +0.5*sqrt((n+m)*(n-m+1))
                 b_nm = -0.5*sqrt((n+m+1)*(n-m))
