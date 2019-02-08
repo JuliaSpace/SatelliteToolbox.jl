@@ -1,6 +1,17 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.5.1
+-------------
+
+- ![Bugfix][badge-bugfix] The gravity model computations were neglecting the
+  input variable `n_max` and were using always the maximum available degree.
+  (Issue [#22][gh-issue-22])
+- ![Bugfix][badge-bugfix] `dlegendre` function was accessing unallocated data if
+  the maximum degree is 1.
+- ![Feature][badge-feature] New function in the orbit propagators API:
+  `propagate_to_epoch!`. (Issue [#20][gh-issue-20])
+
 Version 0.5.0
 -------------
 
@@ -184,3 +195,6 @@ Version 0.1.0
 [badge-enhancement]: https://img.shields.io/badge/Enhancement-blue.svg
 [badge-bugfix]: https://img.shields.io/badge/Bugfix-purple.svg
 [badge-info]: https://img.shields.io/badge/Info-gray.svg
+
+[gh-issue-20]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/20
+[gh-issue-22]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/22
