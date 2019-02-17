@@ -25,7 +25,8 @@ rotation description that will be used is given by `T`, which can be `DCM` or
 `Quaternion`. The origin ECEF frame is selected by the input `ECEFo` and the
 destination ECEF frame is selected by the input `ECEFf`. The model used to
 compute the rotation is specified by the selection of the origin and destination
-frames. Currently, only IAU-76/FK5 is supported.
+frames. Currently, there are two models supported: IAU-76/FK5 and IAU-2006 with
+2010 conventions (CIO approach only).
 
 # Rotation description
 
@@ -43,8 +44,8 @@ If no value is specified, then it falls back to `DCM`.
 # Conversion model
 
 The model that will be used to compute the rotation is automatically inferred
-given the selection of the origin and destination frames. Currently, only the
-IAU-76/FK5 model is supported.
+given the selection of the origin and destination frames. **Notice that mixing
+IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
 
 # ECEF Frame
 
@@ -54,12 +55,15 @@ The supported ECEF frames for both origin `ECEFo` and destination `ECEFf` are:
             Frame (ITRF).
 * `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
            frame.
+* `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
+            System (TIRS).
 
 # EOP Data
 
 The conversion between the supported ECEF frames **always** depends on EOP Data
 (see `get_iers_eop` and `read_iers_eop`). If IAU-76/FK5 model is used, then the
-type of `eop_data` must be `EOPData_IAU1980`.
+type of `eop_data` must be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model
+is used, then the type of `eop_data` must be `EOPData_IAU2000A`.
 
 # Returns
 
@@ -86,6 +90,10 @@ Quaternion{Float64}:
                     T_ECEFf::T_ECEFs,
                     JD_UTC::Number,
                     eop_data::EOPData_IAU1980) =
+    rECEFtoECEF(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+
+@inline rECEFtoECEF(T_ECEFo::T_ECEFs_IAU_2006, T_ECEFf::T_ECEFs_IAU_2006,
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A) =
     rECEFtoECEF(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
 
 ################################################################################
@@ -117,3 +125,27 @@ end
                     eop_data::EOPData_IAU1980) =
     inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
 
+################################################################################
+#                                IAU-2006/2010
+################################################################################
+
+#                                ITRF <=> TIRS
+# ==============================================================================
+
+function rECEFtoECEF(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:TIRS}},
+                     JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the EOP data related to the desired epoch.
+    x_p = eop_data.x(JD_UTC)*arcsec2rad
+    y_p = eop_data.y(JD_UTC)*arcsec2rad
+
+    # Return the rotation.
+    rITRFtoTIRS_iau2006(T, JD_UTC, x_p, y_p)
+end
+
+@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Type{Val{:TIRS}},
+                    T_ECEFf::Type{Val{:ITRF}}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A) =
+    inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
