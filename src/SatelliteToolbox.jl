@@ -100,6 +100,10 @@ include("transformations/fk5/fk5.jl")
 include("transformations/fk5/nutation.jl")
 include("transformations/fk5/precession.jl")
 
+include("transformations/iau2006/iau2006_const.jl")
+include("transformations/iau2006/iau2006.jl")
+include("transformations/iau2006/precession_nutation_iau2006.jl")
+
 include("transformations/teme/teme.jl")
 
 include("time/julian_day.jl")
