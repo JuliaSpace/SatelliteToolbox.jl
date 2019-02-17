@@ -25,8 +25,8 @@ frame to an Earth-Centered Inertial (`ECI`) reference frame at the Julian Day
 which can be `DCM` or `Quaternion`. The ECEF frame is selected by the input
 `ECEF` and the `ECI` frame is selected by the input `ECI`. The possible values
 are listed below. The model used to compute the rotation is specified by the
-selection of the origin and destination frames. Currently, only IAU-76/FK5 is
-supported.
+selection of the origin and destination frames. Currently, there are two models
+supported: IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO approach only).
 
 # Rotation description
 
@@ -42,8 +42,8 @@ If no value is specified, then it falls back to `DCM`.
 # Conversion model
 
 The model that will be used to compute the rotation is automatically inferred
-given the selection of the origin and destination frames. Currently, only the
-IAU-76/FK5 model is supported.
+given the selection of the origin and destination frames. **Notice that mixing
+IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
 
 # ECEF Frame
 
@@ -53,6 +53,8 @@ The ECEF frame is selected by the parameter `ECEF`. The possible values are:
             Frame (ITRF).
 * `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
            frame.
+* `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
+            System (TIRS).
 
 # ECI Frame
 
@@ -65,31 +67,42 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `J2000()`: ECI will be selected as the J2000 reference frame.
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
+* `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
+            (CIRS).
 
 # EOP Data
 
 The conversion between the frames depends on EOP Data (see `get_iers_eop` and
 `read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
-be `EOPData_IAU1980`. The following table shows the requirements for EOP data
-given the selected frames.
+be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
+of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
+requirements for EOP data given the selected frames.
 
-|   Model    |  ECEF  |   ECI   |    EOP Data   |
-|:-----------|:-------|:--------|:--------------|
-| IAU-76/FK5 | `ITRF` | `GCRF`  | EOP IAU1980   |
-| IAU-76/FK5 | `ITRF` | `J2000` | EOP IAU1980   |
-| IAU-76/FK5 | `ITRF` | `MOD`   | EOP IAU1980   |
-| IAU-76/FK5 | `ITRF` | `TOD`   | EOP IAU1980   |
-| IAU-76/FK5 | `ITRF` | `TEME`  | EOP IAU1980   |
-| IAU-76/FK5 | `PEF`  | `GCRF`  | EOP IAU1980   |
-| IAU-76/FK5 | `PEF`  | `J2000` | Not required* |
-| IAU-76/FK5 | `PEF`  | `MOD`   | EOP IAU1980   |
-| IAU-76/FK5 | `PEF`  | `TOD`   | EOP IAU1980   |
-| IAU-76/FK5 | `PEF`  | `TEME`  | Not required* |
+|   Model       |  ECEF  |   ECI   |    EOP Data     |
+|:--------------|:-------|:--------|:---------------=|
+| IAU-76/FK5    | `ITRF` | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `J2000` | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `TEME`  | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
+| IAU-76/FK5    | `PEF`  | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
+| IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
+| IAU-2006/2010 | `ITRF` | `GCRF`  | EOP IAU2000A    |
+| IAU-2006/2010 | `TIRS` | `CIRS`  | Not required¹   |
+| IAU-2006/2010 | `TIRS` | `GCRF`  | Not required¹ ² |
 
-`*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
+`¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
+
+`²`: In this case, the terms that account for the free-core nutation and time
+dependent effects of the Celestial Intermediate Pole (CIP) position with respect
+to the GCRF will not be available, reducing the precision.
 
 ## MOD and TOD
 
@@ -143,9 +156,20 @@ Quaternion{Float64}:
                    eop_data::EOPData_IAU1980) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC, eop_data)
 
+@inline rECEFtoECI(T_ECEF::T_ECEFs_IAU_2006,
+                   T_ECI::T_ECIs_IAU_2006,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU2000A) =
+    rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC, eop_data)
+
 # Specializations for those cases that EOP Data is not needed.
 @inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
                    T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
+                   JD_UTC::Number) =
+    rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
+
+@inline rECEFtoECI(T_ECEF::Type{Val{:TIRS}},
+                   T_ECI::Union{Type{Val{:CIRS}}, Type{Val{:GCRF}}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
@@ -437,4 +461,119 @@ function rECEFtoECI(T::T_ROT,
 
     # Compute the rotation.
     rPEFtoTEME(T, JD_UT1)
+end
+
+################################################################################
+#                                IAU-2006/2010
+################################################################################
+
+#                                 ITRF => CIRS
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:CIRS}},
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    x_p = eop_data.x(JD_UTC)*arcsec2rad
+    y_p = eop_data.y(JD_UTC)*arcsec2rad
+
+    # Compute the rotation.
+    r_TIRS_ITRF = rITRFtoTIRS_iau2006(T, JD_TT, x_p, y_p)
+    r_CIRS_TIRS = rTIRStoCIRS_iau2006(T, JD_UT1)
+
+    return compose_rotation(r_TIRS_ITRF, r_CIRS_TIRS)
+end
+
+#                                 ITRF => GCRF
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:GCRF}},
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    x_p = eop_data.x(JD_UTC)*arcsec2rad
+    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    dX  = eop_data.dX(JD_UTC)*arcsec2rad
+    dY  = eop_data.dY(JD_UTC)*arcsec2rad
+
+    # Compute the rotation.
+    r_TIRS_ITRF = rITRFtoTIRS_iau2006(T, JD_TT, x_p, y_p)
+    r_CIRS_TIRS = rTIRStoCIRS_iau2006(T, JD_UT1)
+    r_GCRF_CIRS = rCIRStoGCRF_iau2006(T, JD_TT, dX, dY)
+
+    return compose_rotation(r_TIRS_ITRF, r_CIRS_TIRS, r_GCRF_CIRS)
+end
+
+#                                 TIRS => CIRS
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:CIRS}},
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+
+    # Compute the rotation.
+    return rTIRStoCIRS_iau2006(T, JD_UT1)
+end
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:CIRS}},
+                    JD_UTC::Number)
+
+    # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
+    JD_UT1 = JD_UTC
+
+    # Compute the rotation.
+    return rTIRStoCIRS_iau2006(T, JD_UT1)
+end
+
+#                                 TIRS => GCRF
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:GCRF}},
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    dX  = eop_data.dX(JD_UTC)*arcsec2rad
+    dY  = eop_data.dY(JD_UTC)*arcsec2rad
+
+    # Compute the rotation.
+    r_CIRS_TIRS = rTIRStoCIRS_iau2006(T, JD_UT1)
+    r_GCRF_CIRS = rCIRStoGCRF_iau2006(T, JD_TT, dX, dY)
+
+    return compose_rotation(r_CIRS_TIRS, r_GCRF_CIRS)
+end
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:GCRF}},
+                    JD_UTC::Number)
+
+    # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
+    JD_UT1 = JD_UTC
+
+    # Get the time in TT.
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute the rotation.
+    r_CIRS_TIRS = rTIRStoCIRS_iau2006(T, JD_UT1)
+    r_GCRF_CIRS = rCIRStoGCRF_iau2006(T, JD_TT)
+
+    return compose_rotation(r_CIRS_TIRS, r_GCRF_CIRS)
 end

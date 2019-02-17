@@ -767,16 +767,18 @@ end
 #                               Reference Frames
 ################################################################################
 
-export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ROT
+export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ECEFs_IAU_2006, T_ECIs_IAU_2006, T_ROT
 
 """
-Union of all Earth-Centered Earth-Fixed (ECEF) frames supported.
+Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by the
+IAU-76/FK5 theory.
 
 """
 T_ECEFs = Union{Type{Val{:ITRF}}, Type{Val{:PEF}}}
 
 """
-Union of all Earth-Centered Inertial (ECI) frames supported.
+Union of all Earth-Centered Inertial (ECI) frames supported by the IAU-76/FK5
+theory.
 
 """
 T_ECIs = Union{Type{Val{:GCRF}},
@@ -786,12 +788,26 @@ T_ECIs = Union{Type{Val{:GCRF}},
                Type{Val{:TEME}}}
 
 """
-Union of all *of date* Earth-Centered Inertial (ECI) frames supported.
+Union of all *of date* Earth-Centered Inertial (ECI) frames supported by the
+IAU-76/FK5 theory.
 
 """
 T_ECIs_of_date = Union{Type{Val{:TOD}},
                        Type{Val{:MOD}},
                        Type{Val{:TEME}}}
+"""
+Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by IAU-2006/2010
+theory.
+
+"""
+T_ECEFs_IAU_2006 = Union{Type{Val{:ITRF}}, Type{Val{:TIRS}}}
+
+"""
+Union of all Earth-Centered Inertial (ECI) frames supported by IAU-2006/2010
+theory.
+
+"""
+T_ECIs_IAU_2006 = Union{Type{Val{:GCRF}}, Type{Val{:CIRS}}}
 
 """
 Union of all supported rotation descriptions.
