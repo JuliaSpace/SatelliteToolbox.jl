@@ -25,7 +25,8 @@ an Earth-Centered, Earth-Fixed (`ECEF`) reference frame at the Julian Day [UTC]
 be `DCM` or `Quaternion`. The ECI frame is selected by the input `ECI` and the
 `ECEF` frame is selected by the input `ECEF`. The possible values are listed
 below. The model used to compute the rotation is specified by the selection of
-the origin and destination frames. Currently, only IAU-76/FK5 is supported.
+the origin and destination frames. Currently, there are two models supported:
+IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO approach only).
 
 # Rotation description
 
@@ -41,8 +42,8 @@ If no value is specified, then it falls back to `DCM`.
 # Conversion model
 
 The model that will be used to compute the rotation is automatically inferred
-given the selection of the origin and destination frames. Currently, only the
-IAU-76/FK5 model is supported.
+given the selection of the origin and destination frames. **Notice that mixing
+IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
 
 # ECI Frame
 
@@ -55,6 +56,8 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `J2000()`: ECI will be selected as the J2000 reference frame.
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
+* `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
+            (CIRS).
 
 # ECEF Frame
 
@@ -64,30 +67,46 @@ The ECEF frame is selected by the parameter `ECEF`. The possible values are:
             Frame (ITRF).
 * `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
            frame.
+* `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
+            System (TIRS).
 
 # EOP Data
 
 The conversion between the frames depends on EOP Data (see `get_iers_eop` and
 `read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
-be `EOPData_IAU1980`. The following table shows the requirements for EOP data
-given the selected frames.
+be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
+of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
+requirements for EOP data given the selected frames.
 
-|   Model    |   ECI   |  ECEF  |    EOP Data   |
-|:-----------|:--------|:-------|:--------------|
-| IAU-76/FK5 | `GCRF`  | `ITRF` | EOP IAU1980   |
-| IAU-76/FK5 | `J2000` | `ITRF` | EOP IAU1980   |
-| IAU-76/FK5 | `MOD`   | `ITRF` | EOP IAU1980   |
-| IAU-76/FK5 | `TOD`   | `ITRF` | EOP IAU1980   |
-| IAU-76/FK5 | `GCRF`  | `PEF`  | EOP IAU1980   |
-| IAU-76/FK5 | `J2000` | `PEF`  | Not required* |
-| IAU-76/FK5 | `MOD`   | `PEF`  | EOP IAU1980   |
-| IAU-76/FK5 | `TOD`   | `PEF`  | EOP IAU1980   |
-| IAU-76/FK5 | `TEME`  | `PEF`  | Not required* |
+|   Model       |   ECI   |  ECEF  |    EOP Data     |
+|:--------------|:--------|:-------|:---------------=|
+| IAU-76/FK5    | `GCRF`  | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `J2000` | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `MOD`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `TOD`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `TEME`  | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `GCRF`  | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `J2000` | `PEF`  | Not required¹   |
+| IAU-76/FK5    | `MOD`   | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `TOD`   | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `TEME`  | `PEF`  | Not required¹   |
+| IAU-2006/2010 | `CIRS`  | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 | `GCRF`  | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 | `CIRS`  | `TIRS` | Not required¹   |
+| IAU-2006/2010 | `GCRF`  | `TIRS` | Not required¹ ² |
 
-`*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
+`¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
+
+`²`: In this case, the terms that account for the free-core nutation and time
+dependent effects of the Celestial Intermediate Pole (CIP) position with respect
+to the GCRF will not be available, reducing the precision.
+The conversion between the frames depends on EOP Data (see `get_iers_eop` and
+`read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
+be `EOPData_IAU1980`. The following table shows the requirements for EOP data
+given the selected frames.
 
 ## MOD and TOD
 
@@ -148,6 +167,19 @@ Quaternion{Float64}:
                    eop_data::EOPData_IAU1980) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
+@inline rECItoECEF(T_ECI::T_ECIs_IAU_2006,
+                   T_ECEF::T_ECEFs_IAU_2006,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU2000A) =
+    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+
+@inline rECItoECEF(T::T_ROT,
+                   T_ECI::T_ECIs_IAU_2006,
+                   T_ECEF::T_ECEFs_IAU_2006,
+                   JD_UTC::Number,
+                   eop_data::EOPData_IAU2000A) =
+    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}},
@@ -157,5 +189,16 @@ Quaternion{Float64}:
 @inline rECItoECEF(T::T_ROT,
                    T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}},
+                   JD_UTC::Number) =
+    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
+
+@inline rECItoECEF(T_ECI::Union{Type{Val{:CIRS}},Type{Val{:GCRF}}},
+                   T_ECEF::Type{Val{:TIRS}},
+                   JD_UTC::Number) =
+    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
+
+@inline rECItoECEF(T::T_ROT,
+                   T_ECI::Union{Type{Val{:CIRS}},Type{Val{:GCRF}}},
+                   T_ECEF::Type{Val{:TIRS}},
                    JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
