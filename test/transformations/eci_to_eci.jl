@@ -20,10 +20,15 @@
 # functions at the low level are tested using the same values of [1], and 2) the
 # difference is smaller than 30 cm.
 
-eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
+eop_iau1980  = read_iers_eop("./eop_IAU1980.txt",  :IAU1980)
+eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 
 # File: ./src/transformations/eci_to_eci.jl
 # =========================================
+
+################################################################################
+#                                  IAU-76/FK5
+################################################################################
 
 # Functions: rECItoECI
 # --------------------
@@ -65,7 +70,7 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     ## DCM
     ## ---
 
-    D_J2000_GCRF = rECItoECI(GCRF(), J2000(), JD_UTC, eop)
+    D_J2000_GCRF = rECItoECI(GCRF(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_GCRF*r_gcrf
     v_j2000 = D_J2000_GCRF*v_gcrf
@@ -81,7 +86,7 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     ## Quaternion
     ## ----------
 
-    q_J2000_GCRF = rECItoECI(Quaternion, GCRF(), J2000(), JD_UTC, eop)
+    q_J2000_GCRF = rECItoECI(Quaternion, GCRF(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_GCRF)*r_gcrf*q_J2000_GCRF)
     v_j2000 = vect(conj(q_J2000_GCRF)*v_gcrf*q_J2000_GCRF)
@@ -103,7 +108,7 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     ## DCM
     ## ---
 
-    D_GCRF_J2000 = rECItoECI(J2000(), GCRF(), JD_UTC, eop)
+    D_GCRF_J2000 = rECItoECI(J2000(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_J2000*r_j2000
     v_gcrf = D_GCRF_J2000*v_j2000
@@ -119,7 +124,7 @@ eop = read_iers_eop("./eop_IAU1980.txt", :IAU1980)
     ## Quaternion
     ## ----------
 
-    q_GCRF_J2000 = rECItoECI(Quaternion, J2000(), GCRF(), JD_UTC, eop)
+    q_GCRF_J2000 = rECItoECI(Quaternion, J2000(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_J2000)*r_j2000*q_GCRF_J2000)
     v_gcrf = vect(conj(q_GCRF_J2000)*v_j2000*q_GCRF_J2000)
@@ -170,7 +175,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_GCRF = rECItoECI(GCRF(), MOD(), JD_UTC, eop)
+    D_MOD_GCRF = rECItoECI(GCRF(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_GCRF*r_gcrf
     v_mod = D_MOD_GCRF*v_gcrf
@@ -186,7 +191,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_GCRF = rECItoECI(Quaternion, GCRF(), MOD(), JD_UTC, eop)
+    q_MOD_GCRF = rECItoECI(Quaternion, GCRF(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_GCRF)*r_gcrf*q_MOD_GCRF)
     v_mod = vect(conj(q_MOD_GCRF)*v_gcrf*q_MOD_GCRF)
@@ -208,7 +213,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_MOD = rECItoECI(MOD(), GCRF(), JD_UTC, eop)
+    D_GCRF_MOD = rECItoECI(MOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_MOD*r_mod
     v_gcrf = D_GCRF_MOD*v_mod
@@ -224,7 +229,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_MOD = rECItoECI(Quaternion, MOD(), GCRF(), JD_UTC, eop)
+    q_GCRF_MOD = rECItoECI(Quaternion, MOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_MOD)*r_mod*q_GCRF_MOD)
     v_gcrf = vect(conj(q_GCRF_MOD)*v_mod*q_GCRF_MOD)
@@ -275,7 +280,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_GCRF = rECItoECI(GCRF(), TOD(), JD_UTC, eop)
+    D_TOD_GCRF = rECItoECI(GCRF(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_GCRF*r_gcrf
     v_tod = D_TOD_GCRF*v_gcrf
@@ -291,7 +296,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_GCRF = rECItoECI(Quaternion, GCRF(), TOD(), JD_UTC, eop)
+    q_TOD_GCRF = rECItoECI(Quaternion, GCRF(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_GCRF)*r_gcrf*q_TOD_GCRF)
     v_tod = vect(conj(q_TOD_GCRF)*v_gcrf*q_TOD_GCRF)
@@ -313,7 +318,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_TOD = rECItoECI(TOD(), GCRF(), JD_UTC, eop)
+    D_GCRF_TOD = rECItoECI(TOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_TOD*r_tod
     v_gcrf = D_GCRF_TOD*v_tod
@@ -329,7 +334,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_TOD = rECItoECI(Quaternion, TOD(), GCRF(), JD_UTC, eop)
+    q_GCRF_TOD = rECItoECI(Quaternion, TOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_TOD)*r_tod*q_GCRF_TOD)
     v_gcrf = vect(conj(q_GCRF_TOD)*v_tod*q_GCRF_TOD)
@@ -380,7 +385,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_GCRF = rECItoECI(GCRF(), TEME(), JD_UTC, eop)
+    D_TEME_GCRF = rECItoECI(GCRF(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_GCRF*r_gcrf
     v_teme = D_TEME_GCRF*v_gcrf
@@ -396,7 +401,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_GCRF = rECItoECI(Quaternion, GCRF(), TEME(), JD_UTC, eop)
+    q_TEME_GCRF = rECItoECI(Quaternion, GCRF(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_GCRF)*r_gcrf*q_TEME_GCRF)
     v_teme = vect(conj(q_TEME_GCRF)*v_gcrf*q_TEME_GCRF)
@@ -418,7 +423,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_TEME = rECItoECI(TEME(), GCRF(), JD_UTC, eop)
+    D_GCRF_TEME = rECItoECI(TEME(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_TEME*r_teme
     v_gcrf = D_GCRF_TEME*v_teme
@@ -434,7 +439,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_TEME = rECItoECI(Quaternion, TEME(), GCRF(), JD_UTC, eop)
+    q_GCRF_TEME = rECItoECI(Quaternion, TEME(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_TEME)*r_teme*q_GCRF_TEME)
     v_gcrf = vect(conj(q_GCRF_TEME)*v_teme*q_GCRF_TEME)
@@ -485,7 +490,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC, eop)
+    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_J2000*r_j2000
     v_mod = D_MOD_J2000*v_j2000
@@ -501,7 +506,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC, eop)
+    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
     v_mod = vect(conj(q_MOD_J2000)*v_j2000*q_MOD_J2000)
@@ -523,7 +528,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC, eop)
+    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_MOD*r_mod
     v_j2000 = D_J2000_MOD*v_mod
@@ -539,7 +544,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC, eop)
+    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
     v_j2000 = vect(conj(q_J2000_MOD)*v_mod*q_J2000_MOD)
@@ -590,7 +595,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC, eop)
+    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_J2000*r_j2000
     v_tod = D_TOD_J2000*v_j2000
@@ -606,7 +611,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC, eop)
+    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
     v_tod = vect(conj(q_TOD_J2000)*v_j2000*q_TOD_J2000)
@@ -628,7 +633,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC, eop)
+    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_TOD*r_tod
     v_j2000 = D_J2000_TOD*v_tod
@@ -644,7 +649,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC, eop)
+    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
     v_j2000 = vect(conj(q_J2000_TOD)*v_tod*q_J2000_TOD)
@@ -695,7 +700,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_J2000 = rECItoECI(J2000(), TEME(), JD_UTC, eop)
+    D_TEME_J2000 = rECItoECI(J2000(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_J2000*r_j2000
     v_teme = D_TEME_J2000*v_j2000
@@ -733,7 +738,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_TEME = rECItoECI(TEME(), J2000(), JD_UTC, eop)
+    D_J2000_TEME = rECItoECI(TEME(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_TEME*r_teme
     v_j2000 = D_J2000_TEME*v_teme
@@ -800,7 +805,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC, eop)
+    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_MOD*r_mod
     v_tod = D_TOD_MOD*v_mod
@@ -816,7 +821,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC, eop)
+    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
     v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
@@ -838,7 +843,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC, eop)
+    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_TOD*r_tod
     v_mod = D_MOD_TOD*v_tod
@@ -854,7 +859,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC, eop)
+    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
     v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
@@ -905,7 +910,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC, eop)
+    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_MOD*r_mod
     v_teme = D_TEME_MOD*v_mod
@@ -921,7 +926,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC, eop)
+    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
     v_teme = vect(conj(q_TEME_MOD)*v_mod*q_TEME_MOD)
@@ -943,7 +948,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC, eop)
+    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_TEME*r_teme
     v_mod = D_MOD_TEME*v_teme
@@ -959,7 +964,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC, eop)
+    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
     v_mod = vect(conj(q_MOD_TEME)*v_teme*q_MOD_TEME)
@@ -1010,7 +1015,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC, eop)
+    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_TOD*r_tod
     v_teme = D_TEME_TOD*v_tod
@@ -1026,7 +1031,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC, eop)
+    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
     v_teme = vect(conj(q_TEME_TOD)*v_tod*q_TEME_TOD)
@@ -1048,7 +1053,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC, eop)
+    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_TEME*r_teme
     v_tod = D_TOD_TEME*v_teme
@@ -1064,7 +1069,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC, eop)
+    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
     v_tod = vect(conj(q_TOD_TEME)*v_teme*q_TOD_TEME)
@@ -1076,4 +1081,118 @@ end
     @test v_tod[1] ≈ -4.7460883850  atol=1e-7
     @test v_tod[2] ≈ +0.7860783240  atol=1e-7
     @test v_tod[3] ≈ +5.5319312880  atol=1e-7
+end
+
+################################################################################
+#                                IAU-2006/2010
+################################################################################
+
+## GCRF <=> CIRS
+## =============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+# NOTE: It seems that the results in the Example 3-14 is computed **without**
+# the `dX` and `dY` corrections, whereas in the Table 3-6 they are computed
+# **with** the corrections.
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_cirs = -5100.01840470   i + 6122.78636480   j + 6380.34453270   k [km]
+#   v_cirs =    -4.7453803300 i -    0.7903414530 j +    5.5319312880 k [km/s]
+#
+# one gets the following (this is the result in Table 3-6):
+#
+#   r_gcrf = 5102.50895290  i + 6123.01139910 j + 6378.13693380 k [km]
+#   v_gcrf =  -4.7432201610 i + 0.7905364950  j + 5.5337557240  k [km/s]
+#
+################################################################################
+
+@testset "Function rECItoECI GCRF <=> CIRS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## GCRF => CIRS
+    ## ===========
+
+    r_gcrf = [5102.50895290; 6123.01139910; 6378.13693380]
+    v_gcrf = [-4.7432201610; 0.7905364950; 5.5337557240]
+
+    ## DCM
+    ## ---
+
+    D_CIRS_GCRF = rECItoECI(GCRF(), CIRS(), JD_UTC, eop_iau2000a)
+
+    r_cirs = D_CIRS_GCRF*r_gcrf
+    v_cirs = D_CIRS_GCRF*v_gcrf
+
+    @test r_cirs[1] ≈ +5100.01840470 atol=1e-4
+    @test r_cirs[2] ≈ +6122.78636480 atol=1e-4
+    @test r_cirs[3] ≈ +6380.34453270 atol=1e-4
+
+    @test v_cirs[1] ≈ -4.7453803300  atol=1e-7
+    @test v_cirs[2] ≈ +0.7903414530  atol=1e-7
+    @test v_cirs[3] ≈ +5.5319312880  atol=1e-7
+
+    ## Quaternion
+    ## ----------
+
+    q_CIRS_GCRF = rECItoECI(Quaternion, GCRF(), CIRS(), JD_UTC, eop_iau2000a)
+
+    r_cirs = vect(conj(q_CIRS_GCRF)*r_gcrf*q_CIRS_GCRF)
+    v_cirs = vect(conj(q_CIRS_GCRF)*v_gcrf*q_CIRS_GCRF)
+
+    @test r_cirs[1] ≈ +5100.01840470 atol=1e-4
+    @test r_cirs[2] ≈ +6122.78636480 atol=1e-4
+    @test r_cirs[3] ≈ +6380.34453270 atol=1e-4
+
+    @test v_cirs[1] ≈ -4.7453803300  atol=1e-7
+    @test v_cirs[2] ≈ +0.7903414530  atol=1e-7
+    @test v_cirs[3] ≈ +5.5319312880  atol=1e-7
+
+    ## CIRS => GCRF
+    ## ===========
+
+    r_cirs = [+5100.01840470; +6122.78636480; +6380.34453270]
+    v_cirs = [-4.7453803300; +0.7903414530; +5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_GCRF_CIRS = rECItoECI(CIRS(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = D_GCRF_CIRS*r_cirs
+    v_gcrf = D_GCRF_CIRS*v_cirs
+
+    @test r_gcrf[1] ≈ +5102.50895290 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01139910 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13693380 atol=1e-4
+
+    @test v_gcrf[1] ≈ -4.7432201610  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364950  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557240  atol=1e-7
+
+    ## Quaternion
+    ## ----------
+
+    q_GCRF_CIRS = rECItoECI(Quaternion, CIRS(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = vect(conj(q_GCRF_CIRS)*r_cirs*q_GCRF_CIRS)
+    v_gcrf = vect(conj(q_GCRF_CIRS)*v_cirs*q_GCRF_CIRS)
+
+    @test r_gcrf[1] ≈ +5102.50895290 atol=1e-4
+    @test r_gcrf[2] ≈ +6123.01139910 atol=1e-4
+    @test r_gcrf[3] ≈ +6378.13693380 atol=1e-4
+
+    @test v_gcrf[1] ≈ -4.7432201610  atol=1e-7
+    @test v_gcrf[2] ≈ +0.7905364950  atol=1e-7
+    @test v_gcrf[3] ≈ +5.5337557240  atol=1e-7
+
 end

@@ -32,7 +32,8 @@ The rotation description that will be used is given by `T`, which can be `DCM`
 or `Quaternion`. The origin ECI frame is selected by the input `ECIo` and the
 destination ECI frame is selected by the input `ECIf`. The model used to compute
 the rotation is specified by the selection of the origin and destination frames.
-Currently, only IAU-76/FK5 is supported.
+Currently, there are two models supported: IAU-76/FK5 and IAU-2006 with 2010
+conventions (CIO approach only).
 
 [^1]: TEME is an *of date* frame.
 
@@ -52,8 +53,8 @@ If no value is specified, then it falls back to `DCM`.
 # Conversion model
 
 The model that will be used to compute the rotation is automatically inferred
-given the selection of the origin and destination frames. Currently, only the
-IAU-76/FK5 model is supported.
+given the selection of the origin and destination frames. **Notice that mixing
+IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
 
 # ECI Frame
 
@@ -66,36 +67,45 @@ The supported ECI frames for both origin `ECIo` and destination `ECIf` are:
 * `J2000()`: ECI will be selected as the J2000 reference frame.
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
+* `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
+            (CIRS).
 
 # EOP Data
 
 The conversion between the frames depends on EOP Data (see `get_iers_eop` and
 `read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
-be `EOPData_IAU1980`. The following table shows the requirements for EOP data
-given the selected frames.
+be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
+of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
+requirements for EOP data given the selected frames.
 
-|   Model    |   ECIo  |   ECIf  |    EOP Data   | Function Signature |
-|:-----------|:--------|:--------|:--------------|:-------------------|
-| IAU-76/FK5 | `GCRF`  | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `TOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `TEME`  | Not required  | First              |
-| IAU-76/FK5 | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `MOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TEME`  | `J2000` | Not requrired | First              |
-| IAU-76/FK5 | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+|   Model       |   ECIo  |   ECIf  |    EOP Data   | Function Signature |
+|:--------------|:--------|:--------|:--------------|:-------------------|
+| IAU-76/FK5    | `GCRF`  | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `MOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `MOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
+| IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `MOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TEME`  | `J2000` | Not requrired | First              |
+| IAU-76/FK5    | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+| IAU-2006/2010 | `GCRF`  | `CIRS`  | Not required¹ | First              |
+| IAU-2006/2010 | `CIRS`  | `CIRS`  | Not required¹ | Second             |
+
+`¹`: In this case, the terms that account for the free-core nutation and time
+dependent effects of the Celestial Intermediate Pole (CIP) position with respect
+to the GCRF will not be available, reducing the precision.
 
 ## MOD and TOD
 
@@ -147,6 +157,10 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
                   eop_data::EOPData_IAU1980) =
     rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC, eop_data)
 
+@inline rECItoECI(T_ECIo::T_ECIs_IAU_2006, T_ECIf::T_ECIs_IAU_2006,
+                  JD_UTC::Number, eop_data::EOPData_IAU2000A) =
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC, eop_data)
+
 # Specializations for those cases in which we have two *of dates* frames.
 @inline rECItoECI(T_ECIo::T_ECIs_of_date,
                   JD_UTCo::Number,
@@ -155,11 +169,24 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
                   eop_data::EOPData_IAU1980) =
     rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
 
+@inline rECItoECI(T_ECIo::Type{Val{:CIRS}}, JD_UTCo::Number,
+                  T_ECIf::Type{Val{:CIRS}}, JD_UTCf::Number,
+                  eop_data::EOPData_IAU2000A) =
+    rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
+
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                   T_ECIf::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
                   JD_UTC::Number) =
     rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
+
+@inline rECItoECI(T_ECIo::T_ECIs_IAU_2006, T_ECIf::T_ECIs_IAU_2006,
+                  JD_UTC::Number) =
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
+
+ @inline rECItoECI(T_ECIo::Type{Val{:CIRS}}, JD_UTCo::Number,
+                   T_ECIf::Type{Val{:CIRS}}, JD_UTCf::Number) =
+    rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf)
 
 ################################################################################
 #                                  IAU-76/FK5
@@ -438,4 +465,75 @@ function rECItoECI(T::T_ROT,
 
     # Return the full rotation.
     compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
+end
+
+################################################################################
+#                                IAU-2006/2010
+################################################################################
+
+#                                GCRF <=> CIRS
+# ==============================================================================
+
+function rECItoECI(T::T_ROT, ::Type{Val{:GCRF}}, ::Type{Val{:CIRS}},
+                   JD_UTC::Number, eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    dX = eop_data.dX(JD_UTC)*arcsec2rad
+    dY = eop_data.dY(JD_UTC)*arcsec2rad
+
+    # Compute and return the rotation.
+    return rGCRFtoCIRS_iau2006(T, JD_TT, dX, dY)
+end
+
+@inline rECItoECI(T::T_ROT, T_ECIo::Type{Val{:CIRS}}, T_ECIf::Type{Val{:GCRF}},
+                  JD_UTC::Number, eop_data::EOPData_IAU2000A) =
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
+
+function rECItoECI(T::T_ROT, ::Type{Val{:GCRF}}, ::Type{Val{:CIRS}},
+                   JD_UTC::Number)
+
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Compute and return the rotation.
+    return rGCRFtoCIRS_iau2006(T, JD_TT)
+end
+
+@inline rECItoECI(T::T_ROT, T_ECIo::Type{Val{:CIRS}}, T_ECIf::Type{Val{:GCRF}},
+                  JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC))
+
+#                                 Between CIRS
+# ==============================================================================
+
+function rECItoECI(T::T_ROT, T_ECIo::Type{Val{:CIRS}}, JD_UTCo::Number,
+                   T_ECIf::Type{Val{:CIRS}}, JD_UTCf::Number,
+                   eop_data::EOPData_IAU2000A)
+
+    # In this case, we convert origin to GCRF and then convert back to the
+    # destination. This is necessary because the user may want to change the
+    # epoch.
+    r_GCRF_ECIo = rECItoECI(T, T_ECIo,     Val{:GCRF}, JD_UTCo, eop_data)
+    r_ECIf_GCRF = rECItoECI(T, Val{:GCRF}, T_ECIf,     JD_UTCf, eop_data)
+
+    # Return the full rotation.
+    return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
+end
+
+function rECItoECI(T::T_ROT, T_ECIo::Type{Val{:CIRS}}, JD_UTCo::Number,
+                   T_ECIf::Type{Val{:CIRS}}, JD_UTCf::Number)
+
+    # In this case, we convert origin to GCRF and then convert back to the
+    # destination. This is necessary because the user may want to change the
+    # epoch.
+    r_GCRF_ECIo = rECItoECI(T, T_ECIo,     Val{:GCRF}, JD_UTCo)
+    r_ECIf_GCRF = rECItoECI(T, Val{:GCRF}, T_ECIf,     JD_UTCf)
+
+    # Return the full rotation.
+    return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
 end
