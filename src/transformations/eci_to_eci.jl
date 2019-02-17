@@ -149,6 +149,18 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
   0.999995    0.0030265    0.00133055
  -0.00302645  0.999995    -3.86125e-5
  -0.00133066  3.45854e-5   0.999999
+
+julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
+
+julia> rECItoECI(CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ 0.999999     3.88379e-8  -0.00133066
+ 7.18735e-9   1.0          3.45882e-5
+ 0.00133066  -3.45882e-5   0.999999
+
+julia> rECItoECI(Quaternion, CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+Quaternion{Float64}:
+  + 0.9999997785177528 + 1.7294102099105917e-5.i + 0.0006653310148723835.j + 7.912627369563795e-9.k
 ```
 """
 @inline rECItoECI(T_ECIo::T_ECIs,

@@ -7,24 +7,37 @@ DocTestSetup = quote
 end
 ```
 
-This package currently provides the entire IAU-76/FK5 model to transform
-reference systems. The following table lists the available coordinate frames and
-how they can be referenced in the functions that will be described later on.
+This package currently provides two models to transform reference systems:
+the IAU-76/FK5 and the IAU-2006/2010 (CIO approach). The following table lists
+the available coordinate frames and how they can be referenced in the functions
+that will be described later on.
 
 | Reference | Type |            Coordinate frame name            |
 |-----------|------|---------------------------------------------|
 | `ITRF()`  | ECEF | International Terrestrial Reference Frame   |
 | `PEF()`   | ECEF | Pseudo-Earth Fixed reference frame          |
+| `TIRS()`  | ECEF | Terrestrial Intermediate Reference System   |
 | `MOD()`   | ECI  | Mean-Of-Date reference frame                |
 | `TOD()`   | ECI  | True-Of-Data reference frame                |
 | `GCRF()`  | ECI  | Geocentric Celestial Reference Frame (GCRF) |
 | `J2000()` | ECI  | J2000 reference frame                       |
 | `TEME()`  | ECI  | True Equator, Mean Equinox reference frame  |
+| `CIRS()`  | ECI  | Celetial Intermediate Reference System      |
 
 !!! note
 
     ECEF stands for Earth-Centered, Earth-Fixed whereas ECI stands for
     Earth-Centered Inertial.
+
+!!! warning
+
+    In all the functions that will be presented here, it is not possible yet to
+    mix frames between the IAU-76/FK5 and IAU-2006/2010 models in the same call.
+    Hence, if it is required to compute the rotation between frames in different
+    models, then the recommended approach is to first compute the rotation from
+    the origin frame to the ITRF or GCRF, and then compute the rotation from the
+    ITRF or GCRF to the destination frame. However, this will only work for past
+    dates since EOP data is required.
 
 ## EOP Data
 
@@ -54,14 +67,12 @@ in which:
   value should be passed to the reference frame conversion functions as
   described in the following.
 
-!!! note
-
-    Notice that, although we can fetch IAU2000A data, this IAU2000A theory is
-    not implemented yet.
-
 ```jldoctest ECEF_ECI
 julia> eop_IAU1980 = get_iers_eop();
 [ Info: Downloading file 'EOP_IAU1980.TXT' from 'https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt'.
+
+julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
+[ Info: Downloading file 'EOP_IAU2000A.TXT' from 'https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt'.
 ```
 
 ## ECEF to ECEF
@@ -86,9 +97,19 @@ julia> rECEFtoECEF(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
  -6.30011e-13  1.0         -1.44727e-6
   4.3531e-7    1.44727e-6   1.0
 
+julia> rECEFtoECEF(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+  1.0          3.08408e-11  -4.3531e-7
+ -3.14708e-11  1.0          -1.44727e-6
+  4.3531e-7    1.44727e-6    1.0
+
 julia> rECEFtoECEF(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
+
+julia> rECEFtoECEF(Quaternion, TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+Quaternion{Float64}:
+  + 0.9999999999997146 - 7.236343481345639e-7.i + 2.176551830689726e-7.j + 1.5577911634233308e-11.k
 ```
 
 ## ECI to ECI
@@ -115,28 +136,34 @@ conversions, as described in the following table.
 
 [^1]: TEME is an *of date* frame.
 
-|   Model    |   ECIo  |   ECIf  |    EOP Data   | Function Signature |
-|:-----------|:--------|:--------|:--------------|:-------------------|
-| IAU-76/FK5 | `GCRF`  | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `TOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5 | `J2000` | `TEME`  | Not required  | First              |
-| IAU-76/FK5 | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `MOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5 | `TEME`  | `J2000` | Not requrired | First              |
-| IAU-76/FK5 | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5 | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+|   Model       |   ECIo  |   ECIf  |    EOP Data   | Function Signature |
+|:--------------|:--------|:--------|:--------------|:-------------------|
+| IAU-76/FK5    | `GCRF`  | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `MOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `MOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
+| IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `MOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TEME`  | `J2000` | Not requrired | First              |
+| IAU-76/FK5    | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+| IAU-2006/2010 | `GCRF`  | `CIRS`  | Not required¹ | First              |
+| IAU-2006/2010 | `CIRS`  | `CIRS`  | Not required¹ | Second             |
+
+`¹`: In this case, the terms that account for the free-core nutation and time
+dependent effects of the Celestial Intermediate Pole (CIP) position with respect
+to the GCRF will not be available, reducing the precision.
 
 !!! note
 
@@ -171,6 +198,16 @@ julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
   0.999995    0.0030265    0.00133055
  -0.00302645  0.999995    -3.86125e-5
  -0.00133066  3.45854e-5   0.999999
+
+julia> rECItoECI(CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ 0.999999     3.88379e-8  -0.00133066
+ 7.18735e-9   1.0          3.45882e-5
+ 0.00133066  -3.45882e-5   0.999999
+
+julia> rECItoECI(Quaternion, CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+Quaternion{Float64}:
+  + 0.9999997785177528 + 1.7294102099105917e-5.i + 0.0006653310148723835.j + 7.912627369563795e-9.k
 ```
 
 ## ECEF to ECI
@@ -188,23 +225,31 @@ then it defaults to `DCM`. The EOP data `eop_data`, as described in section [EOP
 Data](@ref), is required in some conversions, as described in the following
 table.
 
-|   Model    |  ECEF  |   ECI   |    EOP Data    |
-|:-----------|:-------|:--------|:---------------|
-| IAU-76/FK5 | `ITRF` | `GCRF`  | EOP IAU1980    |
-| IAU-76/FK5 | `ITRF` | `J2000` | EOP IAU1980    |
-| IAU-76/FK5 | `ITRF` | `MOD`   | EOP IAU1980    |
-| IAU-76/FK5 | `ITRF` | `TOD`   | EOP IAU1980    |
-| IAU-76/FK5 | `ITRF` | `TEME`  | EOP IAU1980    |
-| IAU-76/FK5 | `PEF`  | `GCRF`  | EOP IAU1980    |
-| IAU-76/FK5 | `PEF`  | `J2000` | Not required\* |
-| IAU-76/FK5 | `PEF`  | `MOD`   | EOP IAU1980    |
-| IAU-76/FK5 | `PEF`  | `TOD`   | EOP IAU1980    |
-| IAU-76/FK5 | `PEF`  | `TEME`  | Not required\* |
+|   Model       |  ECEF  |   ECI   |    EOP Data     |
+|:--------------|:-------|:--------|:----------------|
+| IAU-76/FK5    | `ITRF` | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `J2000` | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `ITRF` | `TEME`  | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
+| IAU-76/FK5    | `PEF`  | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
+| IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
+| IAU-2006/2010 | `ITRF` | `GCRF`  | EOP IAU2000A    |
+| IAU-2006/2010 | `TIRS` | `CIRS`  | Not required¹   |
+| IAU-2006/2010 | `TIRS` | `GCRF`  | Not required¹ ² |
 
-`*`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
+`¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
 should be sufficiently accurate for some applications. Notice that, if EOP Data
 is provided, the Julian Day UT1 will be accurately computed.
+
+`²`: In this case, the terms that account for the free-core nutation and time
+dependent effects of the Celestial Intermediate Pole (CIP) position with respect
+to the GCRF will not be available, reducing the precision.
 
 !!! note
 
@@ -226,6 +271,12 @@ julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
+julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ -0.619267      0.78518     -0.00132979
+ -0.78518      -0.619267     3.33502e-5
+ -0.000797312   0.00106478   0.999999
+
 julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619271      0.785176    -0.00133066
@@ -238,9 +289,19 @@ julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980
  -0.78518      -0.619267     3.45854e-5
  -0.000796879   0.00106623   0.999999
 
+julia> rECEFtoECI(TIRS(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0))
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ -0.619271      0.785176    -0.00133066
+ -0.785177     -0.619272     3.45884e-5
+ -0.000796885   0.00106623   0.999999
+
 julia> rECEFtoECI(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 - 0.0005909969666939257.i + 0.00030510511316206974.j + 0.8997962182293519.k
+
+julia> rECEFtoECI(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+Quaternion{Float64}:
+  + 0.4363098936309669 - 0.000590996988144556.i + 0.0003051056555230158.j + 0.8997962182365703.k
 ```
 
 # ECI to ECEF
@@ -274,6 +335,12 @@ julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
+julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ -0.619267    -0.78518     -0.000797312
+  0.78518     -0.619267     0.00106478
+ -0.00132979   3.33502e-5   0.999999
+
 julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619271    -0.785177    -0.000796885
@@ -286,7 +353,17 @@ julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980
   0.78518     -0.619267     0.00106623
  -0.00133066   3.45854e-5   0.999999
 
+julia> rECItoECEF(GCRF(), TIRS(), DatetoJD(1986, 06, 19, 21, 35, 0))
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+ -0.619271    -0.785177    -0.000796885
+  0.785176    -0.619272     0.00106623
+ -0.00133066   3.45884e-5   0.999999
+
 julia> rECItoECEF(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 + 0.0005909969666939257.i - 0.00030510511316206974.j - 0.8997962182293519.k
+
+julia> rECItoECEF(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+Quaternion{Float64}:
+  + 0.4363098936309669 + 0.000590996988144556.i - 0.0003051056555230158.j - 0.8997962182365703.k
 ```
