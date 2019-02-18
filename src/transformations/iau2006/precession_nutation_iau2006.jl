@@ -116,16 +116,16 @@ function precession_nutation_iau2006(JD_TT::Number)
         coefs = coefs_v[i]
         Xp    = zero(typeof(X))
 
-        for i = 1:size(coefs,1)
-            As     = coefs[i, 2]
-            Ac     = coefs[i, 3]
-            ap     = coefs[i, 4]*M_m  + coefs[i, 5]*M_s  + coefs[i, 6]*u_Mm +
-                     coefs[i, 7]*D_s  + coefs[i, 8]*Ω_m  + coefs[i, 9]*λ_M☿ +
-                     coefs[i,10]*λ_M♀︎ + coefs[i,11]*λ_Me + coefs[i,12]*λ_M♂︎ +
-                     coefs[i,13]*λ_M♃ + coefs[i,14]*λ_M♄ + coefs[i,15]*λ_M⛢ +
-                     coefs[i,16]*λ_M♆ + coefs[i,17]*p_λ
-            si,ci  = sincos(ap)
-            Xp    += (As*si + Ac*ci)/1e6
+        for j = 1:size(coefs,1)
+            As     = coefs[j, 2]
+            Ac     = coefs[j, 3]
+            ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
+                     coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
+                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
+                     coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
+            sj,cj  = sincos(ap)
+            Xp    += (As*sj + Ac*cj)/1e6
         end
 
         Xc[i] = Xp
@@ -155,16 +155,16 @@ function precession_nutation_iau2006(JD_TT::Number)
         coefs = coefs_v[i]
         Yp    = zero(typeof(Y))
 
-        for i = 1:size(coefs,1)
-            As     = coefs[i, 2]
-            Ac     = coefs[i, 3]
-            ap     = coefs[i, 4]*M_m  + coefs[i, 5]*M_s  + coefs[i, 6]*u_Mm +
-                     coefs[i, 7]*D_s  + coefs[i, 8]*Ω_m  + coefs[i, 9]*λ_M☿ +
-                     coefs[i,10]*λ_M♀︎ + coefs[i,11]*λ_Me + coefs[i,12]*λ_M♂︎ +
-                     coefs[i,13]*λ_M♃ + coefs[i,14]*λ_M♄ + coefs[i,15]*λ_M⛢ +
-                     coefs[i,16]*λ_M♆ + coefs[i,17]*p_λ
-            si,ci  = sincos(ap)
-            Yp    += (As*si + Ac*ci)/1e6
+        for j = 1:size(coefs,1)
+            As     = coefs[j, 2]
+            Ac     = coefs[j, 3]
+            ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
+                     coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
+                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
+                     coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
+            sj,cj  = sincos(ap)
+            Yp    += (As*sj + Ac*cj)/1e6
         end
 
         Yc[i] = Yp
@@ -202,16 +202,16 @@ function precession_nutation_iau2006(JD_TT::Number)
         coefs = coefs_v[i]
         sp    = zero(typeof(s))
 
-        for i = 1:size(coefs,1)
-            As     = coefs[i, 2]
-            Ac     = coefs[i, 3]
-            ap     = coefs[i, 4]*M_m  + coefs[i, 5]*M_s  + coefs[i, 6]*u_Mm +
-                     coefs[i, 7]*D_s  + coefs[i, 8]*Ω_m  + coefs[i, 9]*λ_M☿ +
-                     coefs[i,10]*λ_M♀︎ + coefs[i,11]*λ_Me + coefs[i,12]*λ_M♂︎ +
-                     coefs[i,13]*λ_M♃ + coefs[i,14]*λ_M♄ + coefs[i,15]*λ_M⛢ +
-                     coefs[i,16]*λ_M♆ + coefs[i,17]*p_λ
-            si,ci  = sincos(ap)
-            sp    += (As*si + Ac*ci)/1e6
+        for j = 1:size(coefs,1)
+            As     = coefs[j, 2]
+            Ac     = coefs[j, 3]
+            ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
+                     coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
+                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
+                     coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
+            sj,cj  = sincos(ap)
+            sp    += (As*sj + Ac*cj)/1e6
         end
 
         sc[i] = sp
