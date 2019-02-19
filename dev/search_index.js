@@ -553,6 +553,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/library/#SatelliteToolbox.OrbitPropagator",
+    "page": "Library",
+    "title": "SatelliteToolbox.OrbitPropagator",
+    "category": "type",
+    "text": "Abstract type of the orbit propagator. Every propagator structure must be a subtype of this type and must implement the following API functions:\n\nfunction propagate!(orbp, t::Number)\nfunction propagate!(orbp, t::AbstractVector)\nfunction propagate_to_epoch!(orbp, JD::Number)\nfunction propagate_to_epoch!(orbp, JD::AbstractVector)\nfunction step!(orbp, Δt::Number)\n\n\n\n\n\n"
+},
+
+{
     "location": "lib/library/#SatelliteToolbox.OrbitPropagatorJ2",
     "page": "Library",
     "title": "SatelliteToolbox.OrbitPropagatorJ2",
@@ -1201,6 +1209,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/library/#SatelliteToolbox.ground_trace-Union{Tuple{OrbitPropagator{N}}, Tuple{N}} where N",
+    "page": "Library",
+    "title": "SatelliteToolbox.ground_trace",
+    "category": "method",
+    "text": "function ground_trace(orbp::OrbitPropagator{N}, eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing; ECI = TEME(), ECEF = PEF(), span = 1.0) where N\n\nCompute the ground trace of the object with orbit defined by orbp.\n\nBy default, it considers that the orbit elements on the propagator are represented in the True Equator, Mean Equinox (TEME) reference frame and the ground trace will be computed in the Pseudo-Earth Fixed (PEF) reference frame. Hence, no EOP data is needed. However, this can be changed by the keywords presented as follows.\n\nKeywords\n\neop_data: EOP data that will be used to convert the ECI reference frame to             the ECEF reference frame. If nothing, then it will not be used             (see rECItoECEF). (Default = nothing)\nECI: ECI frame in which the orbit elements in orbp are represented.        (Default = TEME())\nECEF: ECEF frame that will be used to compute the ground trace.         (Default = PEF())\nspan: Defines for how much time the ground trace will be computed. The unit         is the orbit period. (Default = 1.0)\ndt: Time interval between two samples [s]. (Default = 10.0)\n\nReturns\n\nA vector of tuples with the pairs (latitude,longitude) of the ground trace.\n\n\n\n\n\n"
+},
+
+{
     "location": "lib/library/#SatelliteToolbox.gtd7-Union{Tuple{NRLMSISE00_Structure{T}}, Tuple{T}} where T<:Number",
     "page": "Library",
     "title": "SatelliteToolbox.gtd7",
@@ -1237,7 +1253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.init_orbit_propagator",
     "category": "function",
-    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\norb_0: Initial orbital elements (see Orbit).\n\nJ2 orbit propagator\n\ndn_o2: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]          (Default = 0).\nddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6           [rad/s³] (Default = 0).\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nbstar: (OPTIONAL) B* parameter of the SGP4 (Default = 0).\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nNotice that the orbit elements specified in orb_0 must be represented in TEME frame.\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
+    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\ntle: TLE that will be used to initialize the propagator.\n\nJ2 orbit propagator\n\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
 },
 
 {
@@ -1245,7 +1261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.init_orbit_propagator",
     "category": "function",
-    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\ntle: TLE that will be used to initialize the propagator.\n\nJ2 orbit propagator\n\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
+    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\norb_0: Initial orbital elements (see Orbit).\n\nJ2 orbit propagator\n\ndn_o2: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]          (Default = 0).\nddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6           [rad/s³] (Default = 0).\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nbstar: (OPTIONAL) B* parameter of the SGP4 (Default = 0).\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nNotice that the orbit elements specified in orb_0 must be represented in TEME frame.\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
 },
 
 {
