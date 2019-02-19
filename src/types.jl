@@ -464,6 +464,21 @@ end
 #                              Orbit Propagators
 ################################################################################
 
+export OrbitPropagator
+
+"""
+Abstract type of the orbit propagator. Every propagator structure must be a
+subtype of this type and must implement the following API functions:
+
+    function propagate!(orbp, t::Number)
+    function propagate!(orbp, t::AbstractVector)
+    function propagate_to_epoch!(orbp, JD::Number)
+    function propagate_to_epoch!(orbp, JD::AbstractVector)
+    function step!(orbp, Δt::Number)
+
+"""
+abstract type OrbitPropagator{T} end
+
 #                          Two Body Orbit Propagator
 # ==============================================================================
 
@@ -503,7 +518,7 @@ Structure that holds the information related to the Two Body orbit propagator.
         `TwoBody_Structure`).
 
 """
-mutable struct OrbitPropagatorTwoBody{T}
+mutable struct OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
     orb::Orbit{T,T,T,T,T,T,T}
 
     # Two Body orbit propagator related fields.
@@ -579,7 +594,7 @@ Structure that holds the information related to the J2 orbit propagator.
          `J2_Structure`).
 
 """
-mutable struct OrbitPropagatorJ2{T}
+mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
     orb::Orbit{T,T,T,T,T,T,T}
 
     # J2 orbit propagator related fields.
@@ -755,7 +770,7 @@ Structure that holds the information related to the SGP4 propagator.
 * `sgp4d`: Structure that stores the SGP4 data (see `SGP4_Structure`).
 
 """
-mutable struct OrbitPropagatorSGP4{T}
+mutable struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
     orb::Orbit{T,T,T,T,T,T,T}
 
     # SGP4 related fields.
