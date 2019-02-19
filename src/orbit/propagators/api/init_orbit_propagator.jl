@@ -125,7 +125,7 @@ function init_orbit_propagator(::Type{Val{:sgp4}},
 
     # Create the `Orbit` structure.
     orb_0 = Orbit{T,T,T,T,T,T,T}(epoch,
-                                 sgp4d.a_k*sgp4_gc_wgs84.R0,
+                                 sgp4d.a_k*sgp4_gc.R0*1000,
                                  e_0,
                                  i_0,
                                  Ω_0,
