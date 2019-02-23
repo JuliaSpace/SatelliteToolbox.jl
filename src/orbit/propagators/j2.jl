@@ -16,6 +16,9 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] Wertz, J. R (1978). Spacecraft attitude determination and control.
+#       Kluwer Academic Publishers, Dordrecht, The Netherlands.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export j2_gc_wgs84, j2_gc_wgs72
@@ -112,20 +115,28 @@ function j2_init(j2_gc::J2_GravCte{T},
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
 
+    sin_i_0, cos_i_0 = sincos(i_0)
+
     # Get the semi-major axis using J2 perturbation theory [er].
     #
     # This can only be done using a numerical algorithm to solve the following
     # equation for `a`:
     #
-    #          μm        3    J2.μm    sqrt(1-e²).(3cos²(i)-1) + (5cos²(i)-1))
-    #   n = --------- + ---.---------.-----------------------------------------
-    #        a^(3/2)     4   a^(3/2)            a^2.(1-e^2)^2
+    #           -                                                      -
+    #          |      3        sqrt(1-e²).(3cos²(i)-1) + (5cos²(i)-1))  |
+    #   n = n₀ | 1 + ---. J2 .----------------------------------------- |
+    #          |      4                    a^2.(1-e^2)^2                |
+    #           -                                                      -
+    #
+    #         sqrt(μm)
+    #   n₀ = ----------
+    #          a^(3/2)
     #
     # NOTE: This is necessary because we are specifying the angular velocity
     # instead of the semi-major axis.
 
     # Auxiliary variables to solve for the semi-major axis.
-    f_ei = sqrt(1-e_0^2)*(3cos(i_0)^2-1) + (5cos(i_0)^2-1)
+    f_ei = sqrt(1-e_0^2)*(3cos_i_0^2-1) + (5cos_i_0^2-1)
     K    = 3/4*J2*f_ei/(1-e_0^2)^2
 
     # Initial guess using a non-perturbed orbit.
@@ -158,20 +169,20 @@ function j2_init(j2_gc::J2_GravCte{T},
     p_0 = a_0*(1-e_0^2)
     f_0 = M_to_f(e_0, M_0)
 
-    # Constants.
+    # First-order time-derivative of the orbital elements.
     #
     # See [1, p 692].
 
-    C1 = 2/3*a_0*dn/n_0
-    C2 = 2/3*(1-e_0)*dn/n_0
-    C3 = 3/2*n_0*J2/p_0^2
-    C4 = 3/4*n_0*J2/p_0^2
+    δa = 2/3*a_0*dn/n_0
+    δe = 2/3*(1-e_0)*dn/n_0
+    δΩ = 3/2*n_0*J2/p_0^2*cos_i_0
+    δω = 3/4*n_0*J2/p_0^2*(4 - 5sin_i_0^2)
 
     # Create the output structure with the data.
     J2_Structure{T}(
 
         epoch, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, dn_o2, ddn_o6, a_0, e_0,
-        i_0, Ω_0, ω_0, M_0, n_0, f_0, C1, C2, C3, C4, j2_gc
+        i_0, Ω_0, ω_0, M_0, n_0, f_0, δa, δe, δΩ, δω, j2_gc
 
     )
 end
@@ -203,16 +214,42 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Time elapsed since epoch.
     Δt = t
 
-    # Auxiliary variables.
-    sin_i_k, cos_i_k = sincos(i_k)
-
     # Propagate the orbital elements.
-    a_k = a_0 - C1*Δt
-    e_k = e_0 - C2*Δt
+    a_k = a_0 - δa*Δt
+    e_k = e_0 - δe*Δt
     i_k = i_0
-    Ω_k = mod(Ω_0 - C3*cos_i_k*Δt,                    2π)
-    ω_k = mod(ω_0 + C4*(4 - 5sin_i_k^2)*Δt,           2π)
-    M_k = mod(@evalpoly(Δt, M_0, n_0, dn_o2, ddn_o6), 2π)
+    Ω_k = mod(Ω_0 - δΩ*Δt, 2π)
+    ω_k = mod(ω_0 + δω*Δt, 2π)
+
+    # In [1, p. 692], it is mentioned that the mean anomaly must be updated
+    # considering the equation:
+    #                           .           ..
+    #                          n_0          n_0
+    #   M_k = M_0 + n_0 ⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
+    #                           2            6
+    #
+    # However, the mean anomaly is a measurement from the argument of perigee.
+    # Thus, its time derivative should be:
+    #
+    #   .   .   .
+    #   M = n - ω
+    #
+    # This seems to be in accordance with [2, p. 67]. The difference can be
+    # explained by the computation of `n_0`. Here, `n_0` is the mean angular
+    # velocity measured using the period between two passages at the perigee.
+    # However, in the algorithm in [1, p. 692], `n_0` seems to be the rate of
+    # change of the mean anomaly w.r.t. the perigee. More information about this
+    # is available in [1, p. 870], when a repeating ground track orbit is
+    # computed.
+    #
+    # Finally, we will use the equation:
+    #                                 .           ..
+    #                      .         n_0          n_0
+    #   M_k = M_0 + (n_0 - ω )⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
+    #                                 2            6
+    #
+
+    M_k = mod(@evalpoly(Δt, M_0, n_0 - δω, dn_o2, ddn_o6), 2π)
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.

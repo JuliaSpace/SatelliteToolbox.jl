@@ -575,11 +575,11 @@ Low level J2 orbit propagator structure.
     M_k::T
     n_k::T
     f_k::T
-    # Useful constants to decrease the computational burden.
-    C1::T
-    C2::T
-    C3::T
-    C4::T
+    # First-order time-derivative of the orbital elements.
+    δa::T
+    δe::T
+    δΩ::T
+    δω::T
     # J2 orbit propagator gravitational constants.
     j2_gc::J2_GravCte{T}
 end
