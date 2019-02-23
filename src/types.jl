@@ -552,9 +552,9 @@ Low level J2 orbit propagator structure.
 
 """
 @with_kw mutable struct J2_Structure{T}
-    # Orbit parameters.
+    # Initial orbit parameters.
     epoch::T
-    a_0::T
+    al_0::T    # Normalized semi-major axis [er].
     n_0::T
     e_0::T
     i_0::T
@@ -567,7 +567,7 @@ Low level J2 orbit propagator structure.
     dn_o2::T   # First time derivative of mean motion [rad/s²].
     ddn_o6::T  # Second time derivative of mean motion [rad/s³].
     # Current parameters.
-    a_k::T
+    al_k::T    # Normalized semi-major axis [er].
     e_k::T
     i_k::T
     Ω_k::T
@@ -580,6 +580,7 @@ Low level J2 orbit propagator structure.
     δe::T
     δΩ::T
     δω::T
+    δM_0::T
     # J2 orbit propagator gravitational constants.
     j2_gc::J2_GravCte{T}
 end

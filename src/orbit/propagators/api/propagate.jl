@@ -49,7 +49,7 @@ function propagate!(orbp::OrbitPropagatorJ2{T}, t::Number) where T
 
     # Update the elements in the `orb` structure.
     orb.t = j2d.epoch + t/86400
-    orb.a = j2d.a_k*j2d.j2_gc.R0
+    orb.a = j2d.al_k*j2d.j2_gc.R0
     orb.e = j2d.e_k
     orb.i = j2d.i_k
     orb.Ω = j2d.Ω_k

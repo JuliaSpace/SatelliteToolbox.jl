@@ -79,7 +79,7 @@ j2_gc_wgs72 = J2_GravCte(
 ################################################################################
 
 """
-    function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number, ddn_o6::Number) where T
+    function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
@@ -87,12 +87,12 @@ Initialize the data structure of J2 orbit propagator algorithm.
 
 * `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
 * `epoch`: Epoch of the orbital elements [Julian Day].
-* `n_0`: Mean motion at epoch [rad/s].
+* `a_0`: Initial semi-major axis [m].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
 * `Ω_0`: Initial right ascension of the ascending node [rad].
 * `ω_0`: Initial argument of perigee [rad].
-* `M_0`: Initial mean anomaly [rad].
+* `f_0`: Initial true anomaly [rad].
 * `dn_o2`: First time derivative of the mean motion divided by two [rad/s^2].
 * `ddn_o6`: Second time derivative of the mean motion divided by six [rad/s^3].
 
@@ -100,90 +100,46 @@ Initialize the data structure of J2 orbit propagator algorithm.
 
 The structure `J2_Structure` with the initialized parameters.
 
+# Remarks
+
+The inputs are the mean orbital elements.
+
 """
-function j2_init(j2_gc::J2_GravCte{T},
-                 epoch::Number,
-                 n_0::Number,
-                 e_0::Number,
-                 i_0::Number,
-                 Ω_0::Number,
-                 ω_0::Number,
-                 M_0::Number,
-                 dn_o2::Number,
-                 ddn_o6::Number) where T
+function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number,
+                 i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number,
+                 dn_o2::Number, ddn_o6::Number) where T
 
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
 
-    sin_i_0, cos_i_0 = sincos(i_0)
-
-    # Get the semi-major axis using J2 perturbation theory [er].
-    #
-    # This can only be done using a numerical algorithm to solve the following
-    # equation for `a`:
-    #
-    #           -                                                      -
-    #          |      3        sqrt(1-e²).(3cos²(i)-1) + (5cos²(i)-1))  |
-    #   n = n₀ | 1 + ---. J2 .----------------------------------------- |
-    #          |      4                    a^2.(1-e^2)^2                |
-    #           -                                                      -
-    #
-    #         sqrt(μm)
-    #   n₀ = ----------
-    #          a^(3/2)
-    #
-    # NOTE: This is necessary because we are specifying the angular velocity
-    # instead of the semi-major axis.
-
-    # Auxiliary variables to solve for the semi-major axis.
-    f_ei = sqrt(1-e_0^2)*(3cos_i_0^2-1) + (5cos_i_0^2-1)
-    K    = 3/4*J2*f_ei/(1-e_0^2)^2
-
-    # Initial guess using a non-perturbed orbit.
-    a_0 = (μm/n_0)^(2/3)
-
-    # Newton-Raphson algorithm.
-    #
-    # Notice that we will allow, at most, 20 iterations.
-    for k = 1:20
-        # Auxiliary variables.
-        a_0p3o2  = a_0^(3/2)
-        a_0p5o2  = a_0p3o2*a_0 # -> a_0^(5/2)
-        a_0p7o2  = a_0p5o2*a_0 # -> a_0^(7/2)
-        a_0p11o2 = a_0p7o2*a_0 # -> a_0^(11/2)
-
-        # Compute the residue.
-        res = n_0 - μm/a_0p3o2 - K*μm/a_0p7o2
-
-        # Compute the Jacobian of the function.
-        df = +3/2*μm/a_0p5o2 + 7/2*K*μm/a_0p11o2
-
-        # Compute the new estimate.
-        a_0 = a_0 - res/df
-
-        (abs(res) < 1e-10) && break
-    end
+    # Initial values.
+    al_0 = a_0/R0            # Normalized semi-major axis [er].
+    n_0  = μm/al_0^(3/2)     # Unperturbed mean motion [rad/s].
+    p_0  = al_0*(1-e_0^2)    # Semi-latus rectum [er].
+    M_0  = f_to_M(e_0, f_0)  # Initial mean anomaly [rad].
 
     # Auxiliary variables.
-    dn  = 2dn_o2
-    p_0 = a_0*(1-e_0^2)
-    f_0 = M_to_f(e_0, M_0)
+    dn   = 2dn_o2            # Time-derivative of the mean motion [rad/s²].
+    p_0² = p_0^2
+    e_0² = e_0^2
+
+    sin_i_0, cos_i_0 = sincos(i_0)
+    sin_i_0² = sin_i_0^2
 
     # First-order time-derivative of the orbital elements.
     #
     # See [1, p 692].
 
-    δa = 2/3*a_0*dn/n_0
-    δe = 2/3*(1-e_0)*dn/n_0
-    δΩ = 3/2*n_0*J2/p_0^2*cos_i_0
-    δω = 3/4*n_0*J2/p_0^2*(4 - 5sin_i_0^2)
+    δa   = +2/3*al_0*dn/n_0
+    δe   = +2/3*(1-e_0)*dn/n_0
+    δΩ   = -3/2*n_0*J2/p_0²*cos_i_0
+    δω   = +3/4*n_0*J2/p_0²*(4 - 5sin_i_0²)
+    δM_0 = +3/4*n_0*J2/p_0²*sqrt(1-e_0²)*(2 - 3sin_i_0²)
 
     # Create the output structure with the data.
     J2_Structure{T}(
-
-        epoch, a_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, dn_o2, ddn_o6, a_0, e_0,
-        i_0, Ω_0, ω_0, M_0, n_0, f_0, δa, δe, δΩ, δω, j2_gc
-
+        epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, dn_o2, ddn_o6, al_0, e_0,
+        i_0, Ω_0, ω_0, M_0, n_0, f_0, δa, δe, δΩ, δω, δM_0, j2_gc
     )
 end
 
@@ -215,11 +171,11 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     Δt = t
 
     # Propagate the orbital elements.
-    a_k = a_0 - δa*Δt
-    e_k = e_0 - δe*Δt
-    i_k = i_0
-    Ω_k = mod(Ω_0 - δΩ*Δt, 2π)
-    ω_k = mod(ω_0 + δω*Δt, 2π)
+    al_k = al_0 - δa*Δt
+    e_k  = e_0 - δe*Δt
+    i_k  = i_0
+    Ω_k  = mod(Ω_0 + δΩ*Δt, 2π)
+    ω_k  = mod(ω_0 + δω*Δt, 2π)
 
     # In [1, p. 692], it is mentioned that the mean anomaly must be updated
     # considering the equation:
@@ -228,45 +184,34 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     #   M_k = M_0 + n_0 ⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
     #                           2            6
     #
-    # However, the mean anomaly is a measurement from the argument of perigee.
-    # Thus, its time derivative should be:
+    # However, the time derivative of M_0 for perturbed orbits considering terms
+    # up to J2 is not 0. This is clear in [1, p. 652].
     #
-    #   .   .   .
-    #   M = n - ω
-    #
-    # This seems to be in accordance with [2, p. 67]. The difference can be
-    # explained by the computation of `n_0`. Here, `n_0` is the mean angular
-    # velocity measured using the period between two passages at the perigee.
-    # However, in the algorithm in [1, p. 692], `n_0` seems to be the rate of
-    # change of the mean anomaly w.r.t. the perigee. More information about this
-    # is available in [1, p. 870], when a repeating ground track orbit is
-    # computed.
-    #
-    # Finally, we will use the equation:
-    #                                 .           ..
-    #                      .         n_0          n_0
-    #   M_k = M_0 + (n_0 - ω )⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
-    #                                 2            6
+    # Hence, we will use the equation:
+    #                                     .           ..
+    #                .                    n_0          n_0
+    #   M_k = M_0 + M_0 ⋅ Δt + n_0 ⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
+    #                                      2            6
     #
 
-    M_k = mod(@evalpoly(Δt, M_0, n_0 - δω, dn_o2, ddn_o6), 2π)
+    M_k = mod(@evalpoly(Δt, M_0, (n_0 + δM_0), dn_o2, ddn_o6), 2π)
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
     (e_k < 0) && (e_k = T(0))
 
     # Compute the position and velocity vectors given the orbital elements.
-    (r_i_k, v_i_k) = kepler_to_rv(a_k*R0, e_k, i_k, Ω_k, ω_k, f_k)
+    (r_i_k, v_i_k) = kepler_to_rv(al_k*R0, e_k, i_k, Ω_k, ω_k, f_k)
 
     # Update the J2 orbit propagator structure.
-    j2d.Δt  = Δt
-    j2d.a_k = a_k
-    j2d.e_k = e_k
-    j2d.i_k = i_k
-    j2d.Ω_k = Ω_k
-    j2d.ω_k = ω_k
-    j2d.M_k = M_k
-    j2d.f_k = f_k
+    j2d.Δt   = Δt
+    j2d.al_k = al_k
+    j2d.e_k  = e_k
+    j2d.i_k  = i_k
+    j2d.Ω_k  = Ω_k
+    j2d.ω_k  = ω_k
+    j2d.M_k  = M_k
+    j2d.f_k  = f_k
 
     # Return the position and velocity vector represented in the inertial
     # reference frame.

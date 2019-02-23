@@ -23,7 +23,7 @@
 export init_orbit_propagator
 
 """
-    function init_orbit_propagator(orbp_type::Type{Val{:J2}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
+    function init_orbit_propagator(orbp_type::Type{Val{:J2}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number = 0, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
     function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
 
@@ -36,11 +36,13 @@ Initialize the orbit propagator `orbp_type`, which can be:
 # Args
 
 * `epoch`: Initial orbit epoch [Julian Day].
-* `n_0`: Initial angular velocity [rad/s].
+* `a_0`: Initial semi-major axis [m].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination [rad].
 * `Ω_0`: Initial right ascension of the ascending node [rad].
 * `ω_0`: Initial argument of perigee [rad].
+* `f_0`: Initial true anomaly [rad].
+* `n_0`: Initial angular velocity [rad/s].
 * `M_0`: Initial mean anomaly [rad].
 
 ## J2 orbit propagator
@@ -80,23 +82,25 @@ perturbations and automatically applied them. This is sometimes called SGDP4
 algorithm.
 
 """
+
 function init_orbit_propagator(::Type{Val{:J2}},
                                epoch::Number,
-                               n_0::Number,
+                               a_0::Number,
                                e_0::Number,
                                i_0::Number,
                                Ω_0::Number,
                                ω_0::Number,
-                               M_0::Number,
+                               f_0::Number,
                                dn_o2::Number = 0,
                                ddn_o6::Number = 0,
                                j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
+
     # Create the new Two Body propagator structure.
-    j2d = j2_init(j2_gc, epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, dn_o2, ddn_o6)
+    j2d = j2_init(j2_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
 
     # Create the `Orbit` structure.
-    orb_0 =
-        Orbit{T,T,T,T,T,T,T}(epoch, j2d.a_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0, j2d.f_k)
+    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, j2d.al_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0,
+                                 j2d.f_k)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorJ2(orb_0, j2d)
@@ -215,7 +219,7 @@ function init_orbit_propagator(::Type{Val{:J2}},
                                j2_gc::J2_GravCte = j2_gc_wgs84)
     init_orbit_propagator(Val{:J2},
                           orb_0.t,
-                          angvel(orb_0, :J2),
+                          orb_0.a,
                           orb_0.e,
                           orb_0.i,
                           orb_0.Ω,
@@ -304,16 +308,47 @@ algorithm.
 function init_orbit_propagator(::Type{Val{:J2}},
                                tle::TLE,
                                j2_gc::J2_GravCte = j2_gc_wgs84)
+
+    # Unpack the gravitational constants to improve code readability.
+    @unpack_J2_GravCte j2_gc
+
+    # Constants.
+    revday2radsec = 2π/86400    # Revolutions per day to radians per second.
+    d2r           =  π/180      # Degrees to radians.
+
+    # Obtain the data from the TLE.
+    n_0 = tle.n*revday2radsec
+    e_0 = tle.e
+    i_0 = tle.i*d2r
+    Ω_0 = tle.Ω*d2r
+    ω_0 = tle.ω*d2r
+    M_0 = tle.M*d2r
+
+    # Auxiliary variables.
+    e_0²    = e_0^2
+    cos_i_0 = cos(i_0)
+
+    # Recover the original mean motion (nll_0) and semi-major axis (all_0) from
+    # the input elements and the same algorithm of SGP4.
+    aux   = 1/2*J2*(3*cos_i_0^2-1)/(1-e_0²)^(3/2)
+    a_1   = (μm/n_0)^(2/3)
+    δ_1   = 3/2*aux/a_1^2
+    a_0   = a_1*(1 - 1/3*δ_1 - δ_1^2 - 134/81*δ_1^3)
+    δ_0   = 3/2*aux/a_0^2
+    nll_0 = n_0/(1 + δ_0)
+    a_0   = (μm/nll_0)^(2/3)*R0
+    f_0   = M_to_f(e_0, M_0)
+
     init_orbit_propagator(Val{:J2},
                           tle.epoch,
-                          tle.n*2*pi/(24*60*60),
-                          tle.e,
-                          tle.i*pi/180,
-                          tle.Ω*pi/180,
-                          tle.ω*pi/180,
-                          tle.M*pi/180,
-                          tle.dn_o2*2*pi/(24*60*60)^2,
-                          tle.ddn_o6*2*pi/(24*60*60)^3,
+                          a_0,
+                          e_0,
+                          i_0,
+                          Ω_0,
+                          ω_0,
+                          f_0,
+                          tle.dn_o2*2π/(86400)^2,
+                          tle.ddn_o6*2π/(86400)^3,
                           j2_gc_wgs84)
 end
 
