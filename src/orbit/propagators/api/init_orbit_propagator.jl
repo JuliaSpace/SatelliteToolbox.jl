@@ -224,10 +224,10 @@ function init_orbit_propagator(::Type{Val{:J2}},
                           orb_0.i,
                           orb_0.Ω,
                           orb_0.ω,
-                          f_to_M(orb_0.e, orb_0.f),
+                          orb_0.f,
                           dn_o2,
                           ddn_o6,
-                          j2_gc_wgs84)
+                          j2_gc)
 end
 
 function init_orbit_propagator(::Type{Val{:sgp4}},
