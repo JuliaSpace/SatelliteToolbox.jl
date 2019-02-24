@@ -71,6 +71,12 @@ the orbit propagator.
 
 # Remarks
 
+## J2 and Two Body propagators
+
+If the orbit is defined in terms of the angular velocity (mean motion) instead
+of the semi-major axis, then it is possible to use the function `angvel_to_a` to
+convert.
+
 ## SGP4 Orbit Propagator
 
 Notice that the orbit elements **must be** represented in TEME frame.

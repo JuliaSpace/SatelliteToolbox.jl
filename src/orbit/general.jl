@@ -7,7 +7,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export @check_orbit
-export angvel, dArgPer, dRAAN, period
+export angvel, angvel_to_a, dArgPer, dRAAN, period
 
 ################################################################################
 #                                  Overloads
@@ -139,6 +139,94 @@ end
 @inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
+    function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0)
+
+Compute the semi-major axis that will provide an angular velocity `n` [rad/s] in
+an orbit with eccentricity `e` and inclination `i` [rad], using the perturbation
+terms specified by the symbol `pert`.
+
+`pert` can be:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
+
+If `pert` is omitted, then it defaults to `:J2`.
+
+# Keyword
+
+* `μ`: Standard gravitational parameter for Earth [m^3/s^2].
+       (**Default** = `m0`)
+* `max_iter`: Maximum number of iterations allowed in the Newton-Raphson
+              algorithm. (**Default** = 20)
+* `tol`: Tolerance to stop the Newton-Raphson algorithm. (**Default** = 1e-10)
+
+"""
+function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2;
+                     μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
+
+    if pert == :J0
+
+        a = (μ/n^2)^(1/3)
+        return a
+
+    elseif pert == :J2
+        # Get the semi-major axis [m] that will provide the mean motion `n`
+        # using perturbation terms up to J2.
+        #
+        # This can only be done using a numerical algorithm to solve the
+        # following equation for `a`:
+        #
+        #           -                                                      -
+        #          |      3        sqrt(1-e²).(3cos²(i)-1) + (5cos²(i)-1))  |
+        #   n = n₀ | 1 + ---. J2 .----------------------------------------- |
+        #          |      4                    a^2.(1-e^2)^2                |
+        #           -                                                      -
+        #
+        #         sqrt(μ)
+        #   n₀ = ----------
+        #         a^(3/2)
+        #
+
+        # To improve algorithm stability, we will compute the normalized
+        # semi-major axis, i.e. `a/R0`.
+
+        # Auxiliary variables to solve for the semi-major axis.
+        sqrt_μ = sqrt(μ/R0^3)
+        cos_i  = cos(i)
+        K      = 3/4*J2*( sqrt(1-e^2)*(3cos_i^2-1) + (5cos_i^2-1) )/(1-e^2)^2
+
+        # Initial guess using a non-perturbed orbit.
+        a = (μ/n^2)^(1/3)/R0
+
+        # Newton-Raphson algorithm.
+        #
+        # Notice that we will allow, at most, 20 iterations.
+        for k = 1:20
+            # Auxiliary variables.
+            ap3o2  = a^(3/2)
+            ap5o2  = ap3o2*a # -> a^(5/2)
+            ap7o2  = ap5o2*a # -> a^(7/2)
+            ap11o2 = ap7o2*a # -> a^(11/2)
+
+            # Compute the residue.
+            res = n - sqrt_μ/ap3o2 - K*sqrt_μ/ap7o2
+
+            # Compute the Jacobian of the function.
+            df = +3/2*sqrt_μ/ap5o2 + 7/2*K*sqrt_μ/ap11o2
+
+            # Compute the new estimate.
+            a = a - res/df
+
+            (abs(res) < tol) && break
+        end
+
+        return a*R0
+    else
+        throw(ArgumentError("The perturbation parameter $pert is not defined."))
+    end
+end
+
+"""
     function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     function dArgPer(orb::Orbit, pert::Symbol = :J2)
 
@@ -214,6 +302,7 @@ If `pert` is omitted, then it defaults to `:J2`.
 end
 
 @inline dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
+
 
 """
     function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
