@@ -561,6 +561,7 @@ Low level J2 orbit propagator structure.
     i_0::T
     Ω_0::T
     ω_0::T
+    f_0::T
     M_0::T
     # Propagation time from epoch.
     Δt::T
@@ -573,9 +574,8 @@ Low level J2 orbit propagator structure.
     i_k::T
     Ω_k::T
     ω_k::T
-    M_k::T
-    n_k::T
     f_k::T
+    M_k::T
     # First-order time-derivative of the orbital elements.
     δa::T
     δe::T

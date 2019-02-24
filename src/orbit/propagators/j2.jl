@@ -138,8 +138,8 @@ function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number,
 
     # Create the output structure with the data.
     J2_Structure{T}(
-        epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, M_0, 0, dn_o2, ddn_o6, al_0, e_0,
-        i_0, Ω_0, ω_0, M_0, n_0, f_0, δa, δe, δΩ, δω, δM_0, j2_gc
+        epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, 0, dn_o2, ddn_o6, al_0,
+        e_0, i_0, Ω_0, ω_0, f_0, M_0, δa, δe, δΩ, δω, δM_0, j2_gc
     )
 end
 
