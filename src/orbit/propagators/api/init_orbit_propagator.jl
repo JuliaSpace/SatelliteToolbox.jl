@@ -25,7 +25,7 @@ export init_orbit_propagator
 """
     function init_orbit_propagator(orbp_type::Type{Val{:J2}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
     function init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number = 0, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
-    function init_orbit_propagator(orbp_type::Type{Val{:twobody}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, μ::T = m0) where T
+    function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, μ::T = m0) where T
 
 Initialize the orbit propagator `orbp_type`, which can be:
 
@@ -142,18 +142,18 @@ end
 
 function init_orbit_propagator(::Type{Val{:twobody}},
                                epoch::Number,
-                               n_0::Number,
+                               a_0::Number,
                                e_0::Number,
                                i_0::Number,
                                Ω_0::Number,
                                ω_0::Number,
-                               M_0::Number,
+                               f_0::Number,
                                μ::T = m0) where T
     # Create the new Two Body propagator structure.
-    tbd = twobody_init(epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, μ)
+    tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, μ)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, tbd.a, e_0, i_0, Ω_0, ω_0, tbd.f_k)
+    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorTwoBody(orb_0, tbd)
@@ -251,12 +251,12 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                                μ::Number = m0)
     init_orbit_propagator(Val{:twobody},
                           orb_0.t,
-                          angvel(orb_0, :J0),
+                          orb_0.a,
                           orb_0.e,
                           orb_0.i,
                           orb_0.Ω,
                           orb_0.ω,
-                          f_to_M(orb_0.e, orb_0.f),
+                          orb_0.f,
                           μ)
 end
 
@@ -286,8 +286,8 @@ Initialize the orbit propagator `orbp_type`, which can be:
 
 # Two-body orbit propagator
 
-* `μ`: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]
-       \\(**Default** = `m0`).
+* `μ`: (OPTIONAL) Standard gravitational parameter of the central body
+       \\[m^3/s^2] (**Default** = `m0`).
 
 # Returns
 
@@ -371,13 +371,32 @@ end
 function init_orbit_propagator(::Type{Val{:twobody}},
                                tle::TLE,
                                μ::Number = m0)
+
+    # Constants.
+    revday2radsec = 2π/86400    # Revolutions per day to radians per second.
+    d2r           =  π/180      # Degrees to radians.
+
+    # Obtain the data from the TLE.
+    n_0 = tle.n*revday2radsec
+    e_0 = tle.e
+    i_0 = tle.i*d2r
+    Ω_0 = tle.Ω*d2r
+    ω_0 = tle.ω*d2r
+    M_0 = tle.M*d2r
+
+    # Since we do not have in the Two Body algorithms the coefficient `J2`, then
+    # the semi-major axis will be recovered considering a Keplerian orbit.
+
+    a_0 = (μ/n_0^2)^(1/3)
+    f_0 = M_to_f(e_0, M_0)
+
     init_orbit_propagator(Val{:twobody},
                           tle.epoch,
-                          tle.n*2*pi/(24*60*60),
-                          tle.e,
-                          tle.i*pi/180,
-                          tle.Ω*pi/180,
-                          tle.ω*pi/180,
-                          tle.M*pi/180,
+                          a_0,
+                          e_0,
+                          i_0,
+                          Ω_0,
+                          ω_0,
+                          f_0,
                           μ)
 end

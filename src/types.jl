@@ -491,16 +491,17 @@ Low level Two Body orbit propagator structure.
 mutable struct TwoBody_Structure{T}
     # Initial parameters.
     epoch::T
-    n_0::T
+    a_0::T
     e_0::T
     i_0::T
     Ω_0::T
     ω_0::T
     M_0::T
+    f_0::T
     # Propagation time from epoch.
     Δt::T
-    # Auxiliary parameters.
-    a::T
+    # Mean motion.
+    n_0::T
     # Current parameters.
     M_k::T
     f_k::T
