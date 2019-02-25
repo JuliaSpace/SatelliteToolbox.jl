@@ -8,8 +8,8 @@ DocTestSetup = quote
 end
 ```
 
-Currently, there are three orbit propagators available: **Two Body**, **J2**,
-and **SGP4**.  All coded in Julia (no external libraries required).
+Currently, there are four orbit propagators available: **Two Body**, **J2**,
+**J4** and **SGP4**.  All coded in Julia (no external libraries required).
 
 ## Two Body
 
@@ -18,8 +18,13 @@ spherical with the gravitational force computed by Newton's laws.
 
 ## J2
 
-This algorithm considers the perturbation terms up to `J2`. The implementation
-available here was adapted from [1].
+This algorithm considers the perturbation terms up to `J2` and the drag effects.
+The implementation available here was adapted from [1].
+
+## J4
+
+This algorithm considers the perturbation terms `J2`, `J2²`, and `J4` and the
+drag effects. The implementation available here was adapted from [1].
 
 ## SGP4
 
@@ -30,24 +35,33 @@ is the SPG4/SDP4 algorithm, which will be called just SGP4 here.
 ## Initialization
 
 All the propagators need to be initialized first using the API function
-`init_orbit_proapgator`. The information can be passed in three different ways:
+`init_orbit_proapgator`. The functions signature for each algorithm can be seen
+as follows.
+
+### Initialization of Two body, J2, and J4
+
+The orbit propagators **two body**, **J2**, and **J4** can be initialized using
+three different methods.
 
 ```julia
-function init_orbit_proapgator(T, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number)
+function init_orbit_proapgator(T, epoch::Number, f_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number)
 ```
 
 where:
 
 * `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:sgp4}` for **SGP4**).
+  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
 * `epoch`: Initial orbit epoch \[Julian Day].
-* `n_0`: Initial angular velocity \[rad/s].
+* `a_0`: Initial semi-major axis \[m].
 * `e_0`: Initial eccentricity.
 * `i_0`: Initial inclination \[rad].
 * `Ω_0`: Initial right ascension of the ascending node \[rad].
 * `ω_0`: Initial argument of perigee \[rad].
-* `M_0`: Initial mean anomaly \[rad].
+* `f_0`: Initial true anomaly \[rad].
 
+!!! note
+
+    The inputs are the mean orbital elements.
 
 ```julia
 function init_orbit_propagator(T, orb_0::Orbit)
@@ -56,7 +70,7 @@ function init_orbit_propagator(T, orb_0::Orbit)
 where:
 
 * `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:sgp4}` for **SGP4**).
+  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
 * `orb_0`: Initial orbital elements (see `Orbit`).
 
 ```julia
@@ -66,7 +80,7 @@ function init_orbit_propagator(T, tle::TLE)
 where:
 
 * `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:sgp4}` for **SGP4**).
+  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
 * `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
 
 There are some optional parameters that depend on the orbit propagator type that
@@ -91,16 +105,39 @@ can be used to customize the algorithm. Those options are listed as follows:
     The two first options are not available when the TLE is used because this
     information is provided by the TLE.
 
-**SPG4**
+**J4 Orbit Propagator**
 
-* `bstar`: B\* parameter of the SGP4 (**Default** = 0).
-* `sgp4_gc`: Gravitational constants (see `SGP4_GravCte`) (**Default** =
-  `sgp4_gc_wgs84`).
+* `dn_o2`: First time derivative of mean motion divided by 2 \[rad/s²]
+  (**Default** = 0).
+* `ddn_o6`: Second time derivative of mean motion divided by 6 \[rad/s³]
+  (**Default** = 0).
+* `j4_gc`: J4 orbit propagator gravitational constants (see `J4_GravCte`)
+  (**Default** = `j4_gc_wgs84`).
 
 !!! warning
 
-    The first option is not available when the TLE is used because this
+    The two first options are not available when the TLE is used because this
     information is provided by the TLE.
+
+### Initialization of SGP4
+
+The SGP4/SDP4 propagator is meant to be used together with a TLE. Hence, the
+initialization using user-defined orbital elements is not available through the
+API. If this is really required, then the user must access the low-level
+function `sgp4_init`.
+
+The API function to initialize the SGP4 using a TLE is:
+
+```julia
+function init_orbit_propagator(T, tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+```
+
+where:
+
+* `T` must be `Val{:sgp4}`;
+* `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
+* `sgp4_gc`: Gravitational constants (see `SGP4_GravCte`) (**Default** =
+  `sgp4_gc_wgs84`).
 
 ## Propagation
 
@@ -232,6 +269,24 @@ julia> r
 ```
 
 ```jldoctest
+julia> orbp = init_orbit_propagator(Val{:J4}, Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+
+julia> o,r,v = propagate!(orbp, (0:3:24)*60*60);
+
+julia> r
+9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
+ [5.30372e-7, 7.12306e6, 3.58655e-6]
+ [-996359.0, 2.18621e6, -6.71142e6]
+ [-587181.0, -5.78257e6, -4.14229e6]
+ [6.49494e5, -5.77529e6, 4.14342e6]
+ [972787.0, 2.19756e6, 6.71143e6]
+ [-76651.4, 7.12265e6, -351.741]
+ [-1.0198e6, 2.17463e6, -6.7114e6]
+ [-5.24788e5, -5.78918e6, -4.14117e6]
+ [7.11718e5, -5.76732e6, 4.14455e6]
+```
+
+```jldoctest
 julia> tle_scd1 = tle"""
        SCD 1
        1 22490U 93009B   18350.91204528  .00000219  00000-0  10201-4 0  9996
@@ -292,9 +347,9 @@ julia> r
 
 julia> v
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
- -7435.439550407856
-   128.80933740840044
-   866.5999572489231
+ -7435.439550407853
+   128.80933740830324
+   866.5999572489661
 ```
 
 ## Low level access
