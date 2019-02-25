@@ -50,6 +50,27 @@ function step!(orbp::OrbitPropagatorJ2, Δt::Number)
     (copy(orbp.orb), r_i, v_i)
 end
 
+function step!(orbp::OrbitPropagatorJ4, Δt::Number)
+    # Auxiliary variables.
+    orb = orbp.orb
+    j4d = orbp.j4d
+
+    # Propagate the orbit.
+    (r_i, v_i) = j4!(j4d, j4d.Δt + Δt)
+
+    # Update the elements in the `orb` structure.
+    orb.t += Δt/86400
+    orb.a  = j4d.al_k*j4d.j4_gc.R0
+    orb.e  = j4d.e_k
+    orb.i  = j4d.i_k
+    orb.Ω  = j4d.Ω_k
+    orb.ω  = j4d.ω_k
+    orb.f  = j4d.f_k
+
+    # Return the information about the step.
+    (copy(orbp.orb), r_i, v_i)
+end
+
 function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     # Auxiliary variables.
     orb     = orbp.orb

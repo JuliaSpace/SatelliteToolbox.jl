@@ -60,6 +60,27 @@ function propagate!(orbp::OrbitPropagatorJ2{T}, t::Number) where T
     (copy(orb), r_i, v_i)
 end
 
+function propagate!(orbp::OrbitPropagatorJ4{T}, t::Number) where T
+    # Auxiliary variables.
+    orb = orbp.orb
+    j4d = orbp.j4d
+
+    # Propagate the orbit.
+    (r_i, v_i) = j4!(j4d, t)
+
+    # Update the elements in the `orb` structure.
+    orb.t = j4d.epoch + t/86400
+    orb.a = j4d.al_k*j4d.j4_gc.R0
+    orb.e = j4d.e_k
+    orb.i = j4d.i_k
+    orb.Ω = j4d.Ω_k
+    orb.ω = j4d.ω_k
+    orb.f = j4d.f_k
+
+    # Return.
+    (copy(orb), r_i, v_i)
+end
+
 function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
     # Auxiliary variables.
     orb     = orbp.orb
@@ -102,6 +123,7 @@ function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Number) where T
 end
 
 function propagate!(orbp::Union{OrbitPropagatorJ2{T},
+                                OrbitPropagatorJ4{T},
                                 OrbitPropagatorSGP4{T},
                                 OrbitPropagatorTwoBody{T}},
                     t::AbstractVector) where T

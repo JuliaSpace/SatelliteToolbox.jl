@@ -603,6 +603,84 @@ mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
     j2d::J2_Structure{T}
 end
 
+#                             J4 orbit propagator
+# ==============================================================================
+
+export J4_GravCte, J4_Structure, OrbitPropagatorJ4
+
+"""
+Gravitational constants for J4 orbit propagator.
+
+# Fields
+
+* `R0`: Earth equatorial radius [m].
+* `μm`: √GM [er/s]^(3/2).
+* `J2`: The second gravitational zonal harmonic of the Earth.
+* `J4`: The fourth gravitational zonal harmonic of the Earth.
+
+"""
+@with_kw struct J4_GravCte{T}
+    R0::T
+    μm::T
+    J2::T
+    J4::T
+end
+
+"""
+Low level J4 orbit propagator structure.
+
+"""
+@with_kw mutable struct J4_Structure{T}
+    # Orbit parameters.
+    epoch::T
+    al_0::T
+    n_0::T
+    e_0::T
+    i_0::T
+    Ω_0::T
+    ω_0::T
+    f_0::T
+    M_0::T
+    # Propagation time from epoch.
+    Δt::T
+    # Drag parameters.
+    dn_o2::T   # First time derivative of mean motion [rad/s²].
+    ddn_o6::T  # Second time derivative of mean motion [rad/s³].
+    # Current parameters.
+    al_k::T
+    e_k::T
+    i_k::T
+    Ω_k::T
+    ω_k::T
+    f_k::T
+    M_k::T
+    # First-order time-derivative of the orbital elements.
+    δa::T
+    δe::T
+    δΩ::T
+    δω::T
+    δM_0::T
+    # J4 orbit propagator gravitational constants.
+    j4_gc::J4_GravCte{T}
+end
+
+"""
+Structure that holds the information related to the J4 orbit propagator.
+
+# Fields
+
+* `orb`: Current orbit (see `Orbit`).
+* `j4d`: Structure that stores the J4 orbit propagator data (see
+         `J4_Structure`).
+
+"""
+mutable struct OrbitPropagatorJ4{T} <: OrbitPropagator{T}
+    orb::Orbit{T,T,T,T,T,T,T}
+
+    # J4 orbit propagator related fields.
+    j4d::J4_Structure{T}
+end
+
 #                                     SGP4
 # ==============================================================================
 
