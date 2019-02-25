@@ -497,6 +497,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/library/#SatelliteToolbox.J4_GravCte",
+    "page": "Library",
+    "title": "SatelliteToolbox.J4_GravCte",
+    "category": "type",
+    "text": "Gravitational constants for J4 orbit propagator.\n\nFields\n\nR0: Earth equatorial radius [m].\nμm: √GM [er/s]^(3/2).\nJ2: The second gravitational zonal harmonic of the Earth.\nJ4: The fourth gravitational zonal harmonic of the Earth.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.J4_Structure",
+    "page": "Library",
+    "title": "SatelliteToolbox.J4_Structure",
+    "category": "type",
+    "text": "Low level J4 orbit propagator structure.\n\n\n\n\n\n"
+},
+
+{
     "location": "lib/library/#SatelliteToolbox.JB2008_Output",
     "page": "Library",
     "title": "SatelliteToolbox.JB2008_Output",
@@ -566,6 +582,14 @@ var documenterSearchIndex = {"docs": [
     "title": "SatelliteToolbox.OrbitPropagatorJ2",
     "category": "type",
     "text": "Structure that holds the information related to the J2 orbit propagator.\n\nFields\n\norb: Current orbit (see Orbit).\nj2d: Structure that stores the J2 orbit propagator data (see        J2_Structure).\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.OrbitPropagatorJ4",
+    "page": "Library",
+    "title": "SatelliteToolbox.OrbitPropagatorJ4",
+    "category": "type",
+    "text": "Structure that holds the information related to the J4 orbit propagator.\n\nFields\n\norb: Current orbit (see Orbit).\nj4d: Structure that stores the J4 orbit propagator data (see        J4_Structure).\n\n\n\n\n\n"
 },
 
 {
@@ -805,7 +829,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.angvel",
     "category": "function",
-    "text": "function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction angvel(orb::Orbit, pert::Symbol = :J2)\n\nCompute the angular velocity [rad/s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction angvel(orb::Orbit, pert::Symbol = :J2)\n\nCompute the angular velocity [rad/s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n:J4: Consider the perturbation terms J2, J4, and J2².\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -813,7 +837,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.angvel_to_a",
     "category": "function",
-    "text": "function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0)\n\nCompute the semi-major axis that will provide an angular velocity n [rad/s] in an orbit with eccentricity e and inclination i [rad], using the perturbation terms specified by the symbol pert.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\nKeyword\n\nμ: Standard gravitational parameter for Earth [m^3/s^2].      (Default = m0)\nmax_iter: Maximum number of iterations allowed in the Newton-Raphson             algorithm. (Default = 20)\ntol: Tolerance to stop the Newton-Raphson algorithm. (Default = 1e-10)\n\n\n\n\n\n"
+    "text": "function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0)\n\nCompute the semi-major axis that will provide an angular velocity n [rad/s] in an orbit with eccentricity e and inclination i [rad], using the perturbation terms specified by the symbol pert.\n\nNotice that the angular velocity n is related to the nodal period, i.e. the time between two consecutive passages by the ascending node.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n:J4: Consider the perturbation terms J2, J4, and J2².\n\nIf pert is omitted, then it defaults to :J2.\n\nKeyword\n\nμ: Standard gravitational parameter for Earth [m^3/s^2].      (Default = m0)\nmax_iter: Maximum number of iterations allowed in the Newton-Raphson             algorithm. (Default = 20)\ntol: Tolerance to stop the Newton-Raphson algorithm. (Default = 1e-10)\n\n\n\n\n\n"
 },
 
 {
@@ -909,7 +933,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.dArgPer",
     "category": "function",
-    "text": "function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dArgPer(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the argument of perigee [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dArgPer(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the argument of perigee [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n:J4: Consider the perturbation terms J2, J4, and J2².\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -917,7 +941,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.dRAAN",
     "category": "function",
-    "text": "function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dRAAN(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the right ascension of the ascending node [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction dRAAN(orb::Orbit, pert::Symbol = :J2)\n\nCompute the time-derivative of the right ascension of the ascending node [rad/s] of an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n:J4: Consider the perturbation terms J2, J4, and J2².\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
@@ -1261,7 +1285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.init_orbit_propagator",
     "category": "function",
-    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\ntle: TLE that will be used to initialize the propagator.\n\nJ2 orbit propagator\n\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body      [m^3/s^2] (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
+    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:J4}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:J4}: J4 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\norb_0: Initial orbital elements (see Orbit).\n\nJ2 and J4 orbit propagator\n\ndn_o2: (OPTIONAL) First time derivative of mean motion divided by 2          [rad/s²] (Default = 0).\nddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6           [rad/s³] (Default = 0).\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants          (Default = j2_gc_wgs84).\nj4_gc: (OPTIONAL) J4 orbit propagator gravitational constants          (Default = j4_gc_wgs84).\n\nSGP4 orbit propagator\n\nbstar: (OPTIONAL) B* parameter of the SGP4 (Default = 0).\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nNotice that the orbit elements specified in orb_0 must be represented in TEME frame.\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
 },
 
 {
@@ -1269,7 +1293,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.init_orbit_propagator",
     "category": "function",
-    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, orb_0::Orbit, bstar::Number = 0, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\norb_0: Initial orbital elements (see Orbit).\n\nJ2 orbit propagator\n\ndn_o2: (OPTIONAL) First time derivative of mean motion divided by 2 [rad/s²]          (Default = 0).\nddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6           [rad/s³] (Default = 0).\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\n\nSGP4 orbit propagator\n\nbstar: (OPTIONAL) B* parameter of the SGP4 (Default = 0).\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body [m^3/s^2]      (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nNotice that the orbit elements specified in orb_0 must be represented in TEME frame.\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
+    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:J4}}, tle::TLE, j4_gc::J4_GravCte = j4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_Structure = sgp4_gc_wgs84)\nfunction init_orbit_propagator(orbp_type::Type{Val{:twobody}}, tle::TLE, μ::Number = m0)\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:J4}: J4 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\ntle: TLE that will be used to initialize the propagator.\n\nJ2 orbit propagator\n\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants (Default =          j2_gc_wgs84).\nj4_gc: (OPTIONAL) J4 orbit propagator gravitational constants          (Default = j4_gc_wgs84).\n\nSGP4 orbit propagator\n\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body      [m^3/s^2] (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nSGP4 Orbit Propagator\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.init_orbit_propagator-Union{Tuple{T}, Tuple{Type{Val{:J2}},Number,Number,Number,Number,Number,Number,Number}, Tuple{Type{Val{:J2}},Number,Number,Number,Number,Number,Number,Number,Number}, Tuple{Type{Val{:J2}},Number,Number,Number,Number,Number,Number,Number,Number,Number}, Tuple{Type{Val{:J2}},Number,Number,Number,Number,Number,Number,Number,Number,Number,J2_GravCte{T}}} where T",
+    "page": "Library",
+    "title": "SatelliteToolbox.init_orbit_propagator",
+    "category": "method",
+    "text": "function init_orbit_propagator(orbp_type::Type{Val{:J2}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T\nfunction init_orbit_propagator(::Type{Val{:J4}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0, j4_gc::J2_GravCte{T} = j4_gc_wgs84) where T\nfunction init_orbit_propagator(orbp_type::Type{Val{:sgp4}}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number = 0, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T\nfunction init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, μ::T = m0) where T\n\nInitialize the orbit propagator orbp_type, which can be:\n\nVal{:J2}: J2 orbit propagator;\nVal{:J4}: J4 orbit propagator;\nVal{:sgp4}: SGP4 orbit propagator; or\nVal{:twobody}: Two-body orbit propagator.\n\nArgs\n\nepoch: Initial orbit epoch [Julian Day].\na_0: Initial semi-major axis [m].\ne_0: Initial eccentricity.\ni_0: Initial inclination [rad].\nΩ_0: Initial right ascension of the ascending node [rad].\nω_0: Initial argument of perigee [rad].\nf_0: Initial true anomaly [rad].\nn_0: Initial angular velocity [rad/s].\nM_0: Initial mean anomaly [rad].\n\nJ2 and J4 orbit propagator\n\ndn_o2: (OPTIONAL) First time derivative of mean motion divided by 2          [rad/s²] (Default = 0).\nddn_o6: (OPTIONAL) Second time derivative of mean motion divided by 6           [rad/s³] (Default = 0).\nj2_gc: (OPTIONAL) J2 orbit propagator gravitational constants          (Default = j2_gc_wgs84).\nj4_gc: (OPTIONAL) J4 orbit propagator gravitational constants          (Default = j4_gc_wgs84).\n\nSGP4 orbit propagator\n\nbstar: (OPTIONAL) Initial B* parameter of the SGP4 (Default = 0).\nsgp4_gc: (OPTIONAL) Gravitational constants (Default = sgp4_gc_wgs84).\n\nTwo-body orbit propagator\n\nμ: (OPTIONAL) Standard gravitational parameter of the central body      [m^3/s^2] (Default = m0).\n\nReturns\n\nA new instance of the orbit propagator structure that stores the information of the orbit propagator.\n\nRemarks\n\nJ2, J4, and Two Body propagators\n\nIf the orbit is defined in terms of the angular velocity (mean motion) instead of the semi-major axis, then it is possible to use the function angvel_to_a to convert.\n\nSGP4 Orbit Propagator\n\nNotice that the orbit elements must be represented in TEME frame.\n\nThis implementation includes also the deep space perturbations, which was originally called SDP4 algorithm. Modern approaches, such as [2] and [3], identifies if the selected orbit must be propagated using the deep space perturbations and automatically applied them. This is sometimes called SGDP4 algorithm.\n\n\n\n\n\n"
 },
 
 {
@@ -1302,6 +1334,22 @@ var documenterSearchIndex = {"docs": [
     "title": "SatelliteToolbox.j2_init",
     "category": "method",
     "text": "function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number) where T\n\nInitialize the data structure of J2 orbit propagator algorithm.\n\nArgs\n\nj2_gc: J2 orbit propagator gravitational constants (see J2_GravCte).\nepoch: Epoch of the orbital elements [Julian Day].\na_0: Initial semi-major axis [m].\ne_0: Initial eccentricity.\ni_0: Initial inclination [rad].\nΩ_0: Initial right ascension of the ascending node [rad].\nω_0: Initial argument of perigee [rad].\nf_0: Initial true anomaly [rad].\ndn_o2: First time derivative of the mean motion divided by two [rad/s^2].\nddn_o6: Second time derivative of the mean motion divided by six [rad/s^3].\n\nReturns\n\nThe structure J2_Structure with the initialized parameters.\n\nRemarks\n\nThe inputs are the mean orbital elements.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.j4!-Union{Tuple{T}, Tuple{J4_Structure{T},Number}} where T",
+    "page": "Library",
+    "title": "SatelliteToolbox.j4!",
+    "category": "method",
+    "text": "function j4!(j4d::J4_Structure{T}, t::Number) where T\n\nPropagate the orbit defined in j4d (see J4_Structure) until the time t [s]. Notice that the values in j4d will be modified.\n\nReturns\n\nThe position vector represented in the inertial frame at time t [m].\nThe velocity vector represented in the inertial frame at time t [m/s]\n\nRemarks\n\nThe inertial frame in which the output is represented depends on which frame it was used to generate the orbit parameters. If the orbit parameters are obtained from a TLE, then the inertial frame will be TEME. Notice, however, that the perturbation theory requires an inertial frame with true equator.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.j4_init-Union{Tuple{T}, Tuple{J4_GravCte{T},Number,Number,Number,Number,Number,Number,Number,Number,Number}} where T",
+    "page": "Library",
+    "title": "SatelliteToolbox.j4_init",
+    "category": "method",
+    "text": "function j4_init(j4_gc::J4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number) where T\n\nInitialize the data structure of J4 orbit propagator algorithm.\n\nArgs\n\nj4_gc: J4 orbit propagator gravitational constants (see J4_GravCte).\nepoch: Epoch of the orbital elements [Julian Day].\na_0: Initial semi-major axis [m].\ne_0: Initial eccentricity.\ni_0: Initial inclination [rad].\nΩ_0: Initial right ascension of the ascending node [rad].\nω_0: Initial argument of perigee [rad].\nf_0: Initial true anomaly [rad].\ndn_o2: First time derivative of the mean motion divided by two [rad/s^2].\nddn_o6: Second time derivative of the mean motion divided by six [rad/s^3].\n\nReturns\n\nThe structure J4_Structure with the initialized parameters.\n\nRemarks\n\nThe inputs are the mean orbital elements.\n\n\n\n\n\n"
 },
 
 {
@@ -1469,7 +1517,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.period",
     "category": "function",
-    "text": "function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction period(orb::Orbit, pert::Symbol = :J2)\n\nCompute the period [s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
+    "text": "function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)\nfunction period(orb::Orbit, pert::Symbol = :J2)\n\nCompute the period [s] of an object in an orbit with semi-major axis a [m], eccentricity e, and inclination i [rad], using the perturbation terms specified by the symbol pert. The orbit can also be specified by orb, which is an instance of the structure Orbit.\n\npert can be:\n\n:J0: Consider a Keplerian orbit.\n:J2: Consider the perturbation terms up to J2.\n:J4: Consider the perturbation terms J2, J4, and J2².\n\nIf pert is omitted, then it defaults to :J2.\n\n\n\n\n\n"
 },
 
 {
