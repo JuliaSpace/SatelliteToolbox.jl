@@ -171,7 +171,7 @@ end
 @inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
-    function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0)
+    function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
 
 Compute the semi-major axis that will provide an angular velocity `n` [rad/s] in
 an orbit with eccentricity `e` and inclination `i` [rad], using the perturbation
