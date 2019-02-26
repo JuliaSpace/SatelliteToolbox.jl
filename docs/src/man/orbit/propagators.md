@@ -119,6 +119,31 @@ can be used to customize the algorithm. Those options are listed as follows:
     The two first options are not available when the TLE is used because this
     information is provided by the TLE.
 
+### Initialization using the angular velocity
+
+If the orbit is defined in terms of the angular velocity (mean motion) instead
+of the semi-major axis, then it is possible to use the function `angvel_to_a` to
+convert:
+
+```julia
+function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2)
+```
+
+It computes the semi-major axis that will provide an angular velocity `n`
+[rad/s] in an orbit with eccentricity `e` and inclination `i` [rad], using the
+perturbation terms specified by the symbol `pert`.
+
+Notice that the angular velocity `n` is related to the nodal period, *i.e.* the
+time between two consecutive passages by the ascending node.
+
+`pert` can be:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
+* `:J4`: Consider the perturbation terms J2, J4, and J2².
+
+If `pert` is omitted, then it defaults to `:J2`.
+
 ### Initialization of SGP4
 
 The SGP4/SDP4 propagator is meant to be used together with a TLE. Hence, the
@@ -215,21 +240,21 @@ frame. For more information, see [1].
 ## Examples
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val{:twobody}, 0.0, 2*pi/6000, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0);
+julia> orbp = init_orbit_propagator(Val{:twobody}, 0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0);
 
 julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
 
 julia> r
 9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
- [5.30792e-7, 7.12871e6, 3.58939e-6]
- [-9.92441e5, 2.19024e6, -6.71674e6]
- [-6.12601e5, -5.78432e6, -4.14603e6]
- [6.12601e5, -5.78432e6, 4.14603e6]
- [9.92441e5, 2.19024e6, 6.71674e6]
- [-5.37523e-7, 7.12871e6, -3.64086e-6]
- [-9.92441e5, 2.19024e6, -6.71674e6]
- [-6.12601e5, -5.78432e6, -4.14603e6]
- [6.12601e5, -5.78432e6, 4.14603e6]
+ [5.30372e-7, 7.12306e6, 3.58655e-6]
+ [-987245.0, 2.2796e6, -6.68158e6]
+ [-6.3457e5, -5.6651e6, -4.29471e6]
+ [5.77611e5, -5.94385e6, 3.90922e6]
+ [1.00749e6, 1.82033e6, 6.8186e6]
+ [70133.2, 7.1069e6, 4.74655e5]
+ [-9.62529e5, 2.72855e6, -6.5143e6]
+ [-6.88667e5, -5.3608e6, -4.66083e6]
+ [5.18048e5, -6.1958e6, 3.50609e6]
 ```
 
 ```jldoctest
@@ -240,14 +265,14 @@ julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
 julia> r
 9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
  [5.30372e-7, 7.12306e6, 3.58655e-6]
- [-9.98335e5, 2.14179e6, -6.72549e6]
- [-5.75909e5, -5.83674e6, -4.06734e6]
- [6.65317e5, -5.69201e6, 4.2545e6]
- [9.62557e5, 2.37418e6, 6.65228e6]
- [-1.10605e5, 7.11845e6, -231186.0]
- [-1.02813e6, 1.90664e6, -6.79145e6]
- [-4.82921e5, -5.97389e6, -3.87579e6]
- [750898.0, -5.53993e6, 4.43709e6]
+ [-9.9635e5, 2.18638e6, -6.71137e6]
+ [-587229.0, -5.78237e6, -4.14257e6]
+ [6.49425e5, -5.77559e6, 4.143e6]
+ [9.72829e5, 2.1969e6, 6.71164e6]
+ [-76505.6, 7.12265e6, 503.253]
+ [-1.01976e6, 2.17562e6, -6.71109e6]
+ [-5.24963e5, -5.78847e6, -4.14214e6]
+ [711543.0, -5.76813e6, 4.14344e6]
 ```
 
 ```jldoctest
@@ -258,14 +283,14 @@ julia> o,r,v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:
 julia> r
 9-element Array{StaticArrays.SArray{Tuple{3},Float64,1,3},1}:
  [5.30372e-7, 7.12306e6, 3.58655e-6]
- [-9.98335e5, 2.14179e6, -6.72549e6]
- [-5.75909e5, -5.83674e6, -4.06734e6]
- [6.65317e5, -5.69201e6, 4.2545e6]
- [9.62557e5, 2.37418e6, 6.65228e6]
- [-1.10605e5, 7.11845e6, -231186.0]
- [-1.02813e6, 1.90664e6, -6.79145e6]
- [-4.82921e5, -5.97389e6, -3.87579e6]
- [750898.0, -5.53993e6, 4.43709e6]
+ [-9.9635e5, 2.18638e6, -6.71137e6]
+ [-587229.0, -5.78237e6, -4.14257e6]
+ [6.49425e5, -5.77559e6, 4.143e6]
+ [9.72829e5, 2.1969e6, 6.71164e6]
+ [-76505.6, 7.12265e6, 503.253]
+ [-1.01976e6, 2.17562e6, -6.71109e6]
+ [-5.24963e5, -5.78847e6, -4.14214e6]
+ [711543.0, -5.76813e6, 4.14344e6]
 ```
 
 ```jldoctest
@@ -341,9 +366,9 @@ julia> o,r,v = step!(orbp, 3*60*60);
 
 julia> r
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
- -193293.35025474802
-       6.501272877734011e6
-      -2.8915511460724953e6
+ -193293.3502548483
+       6.501272877734009e6
+      -2.8915511460724827e6
 
 julia> v
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
