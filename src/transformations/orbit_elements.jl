@@ -249,6 +249,10 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
 
         rv = dot(r_i,v_i)
 
+        # The type of `r` will be the type of the orbit elements.
+        T   = typeof(r)
+        Tm0 = T(m0)
+
         # Angular momentum vector.
         h_i = cross( r_i, v_i )
         h   = norm(h_i)
@@ -256,13 +260,12 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
         # Vector that points to the right ascension of the ascending node (RAAN).
         n_i = SVector{3}(0,0,1) × h_i
         n   = norm(n_i)
-        T   = typeof(n)
 
         # Eccentricity vector.
-        e_i = ( (v2 - m0/r)*r_i - rv*v_i )/m0
+        e_i = ( (v2 - Tm0/r)*r_i - rv*v_i )/Tm0
 
         # Orbit energy.
-        ξ = v2/2 - m0/r
+        ξ = v2/2 - Tm0/r
 
         # Eccentricity
         # ============
@@ -273,7 +276,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
         # ===============
 
         if abs(ecc) <= 1.0-1e-6
-            a = -m0/(2ξ)
+            a = -Tm0/(2ξ)
         else
             error("Could not convert the provided Cartesian values to Kepler elements.\n" *
                   "The computed eccentricity was not between 0 and 1");
@@ -311,7 +314,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
                 ω     = acos(cos_ω)
 
-                (e_i[3] < 0) && (ω = 2π - ω)
+                (e_i[3] < 0) && (ω = T(2π) - ω)
 
                 # True anomaly
                 # ============
@@ -320,7 +323,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
                 v     = acos(cos_v)
 
-                (rv < 0) && (v = 2π - v)
+                (rv < 0) && (v = T(2π) - v)
 
             # Equatorial and circular
             # ------------------------------------------------------------------
@@ -338,7 +341,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
                 v     = acos(cos_v)
 
-                (r_i[2] < 0) && (v = 2π - v)
+                (r_i[2] < 0) && (v = T(2π) - v)
             end
 
         # Inclined
@@ -352,7 +355,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
             cos_Ω = abs(cos_Ω) > 1 ? sign(cos_Ω) : cos_Ω
             Ω     = acos(cos_Ω)
 
-            (n_i[2] < 0) && (Ω = 2π - Ω)
+            (n_i[2] < 0) && (Ω = T(2π) - Ω)
 
             # Circular and inclined
             # ------------------------------------------------------------------
@@ -371,7 +374,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
                 v     = acos(cos_v)
 
-                (r_i[3] < 0) && (v = 2π - v)
+                (r_i[3] < 0) && (v = T(2π) - v)
             else
 
                 # Argument of Perigee
@@ -381,7 +384,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
                 ω     = acos(cos_ω)
 
-                (e_i[3] < 0) && (ω = 2π - ω)
+                (e_i[3] < 0) && (ω = T(2π) - ω)
 
                 # True anomaly
                 # ============
@@ -390,7 +393,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
                 cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
                 v     = acos(cos_v)
 
-                (rv < 0) && (v = 2π - v)
+                (rv < 0) && (v = T(2π) - v)
             end
         end
     end
