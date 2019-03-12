@@ -1397,7 +1397,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.kepler_to_rv",
     "category": "method",
-    "text": "function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)\n\nConvert the Keplerian elements (a, e, i, Ω, ω, and f) to a Cartesian representation (position vector r and velocity vector v).\n\nArgs\n\na: Semi-major axis [m].\ne: Excentricity.\ni: Inclination [rad].\nΩ: Right ascension of the ascending node [rad].\nω: Argument of perigee [rad].\nf: True anomaly [rad].\n\nReturns\n\nThe position vector represented in the inertial reference frame [m].\nThe velocity vector represented in the inertial reference frame [m].\n\nReferences\n\nThis algorithm was adapted from [1] and [3, p. 37-38].\n\n\n\n\n\n"
+    "text": "function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)\nfunction kepler_to_rv(o::Orbit)\n\nConvert the Keplerian elements (a, e, i, Ω, ω, and f) to a Cartesian representation (position vector r and velocity vector v). The Keplerian elements can also be passed inside an instance of the Orbit structure.\n\nArgs\n\na: Semi-major axis [m].\ne: Excentricity.\ni: Inclination [rad].\nΩ: Right ascension of the ascending node [rad].\nω: Argument of perigee [rad].\nf: True anomaly [rad].\n\nReturns\n\nThe position vector represented in the inertial reference frame [m].\nThe velocity vector represented in the inertial reference frame [m].\n\nReferences\n\nThis algorithm was adapted from [1] and [3, p. 37-38].\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.kepler_to_sv-Tuple{Orbit}",
+    "page": "Library",
+    "title": "SatelliteToolbox.kepler_to_sv",
+    "category": "method",
+    "text": "function kepler_to_sv(orb::Orbit)\n\nConvert the Keplerian elements in the structure orb to a state vector.\n\n\n\n\n\n"
 },
 
 {
@@ -1961,6 +1969,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/library/#SatelliteToolbox.satsv-Union{Tuple{T4}, Tuple{T3}, Tuple{T2}, Tuple{T1}, Tuple{T1,AbstractArray{T2,1},AbstractArray{T3,1}}, Tuple{T1,AbstractArray{T2,1},AbstractArray{T3,1},AbstractArray{T4,1}}} where T4<:Number where T3<:Number where T2<:Number where T1<:Number",
+    "page": "Library",
+    "title": "SatelliteToolbox.satsv",
+    "category": "method",
+    "text": "function satsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}\nfunction satsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}\n\nCreate a new satellite state vector (see SatelliteStateVector) using the position r, velocity v, and acceleration a. It is also possible to pass a vector vec with the information concatenated.\n\ninfo: Info\nThe vectors r, v, and a must have at least 3 elements. In the case more elements are available, they will be neglected. On the other hand, the vector v must have 6 or 9 dimensions, indicating [r;v], or [r;v;a].\n\n\n\n\n\n"
+},
+
+{
     "location": "lib/library/#SatelliteToolbox.sgp4!-Union{Tuple{T}, Tuple{SGP4_Structure{T},Number}} where T",
     "page": "Library",
     "title": "SatelliteToolbox.sgp4!",
@@ -2014,6 +2030,46 @@ var documenterSearchIndex = {"docs": [
     "title": "SatelliteToolbox.sun_velocity_i",
     "category": "method",
     "text": "function sun_velocity_i(JD::Number)\n\nCompute the Sun velocity represented in the Mean Equinox of Date (MOD) at the Julian Day JD. The algorithm was obtained by computing the time derivative of the Sun position in [3, p. 277-279].\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.svECEFtoECEF-Tuple{SatelliteToolbox.SatelliteStateVector,Vararg{Any,N} where N}",
+    "page": "Library",
+    "title": "SatelliteToolbox.svECEFtoECEF",
+    "category": "method",
+    "text": "function svECEFtoECEF(sv::SatelliteStateVector, args...)\n\nConvert the satellite state vector sv from an ECEF frame to another ECEF frame. The arguments args... must match those of the function rECEFtoECEF wihtout the rotation representation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.svECEFtoECI-Tuple{SatelliteToolbox.SatelliteStateVector,Type{Val{:ITRF}},Union{Type{Val{:GCRF}}, Type{Val{:J2000}}, Type{Val{:TOD}}, Type{Val{:MOD}}, Type{Val{:TEME}}},Number,EOPData_IAU1980}",
+    "page": "Library",
+    "title": "SatelliteToolbox.svECEFtoECI",
+    "category": "method",
+    "text": "function svECEFtoECI(sv::SatelliteStateVector, ECEF, ECI, JD_UTC [, eop_data])\n\nConvert the satellite state vector sv from the Earth-Centered, Earth-Fixed (ECEF) reference frame ECEF to the Earth-Centered Inertial (ECI) reference frame at the Julian day JD_UTC [UTC]. The eop_data may be required depending on the selection of the input and output reference system. For more information, see the documentation of the function rECEFtoECI.\n\ninfo: Info\nIt is assumed that the input velocity and acceleration in sv are obtained by an observer on the ECEF frame. Thus, the output will contain the velocity and acceleration as measured by an observer on the ECI frame.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.svECItoECEF-Tuple{SatelliteToolbox.SatelliteStateVector,Union{Type{Val{:GCRF}}, Type{Val{:J2000}}, Type{Val{:TOD}}, Type{Val{:MOD}}, Type{Val{:TEME}}},Type{Val{:ITRF}},Number,EOPData_IAU1980}",
+    "page": "Library",
+    "title": "SatelliteToolbox.svECItoECEF",
+    "category": "method",
+    "text": "function svECItoECEF(sv::SatelliteStateVector, ECI, ECEF, JD_UTC [, eop_data])\n\nConvert the satellite state vector sv from the Earth-Centered Inertial (ECI) reference frame ECI to the Earth-Centered, Earth-Fixed (ECEF) reference frame at the Julian day JD_UTC [UTC]. The eop_data may be required depending on the selection of the input and output reference system. For more information, see the documentation of the function rECItoECEF.\n\ninfo: Info\nIt is assumed that the input velocity and acceleration in sv are obtained by an observer on the ECI frame. Thus, the output will contain the velocity and acceleration as measured by an observer on the ECEF frame.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.svECItoECI-Tuple{SatelliteToolbox.SatelliteStateVector,Vararg{Any,N} where N}",
+    "page": "Library",
+    "title": "SatelliteToolbox.svECItoECI",
+    "category": "method",
+    "text": "function svECItoECI(sv::SatelliteStateVector, args...)\n\nConvert the satellite state vector sv from an ECI frame to another ECI frame. The arguments args... must match those of the function rECItoECI wihtout the rotation representation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.sv_to_kepler-Tuple{SatelliteToolbox.SatelliteStateVector}",
+    "page": "Library",
+    "title": "SatelliteToolbox.sv_to_kepler",
+    "category": "method",
+    "text": "function sv_to_kepler(sv::SatelliteStateVector)\n\nConvert the state vector sv to Keplerian elements represented by an instance of the structure Orbit.\n\n\n\n\n\n"
 },
 
 {
@@ -2110,6 +2166,14 @@ var documenterSearchIndex = {"docs": [
     "title": "SatelliteToolbox.JR1971_CONSTANTS",
     "category": "type",
     "text": "Structure with the constants for the Jacchia-Roberts 1971 Atmospheric Model.\n\n\n\n\n\n"
+},
+
+{
+    "location": "lib/library/#SatelliteToolbox.SatelliteStateVector",
+    "page": "Library",
+    "title": "SatelliteToolbox.SatelliteStateVector",
+    "category": "type",
+    "text": "mutable struct StateVector{T}\n\nStore the state vector of the satellite.\n\nFields\n\nt: Epoch [Julian Day].\nr: Position vector [m].\nv: Velocity vector [m/s].\na: Acceleration vector [m/s²].\n\n\n\n\n\n"
 },
 
 {
