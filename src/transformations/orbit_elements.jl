@@ -139,9 +139,11 @@ end
 
 """
     function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    function kepler_to_rv(o::Orbit)
 
 Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
-representation (position vector `r` and velocity vector `v`).
+representation (position vector `r` and velocity vector `v`). The Keplerian
+elements can also be passed inside an instance of the `Orbit` structure.
 
 # Args
 
@@ -199,6 +201,8 @@ function kepler_to_rv(a::Number,
 
     (r_i, v_i)
 end
+
+kepler_to_rv(o::Orbit) = kepler_to_rv(o.a, o.e, o.i, o.Ω, o.ω, o.f)
 
 """
     function rv_to_kepler(r::Vector, v::Vector)
