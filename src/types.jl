@@ -398,6 +398,26 @@ mutable struct Orbit{T1,T2,T3,T4,T5,T6,T7}
 end
 
 """
+    mutable struct StateVector{T}
+
+Store the state vector of the satellite.
+
+# Fields
+
+* `t`: Epoch [Julian Day].
+* `r`: Position vector [m].
+* `v`: Velocity vector [m/s].
+* `a`: Acceleration vector [m/s²].
+
+"""
+@with_kw mutable struct SatelliteStateVector{T}
+    t::T            = 0
+    r::SVector{3,T} = SVector{3,T}(0,0,0)
+    v::SVector{3,T} = SVector{3,T}(0,0,0)
+    a::SVector{3,T} = SVector{3,T}(0,0,0)
+end
+
+"""
 This structure contains the same elements of the TLE with the same units.
 
 # Fields

@@ -25,6 +25,7 @@
 export change_oe_frame
 export kepler_to_rv
 export rv_to_kepler
+export kepler_to_sv, sv_to_kepler
 
 """
     function change_oe_frame(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number, conv_args...)
@@ -325,3 +326,24 @@ function rv_to_kepler(x::Number,  y::Number,  z::Number,
     # Compute the Keplerian orbit elements.
     rv_to_kepler(r_i,v_i)
 end
+
+
+"""
+    function kepler_to_sv(orb::Orbit)
+
+Convert the Keplerian elements in the structure `orb` to a state vector.
+
+"""
+function kepler_to_sv(orb::Orbit)
+    r_i, v_i = kepler_to_rv(orb)
+    satsv(orb.t, r_i, v_i)
+end
+
+"""
+    function sv_to_kepler(sv::SatelliteStateVector)
+
+Convert the state vector `sv` to Keplerian elements represented by an instance
+of the structure `Orbit`.
+
+"""
+sv_to_kepler(sv::SatelliteStateVector) = rv_to_kepler(sv.r, sv.v)

@@ -39,6 +39,9 @@ const Rs = 6.963e8
 # Earth's orbit mean motion [rad/s]
 const ne = (360.0/365.2421897)*pi/180/86400
 
+# Earth's angular rotation [rad/s] without LOD correction.
+const we =  7.292_115_146_706_979e-5
+
 # Conversion factor from AU to m.
 const au2m = 149597870700.0
 

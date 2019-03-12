@@ -3,7 +3,8 @@ module SatelliteToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, sin, show
+import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, setindex!,
+             sin, show
 
 using Dates
 using DelimitedFiles
@@ -77,6 +78,7 @@ include("orbit/general.jl")
 include("orbit/anomalies.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
+include("orbit/state_vector.jl")
 include("orbit/tle.jl")
 include("orbit/propagators/j2.jl")
 include("orbit/propagators/j4.jl")
@@ -97,6 +99,10 @@ include("transformations/gmst.jl")
 include("transformations/misc.jl")
 include("transformations/orbit_elements.jl")
 include("transformations/position.jl")
+include("transformations/sv_ecef_to_ecef.jl")
+include("transformations/sv_ecef_to_eci.jl")
+include("transformations/sv_eci_to_ecef.jl")
+include("transformations/sv_eci_to_eci.jl")
 
 include("transformations/fk5/fk5.jl")
 include("transformations/fk5/nutation.jl")
