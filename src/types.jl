@@ -387,14 +387,22 @@ This structure defines the orbit in terms of the Keplerian elements.
 * `f`: True anomaly [rad].
 
 """
-mutable struct Orbit{T1,T2,T3,T4,T5,T6,T7}
+mutable struct Orbit{T1,T2}
     t::T1
     a::T2
-    e::T3
-    i::T4
-    Ω::T5
-    ω::T6
-    f::T7
+    e::T2
+    i::T2
+    Ω::T2
+    ω::T2
+    f::T2
+end
+
+function Orbit(t::T1, a::T2, e::T3, i::T4, Ω::T5, ω::T6, f::T7) where
+    {T1<:Number, T2<:Number, T3<:Number, T4<:Number, T5<:Number, T6<:Number, T7<:Number}
+
+    T = promote_type(T2,T3,T4,T5,T6,T7)
+
+    return Orbit{T1,T}(t,a,e,i,Ω,ω,f)
 end
 
 """
@@ -540,7 +548,7 @@ Structure that holds the information related to the Two Body orbit propagator.
 
 """
 mutable struct OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T,T,T,T,T,T}
+    orb::Orbit{T,T}
 
     # Two Body orbit propagator related fields.
     tbd::TwoBody_Structure{T}
@@ -617,7 +625,7 @@ Structure that holds the information related to the J2 orbit propagator.
 
 """
 mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T,T,T,T,T,T}
+    orb::Orbit{T,T}
 
     # J2 orbit propagator related fields.
     j2d::J2_Structure{T}
@@ -695,7 +703,7 @@ Structure that holds the information related to the J4 orbit propagator.
 
 """
 mutable struct OrbitPropagatorJ4{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T,T,T,T,T,T}
+    orb::Orbit{T,T}
 
     # J4 orbit propagator related fields.
     j4d::J4_Structure{T}
@@ -871,7 +879,7 @@ Structure that holds the information related to the SGP4 propagator.
 
 """
 mutable struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T,T,T,T,T,T}
+    orb::Orbit{T,T}
 
     # SGP4 related fields.
     sgp4_gc::SGP4_GravCte{T}

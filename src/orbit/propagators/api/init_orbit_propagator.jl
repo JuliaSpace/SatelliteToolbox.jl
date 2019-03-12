@@ -104,8 +104,7 @@ function init_orbit_propagator(::Type{Val{:J2}}, epoch::Number, a_0::Number,
     j2d = j2_init(j2_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, j2d.al_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0,
-                                 j2d.f_k)
+    orb_0 = Orbit(epoch, j2d.al_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0, j2d.f_k)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorJ2(orb_0, j2d)
@@ -121,8 +120,7 @@ function init_orbit_propagator(::Type{Val{:J4}}, epoch::Number, a_0::Number,
     j4d = j4_init(j4_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, j4d.al_0*j4_gc.R0, e_0, i_0, Ω_0, ω_0,
-                                 j4d.f_k)
+    orb_0 = Orbit(epoch, j4d.al_0*j4_gc.R0, e_0, i_0, Ω_0, ω_0, j4d.f_k)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorJ4(orb_0, j4d)
@@ -137,7 +135,7 @@ function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number,
     tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, μ)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0)
+    orb_0 = Orbit(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0)
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorTwoBody(orb_0, tbd)
@@ -354,8 +352,8 @@ function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE,
                       tle.bstar)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit{T,T,T,T,T,T,T}(epoch, 1000sgp4d.a_k*sgp4_gc.R0, e_0, i_0, Ω_0,
-                                 ω_0, M_to_f(e_0, M_0))
+    orb_0 = Orbit(epoch, 1000sgp4d.a_k*sgp4_gc.R0, e_0, i_0, Ω_0, ω_0,
+                  M_to_f(e_0, M_0))
 
     # Create and return the orbit propagator structure.
     OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)
