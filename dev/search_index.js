@@ -1861,7 +1861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.rv_to_kepler",
     "category": "method",
-    "text": "function rv_to_kepler(r::Vector, v::Vector)\n\nConvert a Cartesian representation (position vector r [m] and velocity vector v [m/s²]) to the Keplerian elements.\n\nReturns\n\nAn instance of the structure Orbit with the Keplerian elements [SI units].\n\nReferences\n\nThe algorithm was adapted from [1].\n\n\n\n\n\n"
+    "text": "function rv_to_kepler(r::Vector, v::Vector)\n\nConvert a Cartesian representation (position vector r [m] and velocity vector v [m/s²]) to the Keplerian elements.\n\nReturns\n\nAn instance of the structure Orbit with the Keplerian elements [SI units].\n\nRemarks\n\nThe special cases are treated as follows:\n\nCircular and equatorial: the right ascension of the ascending node and the argument of perigee are set to 0. Hence, the true anomaly is equal to the true longitude.\nElliptical and equatorial: the right ascension of the ascending node is set to 0. Hence, the argument of perigee is equal to the longitude of periapsis.\nCircular and inclined: the argument of perigee is set to 0. Hence, the true anomaly is equal to the argument of latitude.\n\nReferences\n\nThe algorithm was adapted from [1].\n\n\n\n\n\n"
 },
 
 {
