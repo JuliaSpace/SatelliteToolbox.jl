@@ -215,6 +215,19 @@ Convert a Cartesian representation (position vector `r` [m] and velocity vector
 
 An instance of the structure `Orbit` with the Keplerian elements [SI units].
 
+# Remarks
+
+The special cases are treated as follows:
+
+* **Circular and equatorial**: the right ascension of the ascending node and the
+  argument of perigee are set to 0. Hence, the true anomaly is equal to the true
+  longitude.
+* **Elliptical and equatorial**: the right ascension of the ascending node is
+  set to 0. Hence, the argument of perigee is equal to the longitude of
+  periapsis.
+* **Circular and inclined**: the argument of perigee is set to 0. Hence, the
+  true anomaly is equal to the argument of latitude.
+
 # References
 
 The algorithm was adapted from [1].
@@ -243,6 +256,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
         # Vector that points to the right ascension of the ascending node (RAAN).
         n_i = SVector{3}(0,0,1) × h_i
         n   = norm(n_i)
+        T   = typeof(n)
 
         # Eccentricity vector.
         e_i = ( (v2 - m0/r)*r_i - rv*v_i )/m0
@@ -272,32 +286,113 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
         cos_i = abs(cos_i) > 1 ? sign(cos_i) : cos_i
         i     = acos(cos_i)
 
-        # Right Ascension of the Ascending Node.
-        # ======================================
+        # Check the type of the orbit to account for special cases
+        # ======================================================================
 
-        cos_Ω = n_i[1]/n
-        cos_Ω = abs(cos_Ω) > 1 ? sign(cos_Ω) : cos_Ω
-        Ω     = acos(cos_Ω)
+        # Equatorial
+        # ----------------------------------------------------------------------
 
-        (n_i[2] < 0) && (Ω = 2π - Ω)
+        if abs(n) <= 1e-6
 
-        # Argument of Perigee
-        # ===================
+            # Right Ascension of the Ascending Node.
+            # ======================================
 
-        cos_ω = dot(n_i,e_i)/(n*ecc)
-        cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
-        ω     = acos(cos_ω)
+            Ω = T(0)
 
-        (e_i[3] < 0) && (ω = 2π - ω)
+            # Equatorial and elliptical
+            # ------------------------------------------------------------------
 
-        # True anomaly
-        # ============
+            if abs(ecc) > 1e-6
 
-        cos_v = dot(e_i,r_i)/(ecc*r)
-        cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
-        v     = acos(cos_v)
+                # Argument of Perigee
+                # ===================
 
-        (rv < 0) && (v = 2π - v)
+                cos_ω = e_i[1]/ecc
+                cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
+                ω     = acos(cos_ω)
+
+                (e_i[3] < 0) && (ω = 2π - ω)
+
+                # True anomaly
+                # ============
+
+                cos_v = dot(e_i,r_i)/(ecc*r)
+                cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
+                v     = acos(cos_v)
+
+                (rv < 0) && (v = 2π - v)
+
+            # Equatorial and circular
+            # ------------------------------------------------------------------
+
+            else
+                # Argument of Perigee
+                # ===================
+
+                ω = T(0)
+
+                # True anomaly
+                # ============
+
+                cos_v = r_i[1]/r
+                cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
+                v     = acos(cos_v)
+
+                (r_i[2] < 0) && (v = 2π - v)
+            end
+
+        # Inclined
+        # ----------------------------------------------------------------------
+        else
+
+            # Right Ascension of the Ascending Node.
+            # ======================================
+
+            cos_Ω = n_i[1]/n
+            cos_Ω = abs(cos_Ω) > 1 ? sign(cos_Ω) : cos_Ω
+            Ω     = acos(cos_Ω)
+
+            (n_i[2] < 0) && (Ω = 2π - Ω)
+
+            # Circular and inclined
+            # ------------------------------------------------------------------
+
+            if abs(ecc) < 1e-6
+
+                # Argument of Perigee
+                # ===================
+
+                ω = T(0)
+
+                # True anomaly
+                # ============
+
+                cos_v = dot(n_i,r_i)/(n*r)
+                cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
+                v     = acos(cos_v)
+
+                (r_i[3] < 0) && (v = 2π - v)
+            else
+
+                # Argument of Perigee
+                # ===================
+
+                cos_ω = dot(n_i,e_i)/(n*ecc)
+                cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
+                ω     = acos(cos_ω)
+
+                (e_i[3] < 0) && (ω = 2π - ω)
+
+                # True anomaly
+                # ============
+
+                cos_v = dot(e_i,r_i)/(ecc*r)
+                cos_v = abs(cos_v) > 1 ? sign(cos_v) : cos_v
+                v     = acos(cos_v)
+
+                (rv < 0) && (v = 2π - v)
+            end
+        end
     end
 
     # Return the Keplerian elements.

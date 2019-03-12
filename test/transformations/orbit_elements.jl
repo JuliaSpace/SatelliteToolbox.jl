@@ -141,3 +141,58 @@ end
     @test w*180/pi    ≈ 53.38     atol=1e-2
     @test f*180/pi    ≈ 92.335    atol=1e-3
 end
+
+@testset "Issue #25 - Special cases in kepler_to_rv" begin
+    # Circular and equatorial
+    # =======================
+
+	orb_i = Orbit(0.0, 42164e3, 0, 0, 0, 0, 0 )
+    orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
+	orb_e = Orbit(0.0, 42164e3, 0, 0, 0, 0, 0 )
+
+    @test orb_o.a ≈ orb_e.a   atol = 1e-7
+    @test orb_o.e ≈ orb_e.e   atol = 1e-7
+    @test orb_o.i ≈ orb_e.i   atol = 1e-7
+    @test orb_o.Ω ≈ orb_e.Ω   atol = 1e-7
+    @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
+    @test orb_o.f ≈ orb_e.f   atol = 1e-7
+
+	orb_i = Orbit(0.0, 42164e3, 0, 0, 10*π/180, 11*π/180, 12*π/180 )
+    orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
+    orb_e = Orbit(0.0, 42164e3, 0, 0, 0, 0, (10+11+12)*π/180 )
+
+    @test orb_o.a ≈ orb_e.a   atol = 1e-7
+    @test orb_o.e ≈ orb_e.e   atol = 1e-7
+    @test orb_o.i ≈ orb_e.i   atol = 1e-7
+    @test orb_o.Ω ≈ orb_e.Ω   atol = 1e-7
+    @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
+    @test orb_o.f ≈ orb_e.f   atol = 1e-7
+
+    # Elliptical equatorial
+    # =====================
+
+    orb_i = Orbit(0.0, 42164e3, 0.05, 0, 10*π/180, 11*π/180, 12*π/180 )
+    orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
+    orb_e = Orbit(0.0, 42164e3, 0.05, 0, 0, (10+11)*π/180, 12*π/180 )
+
+    @test orb_o.a ≈ orb_e.a   atol = 1e-7
+    @test orb_o.e ≈ orb_e.e   atol = 1e-7
+    @test orb_o.i ≈ orb_e.i   atol = 1e-7
+    @test orb_o.Ω ≈ orb_e.Ω   atol = 1e-7
+    @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
+    @test orb_o.f ≈ orb_e.f   atol = 1e-7
+
+    # Circular inclined
+    # =================
+
+    orb_i = Orbit(0.0, 42164e3, 0, π/4, 10*π/180, 11*π/180, 12*π/180 )
+    orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
+    orb_e = Orbit(0.0, 42164e3, 0, π/4, 10*π/180, 0, (11+12)*π/180 )
+
+    @test orb_o.a ≈ orb_e.a   atol = 1e-7
+    @test orb_o.e ≈ orb_e.e   atol = 1e-7
+    @test orb_o.i ≈ orb_e.i   atol = 1e-7
+    @test orb_o.Ω ≈ orb_e.Ω   atol = 1e-7
+    @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
+    @test orb_o.f ≈ orb_e.f   atol = 1e-7
+end
