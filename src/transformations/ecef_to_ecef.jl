@@ -2,8 +2,8 @@
 #
 # Description
 #
-#   Rotations from an Earth-Centered Inertial (ECI) reference frame to another
-#   ECI reference frame.
+#   Rotations from an Earth-Centered, Earth-Fixed (ECEF) reference frame to
+#   another ECEF reference frame.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #

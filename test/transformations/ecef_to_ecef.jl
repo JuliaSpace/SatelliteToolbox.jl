@@ -2,7 +2,7 @@
 #
 # Description
 #
-#   Tests related to ECI to ECEF transformations.
+#   Tests related to ECEF to ECEF transformations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
