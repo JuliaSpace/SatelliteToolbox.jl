@@ -418,7 +418,7 @@ Store the state vector of the satellite.
 * `a`: Acceleration vector [m/s²].
 
 """
-@with_kw mutable struct SatelliteStateVector{T}
+@with_kw_noshow mutable struct SatelliteStateVector{T}
     t::T            = 0
     r::SVector{3,T} = SVector{3,T}(0,0,0)
     v::SVector{3,T} = SVector{3,T}(0,0,0)
