@@ -206,10 +206,12 @@ end
 kepler_to_rv(o::Orbit) = kepler_to_rv(o.a, o.e, o.i, o.Ω, o.ω, o.f)
 
 """
-    function rv_to_kepler(r::Vector, v::Vector)
+    function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)
 
 Convert a Cartesian representation (position vector `r` [m] and velocity vector
-`v` [m/s²]) to the Keplerian elements.
+`v` [m/s²]) to the Keplerian elements. Optionally, the user can specify the
+epoch of the returned elements using the parameter `t`. It it is omitted, then
+it default to 0.
 
 # Returns
 
@@ -233,7 +235,7 @@ The special cases are treated as follows:
 The algorithm was adapted from [1].
 
 """
-function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
+function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)
     # Check inputs.
     length(r_i) != 3 && error("The vector r_i must have 3 dimensions.")
     length(v_i) != 3 && error("The vector v_i must have 3 dimensions.")
@@ -401,7 +403,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector)
     # Return the Keplerian elements.
     # ==============================
 
-    Orbit(0,a,ecc,i,Ω,ω,v)
+    Orbit(t,a,ecc,i,Ω,ω,v)
 end
 
 """
@@ -444,4 +446,4 @@ Convert the state vector `sv` to Keplerian elements represented by an instance
 of the structure `Orbit`.
 
 """
-sv_to_kepler(sv::SatelliteStateVector) = rv_to_kepler(sv.r, sv.v)
+sv_to_kepler(sv::SatelliteStateVector) = rv_to_kepler(sv.r, sv.v, sv.t)
