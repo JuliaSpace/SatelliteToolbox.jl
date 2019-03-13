@@ -6,6 +6,7 @@ export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 import Base: asin, atan, copy, cos, deepcopy, display, getindex, mod, setindex!,
              sin, show
 
+using Crayons
 using Dates
 using DelimitedFiles
 using Interpolations
@@ -35,6 +36,20 @@ include("types.jl")
 ################################################################################
 
 include("constants.jl")
+
+# Pre-defined crayons.
+const _reset_crayon = Crayon(reset = true)
+const _crayon_bold  = crayon"bold"
+const _crayon_g     = crayon"bold green"
+const _crayon_u     = crayon"bold blue"
+const _crayon_y     = crayon"bold yellow"
+
+# Escape sequences related to the crayons.
+const _b = sprint(print, _crayon_bold)
+const _d = sprint(print, _reset_crayon)
+const _g = sprint(print, _crayon_g)
+const _y = sprint(print, _crayon_y)
+const _u = sprint(print, _crayon_u)
 
 ################################################################################
 #                                  Exceptions
