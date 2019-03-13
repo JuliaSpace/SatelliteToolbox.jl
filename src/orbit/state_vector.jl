@@ -62,3 +62,29 @@ copy(sv::SatelliteStateVector) = SatelliteStateVector(sv.t, sv.r, sv.v, sv.a)
 
 getindex(sv::SatelliteStateVector{T}, ::Colon) where T<:Number =
     SVector{9,T}(sv.r..., sv.v..., sv.a...)
+
+function show(io::IO, sv::SatelliteStateVector{T}) where T
+    t_str = @sprintf "%.g" sv.t
+
+    print(io, "SatelliteStateVector{", string(T), "}: ")
+    print(io, "t = ", t_str, " r = ", sv.r, " v = ", sv.v, " a = ", sv.a)
+    return nothing
+end
+
+function show(io::IO, mime::MIME"text/plain", sv::SatelliteStateVector{T}) where T
+    # Check if the `io` supports colors.
+    color = get(io, :color, false)
+
+    b = (color) ? _b : ""
+    d = (color) ? _d : ""
+
+    t_str = @sprintf "%.g" sv.t
+
+    println(io, "SatelliteStateVector{", string(T), "}: ")
+    println(io, "$b  t $d= ", t_str)
+    println(io, "$b  r $d= ", sv.r)
+    println(io, "$b  v $d= ", sv.v)
+      print(io, "$b  a $d= ", sv.a)
+
+    return nothing
+end
