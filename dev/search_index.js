@@ -613,7 +613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.OrbitPropagatorJ2",
     "category": "type",
-    "text": "Structure that holds the information related to the J2 orbit propagator.\n\nFields\n\norb: Current orbit (see Orbit).\nj2d: Structure that stores the J2 orbit propagator data (see        J2_Structure).\n\n\n\n\n\n"
+    "text": "Structure that holds the information related to the J2 orbit propagator.\n\nFields\n\norb: Mean orbital elements (see Orbit).\nj2d: Structure that stores the J2 orbit propagator data (see        J2_Structure).\n\n\n\n\n\n"
 },
 
 {
@@ -621,7 +621,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.OrbitPropagatorJ4",
     "category": "type",
-    "text": "Structure that holds the information related to the J4 orbit propagator.\n\nFields\n\norb: Current orbit (see Orbit).\nj4d: Structure that stores the J4 orbit propagator data (see        J4_Structure).\n\n\n\n\n\n"
+    "text": "Structure that holds the information related to the J4 orbit propagator.\n\nFields\n\norb: Mean orbital elements (see Orbit).\nj4d: Structure that stores the J4 orbit propagator data (see        J4_Structure).\n\n\n\n\n\n"
 },
 
 {
@@ -629,7 +629,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.OrbitPropagatorSGP4",
     "category": "type",
-    "text": "Structure that holds the information related to the SGP4 propagator.\n\nFields\n\norb: Current orbit (see Orbit).\nsgp4_gc: Gravitational contents of the SGP4 algorithm (see SGP4_GravCte).\nsgp4d: Structure that stores the SGP4 data (see SGP4_Structure).\n\n\n\n\n\n"
+    "text": "Structure that holds the information related to the SGP4 propagator.\n\nFields\n\norb: Mean orbital elements (see Orbit).\nsgp4_gc: Gravitational contents of the SGP4 algorithm (see SGP4_GravCte).\nsgp4d: Structure that stores the SGP4 data (see SGP4_Structure).\n\n\n\n\n\n"
 },
 
 {
@@ -637,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Library",
     "title": "SatelliteToolbox.OrbitPropagatorTwoBody",
     "category": "type",
-    "text": "Structure that holds the information related to the Two Body orbit propagator.\n\nFields\n\norb: Current orbit (see Orbit).\ntbd: Structure that stores the Two Body orbit propagator data (see       TwoBody_Structure).\n\n\n\n\n\n"
+    "text": "Structure that holds the information related to the Two Body orbit propagator.\n\nFields\n\norb: Mean orbital elements (see Orbit).\ntbd: Structure that stores the Two Body orbit propagator data (see       TwoBody_Structure).\n\n\n\n\n\n"
 },
 
 {
@@ -1849,19 +1849,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/library/#SatelliteToolbox.rv_to_kepler",
+    "page": "Library",
+    "title": "SatelliteToolbox.rv_to_kepler",
+    "category": "function",
+    "text": "function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)\n\nConvert a Cartesian representation (position vector r [m] and velocity vector v [m/s²]) to the Keplerian elements. Optionally, the user can specify the epoch of the returned elements using the parameter t. It it is omitted, then it default to 0.\n\nReturns\n\nAn instance of the structure Orbit with the Keplerian elements [SI units].\n\nRemarks\n\nThe special cases are treated as follows:\n\nCircular and equatorial: the right ascension of the ascending node and the argument of perigee are set to 0. Hence, the true anomaly is equal to the true longitude.\nElliptical and equatorial: the right ascension of the ascending node is set to 0. Hence, the argument of perigee is equal to the longitude of periapsis.\nCircular and inclined: the argument of perigee is set to 0. Hence, the true anomaly is equal to the argument of latitude.\n\nReferences\n\nThe algorithm was adapted from [1].\n\n\n\n\n\n"
+},
+
+{
     "location": "lib/library/#SatelliteToolbox.rv_to_kepler-NTuple{6,Number}",
     "page": "Library",
     "title": "SatelliteToolbox.rv_to_kepler",
     "category": "method",
     "text": "function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)\n\nConvert a Cartesian representation (position vector [x;y;z] [m] and velocity vector [vx;vy;vz] [m/s²]) to the Keplerian elements.\n\nReturns\n\nAn instance of the structure Orbit with the Keplerian elements [SI units].\n\n\n\n\n\n"
-},
-
-{
-    "location": "lib/library/#SatelliteToolbox.rv_to_kepler-Tuple{AbstractArray{T,1} where T,AbstractArray{T,1} where T}",
-    "page": "Library",
-    "title": "SatelliteToolbox.rv_to_kepler",
-    "category": "method",
-    "text": "function rv_to_kepler(r::Vector, v::Vector)\n\nConvert a Cartesian representation (position vector r [m] and velocity vector v [m/s²]) to the Keplerian elements.\n\nReturns\n\nAn instance of the structure Orbit with the Keplerian elements [SI units].\n\nRemarks\n\nThe special cases are treated as follows:\n\nCircular and equatorial: the right ascension of the ascending node and the argument of perigee are set to 0. Hence, the true anomaly is equal to the true longitude.\nElliptical and equatorial: the right ascension of the ascending node is set to 0. Hence, the argument of perigee is equal to the longitude of periapsis.\nCircular and inclined: the argument of perigee is set to 0. Hence, the true anomaly is equal to the argument of latitude.\n\nReferences\n\nThe algorithm was adapted from [1].\n\n\n\n\n\n"
 },
 
 {
