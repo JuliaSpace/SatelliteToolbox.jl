@@ -58,5 +58,7 @@ end
 #                                  Overloads
 ################################################################################
 
+copy(sv::SatelliteStateVector) = SatelliteStateVector(sv.t, sv.r, sv.v, sv.a)
+
 getindex(sv::SatelliteStateVector{T}, ::Colon) where T<:Number =
     SVector{9,T}(sv.r..., sv.v..., sv.a...)
