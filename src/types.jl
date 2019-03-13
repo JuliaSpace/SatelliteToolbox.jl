@@ -542,7 +542,7 @@ Structure that holds the information related to the Two Body orbit propagator.
 
 # Fields
 
-* `orb`: Current orbit (see `Orbit`).
+* `orb`: Mean orbital elements (see `Orbit`).
 * `tbd`: Structure that stores the Two Body orbit propagator data (see
         `TwoBody_Structure`).
 
@@ -581,7 +581,7 @@ Low level J2 orbit propagator structure.
 
 """
 @with_kw mutable struct J2_Structure{T}
-    # Initial orbit parameters.
+    # Initial mean orbital elements.
     epoch::T
     al_0::T    # Normalized semi-major axis [er].
     n_0::T
@@ -596,7 +596,7 @@ Low level J2 orbit propagator structure.
     # Drag parameters.
     dn_o2::T   # First time derivative of mean motion [rad/s²].
     ddn_o6::T  # Second time derivative of mean motion [rad/s³].
-    # Current parameters.
+    # Current mean orbital elements.
     al_k::T    # Normalized semi-major axis [er].
     e_k::T
     i_k::T
@@ -619,7 +619,7 @@ Structure that holds the information related to the J2 orbit propagator.
 
 # Fields
 
-* `orb`: Current orbit (see `Orbit`).
+* `orb`: Mean orbital elements (see `Orbit`).
 * `j2d`: Structure that stores the J2 orbit propagator data (see
          `J2_Structure`).
 
@@ -659,7 +659,7 @@ Low level J4 orbit propagator structure.
 
 """
 @with_kw mutable struct J4_Structure{T}
-    # Orbit parameters.
+    # Initial mean orbital elements.
     epoch::T
     al_0::T
     n_0::T
@@ -674,7 +674,7 @@ Low level J4 orbit propagator structure.
     # Drag parameters.
     dn_o2::T   # First time derivative of mean motion [rad/s²].
     ddn_o6::T  # Second time derivative of mean motion [rad/s³].
-    # Current parameters.
+    # Current mean orbital elements.
     al_k::T
     e_k::T
     i_k::T
@@ -697,7 +697,7 @@ Structure that holds the information related to the J4 orbit propagator.
 
 # Fields
 
-* `orb`: Current orbit (see `Orbit`).
+* `orb`: Mean orbital elements (see `Orbit`).
 * `j4d`: Structure that stores the J4 orbit propagator data (see
          `J4_Structure`).
 
@@ -826,7 +826,7 @@ Low level SGP4 structure.
     bstar::T
     # Propagation time from epoch.
     Δt::T
-    # Current parameters.
+    # Current mean orbital elements.
     a_k::T
     e_k::T
     i_k::T
@@ -873,7 +873,7 @@ Structure that holds the information related to the SGP4 propagator.
 
 # Fields
 
-* `orb`: Current orbit (see `Orbit`).
+* `orb`: Mean orbital elements (see `Orbit`).
 * `sgp4_gc`: Gravitational contents of the SGP4 algorithm (see `SGP4_GravCte`).
 * `sgp4d`: Structure that stores the SGP4 data (see `SGP4_Structure`).
 
