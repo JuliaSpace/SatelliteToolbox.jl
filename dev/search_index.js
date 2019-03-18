@@ -889,27 +889,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/library/#SatelliteToolbox.compute_U-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}} where T<:Number",
+    "location": "lib/library/#SatelliteToolbox.compute_U-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number,Number}} where T<:Number",
     "page": "Library",
     "title": "SatelliteToolbox.compute_U",
     "category": "method",
-    "text": "function compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = 0) where T<:Number\n\nCompute the gravitational potential [J/kg] at r (ITRF) [m] using the coefficients gm_coefs (see GravityModel_Coefs). The maximum degree that will be used while computing the spherical harmonics will be n_max. If n_max is less or equal 0, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\n\n\n\n\n"
+    "text": "function compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number\n\nCompute the gravitational potential [J/kg] at r (ITRF) [m] using the coefficients gm_coefs (see GravityModel_Coefs). The maximum degree that will be used while computing the spherical harmonics will be n_max and the maximum order is m_max.\n\nIf n_max is negative, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\nIf m_max is negative or if it is greater than n_max, then it will be set to n_max. If m_max is omitted, then it defaults to 0.\n\ninfo: Info\nBy convention, the result with n_max 0 and 1 will be the same.\n\n\n\n\n\n"
 },
 
 {
-    "location": "lib/library/#SatelliteToolbox.compute_dU-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}} where T<:Number",
+    "location": "lib/library/#SatelliteToolbox.compute_dU-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number,Number}} where T<:Number",
     "page": "Library",
     "title": "SatelliteToolbox.compute_dU",
     "category": "method",
-    "text": "function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = 0) where T<:Number\n\nCompute the derivatives w.r.t. the spherical coordinates of the gravitational field (∂U/∂r, ∂U/∂ϕ, ∂U/∂λ) defined by the coefficients gm_coefs (see GravityModel_Coefs) at the position r [m] in ITRF. The maximum degree that will be used while computing the spherical harmonics will be n_max. If n_max is less or equal 0, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\nReturns\n\nThe derivative of the gravitational field w.r.t. the radius (∂U/∂r).\nThe derivative of the gravitational field w.r.t. the latitude (∂U/∂ϕ).\nThe derivative of the gravitational field w.r.t. the longitude (∂U/∂λ).\n\nRemarks\n\nIn this case, ϕ is the geocentric latitude and λ is the geocentric longitude.\n\n\n\n\n\n"
+    "text": "function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number\n\nCompute the derivatives w.r.t. the spherical coordinates of the gravitational field (∂U/∂r, ∂U/∂ϕ, ∂U/∂λ) defined by the coefficients gm_coefs (see GravityModel_Coefs) at the position r [m] in ITRF. The maximum degree that will be used while computing the spherical harmonics will be n_max and the maximum order is m_max.\n\nIf n_max is negative, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\nIf m_max is negative or if it is greater than n_max, then it will be set to n_max. If m_max is omitted, then it defaults to 0.\n\ninfo: Info\nBy convention, the result with n_max 0 and 1 will be the same.\n\nReturns\n\nThe derivative of the gravitational field w.r.t. the radius (∂U/∂r).\nThe derivative of the gravitational field w.r.t. the latitude (∂U/∂ϕ).\nThe derivative of the gravitational field w.r.t. the longitude (∂U/∂λ).\n\nRemarks\n\nIn this case, ϕ is the geocentric latitude and λ is the geocentric longitude.\n\n\n\n\n\n"
 },
 
 {
-    "location": "lib/library/#SatelliteToolbox.compute_g-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}} where T<:Number",
+    "location": "lib/library/#SatelliteToolbox.compute_g-Union{Tuple{T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number}, Tuple{GravityModel_Coefs{T},AbstractArray{T,1} where T,Number,Number}} where T<:Number",
     "page": "Library",
     "title": "SatelliteToolbox.compute_g",
     "category": "method",
-    "text": "function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector [, n_max::Number]) where T<:Number\n\nCompute the gravitational acceleration (ITRF) [m/s²] at position r [m] (ITRF) using the coefficients gm_coefs (see GravityModel_Coefs). The maximum degree that will be used while computing the spherical harmonics will be n_max. If n_max is less or equal 0, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\nRemarks\n\nNotice that this function computes the gravitational acceleration. Hence, the acceleration due to Earth rotation rate is not included.\n\n\n\n\n\n"
+    "text": "function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number\n\nCompute the gravitational acceleration (ITRF) [m/s²] at position r [m] (ITRF) using the coefficients gm_coefs (see GravityModel_Coefs). The maximum degree that will be used while computing the spherical harmonics will be n_max and the maximum order it m_max.\n\nIf n_max is negative, then the maximum available degree will be used. If n_max is omitted, then it defaults to 0.\n\nIf m_max is negative or if it is greater than n_max, then it will be set to n_max. If m_max is omitted, then it defaults to 0.\n\ninfo: Info\nBy convention, the result with n_max 0 and 1 will be the same.\n\nRemarks\n\nNotice that this function computes the gravitational acceleration. Hence, the acceleration due to Earth rotation rate is not included.\n\n\n\n\n\n"
 },
 
 {
