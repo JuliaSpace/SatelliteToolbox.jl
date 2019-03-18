@@ -301,7 +301,7 @@ function conf_nrlmsise00(year::Int,
     #
     # TODO: Not all coefficients are used. Hence, we could gain performance
     # here.
-    plg = legendre(Val{:conv}, pi/2-g_lat*dgtr, 8, false)'
+    plg = legendre(Val{:conv}, pi/2-g_lat*dgtr, 8, 8, false)'
 
     # Latitude variation of gravity
     # =============================
@@ -372,7 +372,7 @@ function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number,
     #
     # TODO: Not all coefficients are used. Hence, we could gain performance
     # here.
-    plg = legendre(Val{:conv}, pi/2-g_lat*dgtr, 8, false)'
+    plg = legendre(Val{:conv}, pi/2-g_lat*dgtr, 8, 8, false)'
 
     # Latitude variation of gravity
     # =============================

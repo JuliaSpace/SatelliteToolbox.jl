@@ -126,8 +126,8 @@ function igrf12(date::Number,
 
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
-    P  =  legendre(Val{:schmidt}, θ, n_max, false)
-    dP = dlegendre(Val{:schmidt}, θ, P,     false)
+    P  =  legendre(Val{:schmidt}, θ, n_max, n_max, false)
+    dP = dlegendre(Val{:schmidt}, θ, P,            false)
 
     # Parameters and auxiliary variables
     # ==================================
