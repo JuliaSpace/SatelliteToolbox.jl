@@ -36,8 +36,7 @@ Compute the first-order derivative of the associated Legendre function
           dϕ
 
 The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix. Notice,
-however, that `dP` must be a square matrix.
+order that will be computed are given by the dimensions of this matrix.
 
 This algorithm needs the matrix `P` with the associated Legendre function. This
 can be computed using the function `legendre`. Notice that this matrix must be
@@ -136,7 +135,7 @@ dlegendre(::Type{Val{:conv}}, ϕ::Number, P::Matrix, ph_term::Bool) =
     dlegendre_conventional(ϕ, P, ph_term)
 
 """
-    function dlegendre([N,] ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function dlegendre([N,] ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -145,7 +144,9 @@ Compute the first-order derivative of the associated Legendre function
     --------------
           dϕ
 
-The maximum degree that will be computed is `n_max`.
+The maximum degree that will be computed is `n_max` and the maximum order is
+`m_max`. Notice that if `m_max` is higher than `n_max` or negative, than it is
+set to `n_max`.
 
 The optional parameter `N` can be used to select the normalization. The
 following values are valid:
@@ -168,26 +169,20 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-dlegendre(ϕ::Number, n_max::Number, ph_term::Bool = false) =
-    dlegendre_fully_normalized(ϕ, n_max, ph_term)
+dlegendre(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false) =
+    dlegendre_fully_normalized(ϕ, n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:full}},
-          ϕ::Number,
-          n_max::Number,
+dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_fully_normalized(ϕ, n_max, ph_term)
+    dlegendre_fully_normalized(ϕ, n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:schmidt}},
-          ϕ::Number,
-          n_max::Number,
+dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_schmidt_quasi_normalized(ϕ, n_max, ph_term)
+    dlegendre_schmidt_quasi_normalized(ϕ, n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:conv}},
-          ϕ::Number,
-          n_max::Number,
+dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_conventional(ϕ, n_max, ph_term)
+    dlegendre_conventional(ϕ, n_max, m_max, ph_term)
 
 ################################################################################
 #                Fully Normalized Associated Legendre Functions
@@ -204,8 +199,7 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
           dϕ
 
 The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix. Notice,
-however, that `dP` must be a square matrix.
+order that will be computed are given by the dimensions of this matrix.
 
 This algorithm needs the matrix `P` with the fully normalized associated
 Legendre function. This can be computed using the function
@@ -221,21 +215,21 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-function dlegendre_fully_normalized!(dP::AbstractMatrix,
-                                     ϕ::Number,
-                                     P::AbstractMatrix,
-                                     ph_term::Bool = false)
+function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
+                                     P::AbstractMatrix, ph_term::Bool = false)
+
+    # Get the maximum degree and order of `P`.
+    (rows_P,  cols_P) = size(P)
+    n_max_P = rows_P - 1
+    m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
+
+    # The order must be at least 1.
+    m_max_P < 1 && throw(ArgumentError("The maximum order of P must be at least 1."))
+
+    # Compute the maximum degree and order of `dP`.
     (rows, cols) = size(dP)
-
-    # Check if the matrix P is a square matrix.
-    (rows != cols) && throw(ArgumentError("dP must be a square matrix."))
-
-    # The matrix must be, at least, 2 rows and 2 columns.
-    (rows < 2) && throw(ArgumentError("dP must have at least 2 rows."))
-
-    # The matrix dP must not have more rows or columns than P.
-    (rows > size(P,1)) && throw(ArgumentError("dP must not have more rows than P."))
-    (cols > size(P,2)) && throw(ArgumentError("dP must not have more columns than P."))
+    n_max = min(rows - 1, n_max_P)
+    m_max = min(m_max_P - 1, cols <= rows ? cols - 1 : n_max)
 
     # The derivative is compute using the following equation [1, p. 1981]:
     #
@@ -274,7 +268,9 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix,
 
     ph_term && (fact *= -1)
 
-    @inbounds for n = 1:rows-1
+    dP[0+1,0+1] = 0
+
+    @inbounds for n = 1:n_max
         for m = 0:n
             if m == 0
                 aux  = sqrt(n*(n+1)/2)
@@ -313,10 +309,20 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix,
             end
 
             dP[n+1,m+1] *= fact
+
+            # Check if the maximum desired order has been reached.
+            #
+            # Notice that we can compute the term `dP[m_max + 1, m_max + 1]` if
+            # there is space in `dP`.
+            if m >= m_max
+                if (n != m_max + 1) || (cols - 1 < n)
+                    break
+                end
+            end
         end
     end
 
-    nothing
+    return nothing
 end
 
 """
@@ -349,14 +355,15 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-function dlegendre_fully_normalized(ϕ::Number, P::AbstractMatrix, ph_term = false)
+function dlegendre_fully_normalized(ϕ::Number, P::AbstractMatrix,
+                                    ph_term = false)
     dP = zero(P)
     dlegendre_fully_normalized!(dP,ϕ,P,ph_term)
-    dP
+    return dP
 end
 
 """
-    function dlegendre_fully_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function dlegendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt fully normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -365,7 +372,9 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The maximum degree that will be computed is `n_max`.
+The maximum degree that will be computed is `n_max` and the maximum order is
+`m_max`. Notice that if `m_max` is higher than `n_max` or negative, than it is
+set to `n_max`.
 
 If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
 be included. If `ph_term` is not present, then it defaults to `false`.
@@ -376,15 +385,28 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_fully_normalized(ϕ::Number,
-                                    n_max::Number,
+function dlegendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1,
                                     ph_term::Bool = false)
+
+    ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
+
+    # Check if we need to compute and additional degree in `P` to provide the
+    # desire order in `dP`.
+    if n_max == m_max
+        n_max_P = m_max_P = n_max
+    else
+        n_max_P = n_max
+        m_max_P = m_max + 1
+    end
+
     # First, compute the matrix with the associated Legendre functions.
-    P = legendre_fully_normalized(ϕ, n_max, ph_term)
+    P = legendre_fully_normalized(ϕ, n_max_P, m_max_P, ph_term)
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dlegendre_fully_normalized(ϕ, P, ph_term)
+    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
+    return dP
 end
 
 ################################################################################
@@ -402,8 +424,7 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
           dϕ
 
 The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix. Notice,
-however, that `dP` must be a square matrix.
+order that will be computed are given by the dimensions of this matrix.
 
 This algorithm needs the matrix `P` with the Schmidt quasi-normalized associated
 Legendre function. This can be computed using the function
@@ -419,10 +440,8 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix,
-                                    ϕ::Number,
-                                    P::AbstractMatrix,
-                                    ph_term::Bool = false) =
+dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number,
+                                    P::AbstractMatrix, ph_term::Bool = false) =
 
     # The algorithm to compute the first-order derivative using Schmidt
     # normalizations is precisely the same as the one that computes using full
@@ -459,8 +478,7 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-function dlegendre_schmidt_quasi_normalized(ϕ::Number,
-                                            P::AbstractMatrix,
+function dlegendre_schmidt_quasi_normalized(ϕ::Number, P::AbstractMatrix,
                                             ph_term = false)
     dP = zero(P)
     dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
@@ -468,7 +486,7 @@ function dlegendre_schmidt_quasi_normalized(ϕ::Number,
 end
 
 """
-    function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -477,7 +495,9 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The maximum degree that will be computed is `n_max`.
+The maximum degree that will be computed is `n_max` and the maximum order is
+`m_max`. Notice that if `m_max` is higher than `n_max` or negative, than it is
+set to `n_max`.
 
 If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
 be included. If `ph_term` is not present, then it defaults to `false`.
@@ -488,15 +508,28 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_schmidt_quasi_normalized(ϕ::Number,
-                                            n_max::Number,
+function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number,
+                                            m_max::Number = -1,
                                             ph_term::Bool = false)
+    ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
+
+    # Check if we need to compute and additional degree in `P` to provide the
+    # desire order in `dP`.
+    if n_max == m_max
+        n_max_P = m_max_P = n_max
+    else
+        n_max_P = n_max
+        m_max_P = m_max + 1
+    end
+
     # First, compute the matrix with the associated Legendre functions.
-    P = legendre_schmidt_quasi_normalized(ϕ, n_max, ph_term)
+    P = legendre_schmidt_quasi_normalized(ϕ, n_max_P, m_max_P, ph_term)
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dlegendre_schmidt_quasi_normalized(ϕ, P, ph_term)
+    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
+    return dP
 end
 
 ################################################################################
@@ -514,8 +547,7 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
           dϕ
 
 The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix. Notice,
-however, that `dP` must be a square matrix.
+order that will be computed are given by the dimensions of this matrix.
 
 This algorithm needs the matrix `P` with the conventional associated Legendre
 function. This can be computed using the function `legendre_conventional`.
@@ -534,17 +566,18 @@ function dlegendre_conventional!(dP::AbstractMatrix,
                                  ϕ::Number,
                                  P::AbstractMatrix,
                                  ph_term::Bool = false)
+    # Get the maximum degree and order of `P`.
+    (rows_P,  cols_P) = size(P)
+    n_max_P = rows_P - 1
+    m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
+
+    # The order must be at least 1.
+    m_max_P < 1 && throw(ArgumentError("The maximum order of P must be at least 1."))
+
+    # Compute the maximum degree and order of `dP`.
     (rows, cols) = size(dP)
-
-    # Check if the matrix P is a square matrix.
-    (rows != cols) && throw(ArgumentError("dP must be a square matrix."))
-
-    # The matrix must be, at least, 2 rows and 2 columns.
-    (rows < 2) && throw(ArgumentError("dP must have at least 2 rows."))
-
-    # The matrix dP must not have more rows or columns than P.
-    (rows > size(P,1)) && throw(ArgumentError("dP must not have more rows than P."))
-    (cols > size(P,2)) && throw(ArgumentError("dP must not have more columns than P."))
+    n_max = min(rows - 1, n_max_P)
+    m_max = min(m_max_P - 1, cols <= rows ? cols - 1 : n_max)
 
     # The derivative is computed using the following equation [1, p. 1981]:
     #
@@ -567,7 +600,9 @@ function dlegendre_conventional!(dP::AbstractMatrix,
 
     ph_term && (fact *= -1)
 
-    @inbounds for n = 1:rows-1
+    dP[0+1,0+1] = 0
+
+    @inbounds for n = 1:n_max
         for m = 0:n
             if m == 0
                 dP[n+1,m+1] = -P[n+1,1+1]
@@ -578,6 +613,16 @@ function dlegendre_conventional!(dP::AbstractMatrix,
             end
 
             dP[n+1,m+1] *= fact
+
+            # Check if the maximum desired order has been reached.
+            #
+            # Notice that we can compute the term `dP[m_max + 1, m_max + 1]` if
+            # there is space in `dP`.
+            if m >= m_max
+                if (n != m_max + 1) || (cols - 1 < n)
+                    break
+                end
+            end
         end
     end
 
@@ -621,7 +666,7 @@ function dlegendre_conventional(ϕ::Number, P::AbstractMatrix, ph_term = false)
 end
 
 """
-    function dlegendre_conventional(ϕ::Number, n_max::Number, ph_term::Bool = false)
+    function dlegendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -630,7 +675,9 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The maximum degree that will be computed is `n_max`.
+The maximum degree that will be computed is `n_max` and the maximum order is
+`m_max`. Notice that if `m_max` is higher than `n_max` or negative, than it is
+set to `n_max`.
 
 If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
 be included. If `ph_term` is not present, then it defaults to `false`.
@@ -641,13 +688,26 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_conventional(ϕ::Number,
-                                n_max::Number,
+function dlegendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1,
                                 ph_term::Bool = false)
+
+    ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
+
+    # Check if we need to compute and additional degree in `P` to provide the
+    # desire order in `dP`.
+    if n_max == m_max
+        n_max_P = m_max_P = n_max
+    else
+        n_max_P = n_max
+        m_max_P = m_max + 1
+    end
+
     # First, compute the matrix with the associated Legendre functions.
-    P = legendre_conventional(ϕ, n_max, ph_term)
+    P = legendre_conventional(ϕ, n_max_P, m_max_P, ph_term)
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dlegendre_conventional(ϕ, P, ph_term)
+    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dlegendre_conventional!(dP, ϕ, P, ph_term)
+    return dP
 end

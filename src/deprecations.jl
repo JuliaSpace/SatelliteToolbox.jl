@@ -23,3 +23,11 @@
 @deprecate legendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, ph_term::Bool)   legendre(Val{:schmidt}, ϕ, n_max, -1, ph_term)
 @deprecate legendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, ph_term::Bool)      legendre(Val{:full}, ϕ, n_max, -1, ph_term)
 @deprecate legendre(ϕ::Number, n_max::Number, ph_term::Bool)                          legendre(ϕ, n_max, -1, ph_term)
+
+@deprecate dlegendre_fully_normalized(ϕ::Number, n_max::Number, ph_term::Bool)         dlegendre_fully_normalized(ϕ, n_max, -1, ph_term)
+@deprecate dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, ph_term::Bool) dlegendre_schmidt_quasi_normalized(ϕ, n_max, -1, ph_term)
+@deprecate dlegendre_conventional(ϕ::Number, n_max::Number, ph_term::Bool)             dlegendre_conventional(ϕ, n_max, -1, ph_term)
+@deprecate dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, ph_term::Bool)      dlegendre(Val{:conv}, ϕ, n_max, -1, ph_term)
+@deprecate dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, ph_term::Bool)   dlegendre(Val{:schmidt}, ϕ, n_max, -1, ph_term)
+@deprecate dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, ph_term::Bool)      dlegendre(Val{:full}, ϕ, n_max, -1, ph_term)
+@deprecate dlegendre(ϕ::Number, n_max::Number, ph_term::Bool)                          dlegendre(ϕ, n_max, -1, ph_term)
