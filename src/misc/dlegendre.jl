@@ -223,9 +223,6 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
     n_max_P = rows_P - 1
     m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
 
-    # The order must be at least 1.
-    m_max_P < 1 && throw(ArgumentError("The maximum order of P must be at least 1."))
-
     # Compute the maximum degree and order of `dP`.
     (rows, cols) = size(dP)
     n_max = min(rows - 1, n_max_P)
@@ -269,6 +266,8 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
     ph_term && (fact *= -1)
 
     dP[0+1,0+1] = 0
+
+    m_max < 0 && return nothing
 
     @inbounds for n = 1:n_max
         for m = 0:n
@@ -571,9 +570,6 @@ function dlegendre_conventional!(dP::AbstractMatrix,
     n_max_P = rows_P - 1
     m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
 
-    # The order must be at least 1.
-    m_max_P < 1 && throw(ArgumentError("The maximum order of P must be at least 1."))
-
     # Compute the maximum degree and order of `dP`.
     (rows, cols) = size(dP)
     n_max = min(rows - 1, n_max_P)
@@ -601,6 +597,8 @@ function dlegendre_conventional!(dP::AbstractMatrix,
     ph_term && (fact *= -1)
 
     dP[0+1,0+1] = 0
+
+    m_max < 0 && return nothing
 
     @inbounds for n = 1:n_max
         for m = 0:n

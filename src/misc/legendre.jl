@@ -247,7 +247,7 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
 """
 function legendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1,
                                    ph_term::Bool = false)
-    n_max < 1 && throw(ArgumentError("n_max must be at least 1."))
+    (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
@@ -387,7 +387,7 @@ This algorithm was based on [3,4]. The conversion is obtained by:
 function legendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number,
                                            m_max::Number = -1,
                                            ph_term::Bool = false)
-    (n_max < 1) && throw(ArgumentError("n_max must be at least 1."))
+    (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
@@ -493,7 +493,7 @@ A matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 """
 function legendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1,
                                ph_term::Bool = false)
-    (n_max < 1) && throw(ArgumentError("n_max must be at least 1."))
+    (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
