@@ -58,30 +58,18 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-dlegendre!(dP::AbstractMatrix,
-           ϕ::Number,
-           P::AbstractMatrix,
+dlegendre!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false) =
+    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
+
+dlegendre!(::Type{Val{:full}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
-dlegendre!(::Type{Val{:full}},
-           dP::AbstractMatrix,
-           ϕ::Number,
-           P::AbstractMatrix,
-           ph_term::Bool = false) =
-    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
-
-dlegendre!(::Type{Val{:schmidt}},
-           dP::AbstractMatrix,
-           ϕ::Number,
-           P::AbstractMatrix,
+dlegendre!(::Type{Val{:schmidt}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
 
-dlegendre!(::Type{Val{:conv}},
-           dP::AbstractMatrix,
-           ϕ::Number,
-           P::AbstractMatrix,
+dlegendre!(::Type{Val{:conv}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_conventional!(dP, ϕ, P, ph_term)
 
@@ -121,19 +109,19 @@ A matrix with the first-order derivative of the Legendre associated functions
 
 """
 dlegendre(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false) =
-    dlegendre_fully_normalized(ϕ, n_max, m_max, ph_term)
+    dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
 dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_fully_normalized(ϕ, n_max, m_max, ph_term)
+    dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
 dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_schmidt_quasi_normalized(ϕ, n_max, m_max, ph_term)
+    dlegendre_schmidt_quasi_normalized(float(ϕ), n_max, m_max, ph_term)
 
 dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, m_max::Number = -1,
           ph_term::Bool = false) =
-    dlegendre_conventional(ϕ, n_max, m_max, ph_term)
+    dlegendre_conventional(float(ϕ), n_max, m_max, ph_term)
 
 ################################################################################
 #                Fully Normalized Associated Legendre Functions
@@ -224,7 +212,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
         for m = 0:n
             if m == 0
                 aux  = sqrt(n*(n+1)/2)
-                a_nm = +0.5*aux
+                a_nm = aux/2
                 b_nm = -a_nm
 
                 # Notice that [1, p. 1985]:
@@ -237,23 +225,23 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
             # We should consider the case `m == 1` separately from `n == m`
             # because of the coefficient `C_{m}`.
             elseif m == 1
-                a_nm = +0.5*sqrt(2n*(n+1))
+                a_nm = sqrt(2n*(n+1))/2
                 dP[n+1,1+1] = a_nm*P[n+1,1-1+1]
 
                 # Only compute `b_nm` if `n > 1`. Otherwise, we could access an
                 # invalid memory region if `P` is 2x2.
                 if n > 1
-                    b_nm = -0.5*sqrt((n+2)*(n-1))
+                    b_nm = -sqrt((n+2)*(n-1))/2
                     dP[n+1,1+1] += b_nm*P[n+1,1+1+1]
                 end
 
             elseif n != m
-                a_nm = +0.5*sqrt((n+m)*(n-m+1))
-                b_nm = -0.5*sqrt((n+m+1)*(n-m))
+                a_nm = +sqrt((n+m)*(n-m+1))/2
+                b_nm = -sqrt((n+m+1)*(n-m))/2
 
                 dP[n+1,m+1] = a_nm*P[n+1,m-1+1] + b_nm*P[n+1,m+1+1]
             else
-                a_nm = +0.5*sqrt((n+m)*(n-m+1))
+                a_nm = +sqrt((n+m)*(n-m+1))/2
 
                 dP[n+1,m+1] = a_nm*P[n+1,m-1+1]
             end
@@ -276,7 +264,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
 end
 
 """
-    function dlegendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function dlegendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt fully normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -298,8 +286,8 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1,
-                                    ph_term::Bool = false)
+function dlegendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1,
+                                    ph_term::Bool = false) where T<:AbstractFloat
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
@@ -317,7 +305,7 @@ function dlegendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dP = zeros(T, n_max + 1, m_max + 1)
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
     return dP, P
 end
@@ -362,7 +350,7 @@ dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number,
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -384,9 +372,10 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number,
+function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Number,
                                             m_max::Number = -1,
-                                            ph_term::Bool = false)
+                                            ph_term::Bool = false) where T<:AbstractFloat
+
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
     # Check if we need to compute and additional degree in `P` to provide the
@@ -403,7 +392,7 @@ function dlegendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number,
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dP = zeros(T, n_max + 1, m_max + 1)
     dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
     return dP, P
 end
@@ -438,10 +427,9 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 
 """
-function dlegendre_conventional!(dP::AbstractMatrix,
-                                 ϕ::Number,
-                                 P::AbstractMatrix,
+function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
                                  ph_term::Bool = false)
+
     # Get the maximum degree and order of `P`.
     (rows_P,  cols_P) = size(P)
     n_max_P = rows_P - 1
@@ -482,9 +470,9 @@ function dlegendre_conventional!(dP::AbstractMatrix,
             if m == 0
                 dP[n+1,m+1] = -P[n+1,1+1]
             elseif n != m
-                dP[n+1,m+1] = 0.5*( (n+m)*(n-m+1)*P[n+1,m-1+1] - P[n+1,m+1+1] )
+                dP[n+1,m+1] = ( (n+m)*(n-m+1)*P[n+1,m-1+1] - P[n+1,m+1+1] )/2
             else
-                dP[n+1,m+1] = 0.5*( (n+m)*(n-m+1)*P[n+1,m-1+1] )
+                dP[n+1,m+1] = ( (n+m)*(n-m+1)*P[n+1,m-1+1] )/2
             end
 
             dP[n+1,m+1] *= fact
@@ -527,8 +515,8 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1,
-                                ph_term::Bool = false)
+function dlegendre_conventional(ϕ::T, n_max::Number, m_max::Number = -1,
+                                ph_term::Bool = false) where T<:AbstractFloat
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
@@ -546,7 +534,7 @@ function dlegendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1,
 
     # Now, compute and return the time-derivative of the associated Legendre
     # functions.
-    dP = zeros(eltype(P), n_max + 1, m_max + 1)
+    dP = zeros(T, n_max + 1, m_max + 1)
     dlegendre_conventional!(dP, ϕ, P, ph_term)
     return dP, P
 end

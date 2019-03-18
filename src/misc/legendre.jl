@@ -57,25 +57,16 @@ be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
 legendre!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
-    legendre_fully_normalized!(P, ϕ, ph_term)
+    legendre_fully_normalized!(P, float(ϕ), ph_term)
 
-legendre!(::Type{Val{:full}},
-          P::AbstractMatrix,
-          ϕ::Number,
-          ph_term::Bool = false) =
-    legendre_fully_normalized!(P, ϕ, ph_term)
+legendre!(::Type{Val{:full}}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
+    legendre_fully_normalized!(P, float(ϕ), ph_term)
 
-legendre!(::Type{Val{:schmidt}},
-          P::AbstractMatrix,
-          ϕ::Number,
-          ph_term::Bool = false) =
-    legendre_schmidt_quasi_normalized!(P, ϕ, ph_term)
+legendre!(::Type{Val{:schmidt}}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
+    legendre_schmidt_quasi_normalized!(P, float(ϕ), ph_term)
 
-legendre!(::Type{Val{:conv}},
-          P::AbstractMatrix,
-          ϕ::Number,
-          ph_term::Bool = false) =
-    legendre_conventional!(P, ϕ, ph_term)
+legendre!(::Type{Val{:conv}}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
+    legendre_conventional!(P, float(ϕ), ph_term)
 
 """
     function legendre([N,] ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
@@ -105,19 +96,19 @@ A matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
 """
 legendre(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false) =
-    legendre_fully_normalized(ϕ, n_max, m_max, ph_term)
+    legendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
 legendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, m_max::Number = -1,
          ph_term::Bool = false) =
-    legendre_fully_normalized(ϕ, n_max, m_max, ph_term)
+    legendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
 legendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, m_max::Number = -1,
          ph_term::Bool = false) =
-    legendre_schmidt_quasi_normalized(ϕ, n_max, m_max, ph_term)
+    legendre_schmidt_quasi_normalized(float(ϕ), n_max, m_max, ph_term)
 
 legendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, m_max::Number = -1,
          ph_term::Bool = false) =
-    legendre_conventional(ϕ, n_max, m_max, ph_term)
+    legendre_conventional(float(ϕ), n_max, m_max, ph_term)
 
 ################################################################################
 #                Fully Normalized Associated Legendre Functions
@@ -214,7 +205,7 @@ function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
 end
 
 """
-    function legendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function legendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`. The
 maximum degree that will be computed is `n_max` and the maximum order is
@@ -245,13 +236,14 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
     where P_n,m is the fully normalized Legendre associated function.
 
 """
-function legendre_fully_normalized(ϕ::Number, n_max::Number, m_max::Number = -1,
-                                   ph_term::Bool = false)
+function legendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1,
+                                   ph_term::Bool = false) where T<:AbstractFloat
+
     (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
-    P = zeros(n_max+1, m_max+1)
+    P = zeros(T, n_max+1, m_max+1)
     legendre_fully_normalized!(P, ϕ, ph_term)
     return P
 end
@@ -292,8 +284,7 @@ This algorithm was based on [3,4]. The conversion is obtained by:
     where P_n,m is the quasi-normalized normalized Legendre associated function.
 
 """
-function legendre_schmidt_quasi_normalized!(P::AbstractMatrix,
-                                            ϕ::Number,
+function legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number,
                                             ph_term::Bool = false)
     (rows, cols) = size(P)
 
@@ -353,7 +344,7 @@ function legendre_schmidt_quasi_normalized!(P::AbstractMatrix,
 end
 
 """
-    function legendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function legendre_schmidt_quasi_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the Schmidt quasi-normalized associated Legendre function
 `P_n,m[cos(ϕ)]`. The maximum degree that will be computed is `n_max` and the
@@ -384,14 +375,15 @@ This algorithm was based on [3,4]. The conversion is obtained by:
     where P_n,m is the quasi-normalized normalized Legendre associated function.
 
 """
-function legendre_schmidt_quasi_normalized(ϕ::Number, n_max::Number,
+function legendre_schmidt_quasi_normalized(ϕ::T, n_max::Number,
                                            m_max::Number = -1,
-                                           ph_term::Bool = false)
+                                           ph_term::Bool = false) where T<:AbstractFloat
+
     (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
-    P = zeros(n_max+1, m_max+1)
+    P = zeros(T, n_max+1, m_max+1)
     legendre_schmidt_quasi_normalized!(P, ϕ, ph_term)
     return P
 end
@@ -416,9 +408,7 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-function legendre_conventional!(P::AbstractMatrix,
-                                ϕ::Number,
-                                ph_term::Bool = false)
+function legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
     (rows, cols) = size(P)
 
     # Obtain the maximum degree and order that must be computed.
@@ -476,7 +466,7 @@ function legendre_conventional!(P::AbstractMatrix,
 end
 
 """
-    function legendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function legendre_conventional(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`. The
 maximum degree that will be computed is `n_max` and the maximum order is
@@ -491,13 +481,14 @@ be included. If `ph_term` is not present, then it defaults to `false`.
 A matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
 """
-function legendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1,
-                               ph_term::Bool = false)
+function legendre_conventional(ϕ::T, n_max::Number, m_max::Number = -1,
+                               ph_term::Bool = false) where T<:AbstractFloat
+
     (n_max < 0) && throw(ArgumentError("n_max must be positive."))
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
 
-    P = zeros(n_max+1, m_max+1)
+    P = zeros(T, n_max+1, m_max+1)
     legendre_conventional!(P, ϕ, ph_term)
     return P
 end
