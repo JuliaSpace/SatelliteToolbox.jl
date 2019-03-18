@@ -130,23 +130,27 @@ end
     v  = (1 .+ rand(3))*R0
     gm = load_gravity_model(EGM96())
 
-    g_0 = compute_g(gm, v, 0)
+    g_0 = compute_g(gm, v, -1)
     g_1 = compute_g(gm, v, 1)
     g_2 = compute_g(gm, v, 2)
     g_3 = compute_g(gm, v, 360)
+    g_4 = compute_g(gm, v, 360, 0)
 
     @test g_0 == g_3
     @test g_1 != g_2
     @test g_1 != g_3
     @test g_2 != g_3
+    @test g_3 != g_4
 
-    U_0 = compute_U(gm, v, 0)
+    U_0 = compute_U(gm, v, -1)
     U_1 = compute_U(gm, v, 1)
     U_2 = compute_U(gm, v, 2)
     U_3 = compute_U(gm, v, 360)
+    U_4 = compute_U(gm, v, 360, 0)
 
     @test U_0 == U_3
     @test U_1 != U_2
     @test U_1 != U_3
     @test U_2 != U_3
+    @test U_3 != U_4
 end
