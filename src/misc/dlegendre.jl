@@ -74,7 +74,7 @@ dlegendre!(::Type{Val{:conv}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix
     dlegendre_conventional!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre([N,] ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function dlegendre([N,] ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -108,18 +108,18 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-dlegendre(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false) =
+dlegendre(ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) =
     dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, m_max::Number = -1,
+dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, m_max::Number = -1,
+dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_schmidt_quasi_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Number, m_max::Number = -1,
+dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_conventional(float(ϕ), n_max, m_max, ph_term)
 
@@ -264,7 +264,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
 end
 
 """
-    function dlegendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
+    function dlegendre_fully_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt fully normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -286,7 +286,7 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_fully_normalized(ϕ::T, n_max::Number, m_max::Number = -1,
+function dlegendre_fully_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1,
                                     ph_term::Bool = false) where T<:AbstractFloat
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
@@ -350,7 +350,7 @@ dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number,
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Number, m_max::Number = -1, ph_term::Bool = false) where T<:AbstractFloat
+    function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -372,8 +372,8 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Number,
-                                            m_max::Number = -1,
+function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Integer,
+                                            m_max::Integer = -1,
                                             ph_term::Bool = false) where T<:AbstractFloat
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
@@ -493,7 +493,7 @@ function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatr
 end
 
 """
-    function dlegendre_conventional(ϕ::Number, n_max::Number, m_max::Number = -1, ph_term::Bool = false)
+    function dlegendre_conventional(ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -515,7 +515,7 @@ A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
 
 """
-function dlegendre_conventional(ϕ::T, n_max::Number, m_max::Number = -1,
+function dlegendre_conventional(ϕ::T, n_max::Integer, m_max::Integer = -1,
                                 ph_term::Bool = false) where T<:AbstractFloat
 
     ( (m_max < 0) || (m_max > n_max) ) && (m_max = n_max)
