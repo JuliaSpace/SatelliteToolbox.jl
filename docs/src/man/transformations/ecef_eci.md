@@ -143,21 +143,21 @@ conversions, as described in the following table.
 | IAU-76/FK5    | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
 | IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `J2000` | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5    | `J2000` | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `MOD`   | Not required  | First              |
+| IAU-76/FK5    | `J2000` | `TOD`   | Not required  | First              |
 | IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
 | IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `MOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5    | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `MOD`   | `J2000` | Not required  | First              |
+| IAU-76/FK5    | `MOD`   | `TOD`   | Not required  | Second             |
+| IAU-76/FK5    | `MOD`   | `TEME`  | Not required  | Second             |
 | IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TOD`   | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `J2000` | Not required  | First              |
+| IAU-76/FK5    | `TOD`   | `MOD`   | Not required  | Second             |
+| IAU-76/FK5    | `TOD`   | `TEME`  | Not required  | Second             |
 | IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TEME`  | `J2000` | Not requrired | First              |
-| IAU-76/FK5    | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `J2000` | Not required  | First              |
+| IAU-76/FK5    | `TEME`  | `MOD`   | Not required  | Second             |
+| IAU-76/FK5    | `TEME`  | `TOD`   | Not required  | Second             |
 | IAU-2006/2010 | `GCRF`  | `CIRS`  | Not required¹ | First              |
 | IAU-2006/2010 | `CIRS`  | `CIRS`  | Not required¹ | Second             |
 
@@ -167,10 +167,9 @@ to the GCRF will not be available, reducing the precision.
 
 !!! note
 
-    In this function, MOD and TOD frames are always defined with IERS EOP
-    corrections. Hence, if one wants to obtain the MOD and TOD frames according
-    to the original IAU-76/FK5 theory, it is necessary to use the low-level
-    functions in file `./src/transformations/fk5/fk5.jl`.
+    In this function, if EOP corrections are not provided, then MOD and TOD
+    frames will be computed considering the original IAU-76/FK5 theory.
+    Otherwise, the corrected frame will be used.
 
 ```jldoctest ECEF_ECI
 julia> rECItoECI(DCM, GCRF(), J2000(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
@@ -225,22 +224,22 @@ then it defaults to `DCM`. The EOP data `eop_data`, as described in section [EOP
 Data](@ref), is required in some conversions, as described in the following
 table.
 
-|   Model       |  ECEF  |   ECI   |    EOP Data     |
-|:--------------|:-------|:--------|:----------------|
-| IAU-76/FK5    | `ITRF` | `GCRF`  | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `J2000` | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `MOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `TOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `TEME`  | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `MOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `TOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
-| IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
-| IAU-2006/2010 | `ITRF` | `GCRF`  | EOP IAU2000A    |
-| IAU-2006/2010 | `TIRS` | `CIRS`  | Not required¹   |
-| IAU-2006/2010 | `TIRS` | `GCRF`  | Not required¹ ² |
+|   Model       |   ECI   |  ECEF  |    EOP Data     |
+|:--------------|:--------|:-------|:----------------|
+| IAU-76/FK5    | `GCRF`  | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `J2000` | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `MOD`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `TOD`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `TEME`  | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5    | `GCRF`  | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `J2000` | `PEF`  | Not required¹   |
+| IAU-76/FK5    | `MOD`   | `PEF`  | Not required¹   |
+| IAU-76/FK5    | `TOD`   | `PEF`  | Not required¹   |
+| IAU-76/FK5    | `TEME`  | `PEF`  | Not required¹   |
+| IAU-2006/2010 | `CIRS`  | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 | `GCRF`  | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 | `CIRS`  | `TIRS` | Not required¹   |
+| IAU-2006/2010 | `GCRF`  | `TIRS` | Not required¹ ² |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
@@ -253,10 +252,9 @@ to the GCRF will not be available, reducing the precision.
 
 !!! note
 
-    In this function, MOD and TOD frames are always defined with IERS EOP
-    corrections. Hence, if one wants to obtain the MOD and TOD frames according
-    to the original IAU-76/FK5 theory, it is necessary to use the low-level
-    functions in file `./src/transformations/fk5/fk5.jl`.
+    In this function, if EOP corrections are not provided, then MOD and TOD
+    frames will be computed considering the original IAU-76/FK5 theory.
+    Otherwise, the corrected frame will be used.
 
 ```jldoctest ECEF_ECI
 julia> rECEFtoECI(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
