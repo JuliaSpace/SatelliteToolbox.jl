@@ -87,7 +87,7 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `TEME`  | `ITRF` | EOP IAU1980     |
 | IAU-76/FK5    | `GCRF`  | `PEF`  | EOP IAU1980     |
 | IAU-76/FK5    | `J2000` | `PEF`  | Not required¹   |
-| IAU-76/FK5    | `MOD`   | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `MOD`   | `PEF`  | Not required¹   |
 | IAU-76/FK5    | `TOD`   | `PEF`  | EOP IAU1980     |
 | IAU-76/FK5    | `TEME`  | `PEF`  | Not required¹   |
 | IAU-2006/2010 | `CIRS`  | `ITRF` | EOP IAU2000A    |
@@ -110,10 +110,9 @@ given the selected frames.
 
 ## MOD and TOD
 
-In this function, MOD and TOD frames are always defined with IERS EOP
-corrections. Hence, if one wants to obtain the MOD and TOD frames according to
-the original IAU-76/FK5 theory, it is necessary to use the low-level functions
-in file `./src/transformations/fk5/fk5.jl`.
+In this function, if EOP corrections are not provided, then MOD and TOD frames
+will be computed considering the original IAU-76/FK5 theory. Otherwise, the
+corrected frame will be used.
 
 # Returns
 
@@ -199,15 +198,15 @@ Quaternion{Float64}:
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}},
-                   JD_UTC::Number) =
+@inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
+                                Type{Val{:TEME}}},
+                   T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
 @inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}},
-                   JD_UTC::Number) =
+                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
+                                Type{Val{:TEME}}},
+                   T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
 
 @inline rECItoECEF(T_ECI::Union{Type{Val{:CIRS}},Type{Val{:GCRF}}},

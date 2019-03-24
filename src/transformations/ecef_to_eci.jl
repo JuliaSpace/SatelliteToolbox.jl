@@ -87,7 +87,7 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `ITRF` | `TEME`  | EOP IAU1980     |
 | IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
 | IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `MOD`   | Not required¹   |
 | IAU-76/FK5    | `PEF`  | `TOD`   | EOP IAU1980     |
 | IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
 | IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
@@ -106,10 +106,9 @@ to the GCRF will not be available, reducing the precision.
 
 ## MOD and TOD
 
-In this function, MOD and TOD frames are always defined with IERS EOP
-corrections. Hence, if one wants to obtain the MOD and TOD frames according to
-the original IAU-76/FK5 theory, it is necessary to use the low-level functions
-in file `./src/transformations/fk5/fk5.jl`.
+In this function, if EOP corrections are not provided, then MOD and TOD frames
+will be computed considering the original IAU-76/FK5 theory. Otherwise, the
+corrected frame will be used.
 
 # Returns
 
@@ -182,7 +181,8 @@ Quaternion{Float64}:
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:TEME}}},
+                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:MOD}},
+                                Type{Val{:TEME}}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
@@ -425,6 +425,17 @@ function rECEFtoECI(T::T_ROT,
 
     # Compute the rotation.
     rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
+
+function rECEFtoECI(T::T_ROT, ::Type{Val{:PEF}}, ::Type{Val{:MOD}},
+                    JD_UTC::Number)
+
+    # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
+    JD_UT1 = JD_UTC
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute the rotation.
+    rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
 end
 
 #                                 PEF => TOD

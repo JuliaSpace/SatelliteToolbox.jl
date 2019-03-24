@@ -502,6 +502,12 @@ end
 #
 #   r_mod = 5094.02837450   i + 6127.87081640   j + 6380.24851640   k [km]
 #
+# If not EOP correction is used, then we get:
+#
+#   r_mod = 5094.02901670   i + 6127.87093630   j + 6380.24788850   k [km]
+#
+# Notice, however, that this result is obtained by using the correct UT1.
+#
 ################################################################################
 
 @testset "Function rECEFtoECI PEF => MOD" begin
@@ -535,6 +541,29 @@ end
     @test r_mod[1] ≈ +5094.02837450 atol=3e-4
     @test r_mod[2] ≈ +6127.87081640 atol=3e-4
     @test r_mod[3] ≈ +6380.24851640 atol=3e-4
+
+    # No EOP corrections
+    # ==================
+
+    # Notice that if we use JD_UT1, then the correction to TT will be wrong.
+    # However, this will lead to a much smaller error than assuming that UTC =
+    # UT1.
+
+    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+
+    D_MOD_PEF = rECEFtoECI(PEF(), MOD(), JD_UT1)
+    r_mod = D_MOD_PEF*r_pef
+
+    @test r_mod[1] ≈ +5094.02901670 atol=8e-6
+    @test r_mod[2] ≈ +6127.87093630 atol=8e-6
+    @test r_mod[3] ≈ +6380.24788850 atol=8e-6
+
+    q_MOD_PEF = rECEFtoECI(Quaternion, PEF(), MOD(), JD_UT1)
+    r_mod = vect(conj(q_MOD_PEF)*r_pef*q_MOD_PEF)
+
+    @test r_mod[1] ≈ +5094.02901670 atol=8e-6
+    @test r_mod[2] ≈ +6127.87093630 atol=8e-6
+    @test r_mod[3] ≈ +6380.24788850 atol=8e-6
 end
 
 ## PEF to TEME
