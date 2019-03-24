@@ -428,7 +428,7 @@ function rECItoECI(T::T_ROT,
     r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
     r_PEF_MOD   = rMODtoPEF_fk5(T, JD_UT1, JD_TT, 0, 0)
     r_MOD_PEF   = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-    r_TOD_MOD   = rMODtoTOD_fk5(T, JD_UT1, δΔϵ_1980, δΔψ_1980)
+    r_TOD_MOD   = rMODtoTOD_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
     compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF, r_TOD_MOD)
