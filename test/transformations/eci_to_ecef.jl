@@ -348,6 +348,12 @@ end
 #
 #   r_pef  = -1033.47503130   i + 7901.30558560   j + 6380.34453270   k [km]
 #
+# If not EOP correction is used, then we get the same result by using:
+#
+#   r_tod = 5094.51478040   i + 6127.36646120   j + 6380.34453270   k [km]
+#
+# Notice, however, that this result is obtained by using the correct UT1.
+#
 ################################################################################
 
 @testset "Function rECItoECEF TOD => PEF" begin
@@ -367,6 +373,30 @@ end
     @test r_pef[1] ≈ -1033.47503130 atol=3e-4
     @test r_pef[2] ≈ +7901.30558560 atol=3e-4
     @test r_pef[3] ≈ +6380.34453270 atol=3e-4
+
+    # No EOP corrections
+    # ==================
+
+    # Notice that if we use JD_UT1, then the correction to TT will be wrong.
+    # However, this will lead to a much smaller error than assuming that UTC =
+    # UT1.
+
+    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+    r_tod  = [5094.51478040; 6127.36646120; 6380.34453270]
+
+    D_PEF_TOD = rECItoECEF(TOD(), PEF(), JD_UT1)
+    r_pef = D_PEF_TOD*r_tod
+
+    @test r_pef[1] ≈ -1033.47503130 atol=1e-7
+    @test r_pef[2] ≈ +7901.30558560 atol=1e-7
+    @test r_pef[3] ≈ +6380.34453270 atol=1e-7
+
+    q_PEF_TOD = rECItoECEF(Quaternion, TOD(), PEF(), JD_UT1)
+    r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
+
+    @test r_pef[1] ≈ -1033.47503130 atol=1e-7
+    @test r_pef[2] ≈ +7901.30558560 atol=1e-7
+    @test r_pef[3] ≈ +6380.34453270 atol=1e-7
 end
 
 ## PEF to MOD

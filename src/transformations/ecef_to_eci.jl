@@ -88,7 +88,7 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
 | IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
 | IAU-76/FK5    | `PEF`  | `MOD`   | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5    | `PEF`  | `TOD`   | Not required¹   |
 | IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
 | IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
 | IAU-2006/2010 | `ITRF` | `GCRF`  | EOP IAU2000A    |
@@ -181,8 +181,8 @@ Quaternion{Float64}:
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Union{Type{Val{:J2000}}, Type{Val{:MOD}},
-                                Type{Val{:TEME}}},
+                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
+                                Type{Val{:TOD}},Type{Val{:TEME}}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
@@ -464,6 +464,16 @@ function rECEFtoECI(T::T_ROT,
     rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 end
 
+function rECEFtoECI(T::T_ROT, ::Type{Val{:PEF}}, ::Type{Val{:TOD}},
+                    JD_UTC::Number)
+
+    # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
+    JD_UT1 = JD_UTC
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute the rotation.
+    rPEFtoTOD_fk5(T, JD_UT1, JD_TT, 0)
+end
 
 #                                 PEF => TEME
 # ==============================================================================

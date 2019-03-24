@@ -88,7 +88,7 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `GCRF`  | `PEF`  | EOP IAU1980     |
 | IAU-76/FK5    | `J2000` | `PEF`  | Not required¹   |
 | IAU-76/FK5    | `MOD`   | `PEF`  | Not required¹   |
-| IAU-76/FK5    | `TOD`   | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5    | `TOD`   | `PEF`  | Not required¹   |
 | IAU-76/FK5    | `TEME`  | `PEF`  | Not required¹   |
 | IAU-2006/2010 | `CIRS`  | `ITRF` | EOP IAU2000A    |
 | IAU-2006/2010 | `GCRF`  | `ITRF` | EOP IAU2000A    |
@@ -198,14 +198,14 @@ Quaternion{Float64}:
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TEME}}},
+@inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:TOD}},
+                                Type{Val{:MOD}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
 @inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TEME}}},
+                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:TOD}},
+                                Type{Val{:MOD}},Type{Val{:TEME}}},
                    T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
 
