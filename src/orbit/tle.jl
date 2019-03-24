@@ -431,10 +431,10 @@ omitted, then it defaults to `true`.
 """
 function print_tle(io::IO, tle::TLE, color::Bool = true)
     # Colors will be printed only for STDOUT.
-    b = (color) ? "\x1b[1m"         : ""
-    d = (color) ? "\x1b[0m"         : ""
-    g = (color) ? "\x1b[1m\x1b[32m" : ""
-    y = (color) ? "\x1b[1m\x1b[33m" : ""
+    b = (color) ? _b : ""
+    d = (color) ? _d : ""
+    g = (color) ? _g : ""
+    y = (color) ? _y : ""
 
     # Print the TLE information.
     print(io, "                             $(g)TLE$(d)\n")

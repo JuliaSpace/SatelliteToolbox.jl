@@ -22,10 +22,10 @@ function show(io::IO, mime::MIME"text/plain", orb::Orbit{T1,T2}) where {T1,T2}
     color = get(io, :color, false)
 
     # Definition of colors that will be used for printing.
-    b = color ? "\x1b[1m" : ""
-    d = color ? "\x1b[0m" : ""
-    g = color ? "\x1b[1m\x1b[32m" : ""
-    y = color ? "\x1b[1m\x1b[33m" : ""
+    b = color ? _b : ""
+    d = color ? _d : ""
+    g = color ? _g : ""
+    y = color ? _y : ""
 
     # Print the TLE information.
     println("Orbit{", T1, ",", T2, "}:")
