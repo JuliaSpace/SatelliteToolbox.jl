@@ -665,6 +665,11 @@ end
 #   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
 #   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
 #
+# If not EOP correction is used, then we get:
+#
+#   r_tod = 5094.51478040   i + 6127.36646120   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460885670 i +    0.7860772220 j +    5.5319312880 k [km/s]
+#
 ################################################################################
 
 @testset "Function rECItoECI J2000 <=> TOD" begin
@@ -745,6 +750,85 @@ end
     @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
     @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
     @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
+
+    # No EOP corrections
+    # ==========================================================================
+
+    ## J2000 => TOD
+    ## ============
+
+    r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+    v_j2000 = [-4.7432196000; 0.7905366000; 5.5337561900]
+
+    ## DCM
+    ## ---
+
+    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC)
+
+    r_tod = D_TOD_J2000*r_j2000
+    v_tod = D_TOD_J2000*v_j2000
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC)
+
+    r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
+    v_tod = vect(conj(q_TOD_J2000)*v_j2000*q_TOD_J2000)
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TOD => J2000
+    ## ============
+
+    r_tod = [5094.51478040; 6127.36646120; 6380.34453270]
+    v_tod = [-4.7460885670; 0.7860772220; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC)
+
+    r_j2000 = D_J2000_TOD*r_tod
+    v_j2000 = D_J2000_TOD*v_tod
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC)
+
+    r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
+    v_j2000 = vect(conj(q_J2000_TOD)*v_tod*q_J2000_TOD)
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
 end
 
 # J2000 <=> TEME

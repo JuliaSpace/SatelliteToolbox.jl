@@ -86,14 +86,14 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `J2000` | `MOD`   | Not required  | First              |
-| IAU-76/FK5    | `J2000` | `TOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `TOD`   | Not required  | First              |
 | IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
 | IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `MOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `MOD`   | `J2000` | Not required  | First              |
 | IAU-76/FK5    | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
 | IAU-76/FK5    | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
 | IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TOD`   | `J2000` | EOP IAU1980   | First              |
+| IAU-76/FK5    | `TOD`   | `J2000` | Not required  | First              |
 | IAU-76/FK5    | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
 | IAU-76/FK5    | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
 | IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
@@ -187,9 +187,9 @@ Quaternion{Float64}:
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TEME}}},
+                                Type{Val{:TOD}},Type{Val{:TEME}}},
                   T_ECIf::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TEME}}},
+                                Type{Val{:TOD}},Type{Val{:TEME}}},
                   JD_UTC::Number) =
     rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
 
@@ -434,12 +434,29 @@ function rECItoECI(T::T_ROT,
     compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF, r_TOD_MOD)
 end
 
+function rECItoECI(T::T_ROT, ::Type{Val{:J2000}}, ::Type{Val{:TOD}},
+                   JD_UTC::Number)
+
+    # Get the time in TT.
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute and return the composed rotation.
+    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
+    r_TOD_MOD   = rMODtoTOD_fk5(T, JD_TT, 0, 0)
+
+    return compose_rotation(r_MOD_J2000, r_TOD_MOD)
+end
+
 @inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:TOD}},
                   T_ECIf::Type{Val{:J2000}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
     inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
+
+@inline rECItoECI(T::T_ROT, T_ECIo::Type{Val{:TOD}}, T_ECIf::Type{Val{:J2000}},
+                  JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC))
 
 #                                J2000 <=> TEME
 # ==============================================================================
