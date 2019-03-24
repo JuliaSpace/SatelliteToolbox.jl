@@ -1194,5 +1194,4 @@ end
     @test v_gcrf[1] ≈ -4.7432201610  atol=1e-7
     @test v_gcrf[2] ≈ +0.7905364950  atol=1e-7
     @test v_gcrf[3] ≈ +5.5337557240  atol=1e-7
-
 end
