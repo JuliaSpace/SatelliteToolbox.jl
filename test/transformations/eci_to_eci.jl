@@ -476,6 +476,11 @@ end
 #   r_mod = 5094.02837450   i + 6127.87081640   j + 6380.24851640   k [km]
 #   v_mod =   -4.7462630520 i +    0.7860140450 j +    5.5317905620 k [km/s]
 #
+# If not EOP correction is used, then we get:
+#
+#   r_mod = 5094.02901670   i + 6127.87093630   j + 6380.24788850   k [km]
+#   v_mod =   -4.7462624950 i +    0.7860141490 j +    5.5317910250 k [km/s]
+#
 ################################################################################
 
 @testset "Function rECItoECI J2000 <=> MOD" begin
@@ -556,6 +561,85 @@ end
     @test v_j2000[1] ≈ -4.7432196000  atol=1e-7
     @test v_j2000[2] ≈ +0.7905366000  atol=1e-7
     @test v_j2000[3] ≈ +5.5337561900  atol=1e-7
+
+    # No EOP Corrections
+    # ==========================================================================
+
+    ## J2000 => MOD
+    ## ============
+
+    r_j2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+    v_j2000 = [-4.7432196000; 0.7905366000; 5.5337561900]
+
+    ## DCM
+    ## ---
+
+    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC)
+
+    r_mod = D_MOD_J2000*r_j2000
+    v_mod = D_MOD_J2000*v_j2000
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC)
+
+    r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
+    v_mod = vect(conj(q_MOD_J2000)*v_j2000*q_MOD_J2000)
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
+
+    ## MOD => J2000
+    ## ============
+
+    r_mod = [5094.02901670; 6127.87093630; 6380.24788850]
+    v_mod = [-4.7462624950; 0.7860141490; 5.5317910250]
+
+    ## DCM
+    ## ---
+
+    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC)
+
+    r_j2000 = D_J2000_MOD*r_mod
+    v_j2000 = D_J2000_MOD*v_mod
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC)
+
+    r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
+    v_j2000 = vect(conj(q_J2000_MOD)*v_mod*q_J2000_MOD)
+
+    @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
+    @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
+    @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
+
+    @test v_j2000[1] ≈ -4.7432196000  atol=1e-9
+    @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
+    @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
 end
 
 # J2000 <=> TOD

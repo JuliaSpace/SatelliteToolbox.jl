@@ -85,7 +85,7 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
 | IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `J2000` | `MOD`   | EOP IAU1980   | First              |
+| IAU-76/FK5    | `J2000` | `MOD`   | Not required  | First              |
 | IAU-76/FK5    | `J2000` | `TOD`   | EOP IAU1980   | First              |
 | IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
 | IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
@@ -109,10 +109,9 @@ to the GCRF will not be available, reducing the precision.
 
 ## MOD and TOD
 
-In this function, MOD and TOD frames are always defined with IERS EOP
-corrections. Hence, if one wants to obtain the MOD and TOD frames according to
-the original IAU-76/FK5 theory, it is necessary to use the low-level functions
-in file `./src/transformations/fk5/fk5.jl`.
+In this function, if EOP corrections are not provided, then MOD and TOD frames
+will be computed considering the original IAU-76/FK5 theory. Otherwise, the
+corrected frame will be used.
 
 # Returns
 
@@ -187,8 +186,10 @@ Quaternion{Float64}:
     rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
-                  T_ECIf::Union{Type{Val{:J2000}},Type{Val{:TEME}}},
+@inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:MOD}},
+                                Type{Val{:TEME}}},
+                  T_ECIf::Union{Type{Val{:J2000}},Type{Val{:MOD}},
+                                Type{Val{:TEME}}},
                   JD_UTC::Number) =
     rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
 
@@ -375,12 +376,28 @@ function rECItoECI(T::T_ROT,
     compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF)
 end
 
+function rECItoECI(T::T_ROT, ::Type{Val{:J2000}}, ::Type{Val{:MOD}},
+                   JD_UTC::Number)
+
+    # Get the time in TT.
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute and return the rotation.
+    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
+
+    return r_MOD_J2000
+end
+
 @inline rECItoECI(T::T_ROT,
                   T_ECIo::Type{Val{:MOD}},
                   T_ECIf::Type{Val{:J2000}},
                   JD_UTC::Number,
                   eop_data::EOPData_IAU1980) =
     inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC, eop_data))
+
+@inline rECItoECI(T::T_ROT, T_ECIo::Type{Val{:MOD}}, T_ECIf::Type{Val{:J2000}},
+                  JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, T_ECIf, T_ECIo, JD_UTC))
 
 #                                J2000 <=> TOD
 # ==============================================================================
