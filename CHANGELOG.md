@@ -1,6 +1,67 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.0
+-------------
+
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] The API
+  initialization functions of all orbit propagators have changed! Please, see
+  the documentation for more details. The analytical propagators Two Body, J2,
+  and J4 are now initialized using the mean orbit elements or TLEs, whereas the
+  analytical orbit propagator SGP4 can now only be initialized with TLEs.
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] Some API
+  functions of `[d]legendre` were removed to simplify the code.
+- ![BREAKING][badge-breaking] All the orbital elements in the `Orbit` structure
+  must be of the same type now. This does not affect the initialization function
+  `Orbit`, which automatically handles the conversion.
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] The user can now
+  select the maximum order that will be used in gravitational models. However,
+  this is a breaking change because selecting the maximum degree as 0 will make
+  the methods use only the first term, leading to the same result as selecting
+  it as 1. To use all the terms, the maximum degree must be set to -1. Notice
+  that this is still the default behavior if the maximum degree is omitted.
+- ![Deprecation][badge-deprecation] All deprecations related to the reference
+  frame transformations were removed.
+- ![Bugfix][badge-bugfix] The `Orbit` structure created when SPG4 were being
+  initialized was not converting the semi-major axis from km to m. Notice that
+  this was not affecting the propagation.
+- ![Bugfix][badge-bugfix] When using the API to initialize the J2 orbit
+  propagator, the parameter `n_0` is the mean motion, *i.e.* the mean angular
+  velocity between two consecutive passages to the perigee. The algorithm
+  obtained from Vallado's book, on the other hand, seems to consider that `n_0`
+  is the rate of change of the mean anomaly. Hence, we must subtract the
+  time-derivative of the perigee in order to make the algorithms compatible.
+- ![Bugfix][badge-bugfix] Treat special cases when converting orbital elements
+  to state vector (position and velocity). (Issue [#25][gh-issue-25])
+- ![Feature][badge-feature] The package now supports the entire IAU-2006/2010
+  theory (CIO approach).
+- ![Feature][badge-feature] It is now possible to compute the satellite ground
+  trace using the function `ground_trace`.
+- ![Feature][badge-feature] J4 orbit propagator. This new propagator considers
+  the perturbation terms J2, J2², and J4.
+- ![Feature][badge-feature] Many general orbit analysis functions now support
+  perturbation terms up to J4.
+- ![Feature][badge-feature] The function `angvel_to_a` can be used to convert
+  the orbit mean motion into the semi-major axis.
+- ![Feature][badge-feature] The satellite state vector can now be represented by
+  the structure `SatelliteStateVector`, which can be initialized by the function
+  `satsv`.
+- ![Feature][badge-feature] The satellite state vector can be convert between
+  all the supported reference frames using `svECItoECI`, `svECItoECEF`,
+  `svECEFtoECI`, and `svECEFtoECEF`. Notice that this conversion take into
+  account the Earth rotation rate when applicable.
+- ![Feature][badge-feature] The user can now select the maximum order that will
+  be used when computing the Legendre associated functions or they derivatives.
+- ![Enhancement][badge-enhancement] The function `kepler_to_rv` can now receive
+  an instance of `Orbit` as input.
+- ![Enhancement][badge-enhancement] All colors are now handled by
+  [Crayons.jl](https://github.com/KristofferC/Crayons.jl).
+- ![Enhancement][badge-enhancement] Many conversion of reference frames using
+  the API can now be called without the EOP data, leading to the default
+  IAU-76/FK5 theory. (Issue [#12][gh-issue-12])
+- ![Enhancement][badge-enhancement] Improve printing functions of `Orbit` and
+  `TLE`. (Issue [#21][gh-issue-21])
+
 Version 0.5.1
 -------------
 
@@ -196,5 +257,8 @@ Version 0.1.0
 [badge-bugfix]: https://img.shields.io/badge/Bugfix-purple.svg
 [badge-info]: https://img.shields.io/badge/Info-gray.svg
 
+[gh-issue-12]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/12
 [gh-issue-20]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/20
+[gh-issue-21]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/21
 [gh-issue-22]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/22
+[gh-issue-25]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/25
