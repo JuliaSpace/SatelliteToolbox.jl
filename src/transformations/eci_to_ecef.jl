@@ -79,7 +79,7 @@ of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
 requirements for EOP data given the selected frames.
 
 |   Model       |   ECI   |  ECEF  |    EOP Data     |
-|:--------------|:--------|:-------|:---------------=|
+|:--------------|:--------|:-------|:----------------|
 | IAU-76/FK5    | `GCRF`  | `ITRF` | EOP IAU1980     |
 | IAU-76/FK5    | `J2000` | `ITRF` | EOP IAU1980     |
 | IAU-76/FK5    | `MOD`   | `ITRF` | EOP IAU1980     |
