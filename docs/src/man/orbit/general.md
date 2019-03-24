@@ -45,8 +45,8 @@ where:
 * `a` is the semi-major axis \[m];
 * `e` is the eccentricity;
 * `i` is the inclination \[rad];
-* `pert` selects the perturbation terms it should be used, it can be `:J0` or
-  `:J2`[^1]; and
+* `pert` selects the perturbation terms it should be used, it can be `:J0`,
+  `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
@@ -86,8 +86,8 @@ where:
 * `a` is the semi-major axis \[m];
 * `e` is the eccentricity;
 * `i` is the inclination \[rad];
-* `pert` selects the perturbation terms it should be used, it can be `:J0` or
-  `:J2`[^1]; and
+* `pert` selects the perturbation terms it should be used, it can be `:J0`,
+  `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
@@ -130,8 +130,8 @@ where:
 * `a` is the semi-major axis \[m];
 * `e` is the eccentricity;
 * `i` is the inclination \[rad];
-* `pert` selects the perturbation terms it should be used, it can be `:J0` or
-  `:J2`[^1]; and
+* `pert` selects the perturbation terms it should be used, it can be `:J0`,
+  `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
@@ -165,8 +165,8 @@ where:
 * `a` is the semi-major axis \[m];
 * `e` is the eccentricity;
 * `i` is the inclination \[rad];
-* `pert` selects the perturbation terms it should be used, it can be `:J0` or
-  `:J2`[^1]; and
+* `pert` selects the perturbation terms it should be used, it can be `:J0`,
+  `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
@@ -179,5 +179,5 @@ julia> period(7130982, 0.001111, deg2rad(98.405), :J0)/60
 
 ---
 
-[^1]: If `pert` is `:J0`, then it will be consider a Keplerian, unperturbed orbit to compute the values. Otherwise, if `pert` is `:J2`, then it will be consider the perturbation terms up to ``J_2`` to compute the values. It `pert` is omitted, then it defaults to `:J2`.
+[^1]: If `pert` is `:J0`, then it will be considered a Keplerian, unperturbed orbit to compute the values. If `pert` is `:J2`, then it will be considered the perturbation terms up to ``J_2`` to compute the values. Otherwise, if `pert` is `:J4`, then it will be considered the perturbation terms ``J_2``, ``J_4``, and ``J_2^2`` to compute the values. If `pert` is omitted, then it defaults to `:J2`.
 
