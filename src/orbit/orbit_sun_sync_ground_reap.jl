@@ -141,15 +141,15 @@ Compute a list of repeating Sun-synchronous orbits.
 
 A matrix containing the orbits found with the following format:
 
-    Semi-major axis [m] | Altitude [m] | Period [s] | Int | Num | Den
-    --------------------|--------------|------------|-----|-----|----
+    Semi-major axis [m] | Altitude [m] | Inclination [rad] | Period [s] | Int | Num | Den
+    --------------------|--------------|-------------------|------------|-----|-----|-----
 
 in which the period is Int + Num/Den.
 
 # Remarks
 
-If minAlt or maxAlt is < 0.0, then the altitude will not be checked when a orbit
-is added to the list.
+If `minAlt` or `maxAlt` is < 0.0, then the altitude will not be checked when a
+orbit is added to the list.
 
 """
 function list_ss_orbits_by_rep_period(minRep::Int,         maxRep::Int,
