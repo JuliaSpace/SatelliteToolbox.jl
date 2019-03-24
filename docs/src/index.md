@@ -21,13 +21,15 @@ of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/def
 
 ## Requirements
 
-* Julia >= 0.7
-* Interpolations >= 0.8.0
-* Parameters >= 0.10.1
-* OptionalData >= 0.2.0
-* ReferenceFrameRotations >= 0.5.0
+* Julia >= 1.0
+* Crayons >= 4.0.0
+* Interpolations >= 0.11.2
+* Parameters >= 0.10.3
+* OptionalData >= 0.2.1
+* PolynomialRoots >= 0.2.0
+* ReferenceFrameRotations >= 0.5.1
 * RemoteFiles >= 0.2.1
-* StaticArrays >= 0.9.2
+* StaticArrays >= 0.10.3
 
 ## Installation
 
