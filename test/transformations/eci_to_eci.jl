@@ -959,6 +959,14 @@ end
 #   r_tod = 5094.51620300   i + 6127.36527840   j + 6380.34453270   k [km]
 #   v_tod =   -4.7460883850 i +    0.7860783240 j +    5.5319312880 k [km/s]
 #
+# If not EOP correction is used, then we get:
+#
+#   r_mod = 5094.02901670   i + 6127.87093630   j + 6380.24788850   k [km]
+#   v_mod =   -4.7462624950 i +    0.7860141490 j +    5.5317910250 k [km/s]
+#
+#   r_tod = 5094.51478040   i + 6127.36646120   j + 6380.34453270   k [km]
+#   v_tod =   -4.7460885670 i +    0.7860772220 j +    5.5319312880 k [km/s]
+#
 ################################################################################
 
 @testset "Function rECItoECI MOD <=> TOD" begin
@@ -1039,6 +1047,85 @@ end
     @test v_mod[1] ≈ -4.7462630520  atol=1e-7
     @test v_mod[2] ≈ +0.7860140450  atol=1e-7
     @test v_mod[3] ≈ +5.5317905620  atol=1e-7
+
+    # No EOP corrections
+    # ==========================================================================
+
+    ## MOD => TOD
+    ## ==========
+
+    r_mod = [5094.02901670; 6127.87093630; 6380.24788850]
+    v_mod = [-4.7462624950; 0.7860141490; 5.5317910250]
+
+    ## DCM
+    ## ---
+
+    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC)
+
+    r_tod = D_TOD_MOD*r_mod
+    v_tod = D_TOD_MOD*v_mod
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC)
+
+    r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
+    v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TOD => MOD
+    ## ==========
+
+    r_tod = [5094.51478040; 6127.36646120; 6380.34453270]
+    v_tod = [-4.7460885670; 0.7860772220; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC)
+
+    r_mod = D_MOD_TOD*r_tod
+    v_mod = D_MOD_TOD*v_tod
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC)
+
+    r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
+    v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
 end
 
 # MOD <=> TEME
@@ -1063,6 +1150,11 @@ end
 #
 #   r_teme = 5094.18016210   i + 6127.64465950   j + 6380.34453270   k [km]
 #   v_teme =   -4.7461314870 i +    0.7858180410 j +    5.5319312880 k [km/s]
+#
+# If not EOP correction is used, then we get the same result by using:
+#
+#   r_mod = 5094.02901670   i + 6127.87093630   j + 6380.24788850   k [km]
+#   v_mod =   -4.7462624950 i +    0.7860141490 j +    5.5317910250 k [km/s]
 #
 ################################################################################
 
@@ -1144,6 +1236,85 @@ end
     @test v_mod[1] ≈ -4.7462630520  atol=1e-7
     @test v_mod[2] ≈ +0.7860140450  atol=1e-7
     @test v_mod[3] ≈ +5.5317905620  atol=1e-7
+
+    # No EOP corrections
+    # ==========================================================================
+
+    ## MOD => TEME
+    ## ===========
+
+    r_mod = [5094.02901670; 6127.87093630; 6380.24788850]
+    v_mod = [-4.7462624950; 0.7860141490; 5.5317910250]
+
+    ## DCM
+    ## ---
+
+    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC)
+
+    r_teme = D_TEME_MOD*r_mod
+    v_teme = D_TEME_MOD*v_mod
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC)
+
+    r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
+    v_teme = vect(conj(q_TEME_MOD)*v_mod*q_TEME_MOD)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-7
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-7
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-9
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-9
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-9
+
+    ## TEME => MOD
+    ## ===========
+
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+    v_teme = [-4.7461314870; 0.7858180410; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC)
+
+    r_mod = D_MOD_TEME*r_teme
+    v_mod = D_MOD_TEME*v_teme
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC)
+
+    r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
+    v_mod = vect(conj(q_MOD_TEME)*v_teme*q_MOD_TEME)
+
+    @test r_mod[1] ≈ +5094.02901670 atol=1e-7
+    @test r_mod[2] ≈ +6127.87093630 atol=1e-7
+    @test r_mod[3] ≈ +6380.24788850 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624950  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141490  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910250  atol=1e-9
 end
 
 # TOD <=> TEME
@@ -1249,6 +1420,85 @@ end
     @test v_tod[1] ≈ -4.7460883850  atol=1e-7
     @test v_tod[2] ≈ +0.7860783240  atol=1e-7
     @test v_tod[3] ≈ +5.5319312880  atol=1e-7
+
+    # No EOP corrections
+    # ==========================================================================
+
+    ## TOD => TEME
+    ## ===========
+
+    r_tod = [5094.51478040; 6127.36646120; 6380.34453270]
+    v_tod = [-4.7460885670; 0.7860772220; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC)
+
+    r_teme = D_TEME_TOD*r_tod
+    v_teme = D_TEME_TOD*v_tod
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
+
+    ## Quaternion
+    ## ----------
+
+    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC)
+
+    r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
+    v_teme = vect(conj(q_TEME_TOD)*v_tod*q_TEME_TOD)
+
+    @test r_teme[1] ≈ +5094.18016210 atol=1e-4
+    @test r_teme[2] ≈ +6127.64465950 atol=1e-4
+    @test r_teme[3] ≈ +6380.34453270 atol=1e-4
+
+    @test v_teme[1] ≈ -4.7461314870  atol=1e-7
+    @test v_teme[2] ≈ +0.7858180410  atol=1e-7
+    @test v_teme[3] ≈ +5.5319312880  atol=1e-7
+
+    ## TEME => TOD
+    ## ===========
+
+    r_teme = [5094.18016210; 6127.64465950; 6380.34453270]
+    v_teme = [-4.7461314870; 0.7858180410; 5.5319312880]
+
+    ## DCM
+    ## ---
+
+    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC)
+
+    r_tod = D_TOD_TEME*r_teme
+    v_tod = D_TOD_TEME*v_teme
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
+
+    ## Quaternion
+    ## ----------
+
+    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC)
+
+    r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
+    v_tod = vect(conj(q_TOD_TEME)*v_teme*q_TOD_TEME)
+
+    @test r_tod[1] ≈ +5094.51478040 atol=1e-7
+    @test r_tod[2] ≈ +6127.36646120 atol=1e-7
+    @test r_tod[3] ≈ +6380.34453270 atol=1e-7
+
+    @test v_tod[1] ≈ -4.7460885670  atol=1e-9
+    @test v_tod[2] ≈ +0.7860772220  atol=1e-9
+    @test v_tod[3] ≈ +5.5319312880  atol=1e-9
 end
 
 ################################################################################

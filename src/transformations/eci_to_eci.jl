@@ -90,16 +90,16 @@ requirements for EOP data given the selected frames.
 | IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
 | IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `MOD`   | `J2000` | Not required  | First              |
-| IAU-76/FK5    | `MOD`   | `TOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `MOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `MOD`   | `TOD`   | Not required  | Second             |
+| IAU-76/FK5    | `MOD`   | `TEME`  | Not required  | Second             |
 | IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
 | IAU-76/FK5    | `TOD`   | `J2000` | Not required  | First              |
-| IAU-76/FK5    | `TOD`   | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `TOD`   | `TEME`  | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TOD`   | `MOD`   | Not required  | Second             |
+| IAU-76/FK5    | `TOD`   | `TEME`  | Not required  | Second             |
 | IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TEME`  | `J2000` | Not requrired | First              |
-| IAU-76/FK5    | `TEME`  | `MOD`   | EOP IAU1980   | Second             |
-| IAU-76/FK5    | `TEME`  | `TOD`   | EOP IAU1980   | Second             |
+| IAU-76/FK5    | `TEME`  | `J2000` | Not required  | First              |
+| IAU-76/FK5    | `TEME`  | `MOD`   | Not required  | Second             |
+| IAU-76/FK5    | `TEME`  | `TOD`   | Not required  | Second             |
 | IAU-2006/2010 | `GCRF`  | `CIRS`  | Not required¹ | First              |
 | IAU-2006/2010 | `CIRS`  | `CIRS`  | Not required¹ | Second             |
 
@@ -186,12 +186,19 @@ Quaternion{Float64}:
     rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECI(T_ECIo::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TOD}},Type{Val{:TEME}}},
-                  T_ECIf::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TOD}},Type{Val{:TEME}}},
+@inline rECItoECI(T_ECIo::Type{Val{:J2000}},
+                  T_ECIf::Union{Type{Val{:MOD}}, Type{Val{:TOD}}, Type{Val{:TEME}}},
                   JD_UTC::Number) =
     rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
+
+@inline rECItoECI(T_ECIo::Union{Type{Val{:MOD}}, Type{Val{:TOD}}, Type{Val{:TEME}}},
+                  T_ECIf::Type{Val{:J2000}},
+                  JD_UTC::Number) =
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
+
+@inline rECItoECI(T_ECIo::T_ECIs_of_date, JD_UTCo::Number,
+                  T_ECIf::T_ECIs_of_date, JD_UTCf::Number) =
+    rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf)
 
 @inline rECItoECI(T_ECIo::T_ECIs_IAU_2006, T_ECIf::T_ECIs_IAU_2006,
                   JD_UTC::Number) =
@@ -511,6 +518,19 @@ function rECItoECI(T::T_ROT,
 
     # Return the full rotation.
     compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
+end
+
+function rECItoECI(T::T_ROT, T_ECIo::T_ECIs_of_date, JD_UTCo::Number,
+                   T_ECIf::T_ECIs_of_date, JD_UTCf::Number)
+
+    # In this case, in which we do not have EOP data, we convert origin to J2000
+    # and then convert back to the destination. This is necessary because the
+    # user may want to change the epoch.
+    r_GCRF_ECIo = rECItoECI(T, T_ECIo,      Val{:J2000}, JD_UTCo)
+    r_ECIf_GCRF = rECItoECI(T, Val{:J2000}, T_ECIf,      JD_UTCf)
+
+    # Return the full rotation.
+    return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
 end
 
 ################################################################################
