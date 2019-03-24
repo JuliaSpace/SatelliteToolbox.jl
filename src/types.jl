@@ -458,7 +458,7 @@ This structure contains the same elements of the TLE with the same units.
 * `checksum_l2`: Checksum of the line 2 (modulo 10).
 
 """
-@with_kw struct TLE
+@with_kw_noshow struct TLE
     name::String
 
     # First line

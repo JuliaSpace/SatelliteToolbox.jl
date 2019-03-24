@@ -1,6 +1,13 @@
 TLE
 ===
 
+```@meta
+CurrentModule = SatelliteToolbox
+DocTestSetup = quote
+    using SatelliteToolbox
+end
+```
+
 The TLE, or Two Line Elements set, is a data format that contains information
 about the orbit at a specific epoch of an Earth-orbiting object. The information
 is split into two lines with 70 characters each. In the following, it is
@@ -38,8 +45,8 @@ This function returns an array of TLEs. Each TLE is an instance of the structure
 ```julia-repl
 julia> tles = read_tle("tles")
 2-element Array{TLE,1}:
- TLE("SCD 1", 22490, 'U', "93009B  ", 18, 359.76217587, 2.45847826217587e6, 1.86e-6, 0.0, 8.4512e-7, 999, 8, 24.9694, 116.1709, 0.0043211, 90.3968, 62.0083, 14.44539396, 36616, 3)
- TLE("SCD 2", 25504, 'U', "98060A  ", 18, 360.24309362, 2.45847874309362e6, 2.18e-6, 0.0, 1.0518e-5, 999, 6, 24.9967, 319.8664, 0.0017431, 121.381, 9.7939, 14.44057429, 6554, 1)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
 
 julia> tles[1]
                              TLE
@@ -111,12 +118,11 @@ the first line and second line of a TLE can be passed in `tle_l1` and `tle_l2`,
 respectively. In both cases an array of TLEs is returned.  The argument
 `verify_checksum` has the same function as described previously.
 
-```julia-repl
+```jldoctest
 julia> tles = """
        SCD 1
        1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366163
-
        SCD 2
        1 25504U 98060A   18360.24309362  .00000218  00000-0  10518-4 0  9996
        2 25504  24.9967 319.8664 0017431 121.3810   9.7939 14.44057429 65541
@@ -124,8 +130,8 @@ julia> tles = """
 
 julia> read_tle_from_string(tles)
 2-element Array{TLE,1}:
- TLE("SCD 1", 22490, 'U', "93009B  ", 18, 359.76217587, 2.45847826217587e6, 1.86e-6, 0.0, 8.4512e-7, 999, 8, 24.9694, 116.1709, 0.0043211, 90.3968, 62.0083, 14.44539396, 36616, 3)
- TLE("SCD 2", 25504, 'U', "98060A  ", 18, 360.24309362, 2.45847874309362e6, 2.18e-6, 0.0, 1.0518e-5, 999, 6, 24.9967, 319.8664, 0.0017431, 121.381, 9.7939, 14.44057429, 6554, 1)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
 
 julia> tle_l1 = "1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998"
 "1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998"
@@ -135,7 +141,7 @@ julia> tle_l2 = "2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396
 
 julia> read_tle_from_string(tle_l1, tle_l2)
 1-element Array{TLE,1}:
- TLE("UNDEFINED", 22490, 'U', "93009B  ", 18, 359.76217587, 2.45847826217587e6, 1.86e-6, 0.0, 8.4512e-7, 999, 8, 24.9694, 116.1709, 0.0043211, 90.3968, 62.0083, 14.44539396, 36616, 3)
+ TLE: UNDEFINED (Epoch = 2018-12-25T18:17:32)
 ```
 
 It is also available two special types of strings, `tle"` and `tlenc"`, that
@@ -147,14 +153,13 @@ julia> tles = tle"""
        SCD 1
        1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366163
-
        SCD 2
        1 25504U 98060A   18360.24309362  .00000218  00000-0  10518-4 0  9996
        2 25504  24.9967 319.8664 0017431 121.3810   9.7939 14.44057429 65541
        """
 2-element Array{TLE,1}:
- TLE("SCD 1", 22490, 'U', "93009B  ", 18, 359.76217587, 2.45847826217587e6, 1.86e-6, 0.0, 8.4512e-7, 999, 8, 24.9694, 116.1709, 0.0043211, 90.3968, 62.0083, 14.44539396, 36616, 3)
- TLE("SCD 2", 25504, 'U', "98060A  ", 18, 360.24309362, 2.45847874309362e6, 2.18e-6, 0.0, 1.0518e-5, 999, 6, 24.9967, 319.8664, 0.0017431, 121.381, 9.7939, 14.44057429, 6554, 1)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
 
 julia> tles = tle"""
        SCD 1
@@ -162,11 +167,7 @@ julia> tles = tle"""
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366164
        """
 ERROR: LoadError: The TLE file is not valid (error in line 3): Expected checksum: 3, line checksum: 4.
-Stacktrace:
- [1] _parse_tle(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Bool) at /Users/ronan.arraes/.julia/dev/SatelliteToolbox/src/orbit/tle.jl:346
- [2] read_tle_from_string(::String, ::Bool) at /Users/ronan.arraes/.julia/dev/SatelliteToolbox/src/orbit/tle.jl:97
- [3] @tle_str(::LineNumberNode, ::Module, ::Any) at /Users/ronan.arraes/.julia/dev/SatelliteToolbox/src/orbit/tle.jl:131
-in expression starting at REPL[12]:1
+...
 
 julia> tles = tlenc"""
        SCD 1
@@ -174,5 +175,5 @@ julia> tles = tlenc"""
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366164
        """
 1-element Array{TLE,1}:
- TLE("SCD 1", 22490, 'U', "93009B  ", 18, 359.76217587, 2.45847826217587e6, 1.86e-6, 0.0, 8.4512e-7, 999, 8, 24.9694, 116.1709, 0.0043211, 90.3968, 62.0083, 14.44539396, 36616, 4)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
 ```

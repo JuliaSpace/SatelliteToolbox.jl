@@ -15,17 +15,20 @@ export angvel, angvel_to_a, dArgPer, dRAAN, period
 
 copy(orb::Orbit) = Orbit(orb.t, orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f)
 
-function display(orb::Orbit)
+function show(io::IO, mime::MIME"text/plain", orb::Orbit{T1,T2}) where {T1,T2}
     d2r = 180/π
 
+    # Check if the IO supports color.
+    color = get(io, :color, false)
+
     # Definition of colors that will be used for printing.
-    b = "\x1b[1m"
-    d = "\x1b[0m"
-    g = "\x1b[1m\x1b[32m"
-    y = "\x1b[1m\x1b[33m"
+    b = color ? "\x1b[1m" : ""
+    d = color ? "\x1b[0m" : ""
+    g = color ? "\x1b[1m\x1b[32m" : ""
+    y = color ? "\x1b[1m\x1b[33m" : ""
 
     # Print the TLE information.
-    println()
+    println("Orbit{", T1, ",", T2, "}:")
     print("                 $(g)Orbit$(d)\n")
     print("$(y)  ======================================$(d)\n")
     print("$(b)                  t = $(d)"); @printf("%14.5f\n",    orb.t)
@@ -34,7 +37,7 @@ function display(orb::Orbit)
     print("$(b)        Inclination = $(d)"); @printf("%13.4f ˚\n",  orb.i*d2r)
     print("$(b)               RAAN = $(d)"); @printf("%13.4f ˚\n",  orb.Ω*d2r)
     print("$(b)    Arg. of Perigee = $(d)"); @printf("%13.4f ˚\n",  orb.ω*d2r)
-    print("$(b)       True Anomaly = $(d)"); @printf("%13.4f ˚\n",  orb.f*d2r)
+    print("$(b)       True Anomaly = $(d)"); @printf("%13.4f ˚",    orb.f*d2r)
 end
 
 ################################################################################

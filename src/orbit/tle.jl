@@ -462,12 +462,17 @@ function print_tle(io::IO, tle::TLE, color::Bool = true)
     print(io, "$(b)                        1   d²\n$(d)")
     print(io, "$(b)                       ---.--- n: $(d)"); @printf(io, "%f rev/day³\n", tle.ddn_o6)
     print(io, "$(b)                        6  dt²\n$(d)")
-    print(io, "$(y)    ==========================================================$(d)\n")
+    print(io, "$(y)    ==========================================================$(d)")
 
     nothing
 end
 
-# Overload display function for TLE.
-function Base.display(tle::TLE)
-    print_tle(stdout,tle)
+function show(io::IO, tle::TLE)
+    print(io, "TLE: ", tle.name, " (Epoch = ", JDtoDate(DateTime,tle.epoch), ")")
+    return nothing
+end
+
+function show(io::IO, mime::MIME"text/plain", tle::TLE)
+    color = get(io, :color, false)
+    print_tle(io, tle, color)
 end
