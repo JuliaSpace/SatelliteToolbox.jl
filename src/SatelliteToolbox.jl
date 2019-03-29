@@ -85,6 +85,8 @@ include("./misc/legendre.jl")
 include("./misc/dlegendre.jl")
 include("./misc/icgem.jl")
 
+include("./moon/moon_position.jl")
+
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
 include("sun/sun_velocity.jl")

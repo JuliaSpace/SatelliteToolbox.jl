@@ -100,3 +100,8 @@ println("")
     include("./sun/sun_velocity.jl")
 end
 println("")
+
+@testset "Functions related with the Moon" begin
+    include("./moon/moon_position.jl")
+end
+println("")
