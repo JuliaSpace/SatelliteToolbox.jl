@@ -23,7 +23,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 #
-export j4_gc_wgs84, j4_gc_wgs72
+export j4_gc_egm08
 export j4_init, j4!
 
 ################################################################################
@@ -40,20 +40,17 @@ Base.deepcopy(m::J4_Structure) = J4_Structure([ deepcopy(getfield(m, k)) for k =
 #                                  Constants
 ################################################################################
 
-# WGS-84 / EGM-08 Gravitational constants.
-const j4_gc_wgs84 = J4_GravCte(
-        R0,
-        sqrt(3.986005e14/6378137.0^3),
-         0.00108262998905,
-        -0.00000253215306,
-       )
-
-# WGS-72 Gravitational constants.
-const j4_gc_wgs72 = J4_GravCte{Float64}(
-        6378135.0,
-        sqrt(3.986008e14/6378135.0^3),
-         0.001082616,
-        -0.00000253881,
+# EGM-08 Gravitational constants.
+#
+# These constants were obtained from the GFC file of EGM-08. Remember that:
+#
+#   J_n = -C_n,0 * sqrt(2n+1)
+#
+const j4_gc_egm08 = J4_GravCte(
+        6378137.0,
+        sqrt(3.986004415e14/6378137.0^3),
+          0.0010826261738522227,
+         -1.6198975999169731e-6
        )
 
 ################################################################################

@@ -21,7 +21,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export j2_gc_wgs84, j2_gc_wgs72
+export j2_gc_egm08
 export j2_init, j2!
 
 ################################################################################
@@ -60,18 +60,16 @@ Base.deepcopy(m::J2_Structure) = J2_Structure([ deepcopy(getfield(m, k)) for k =
 #                                  Constants
 ################################################################################
 
-# WGS-84 / EGM-08 Gravitational constants.
-j2_gc_wgs84 = J2_GravCte(
-        R0,
-        sqrt(3.986005e14/6378137.0^3),
-         0.00108262998905
-       )
-
-# WGS-72 Gravitational constants.
-j2_gc_wgs72 = J2_GravCte(
-        6378135.0,
-        sqrt(3.986008e14/6378135.0^3),
-         0.001082616
+# EGM-08 Gravitational constants.
+#
+# These constants were obtained from the GFC file of EGM-08. Remember that:
+#
+#   J_n = -C_n,0 * sqrt(2n+1)
+#
+j2_gc_egm08 = J2_GravCte(
+        6378137.0,
+        sqrt(3.986004415e14/6378137.0^3),
+         0.0010826261738522227,
        )
 
 ################################################################################

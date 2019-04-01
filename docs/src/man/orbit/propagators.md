@@ -98,7 +98,7 @@ can be used to customize the algorithm. Those options are listed as follows:
 * `ddn_o6`: Second time derivative of mean motion divided by 6 \[rad/s³]
   (**Default** = 0).
 * `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`)
-  (**Default** = `j2_gc_wgs84`).
+  (**Default** = `j2_gc_egm08`).
 
 !!! warning
 
@@ -112,7 +112,7 @@ can be used to customize the algorithm. Those options are listed as follows:
 * `ddn_o6`: Second time derivative of mean motion divided by 6 \[rad/s³]
   (**Default** = 0).
 * `j4_gc`: J4 orbit propagator gravitational constants (see `J4_GravCte`)
-  (**Default** = `j4_gc_wgs84`).
+  (**Default** = `j4_gc_egm08`).
 
 !!! warning
 

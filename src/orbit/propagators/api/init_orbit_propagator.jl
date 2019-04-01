@@ -60,7 +60,7 @@ following optional parameters:
 * `ddn_o6`: (OPTIONAL) Second time derivative of mean motion divided by 6
             \\[rad/s³] (**Default** = 0).
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants
-           (**Default** = `j2_gc_wgs84`).
+           (**Default** = `j2_gc_egm08`).
 
 ## Additional optional arguments for the J4 orbit propagator
 
@@ -72,7 +72,7 @@ following optional parameters:
 * `ddn_o6`: (OPTIONAL) Second time derivative of mean motion divided by 6
             \\[rad/s³] (**Default** = 0).
 * `j4_gc`: (OPTIONAL) J4 orbit propagator gravitational constants
-           (**Default** = `j4_gc_wgs84`).
+           (**Default** = `j4_gc_egm08`).
 
 ## Additional optional arguments for the two body orbit propagator
 
@@ -98,7 +98,7 @@ function init_orbit_propagator(::Type{Val{:J2}}, epoch::Number, a_0::Number,
                                e_0::Number, i_0::Number, Ω_0::Number,
                                ω_0::Number, f_0::Number, dn_o2::Number = 0,
                                ddn_o6::Number = 0,
-                               j2_gc::J2_GravCte{T} = j2_gc_wgs84) where T
+                               j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
 
     # Create the new Two Body propagator structure.
     j2d = j2_init(j2_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
@@ -114,7 +114,7 @@ function init_orbit_propagator(::Type{Val{:J4}}, epoch::Number, a_0::Number,
                                e_0::Number, i_0::Number, Ω_0::Number,
                                ω_0::Number, f_0::Number, dn_o2::Number = 0,
                                ddn_o6::Number = 0,
-                               j4_gc::J4_GravCte{T} = j4_gc_wgs84) where T
+                               j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
 
     # Create the new J4 propagator structure.
     j4d = j4_init(j4_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
@@ -142,12 +142,12 @@ function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number,
 end
 
 init_orbit_propagator(::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0,
-                      ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_wgs84) =
+                      ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_egm08) =
     init_orbit_propagator(Val{:J2}, orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
                           orb_0.ω, orb_0.f, dn_o2, ddn_o6, j2_gc)
 
 init_orbit_propagator(::Type{Val{:J4}}, orb_0::Orbit, dn_o2::Number = 0,
-                      ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_wgs84) =
+                      ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_egm08) =
     init_orbit_propagator(Val{:J4}, orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
                           orb_0.ω, orb_0.f, dn_o2, ddn_o6, j4_gc)
 
@@ -172,7 +172,7 @@ The initialization function of the J2 orbit propagator can receive the
 following optional parameter:
 
 * `j2_gc`: (OPTIONAL) J2 orbit propagator gravitational constants
-           (**Default** = `j2_gc_wgs84`).
+           (**Default** = `j2_gc_egm08`).
 
 ## Additional optional arguments for the J4 orbit propagator
 
@@ -180,7 +180,7 @@ The initialization function of the J4 orbit propagator can receive the
 following optional parameter:
 
 * `j4_gc`: (OPTIONAL) J4 orbit propagator gravitational constants
-           (**Default** = `j4_gc_wgs84`).
+           (**Default** = `j4_gc_egm08`).
 
 ## Additional optional arguments for the two body orbit propagator
 
@@ -213,7 +213,7 @@ algorithm.
 """
 function init_orbit_propagator(::Type{Val{:J2}},
                                tle::TLE,
-                               j2_gc::J2_GravCte = j2_gc_wgs84)
+                               j2_gc::J2_GravCte = j2_gc_egm08)
 
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
@@ -255,12 +255,12 @@ function init_orbit_propagator(::Type{Val{:J2}},
                           f_0,
                           tle.dn_o2*2π/(86400)^2,
                           tle.ddn_o6*2π/(86400)^3,
-                          j2_gc_wgs84)
+                          j2_gc_egm08)
 end
 
 function init_orbit_propagator(::Type{Val{:J4}},
                                tle::TLE,
-                               j4_gc::J4_GravCte = j4_gc_wgs84)
+                               j4_gc::J4_GravCte = j4_gc_egm08)
 
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j4_gc
@@ -294,7 +294,7 @@ function init_orbit_propagator(::Type{Val{:J4}},
 
     init_orbit_propagator(Val{:J4}, tle.epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0,
                           tle.dn_o2*2π/(86400)^2, tle.ddn_o6*2π/(86400)^3,
-                          j4_gc_wgs84)
+                          j4_gc_egm08)
 end
 
 function init_orbit_propagator(::Type{Val{:twobody}},
