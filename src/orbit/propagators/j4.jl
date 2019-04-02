@@ -23,7 +23,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 #
-export j4_gc_egm08
+export j4_gc_egm08, j4_gc_egm96, j4_gc_jgm02, j4_gc_jgm03
 export j4_init, j4!
 
 ################################################################################
@@ -40,17 +40,41 @@ Base.deepcopy(m::J4_Structure) = J4_Structure([ deepcopy(getfield(m, k)) for k =
 #                                  Constants
 ################################################################################
 
-# EGM-08 Gravitational constants.
-#
-# These constants were obtained from the GFC file of EGM-08. Remember that:
+# These constants were obtained from the GFC files. Remember that:
 #
 #   J_n = -C_n,0 * sqrt(2n+1)
 #
+
+# EGM-08 Gravitational constants.
 const j4_gc_egm08 = J4_GravCte(
         6378137.0,
         sqrt(3.986004415e14/6378137.0^3),
           0.0010826261738522227,
          -1.6198975999169731e-6
+       )
+
+# EGM-96 Gravitational constants.
+const j4_gc_egm96 = J4_GravCte(
+        6378136.3,
+        sqrt(3.986004415e14/6378136.3^3),
+         0.0010826266835531513,
+         -1.619621591367e-6
+       )
+
+# JGM-02 Gravitational constants.
+const j4_gc_jgm02 = J4_GravCte(
+        6378136.3,
+        sqrt(3.986004415e14/6378136.3^3),
+         0.0010826269256388149,
+        -1.62042999e-6
+       )
+
+# JGM-03 Gravitational constants.
+const j4_gc_jgm03 = J4_GravCte(
+        6378136.3,
+        sqrt(3.986004415e14/6378136.3^3),
+         0.0010826360229829945,
+        -1.619331205071e-6
        )
 
 ################################################################################
