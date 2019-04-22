@@ -1,6 +1,21 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.1
+-------------
+
+- ![Bugfix][badge-bugfix] The EGM-08 coefficients in J2 and J4 orbit propagator
+  algorithm were slightly wrong.
+- ![Feature][badge-feature] It was added an algorithm to compute the Moon
+  position: `moon_position_i`.
+- ![Enhancement][badge-enhancement] The performance of Sun position algorithm
+  was increased by 15%.
+- ![Enhancement][badge-enhancement] The J2 and J4 orbit propagator algorithms
+  now have more built-in coefficients: EGM96, JGM02, and JGM03.
+- ![Enhancement][badge-enhancement] The `Project.toml` file was added, the
+  `REQUIRE` file was removed, and the registration process is now handled by
+  [Registrator.jl](https://github.com/JuliaComputing/Registrator.jl).
+
 Version 0.6.0
 -------------
 
