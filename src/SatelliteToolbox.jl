@@ -45,11 +45,11 @@ const _crayon_u     = crayon"bold blue"
 const _crayon_y     = crayon"bold yellow"
 
 # Escape sequences related to the crayons.
-const _b = sprint(print, _crayon_bold)
-const _d = sprint(print, _reset_crayon)
-const _g = sprint(print, _crayon_g)
-const _y = sprint(print, _crayon_y)
-const _u = sprint(print, _crayon_u)
+const _b = _crayon_bold
+const _d = _reset_crayon
+const _g = _crayon_g
+const _y = _crayon_y
+const _u = _crayon_u
 
 ################################################################################
 #                                  Exceptions
