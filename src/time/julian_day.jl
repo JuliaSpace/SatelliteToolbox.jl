@@ -205,6 +205,16 @@ end
 function JDtoDate(::Type{Int}, JD::Number)
     (year, month, day, h, m, s) = JDtoDate(JD)
 
+    # If the seconds are large than 59.5, then we must take care of the
+    # rounding. In this case, we should advance a minute that can trigger an
+    # advance in all the other parameters. The safest way here is to just call
+    # the function `JDtoDate` again with an offset.
+
+    if s >= 59.5
+        Δs = 60.01 - s
+        (year, month, day, h, m, s) = JDtoDate(JD + Δs/86400)
+    end
+
     (year, month, day, h, m, round(Int,s))
 end
 

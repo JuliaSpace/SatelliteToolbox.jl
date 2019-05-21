@@ -412,3 +412,17 @@ let
 
     @test date_time_1 === date_time_2
 end
+
+# Issue #30
+# ==============================================================================
+
+let
+    year, month, day, h, m, s = JDtoDate(Int, 2.45754095833333e6)
+
+    @test year  == 2016
+    @test month == 6
+    @test day   == 1
+    @test h     == 11
+    @test m     == 0
+    @test s     == 0
+end
