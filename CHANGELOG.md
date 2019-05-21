@@ -1,6 +1,13 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.2
+-------------
+
+- ![Bugfix][badge-bugfix] Colors in printing functions were not working.
+- ![Bugfix][badge-bugfix] A bug in the conversion `JDtoDate` when seconds are
+  0 was fixed. (Issue [#30][gh-issue-30])
+
 Version 0.6.1
 -------------
 
@@ -277,3 +284,4 @@ Version 0.1.0
 [gh-issue-21]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/21
 [gh-issue-22]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/22
 [gh-issue-25]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/25
+[gh-issue-30]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/30
