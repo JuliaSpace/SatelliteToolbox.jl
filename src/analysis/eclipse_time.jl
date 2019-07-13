@@ -80,7 +80,7 @@ function satellite_eclipse_time(JD0::Number,
     p = a*(1.0-e^2)
 
     # Angular velocity of the orbit [rad/s].
-    n = period(a, e, i, :J2)
+    n = angvel(a, e, i, :J2)
 
     # Step in time
     tstep = step/n
