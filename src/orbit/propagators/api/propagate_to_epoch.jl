@@ -44,6 +44,11 @@ function propagate_to_epoch!(orbp::OrbitPropagatorJ2{T},
     propagate!(orbp, (JD .- orbp.j2d.epoch)*86400)
 end
 
+function propagate_to_epoch!(orbp::OrbitPropagatorJ4{T},
+                             JD::Union{Number,AbstractVector}) where T
+    propagate!(orbp, (JD .- orbp.j4d.epoch)*86400)
+end
+
 function propagate_to_epoch!(orbp::OrbitPropagatorSGP4{T},
                              JD::Union{Number,AbstractVector}) where T
     propagate!(orbp, (JD .- orbp.sgp4d.epoch)*86400)
