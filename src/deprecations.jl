@@ -31,3 +31,9 @@
 @deprecate dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Number, ph_term::Bool)   dlegendre(Val{:schmidt}, ϕ, n_max, -1, ph_term)
 @deprecate dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Number, ph_term::Bool)      dlegendre(Val{:full}, ϕ, n_max, -1, ph_term)
 @deprecate dlegendre(ϕ::Number, n_max::Number, ph_term::Bool)                          dlegendre(ϕ, n_max, -1, ph_term)
+
+#                     Introduced in SatelliteToolbox v0.6
+# ==============================================================================
+
+@deprecate satellite_check_station(r_e, rs_e, minElev)              ground_station_visible(r_e, rs_e, minElev)
+@deprecate satellite_check_station(r_e, lat_s, lon_s, h_s, minElev) ground_station_visible(r_e, lat_s, lon_s, h_s, minElev)
