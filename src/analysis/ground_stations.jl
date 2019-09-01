@@ -10,7 +10,7 @@
 export ground_station_visible
 
 """
-    function ground_station_visible(r_e::Vector, rs_e::Vector, θ::Number)
+    function ground_station_visible(r_e::AbstractVector, rs_e::AbstractVector, θ::Number)
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with position vector `rs_e` (ECEF) and a
@@ -23,7 +23,8 @@ Returns `true` if the satellite is inside the visibility circle, or `false`
 otherwise.
 
 """
-function ground_station_visible(r_e::Vector, rs_e::Vector, θ::Number)
+function ground_station_visible(r_e::AbstractVector, rs_e::AbstractVector,
+                                θ::Number)
     # Check if the satellite is within the visibility circle of the station.
     dr_e = r_e - rs_e
     cos_beta = dot( dr_e/norm(dr_e), rs_e/norm(rs_e) )
@@ -33,7 +34,7 @@ end
 
 
 """
-    function ground_station_visible(r_e::Vector, lat_s::Number, lon_s::Number, h_s::Number, θ::Number)
+    function ground_station_visible(r_e::AbstractVector, lat_s::Number, lon_s::Number, h_s::Number, θ::Number)
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with latitude `lat_s` [rad], longitude
@@ -46,8 +47,8 @@ Returns `true` if the satellite is inside the visibility circle, or `false`
 otherwise.
 
 """
-function ground_station_visible(r_e::Vector, lat_s::Number, lon_s::Number,
-                                h_s::Number, θ::Number)
+function ground_station_visible(r_e::AbstractVector, lat_s::Number,
+                                lon_s::Number, h_s::Number, θ::Number)
     # Convert the ground station LLA to the ECEF frame.
     rs_e = GeodetictoECEF(lat_s, lon_s, h_s)
 
