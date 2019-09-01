@@ -62,11 +62,11 @@ const _u = _crayon_u
 include("analysis/beta_angle.jl")
 include("analysis/eclipse_time.jl")
 include("analysis/lighting_conditions.jl")
+include("analysis/ground_stations.jl")
 include("analysis/ground_trace.jl")
 include("analysis/raan.jl")
 include("analysis/payload_optical_analysis.jl")
 include("analysis/satellite_position_countries.jl")
-include("analysis/satellite_position_groundstations.jl")
 include("analysis/sun_angle.jl")
 include("analysis/sun_radiation.jl")
 
