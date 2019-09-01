@@ -223,6 +223,4 @@ function JDtoDate(::Type{Date}, JD::Number)
     Date(Y,M,D)
 end
 
-function JDtoDate(::Type{DateTime}, JD::Number)
-    DateTime(JDtoDate(Int,JD)...)
-end
+JDtoDate(::Type{DateTime}, JD::Number) = julian2datetime(JD)
