@@ -14,6 +14,7 @@ using LinearAlgebra
 using OptionalData
 using Parameters
 using PolynomialRoots
+using PrettyTables
 using Printf
 using ReferenceFrameRotations
 using RemoteFiles
@@ -81,6 +82,7 @@ include("earth/geomagnetic_field_models/igrf12_coefs.jl")
 include("earth/geomagnetic_field_models/igrf12syn_coefs.jl")
 include("earth/space_indices/space_indices.jl")
 
+include("./misc/crossing.jl")
 include("./misc/legendre.jl")
 include("./misc/dlegendre.jl")
 include("./misc/icgem.jl")
