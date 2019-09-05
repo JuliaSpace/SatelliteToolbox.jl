@@ -14,7 +14,7 @@
 export beta_angle
 
 """
-    function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, Δt::Integer)
+    function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, Δt::Integer, pert::Symbol = :J2)
 
 Compute the beta angle of an orbit with semi-major axis `a` [m], eccentricity
 `e`, inclination `i` [rad], and initial right ascension of the ascending node
@@ -22,7 +22,15 @@ Compute the beta angle of an orbit with semi-major axis `a` [m], eccentricity
 begin, is `JD₀` [Julian Day]. The analysis will be performed for each day during
 `Δt` days.
 
-Notice that the simulation considers only the perturbation terms up to J2.
+The argument `pert` can be used to select the perturbation terms that must be
+used when propagating the right ascencion of the ascending node. The possible
+values are:
+
+* `:J0`: Consider a Keplerian orbit.
+* `:J2`: Consider the perturbation terms up to J2.
+* `:J4`: Consider the perturbation terms J2, J4, and J2².
+
+If `pert` is omitted, then it defaults to `:J2`.
 
 # Returns
 
@@ -31,7 +39,7 @@ the second one contains the beta angle [rad] for each day.
 
 """
 function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number,
-                    Δt::Integer)
+                    Δt::Integer, pert::Symbol = :J2)
 
     # Vector of the days in which the beta angle will be computed.
     days = collect(0:1:Δt-1)
@@ -40,7 +48,7 @@ function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number
     β = Vector{Float64}(undef,Δt)
 
     # RAAN rotation rate [rad/day].
-    δΩ = 86400dRAAN(a, e, i, :J2)
+    δΩ = 86400dRAAN(a, e, i, pert)
 
     # Loop
     @inbounds @views for d in days
