@@ -96,7 +96,8 @@ function compute_gs_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
         # Handle the initial case.
         if state == :initial
             if gs_visible
-                access_beg = JDtoDate(DateTime, o.t)
+                access_beg = JDtoDate(DateTime, JD₀)
+                state = :visible
             else
                 state = :not_visible
             end
