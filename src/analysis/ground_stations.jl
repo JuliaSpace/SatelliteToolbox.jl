@@ -7,11 +7,12 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export compute_gs_accesses, list_gs_accesses, ground_station_visible
+export ground_station_accesses, list_ground_station_accesses,
+       ground_station_visible
 
 """
-    function compute_gs_accesses(orbp, vrs_e,     Δt, ECI, ECEF, vargs...; kwargs...)
-    function compute_gs_accesses(orbp, [(WGS84)], Δt, ECI, ECEF, vargs...; kwargs...)
+    function ground_station_accesses(orbp, vrs_e,     Δt, ECI, ECEF, vargs...; kwargs...)
+    function ground_station_accesses(orbp, [(WGS84)], Δt, ECI, ECEF, vargs...; kwargs...)
 
 Compute the accesses of a satellite with orbit propagator `orbp` (see
 `init_orbit_propagator`) to the ground stations defined in the vector `vrs_e`.
@@ -45,20 +46,20 @@ containing the WGS84 position of each ground station `[(WGS84)]`:
                one ground station is visible)
 
 """
-compute_gs_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
-    compute_gs_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
+ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
+    ground_station_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
 
-function compute_gs_accesses(orbp, vgs_wgs84::AbstractVector{T}, vargs...;
+function ground_station_accesses(orbp, vgs_wgs84::AbstractVector{T}, vargs...;
                              kwargs...) where T<:Tuple
 
     vrs_e = [GeodetictoECEF(gs_wgs84...) for gs_wgs84 in vgs_wgs84]
-    return compute_gs_accesses(orbp, vrs_e, vargs...; kwargs...)
+    return ground_station_accesses(orbp, vrs_e, vargs...; kwargs...)
 end
 
-compute_gs_accesses(orbp, rs_e::AbstractVector{T}, vargs...; kwargs...) where
-    T<:Number = compute_gs_accesses(orbp, [rs_e], vargs...; kwargs...)
+ground_station_accesses(orbp, rs_e::AbstractVector{T}, vargs...; kwargs...) where
+    T<:Number = ground_station_accesses(orbp, [rs_e], vargs...; kwargs...)
 
-function compute_gs_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
+function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
                              ECI::Union{T_ECIs, T_ECIs_IAU_2006},
                              ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006}, vargs...;
                              θ::Number = 10*pi/180,
@@ -135,10 +136,10 @@ function compute_gs_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
 end
 
 """
-    function list_gs_accesses(io, vargs...; kwargs...)
+    function list_ground_station_accesses(io, vargs...; kwargs...)
 
 Print the ground station accesses to the io `io`. The arguments `vargs...` and
-keywords `kwargs...` are those of the function `compute_gs_accesses`.
+keywords `kwargs...` are those of the function `ground_station_accesses`.
 
 Additionally, the following keywords can be used to modify the behavior of this
 function:
@@ -150,14 +151,14 @@ function:
                 `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
 
 """
-list_gs_accesses(vargs...; kwargs...) =
-    list_gs_accesses(stdout, vargs...; kwargs...)
+list_ground_station_accesses(vargs...; kwargs...) =
+    list_ground_station_accesses(stdout, vargs...; kwargs...)
 
-function list_gs_accesses(io::IO, vargs...; format = :pretty,
+function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
                           time_scale::Symbol = :m, kwargs...)
 
     # Compute the accesses.
-    accesses = compute_gs_accesses(vargs...; kwargs...)
+    accesses = ground_station_accesses(vargs...; kwargs...)
 
     # If no access was found, then inform the user and return.
     if isempty(accesses)
