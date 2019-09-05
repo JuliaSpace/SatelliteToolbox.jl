@@ -11,33 +11,26 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export satellite_beta_angle
+export beta_angle
 
 """
-    function satellite_beta_angle(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, numDays::Integer)
+    function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, Δt::Integer)
 
-Compute the beta angle of a satellite.
+Compute the beta angle of an orbit with semi-major axis `a` [m], excentricity
+`e`, inclination `i` [rad], and initial right ascension of the ascending node
+`RAAN` [rad]. The orbit epoch, which is also the day in which the analysis will
+begin, is `JD₀` [Julian Day]. The analysis will be performed for the number of
+days in `Δt`.
 
-# Args
-
-* `JD0`: Initial instant for the analysis [Julian day].
-* `a`: Semi-major axis of the orbit [m].
-* `e`: Orbit eccentricity.
-* `i`: Orbit inclination [rad].
-* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
-* `numDays`: Number of days of the analysis.
+Notice that the simulation considers only the perturbation terms up to J2.
 
 # Returns
 
-The beta angle [deg] computed for each day.
+An array containing the beta angle [rad] for each day in the analysis.
 
 """
-function satellite_beta_angle(JD0::Number,
-                              a::Number,
-                              e::Number,
-                              i::Number,
-                              RAAN::Number,
-                              numDays::Integer)
+function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number,
+                    Δt::Integer)
     # Constants
     rad2deg = 180.0/pi
 
@@ -45,7 +38,7 @@ function satellite_beta_angle(JD0::Number,
     theta = 0.0                   # Sun angle relative to the inertial
                                   # coordinate frame.
 
-    days = collect(0:1:numDays-1) # Vector of the days in which the beta angle
+    days = collect(0:1:Δt-1)      # Vector of the days in which the beta angle
                                   # will be computed.
 
     N = [0.0; 0.0; 0.0]           # Versor normal to the orbital plane,
@@ -56,7 +49,7 @@ function satellite_beta_angle(JD0::Number,
                                   # in the inertial coordinate frame.
 
     # Output vector.
-    beta = Vector{Float64}(undef,numDays)
+    beta = Vector{Float64}(undef,Δt)
 
     # RAAN rotation rate [rad/day].
     dOmega = dRAAN(a, e, i, :J2)*24.0*3600.0
@@ -72,7 +65,7 @@ function satellite_beta_angle(JD0::Number,
 
         # Compute the Sun position at noon (UT) represented in the Inertial ref.
         # frame.
-        S_i = sun_position_i(JD0+t)
+        S_i = sun_position_i(JD₀+t)
         S_i = S_i/norm(S_i)
 
         # Get the angle between N_i and S_i [deg].

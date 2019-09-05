@@ -35,5 +35,7 @@
 #                     Introduced in SatelliteToolbox v0.6
 # ==============================================================================
 
+@deprecate satellite_beta_angle(JD0, a, e, i, RAAN, numDays)        beta_angle(JD0, a, e, i, RAAN, numDays)
 @deprecate satellite_check_station(r_e, rs_e, minElev)              ground_station_visible(r_e, rs_e, minElev)
 @deprecate satellite_check_station(r_e, lat_s, lon_s, h_s, minElev) ground_station_visible(r_e, lat_s, lon_s, h_s, minElev)
+
