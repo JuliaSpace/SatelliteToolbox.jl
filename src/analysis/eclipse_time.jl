@@ -15,23 +15,20 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export satellite_eclipse_time
+export eclipse_time
 
 """
-    function satellite_eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, numDays::Integer, relative::Bool = false)
+    function eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, Δt::Integer, relative::Bool = false)
 
-Compute the eclipse time of a satellite.
+Compute the eclipse time of an orbit with semi-major axis `a` [m], eccentricity
+`e`, inclination `i` [rad], initial right ascension of the ascending node `RAAN`
+[rad], and initial argument of perigee `w` [rad]. The orbit epoch, which is also
+the day in which the analysis will begin, is `JD₀` [Julian Day]. The analysis
+will be performed for each day during `Δt` days.
 
-# Args
-
-* `JD0`: Initial instant for the analysis [Julian day].
-* `a`: Semi-major axis of the orbit [m].
-* `e`: Orbit eccentricity.
-* `i`: Orbit inclination [rad].
-* `w`: Argument of perigee [rad].
-* `RAAN`: Right ascension of the ascending node at `JD0` [rad].
-* `numDays`: Number of days of the analysis.
-* `relative`: Compute the eclipse time relative to the nodal period.
+If the argument `relative` is `true`, then the computed times will be relative
+to the nodal period [%]. Otherwise, they will be computed in seconds. By
+default, `relative = false`.
 
 # Returns
 
@@ -41,14 +38,8 @@ The following table:
        -----+---------------+---------------+------------
 
 """
-function satellite_eclipse_time(JD0::Number,
-                                a::Number,
-                                e::Number,
-                                i::Number,
-                                w::Number,
-                                RAAN::Number,
-                                numDays::Integer,
-                                relative::Bool = false)
+function eclipse_time(JD₀::Number, a::Number, e::Number, i::Number, w::Number,
+                      RAAN::Number, Δt::Integer, relative::Bool = false)
     # Constants
     deg2rad = pi/180.0
     rad2deg = 180.0/pi
@@ -61,20 +52,20 @@ function satellite_eclipse_time(JD0::Number,
     theta = 0.0                   # Sun angle relative to the inertial
                                   # coordinate frame.
 
-    days = collect(0:1:numDays-1) # Vector of the days in which the beta angle
+    days = collect(0:1:Δt-1)      # Vector of the days in which the beta angle
                                   # will be computed.
 
     # Mean anomaly.
     M = collect(0:step:2*pi)
 
     # Penumbra time.
-    p_time = zeros(numDays)
+    p_time = zeros(Δt)
 
     # Umbra time.
-    u_time = zeros(numDays)
+    u_time = zeros(Δt)
 
     # Sunlight time.
-    s_time = zeros(numDays)
+    s_time = zeros(Δt)
 
     # Semi-lactum rectum.
     p = a*(1.0-e^2)
@@ -96,7 +87,7 @@ function satellite_eclipse_time(JD0::Number,
     # Loop.
     for d in days
         # Get the sun position represented in the Inertial coordinate frame.
-        s_i = sun_position_i(JD0+d)
+        s_i = sun_position_i(JD₀+d)
 
         # Compute the new orbit parameters due to perturbations.
         w_d = w + dw*(d*day2sec)
