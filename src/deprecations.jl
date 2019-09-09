@@ -38,6 +38,6 @@
 @deprecate satellite_beta_angle(JD0, a, e, i, RAAN, numDays)                beta_angle(JD0, a, e, i, RAAN, numDays)
 @deprecate satellite_check_station(r_e, rs_e, minElev)                      ground_station_visible(r_e, rs_e, minElev)
 @deprecate satellite_check_station(r_e, lat_s, lon_s, h_s, minElev)         ground_station_visible(r_e, lat_s, lon_s, h_s, minElev)
-@deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays)           eclipse_time(JD0, a, e, i, w, RAAN, numDays)
-@deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays, relative) eclipse_time(JD0, a, e, i, w, RAAN, numDays, relative)
+@deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays)           eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays)
+@deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays, relative) eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays, relative)
 

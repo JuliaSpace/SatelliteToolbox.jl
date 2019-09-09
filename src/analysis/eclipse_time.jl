@@ -15,20 +15,32 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export eclipse_time
+export eclipse_time_summary
 
 """
-    function eclipse_time(JD0::Number, a::Number, e::Number, i::Number, w::Number, RAAN::Number, Δt::Integer, relative::Bool = false)
+    function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, Δd::Integer, relative::Bool = false, Δt₀::AbstractFloat = -1.0)
 
 Compute the eclipse time of an orbit with semi-major axis `a` [m], eccentricity
 `e`, inclination `i` [rad], initial right ascension of the ascending node `RAAN`
 [rad], and initial argument of perigee `w` [rad]. The orbit epoch, which is also
 the day in which the analysis will begin, is `JD₀` [Julian Day]. The analysis
-will be performed for each day during `Δt` days.
+will be performed for each day during `Δd` days.
+
+This function will compute the eclipse time of one orbit per day.
 
 If the argument `relative` is `true`, then the computed times will be relative
 to the nodal period [%]. Otherwise, they will be computed in seconds. By
 default, `relative = false`.
+
+The argument `Δt₀` can be used to select the time step in which the orbit will
+be propagated. Notice that this algorithm performs a numerical search to find
+the beginning of each section (sunlight, penumbra, and umbra) with millisecond
+precision. Thus, selecting a high number for `Δt₀` will make the analysis
+faster, but the accuracy is lost if a region time span is smalled than `Δt₀`. If
+this parameter is omitted or if it is negative, then the time step will be
+selected automatically to match a mean anomaly step of 5°.
+
+All the analysis is performed using a J2 orbit propagator.
 
 # Returns
 
@@ -38,78 +50,107 @@ The following table:
        -----+---------------+---------------+------------
 
 """
-function eclipse_time(JD₀::Number, a::Number, e::Number, i::Number, w::Number,
-                      RAAN::Number, Δt::Integer, relative::Bool = false)
-    # Constants
-    deg2rad = pi/180.0
-    rad2deg = 180.0/pi
-    day2sec = 24.0*60.0*60.0
+function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number,
+                              RAAN::Number, w::Number, Δd::Integer,
+                              relative::Bool = false, Δt₀::AbstractFloat = -1.0)
 
-    # Step of the orbit propagation (mean anomaly) [rad].
-    step = 0.1*deg2rad
+    # Get the period of the orbit.
+    T = period(a, e, i, :J2)
 
-    # Initialization of variables.
-    theta = 0.0                   # Sun angle relative to the inertial
-                                  # coordinate frame.
+    # If the user did not specify the integration step, then compute based on
+    # a mean anomaly step.
+    if Δt₀ <= 0
+        # Step of the orbit propagation (mean anomaly) [rad].
+        Δm = 0.5*π/180
 
-    days = collect(0:1:Δt-1)      # Vector of the days in which the beta angle
-                                  # will be computed.
+        # Time step related to the desired mean anomaly step [s].
+        n   = angvel(a, e, i, :J2)
+        Δt₀ = Δm/n
+    end
 
-    # Mean anomaly.
-    M = collect(0:step:2*pi)
+    # Vector of the days in which the beta angle will be computed.
+    days = collect(0:1:Δd-1)
 
-    # Penumbra time.
-    p_time = zeros(Δt)
+    # Preallocate the output variables.
+    p_time = zeros(Δd)  # Penumbra time.
+    u_time = zeros(Δd)  # Umbra time.
+    s_time = zeros(Δd)  # Sunlight time.
 
-    # Umbra time.
-    u_time = zeros(Δt)
+    # Configure the orbit propagator.
+    orbp = init_orbit_propagator(Val{:J2}, JD₀, a, e, i, RAAN, w, 0)
 
-    # Sunlight time.
-    s_time = zeros(Δt)
+    # Lambda functions
+    # ==========================================================================
 
-    # Semi-lactum rectum.
-    p = a*(1.0-e^2)
+    # Function to compute the lightning condition given an instant of the day
+    # `t`, the day from orbit epoch `d`, and the Sun vector `s_i`.
+    f(t,d,s_i)::Int = begin
+        ~, r_i, ~ = propagate!(orbp, 86400d + t)
+        return satellite_lighting_condition(r_i, s_i)
+    end
 
-    # Angular velocity of the orbit [rad/s].
-    n = angvel(a, e, i, :J2)
+    # Return `true` if the lightning condition given an instant of the day `t`,
+    # the day from orbit epoch `d`, and the Sun vector `s_i` is equal `state`.
+    fb(t,d,s_i,state)::Bool = f(t,d,s_i) == state
 
-    # Step in time
-    tstep = step/n
+    # Accumulate the time step `Δt` according to the state `state`.
+    accum(Δt, state, ind, s, p, u)::Nothing = begin
+        @inbounds if state == SAT_LIGHTING_SUNLIGHT
+            s[ind] += Δt
+        elseif state == SAT_LIGHTING_PENUMBRA
+            p[ind] += Δt
+        elseif state == SAT_LIGHTING_UMBRA
+            u[ind] += Δt
+        end
 
-    # Perturbations.
-    #
-    # RAAN rotation rate [rad/s].
-    dOmega = dRAAN(a, e, i, :J2)
+        return nothing
+    end
 
-    # Perturbation of the argument of perigee [rad/s].
-    dw = dArgPer(a, e, i, :J2)
+    # Loop
+    # ==========================================================================
 
-    # Loop.
-    for d in days
+    @inbounds for d in days
         # Get the sun position represented in the Inertial coordinate frame.
         s_i = sun_position_i(JD₀+d)
 
-        # Compute the new orbit parameters due to perturbations.
-        w_d = w + dw*(d*day2sec)
-        RAAN_d = RAAN + dOmega*(d*day2sec)
+        # Initial state.
+        state = f(0,d,s_i)
 
-        for m_k in M
-            # Get the satellite position vector represented in the Inertial coordinate
-            # frame.
-            f = M_to_f(e, m_k)
+        # Compute the eclipse time during one orbit.
+        Δt = Δt₀
+        k  = Δt
 
-            (r_i, rt_i) = satellite_position_i(a, e, i, RAAN_d, w_d, f)
+        while true
+            new_state = f(k,d,s_i)
 
-            # Check the lighting conditions.
-            lighting = satellite_lighting_condition(r_i, s_i)
+            # Check if the state has changed.
+            if new_state != state
+                # Refine to find the edge.
+                k₀ = k - Δt
+                k₁ = k
+                kc = find_crossing(fb, k₀, k₁, true, false, d, s_i, state)
 
-            if (lighting == SAT_LIGHTING_SUNLIGHT)
-                s_time[d+1] += tstep
-            elseif (lighting == SAT_LIGHTING_UMBRA)
-                u_time[d+1] += tstep
+                # Times to be added in the previous and current states.
+                Δ₀ = kc - k₀
+                Δ₁ = k₁ - kc
+
+                accum(Δ₀, state,     d+1, s_time, p_time, u_time)
+                accum(Δ₁, new_state, d+1, s_time, p_time, u_time)
+
+            # If not, just add the time step to the current state.
             else
-                p_time[d+1] += tstep
+                accum(Δt, state, d+1, s_time, p_time, u_time)
             end
+
+            state = new_state
+
+            abs(k - T) < 1e-3 && break
+
+            # Make sure that the last interval will have the exact size so that
+            # the end of analysis is the end of the orbit.
+            (k + Δt > T) && (Δt = T - k)
+
+            k += Δt
         end
     end
 
