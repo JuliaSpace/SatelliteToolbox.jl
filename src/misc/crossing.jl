@@ -16,7 +16,7 @@ If the computed interval is smalled than `Δ` or if the number of iterations is
 higher than `max`, then the algorithm stops.
 
 """
-function find_crossing(f::Function, t₀::Number, t₁::Number, s₀, s₁;
+function find_crossing(f::Function, t₀::Number, t₁::Number, s₀, s₁, vargs...;
                        Δ = 1e-3, max = 100)
     it = 0
 
@@ -25,7 +25,7 @@ function find_crossing(f::Function, t₀::Number, t₁::Number, s₀, s₁;
     while it <= max
         # Call the function at the middle of the interval.
         ti = (t₁ + t₀)/2
-        si = f(ti)
+        si = f(ti, vargs...)
 
         # Compute the new interval.
         if si == s₀
