@@ -6,8 +6,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-# File: ./src/earth/geomagnetic_field_models
-# ==========================================
+# File: ./src/earth/geomagnetic_field_models/igrf
+# ===============================================
 
 # Load the test files.
 #
