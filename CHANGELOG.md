@@ -1,6 +1,41 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.3
+-------------
+
+- ![Bugfix][badge-bugfix] A bug in eclipse time computation was fixed.
+- ![Bugfix][badge-bugfix] The function `ground_station_visible` now accepts
+  `SVector`. (Issue [#28][gh-issue-28])
+- ![Bugfix][badge-bugfix] The eccentricity was not being printed in TLEs.
+- ![Deprecation][badge-deprecation] The function that checks if a satellite is
+  inside the visibility circle of a ground station has been renamed to
+  `ground_station_visible`. The old one is now marked as deprecated.
+- ![Deprecation][badge-deprecation] The function that computes the beta angle
+  has been renamed to `beta_angle`. The old one is now marked as deprecated.
+- ![Deprecation][badge-deprecation] The function that computes the eclipse times
+  has been renamed to `eclipse_time_summary`. The old one is now marked as
+  deprecated.
+- ![Feature][badge-feature] The orbit propagator API now has the function
+  `epoch` that returns the current epoch of a propagator.
+- ![Feature][badge-feature] The accesses to ground stations can now be computed
+  using the function `ground_station_accesses`.
+- ![Feature][badge-feature] It is now possible to select what kind of
+  perturbations are desired when computing the beta angle in function
+  `beta_angle`.
+- ![Feature][badge-feature] Add the simplified dipole model to compute the
+  geomagnetic field.
+- ![Enhancement][badge-enhancement] The function `propagate_to_epoch!` can now
+  be used with `OrbitPropagatorJ4`. (PR [#31][gh-pr-31])
+- ![Enhancement][badge-enhancement] The function `JDtoDate` now uses the native
+  function `julian2datetime` to convert between Date to Julian date represented
+  in `DateTime` format.
+- ![Enhancement][badge-enhancement] The eclipse time computation algorithm was
+  drastically improved by adding an edge find mechanism, leading to an algorithm
+  3x faster.
+- ![Info][badge-info] This version support Julia 1.0 and 1.2. The support for
+  Julia 1.1 has been dropped.
+
 Version 0.6.2
 -------------
 
@@ -284,4 +319,7 @@ Version 0.1.0
 [gh-issue-21]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/21
 [gh-issue-22]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/22
 [gh-issue-25]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/25
+[gh-issue-28]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/28
 [gh-issue-30]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/30
+
+[gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
