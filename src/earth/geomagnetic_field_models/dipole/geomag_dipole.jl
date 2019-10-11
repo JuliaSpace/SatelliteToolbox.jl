@@ -60,7 +60,7 @@ function geomag_dipole(r_e::AbstractVector, pole_lat::Number, pole_lon::Number,
     r = norm(r_e)
 
     # Compute the unitary vector that points to the desired direction.
-    eᵣ_e = r_e/r
+    eᵣ_e = SVector{3}(r_e/r)
 
     # Compute the geomagnetic field vector [nT].
     B_e = 1/r^3*( 3eᵣ_e*eᵣ_e' - I )*k₀_e*1e9

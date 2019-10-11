@@ -130,13 +130,13 @@ considered as 2019.
 julia> r_e = [0;0;R0+200e3];
 
 julia> geomag_dipole(r_e)
-3-element Array{Float64,1}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
    1286.02428617178
   -4232.804339060698
  -53444.68086319672
 
 julia> geomag_dipole(r_e, 1986)
-3-element Array{Float64,1}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
    1715.2656071053527
   -4964.598060841779
  -54246.30480714958
@@ -144,13 +144,13 @@ julia> geomag_dipole(r_e, 1986)
 julia> r_e = [R0+200e3;0;0];
 
 julia> geomag_dipole(r_e)
-3-element Array{Float64,1}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  -2572.04857234356
  -4232.804339060698
  26722.34043159836
 
 julia> geomag_dipole(r_e, 1986)
-3-element Array{Float64,1}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  -3430.5312142107055
  -4964.598060841779
  27123.15240357479
