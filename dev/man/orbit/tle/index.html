@@ -3,8 +3,8 @@
 1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998
 2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366163</code></pre><p>For more information, see <a href="https://en.wikipedia.org/wiki/Two-line_element_set">https://en.wikipedia.org/wiki/Two-line_element_set</a>.</p><p>The TLE contains all the necessary information to propagate the orbit using, for example, the <a href="../propagators/#SGP4-1">SGP4</a> orbit propagator. Hence, this package contains a set of functions that helps to load the TLE information to be used in the <a href="../propagators/#Orbit-propagators-1">Orbit propagators</a>.</p><p>If the TLEs are stored in one file, then they can be loaded using the function:</p><pre><code class="language-julia">function read_tle(tle_filename::String, verify_checksum::Bool = true)</code></pre><p>where the <code>tle_filename</code> is the file path. Each TLE line has a checksum to verify the correctness of the data. By default, if the checksum is wrong, then this function will throw an error. The checksum verification can be avoided by setting <code>verify_checksum</code> to <code>false</code>.</p><p>This function returns an array of TLEs. Each TLE is an instance of the structure <a href="../../../lib/library/#SatelliteToolbox.TLE"><code>TLE</code></a>.</p><pre><code class="language-julia-repl">julia&gt; tles = read_tle(&quot;tles&quot;)
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia&gt; tles[1]
                              TLE
@@ -16,6 +16,7 @@ julia&gt; tles[1]
                      Epoch (Day): 359.76217587
               Epoch (Julian Day): 2458478.26218
               Element set number: 999
+                    Eccentricity:   0.00432110 deg
                      Inclination:  24.96940000 deg
                             RAAN: 116.17090000 deg
              Argument of perigee:  90.39680000 deg
@@ -44,6 +45,7 @@ julia&gt; tles[2]
                      Epoch (Day): 360.24309362
               Epoch (Julian Day): 2458478.74309
               Element set number: 999
+                    Eccentricity:   0.00174310 deg
                      Inclination:  24.99670000 deg
                             RAAN: 319.86640000 deg
              Argument of perigee: 121.38100000 deg
@@ -72,8 +74,8 @@ function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::B
 
 julia&gt; read_tle_from_string(tles)
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia&gt; tle_l1 = &quot;1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998&quot;
 &quot;1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998&quot;
@@ -83,7 +85,7 @@ julia&gt; tle_l2 = &quot;2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.
 
 julia&gt; read_tle_from_string(tle_l1, tle_l2)
 1-element Array{TLE,1}:
- TLE: UNDEFINED (Epoch = 2018-12-25T18:17:32)</code></pre><p>It is also available two special types of strings, <code>tle&quot;</code> and <code>tlenc&quot;</code>, that automatically loads a set of TLEs. In the first case the checksum is verified whereas in the second case it is not.</p><pre><code class="language-julia-repl">julia&gt; tles = tle&quot;&quot;&quot;
+ TLE: UNDEFINED (Epoch = 2018-12-25T18:17:31.995)</code></pre><p>It is also available two special types of strings, <code>tle&quot;</code> and <code>tlenc&quot;</code>, that automatically loads a set of TLEs. In the first case the checksum is verified whereas in the second case it is not.</p><pre><code class="language-julia-repl">julia&gt; tles = tle&quot;&quot;&quot;
        SCD 1
        1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366163
@@ -92,8 +94,8 @@ julia&gt; read_tle_from_string(tle_l1, tle_l2)
        2 25504  24.9967 319.8664 0017431 121.3810   9.7939 14.44057429 65541
        &quot;&quot;&quot;
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia&gt; tles = tle&quot;&quot;&quot;
        SCD 1
@@ -109,4 +111,4 @@ julia&gt; tles = tlenc&quot;&quot;&quot;
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366164
        &quot;&quot;&quot;
 1-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)</code></pre><footer><hr/><a class="previous" href="../propagators/"><span class="direction">Previous</span><span class="title">Orbit propagators</span></a><a class="next" href="../../transformations/ecef_eci/"><span class="direction">Next</span><span class="title">ECEF and ECI</span></a></footer></article></body></html>
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)</code></pre><footer><hr/><a class="previous" href="../propagators/"><span class="direction">Previous</span><span class="title">Orbit propagators</span></a><a class="next" href="../../transformations/ecef_eci/"><span class="direction">Next</span><span class="title">ECEF and ECI</span></a></footer></article></body></html>
