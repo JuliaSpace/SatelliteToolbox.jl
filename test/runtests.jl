@@ -6,6 +6,7 @@ using LinearAlgebra
 using Printf
 using ReferenceFrameRotations
 using SatelliteToolbox
+using StaticArrays
 
 @testset "Atmospheric Models" begin
     cd("./earth/atmospheric_models/expatmosphere/")
@@ -25,6 +26,7 @@ println("")
 
 @testset "Geomagnetic Field Models" begin
     cd("./earth/geomagnetic_field_models/")
+    include("./earth/geomagnetic_field_models/dipole.jl")
     include("./earth/geomagnetic_field_models/igrf.jl")
     cd("../../")
 end
