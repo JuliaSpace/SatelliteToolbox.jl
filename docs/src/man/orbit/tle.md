@@ -45,8 +45,8 @@ This function returns an array of TLEs. Each TLE is an instance of the structure
 ```julia-repl
 julia> tles = read_tle("tles")
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia> tles[1]
                              TLE
@@ -58,6 +58,7 @@ julia> tles[1]
                      Epoch (Day): 359.76217587
               Epoch (Julian Day): 2458478.26218
               Element set number: 999
+                    Eccentricity:   0.00432110 deg
                      Inclination:  24.96940000 deg
                             RAAN: 116.17090000 deg
              Argument of perigee:  90.39680000 deg
@@ -86,6 +87,7 @@ julia> tles[2]
                      Epoch (Day): 360.24309362
               Epoch (Julian Day): 2458478.74309
               Element set number: 999
+                    Eccentricity:   0.00174310 deg
                      Inclination:  24.99670000 deg
                             RAAN: 319.86640000 deg
              Argument of perigee: 121.38100000 deg
@@ -130,8 +132,8 @@ julia> tles = """
 
 julia> read_tle_from_string(tles)
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia> tle_l1 = "1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998"
 "1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998"
@@ -141,7 +143,7 @@ julia> tle_l2 = "2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396
 
 julia> read_tle_from_string(tle_l1, tle_l2)
 1-element Array{TLE,1}:
- TLE: UNDEFINED (Epoch = 2018-12-25T18:17:32)
+ TLE: UNDEFINED (Epoch = 2018-12-25T18:17:31.995)
 ```
 
 It is also available two special types of strings, `tle"` and `tlenc"`, that
@@ -158,8 +160,8 @@ julia> tles = tle"""
        2 25504  24.9967 319.8664 0017431 121.3810   9.7939 14.44057429 65541
        """
 2-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
- TLE: SCD 2 (Epoch = 2018-12-26T05:50:03)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
+ TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia> tles = tle"""
        SCD 1
@@ -175,5 +177,5 @@ julia> tles = tlenc"""
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366164
        """
 1-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:32)
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
 ```

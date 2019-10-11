@@ -66,13 +66,13 @@ to STDOUT.
 
 ```jldoctest
 julia> igrf12(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val{:geodetic})
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15374.385312809889
   1267.9325221604724
  34168.28074619655
 
 julia> igrf12(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val{:geocentric})
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15174.122905727732
   1262.6765496083972
  34210.301848156094
@@ -82,13 +82,13 @@ julia> igrf12(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val{:geocentric})
 julia> igrf12(2022, 6371e3+640e3, 50*pi/180, 25*pi/180)
 ┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.
 └ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf.jl:99
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15167.758261587729
   1423.7811941605075
  34342.17638944679
 
 julia> igrf12(2022, 6371e3+640e3, 50*pi/180, 25*pi/180; show_warns=false)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15167.758261587729
   1423.7811941605075
  34342.17638944679

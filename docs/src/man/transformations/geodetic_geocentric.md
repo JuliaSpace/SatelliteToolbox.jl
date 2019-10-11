@@ -53,13 +53,13 @@ in which a 3x1 vector will be returned.
 
 ```jldoctest
 julia> GeodetictoECEF(0,0,0)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  6.378137e6
  0.0
  0.0
 
 julia> GeodetictoECEF(deg2rad(-22),deg2rad(-45),0)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3}:
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
   4.1835869067109847e6
  -4.1835869067109837e6
  -2.3744128953028163e6

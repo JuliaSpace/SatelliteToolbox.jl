@@ -69,10 +69,10 @@ in which:
 
 ```jldoctest ECEF_ECI
 julia> eop_IAU1980 = get_iers_eop();
-[ Info: Downloading file 'EOP_IAU1980.TXT' from 'https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt'.
+[ Info: Downloading file 'EOP_IAU1980.TXT' from 'https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt' with cURL.
 
 julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
-[ Info: Downloading file 'EOP_IAU2000A.TXT' from 'https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt'.
+[ Info: Downloading file 'EOP_IAU2000A.TXT' from 'https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt' with cURL.
 ```
 
 ## ECEF to ECEF
@@ -92,13 +92,13 @@ as described in the section [EOP Data](@ref).
 
 ```jldoctest ECEF_ECI
 julia> rECEFtoECEF(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3):
   1.0          0.0         -4.3531e-7
  -6.30011e-13  1.0         -1.44727e-6
   4.3531e-7    1.44727e-6   1.0
 
 julia> rECEFtoECEF(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3):
   1.0          3.08408e-11  -4.3531e-7
  -3.14708e-11  1.0          -1.44727e-6
   4.3531e-7    1.44727e-6    1.0
@@ -173,7 +173,7 @@ to the GCRF will not be available, reducing the precision.
 
 ```jldoctest ECEF_ECI
 julia> rECItoECI(DCM, GCRF(), J2000(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
   1.0          -2.45469e-12   4.56602e-10
   2.45466e-12   1.0          -1.84455e-9
  -4.56602e-10   1.84455e-9    1.0
@@ -183,7 +183,7 @@ Quaternion{Float64}:
   + 0.9999986335698654 + 1.8300414020900853e-5.i + 0.0006653038276169474.j - 0.0015132396749411375.k
 
 julia> rECItoECI(TOD(), DatetoJD(1986,6,19,21,35,0), TOD(), DatetoJD(1987,5,19,3,0,0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  1.0          -0.000224087  -9.73784e-5
  0.000224086   1.0          -5.79859e-6
  9.73797e-5    5.77677e-6    1.0
@@ -193,13 +193,13 @@ Quaternion{Float64}:
   + 0.9999999993282687 - 1.400220690336851e-5.i + 1.3473593746216003e-5.j - 3.107834312843103e-5.k
 
 julia> rECItoECI(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
   0.999995    0.0030265    0.00133055
  -0.00302645  0.999995    -3.86125e-5
  -0.00133066  3.45854e-5   0.999999
 
 julia> rECItoECI(CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  0.999999     3.88379e-8  -0.00133066
  7.18735e-9   1.0          3.45882e-5
  0.00133066  -3.45882e-5   0.999999
@@ -258,37 +258,37 @@ to the GCRF will not be available, reducing the precision.
 
 ```jldoctest ECEF_ECI
 julia> rECEFtoECI(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
 julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
 julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33502e-5
  -0.000797312   0.00106478   0.999999
 
 julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45854e-5
  -0.000796885   0.00106622   0.999999
 
 julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00133066
  -0.78518      -0.619267     3.45854e-5
  -0.000796879   0.00106623   0.999999
 
 julia> rECEFtoECI(TIRS(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45884e-5
  -0.000796885   0.00106623   0.999999
@@ -322,37 +322,37 @@ Section [ECEF to ECI](@ref), but with the inputs `ECI`  and `ECEF` swapped.
 
 ```jldoctest ECEF_ECI
 julia> rECItoECEF(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
 julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
 julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797312
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33502e-5   0.999999
 
 julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106622
  -0.00133066   3.45854e-5   0.999999
 
 julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000796879
   0.78518     -0.619267     0.00106623
  -0.00133066   3.45854e-5   0.999999
 
 julia> rECItoECEF(GCRF(), TIRS(), DatetoJD(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106623
  -0.00133066   3.45884e-5   0.999999
