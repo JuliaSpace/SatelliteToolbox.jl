@@ -6,6 +6,7 @@ using LinearAlgebra
 using Printf
 using ReferenceFrameRotations
 using SatelliteToolbox
+using SatelliteToolbox.SGP4
 using StaticArrays
 
 @testset "Atmospheric Models" begin

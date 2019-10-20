@@ -26,6 +26,9 @@ using Statistics
 export DCM
 export Quaternion
 
+include("orbit/propagators/SGP4/SGP4.jl")
+using .SGP4
+
 ################################################################################
 #                             Types and Structures
 ################################################################################
@@ -100,10 +103,8 @@ include("orbit/anomalies.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
 include("orbit/state_vector.jl")
-include("orbit/tle.jl")
 include("orbit/propagators/j2.jl")
 include("orbit/propagators/j4.jl")
-include("orbit/propagators/sgp4.jl")
 include("orbit/propagators/twobody.jl")
 include("orbit/propagators/api/epoch.jl")
 include("orbit/propagators/api/init_orbit_propagator.jl")
@@ -111,6 +112,7 @@ include("orbit/propagators/api/propagate.jl")
 include("orbit/propagators/api/propagate_to_epoch.jl")
 include("orbit/propagators/api/step.jl")
 
+include("orbit/propagators/twobody.jl")
 include("transformations/eop.jl")
 include("transformations/ecef_to_ecef.jl")
 include("transformations/ecef_to_eci.jl")

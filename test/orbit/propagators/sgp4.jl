@@ -23,7 +23,7 @@
 
 @testset "Tests from the paper AIAA 2006-6753" begin
     # Read all TLEs that will be used to test.
-    tles = read_tle("./sgp4_tests/sgp4_tests.tle")
+    tles = SGP4.read_tle("./sgp4_tests/sgp4_tests.tle")
 
     # Array with the satellite numbers that must be tested.
     # sat_num_array = [5; 6251; 28057; 28350; 28872; 29141; 29238; 88888]
@@ -68,7 +68,7 @@
     # Test using the function `read_tle_from_string`
     # ==========================================================================
 
-    tle = read_tle_from_string(
+    tle = SGP4.read_tle_from_string(
         "1 23599U 95029B   06171.76535463  .00085586  12891-6  12956-2 0  2905",
         "2 23599   6.9327   0.2849 5782022 274.4436  25.2425  4.47796565123555")
 
