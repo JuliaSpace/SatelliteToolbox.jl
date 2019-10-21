@@ -9,7 +9,7 @@ const R0 = 6378137.0
 const JD_J2000 = 2451545.0
 
 include("sgp4_types.jl")
-include("../../../transformations/gmst.jl")
+include("gmst.jl")
 include("tle.jl")
 include("sgp4_model.jl")
 
