@@ -330,7 +330,7 @@ function init_orbit_propagator(::Type{Val{:twobody}},
                           μ)
 end
 
-function init_orbit_propagator(::Type{Val{:sgp4}}, tle::SGP4.TLE,
+function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE,
                                sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 
     # Constants.
