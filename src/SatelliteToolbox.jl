@@ -112,7 +112,6 @@ include("orbit/propagators/api/propagate.jl")
 include("orbit/propagators/api/propagate_to_epoch.jl")
 include("orbit/propagators/api/step.jl")
 
-include("orbit/propagators/twobody.jl")
 include("transformations/eop.jl")
 include("transformations/ecef_to_ecef.jl")
 include("transformations/ecef_to_eci.jl")
