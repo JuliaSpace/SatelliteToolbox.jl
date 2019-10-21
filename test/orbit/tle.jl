@@ -14,10 +14,10 @@
 
 @testset "Macros tle_str and tlenc_str" begin
     # Read the SCDs TLE from the file.
-    tles_file = SGP4.read_tle("./SCDs.tle")
+    tles_file = read_tle("./SCDs.tle")
 
     # Read the same TLEs from a string.
-    tles_str = SGP4.tle"""
+    tles_str = tle"""
         SCD 1
         1 22490U 93009B   18165.62596833  .00000225  00000-0  11410-4 0  9991
         2 22490  24.9690 231.7852 0042844 200.7311 292.7198 14.44524498338066
@@ -29,7 +29,7 @@
 
     # Read the same TLES from a string with wrong checksums.
     # This should not output any exceptions.
-    tles_str_nc = SGP4.tlenc"""
+    tles_str_nc = tlenc"""
         SCD 1
         1 22490U 93009B   18165.62596833  .00000225  00000-0  11410-4 0  9990
         2 22490  24.9690 231.7852 0042844 200.7311 292.7198 14.44524498338060
@@ -44,7 +44,7 @@
     @test length(tles_file) == length(tles_str_nc)
 
     for i = 1:length(tles_file)
-        for sym in fieldnames(SGP4.TLE)
+        for sym in fieldnames(TLE)
             @test getfield(tles_file[i], sym) == getfield(tles_str[i], sym)
 
             # Skip the comparison of checksums for `tles_str_nc`.
