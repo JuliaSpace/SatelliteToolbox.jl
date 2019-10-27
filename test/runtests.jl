@@ -53,17 +53,17 @@ end
 println("")
 
 @testset "Orbit propagators" begin
-    cd("./orbit/propagators/")
     include("./orbit/propagators/twobody.jl")
-    include("./orbit/propagators/sgp4.jl")
+    cd("./submodules/SGP4/")
+    include("./submodules/SGP4/sgp4.jl")
     cd("../../")
 end
 println("")
 
 @testset "TLE Parser" begin
-    cd("./orbit/")
-    include("./orbit/tle.jl")
-    cd("../")
+    cd("./submodules/SGP4/")
+    include("./submodules/SGP4/tle.jl")
+    cd("../../")
 end
 println("")
 
