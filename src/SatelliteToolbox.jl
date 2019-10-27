@@ -21,13 +21,15 @@ using RemoteFiles
 using StaticArrays
 using SparseArrays
 using Statistics
+using Reexport
 
 # Re-exporting symbols from ReferenceFrameRotations.jl.
 export DCM
 export Quaternion
 
 include("orbit/propagators/SGP4/SGP4.jl")
-using .SGP4
+@reexport using .SGP4
+
 
 ################################################################################
 #                             Types and Structures
