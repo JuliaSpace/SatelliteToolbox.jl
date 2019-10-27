@@ -27,7 +27,7 @@ using Reexport
 export DCM
 export Quaternion
 
-include("orbit/propagators/SGP4/SGP4.jl")
+include("submodules/SGP4/SGP4.jl")
 @reexport using .SGP4
 
 
