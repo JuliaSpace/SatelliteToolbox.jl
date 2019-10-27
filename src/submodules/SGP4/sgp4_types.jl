@@ -6,6 +6,8 @@ export SGP4_GravCte, SGP4_Structure, TLE
 """
 Gravitational constants for SGP4.
 
+# Fields
+
 * `R0`: Earth equatorial radius [km].
 * `XKE`: √GM [er/s]^(3/2).
 * `J2`: The second gravitational zonal harmonic of the Earth.
@@ -99,7 +101,6 @@ end
 
 """
 Low level SGP4 structure.
-
 """
 @with_kw mutable struct SGP4_Structure{T<:Real}
     # TLE parameters.
@@ -113,7 +114,7 @@ Low level SGP4 structure.
     bstar::T
     # Propagation time from epoch.
     Δt::T
-    # Current parameters.
+    # Current mean orbital elements.
     a_k::T
     e_k::T
     i_k::T
@@ -158,9 +159,11 @@ end
 """
 This structure contains the same elements of the TLE with the same units.
 
+# Fields
+
 * `name`: Name of the satellite.
 
-# First line
+## First line
 
 * `sat_num`: Satellite number.
 * `classification`: Classification ('U', 'C', or 'S').
@@ -174,7 +177,7 @@ This structure contains the same elements of the TLE with the same units.
 * `elem_set_number`: Element set number.
 * `checksum_l1`: Checksum of the line 1 (modulo 10).
 
-# Second line
+## Second line
 
 * `i`: Inclination [deg].
 * `Ω`: Right ascension of the ascending node [deg].
@@ -186,7 +189,7 @@ This structure contains the same elements of the TLE with the same units.
 * `checksum_l2`: Checksum of the line 2 (modulo 10).
 
 """
-@with_kw struct TLE
+@with_kw_noshow struct TLE
     name::String
 
     # First line
