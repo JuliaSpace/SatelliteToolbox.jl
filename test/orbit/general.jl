@@ -70,6 +70,6 @@ end
 ################################################################################
 
 @testset "Function JDtoGMST" begin
-    θ_GMST = SatelliteToolbox.JDtoGMST(2448855.009722)*180/pi
+    θ_GMST = JDtoGMST(2448855.009722)*180/pi
     @test θ_GMST ≈ 152.578787810 atol = 1e-4
 end
