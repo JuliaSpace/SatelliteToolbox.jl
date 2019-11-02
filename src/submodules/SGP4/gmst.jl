@@ -13,8 +13,6 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export J2000toGMST, JDtoGMST
-
 """
     function J2000toGMST(J2000_UT1::Number)
 
