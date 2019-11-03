@@ -54,16 +54,6 @@ println("")
 
 @testset "Orbit propagators" begin
     include("./orbit/propagators/twobody.jl")
-    cd("./submodules/SGP4/")
-    include("./submodules/SGP4/sgp4.jl")
-    cd("../../")
-end
-println("")
-
-@testset "TLE Parser" begin
-    cd("./submodules/SGP4/")
-    include("./submodules/SGP4/tle.jl")
-    cd("../../")
 end
 println("")
 
@@ -108,3 +98,9 @@ println("")
     include("./moon/moon_position.jl")
 end
 println("")
+
+@testset "Submodules" begin
+    cd("./submodules/")
+    include("./submodules/submodules.jl")
+    cd("../")
+end

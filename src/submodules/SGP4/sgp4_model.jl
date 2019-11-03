@@ -1,4 +1,4 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
 #
@@ -25,7 +25,7 @@
 #       The SGP4 C code available on STRF was converted by Paul. S. Crawford and
 #       Andrew R. Brooks.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export sgp4_gc_wgs72, sgp4_gc_wgs84
 export sgp4_init, sgp4!
@@ -99,6 +99,7 @@ const THDT          = 4.37526908801129966e-3
 
 """
     function sgp4_init(spg4_gc::SGP4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
+    function sgp4_init(tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
 
 Initialize the data structure of SGP4 algorithm.
 
@@ -113,12 +114,19 @@ Initialize the data structure of SGP4 algorithm.
 * `ω_0`: "Mean" argument of perigee at epoch [rad].
 * `M_0`: "Mean" mean anomaly at epoch [rad].
 * `bstar`: Drag parameter (B*).
+* `tle`: TLE to initialize the SPG4 (see `TLE`).
 
 # Returns
 
 The structure `SGP4_Structure` with the initialized parameters.
 
 """
+function sgp4_init(tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+    return sgp4_init(sgp4_gc, tle.epoch, tle.n*2*pi/(24*60), tle.e,
+                     tle.i*pi/180, tle.Ω*pi/180, tle.ω*pi/180, tle.M*pi/180,
+                     tle.bstar)
+end
+
 function sgp4_init(sgp4_gc::SGP4_GravCte{T},
                    epoch::Number,
                    n_0::Number,

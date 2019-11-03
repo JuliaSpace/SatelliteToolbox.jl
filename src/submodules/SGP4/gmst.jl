@@ -1,8 +1,14 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
 #
-#    Compute the Greenwich Mean Sideral Time (GMST).
+#   Compute the Greenwich Mean Sideral Time (GMST).
+#
+# Remarks
+#
+#   This files was copied from SatelliteToolbox.jl because the functionality is
+#   required by SGP4 model. The functions here **must not** be exported to avoid
+#   interferences.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -11,7 +17,7 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 """
     function J2000toGMST(J2000_UT1::Number)
