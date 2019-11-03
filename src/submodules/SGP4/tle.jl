@@ -287,10 +287,10 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             aux = Dates.year(now()) - 2000
 
             if epoch_year > aux
-                epoch = DatetoJD(1900 + epoch_year, 1, 1, 0, 0, 0) - 1 +
+                epoch = Dates.datetime2julian(DateTime(1900 + epoch_year, 1, 1, 0, 0, 0)) - 1 +
                         epoch_day
             else
-                epoch = DatetoJD(2000 + epoch_year, 1, 1, 0, 0, 0) - 1 +
+                epoch = Dates.datetime2julian(DateTime(2000 + epoch_year, 1, 1, 0, 0, 0)) - 1 +
                         epoch_day
             end
 
