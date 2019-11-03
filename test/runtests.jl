@@ -53,7 +53,10 @@ end
 println("")
 
 @testset "Orbit propagators" begin
+    cd("./orbit/propagators")
+    include("./orbit/propagators/sgp4.jl")
     include("./orbit/propagators/twobody.jl")
+    cd("../../")
 end
 println("")
 
