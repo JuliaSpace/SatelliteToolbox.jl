@@ -6,11 +6,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-# File: ./src/orbit/tle.jl
-# ========================
-
 # Macros tle_str and tlenc_str
-# ----------------------------
+# ============================
 
 @testset "Macros tle_str and tlenc_str" begin
     # Read the SCDs TLE from the file.

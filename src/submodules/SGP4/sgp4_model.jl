@@ -685,7 +685,7 @@ function dsinit(epoch::T,
     # ==========================================================================
 
     # `day` is the number of days since Jan 0, 1900 at 12h.
-    day    = epoch - (Dates.datetime2julian(DateTime(1900,1,1,12,0,0))-1)
+    day    = epoch - (datetime2julian(DateTime(1900,1,1,12,0,0))-1)
 
     xnodce     = mod(4.5236020 - 9.2422029e-4day, 2π)
     stem, ctem = sincos(xnodce)

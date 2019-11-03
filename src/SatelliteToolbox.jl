@@ -31,6 +31,9 @@ export Quaternion
 #                                  Submodules
 ################################################################################
 
+include("submodules/SatelliteToolboxTLE/SatelliteToolboxTLE.jl")
+@reexport using .SatelliteToolboxTLE
+
 include("submodules/SGP4/SGP4.jl")
 @reexport using .SGP4
 

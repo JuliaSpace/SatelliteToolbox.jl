@@ -12,8 +12,8 @@
     cd("../")
 end
 
-@testset "TLE parser" begin
-    cd("./SGP4")
-    include("./SGP4/tle.jl")
+@testset "SatelliteToolboxTLE" begin
+    cd("./SatelliteToolboxTLE")
+    include("./SatelliteToolboxTLE/tle.jl")
     cd("../")
 end

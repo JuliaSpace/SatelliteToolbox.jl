@@ -1,17 +1,19 @@
-module SGP4
+module SatelliteToolboxTLE
 
-using Dates, Parameters, StaticArrays
-using SatelliteToolbox.SatelliteToolboxTLE
+using Crayons, Dates, Parameters, Printf
+
+import Base: show
 
 ################################################################################
 #                                  Constants
 ################################################################################
 
-# Earth Equatorial radius [m].
-const R0 = 6378137.0
-
-# Julian Day of J2000.0 epoch.
-const JD_J2000 = 2451545.0
+# Escape sequences related to the crayons.
+const _d = Crayon(reset = true)
+const _b = crayon"bold"
+const _g = crayon"bold green"
+const _u = crayon"bold blue"
+const _y = crayon"bold yellow"
 
 ################################################################################
 #                                    Types
@@ -23,7 +25,7 @@ include("types.jl")
 #                                   Includes
 ################################################################################
 
-include("gmst.jl")
-include("sgp4_model.jl")
+include("main.jl")
+include("private.jl")
 
 end
