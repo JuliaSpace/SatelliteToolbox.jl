@@ -154,12 +154,9 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             # Convert the TLE year and date to JD.
             # ------------------------------------
 
-            # If the two-number year is higher than the current one, then
-            # consider it in the past (e.g. if today is 2018, then 18 = 2018 but
-            # 19 = 1919.
-            aux = Dates.year(now()) - 2000
-
-            if epoch_year > aux
+            # If the two-number year is higher than 75, then consider it in the
+            # past (e.g. 50 = 2050, but 81 = 1981).
+            if epoch_year > 75
                 epoch = datetime2julian(DateTime(1900 + epoch_year, 1, 1, 0, 0, 0)) - 1 +
                         epoch_day
             else
