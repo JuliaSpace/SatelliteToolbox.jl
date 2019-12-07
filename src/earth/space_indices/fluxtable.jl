@@ -15,7 +15,7 @@ end
 
 # Remote file: fluxtable.txt
 _fluxtable = @RemoteFile(
-    "ftp://ftp.geolab.nrcan.gc.ca/data/solar_flux/daily_flux_values/fluxtable.txt",
+    "ftp://ftp.seismo.nrcan.gc.ca/spaceweather/solar_flux/daily_flux_values/fluxtable.txt",
     file="fluxtable.txt",
     updates=:daily
    )
