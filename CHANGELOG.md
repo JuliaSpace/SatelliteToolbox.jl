@@ -1,6 +1,22 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.4
+-------------
+
+- ![Bugfix][badge-bugfix] The download path of the file `fluxtable.txt` was
+  changed. (Issue [#34][gh-issue-34])
+- ![Enhancement][badge-enhancement] The submodule SatelliteToolboxSGP4 was
+  created, which contains all the low-level functions related to the SGP4 orbit
+  propagator. (PR [#33][gh-pr-33])
+- ![Enhancement][badge-enhancement] The submodule SatelliteToolboxTLE was
+  created, which contains all functions related to TLE handling.
+- ![Enhancement][badge-enhancement] The TLE parsing algorithm was improved. If
+  the epoch year in TLE is higher than 75, then it will be considered in the
+  past.
+- ![Info][badge-info] This version support Julia 1.0 and 1.3. The support for
+  Julia 1.2 has been dropped.
+
 Version 0.6.3
 -------------
 
@@ -321,5 +337,7 @@ Version 0.1.0
 [gh-issue-25]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/25
 [gh-issue-28]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/28
 [gh-issue-30]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/30
+[gh-issue-34]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/34
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
+[gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
