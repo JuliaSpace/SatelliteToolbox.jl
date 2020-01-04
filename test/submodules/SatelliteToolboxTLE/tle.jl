@@ -135,5 +135,5 @@ end
     @test_throws ErrorException read_tle_from_string(
         "1 22490U 93009B   18165.62596833  .00000225  00000-0  11410-4 0  9991",
         "2 22490  24.9690 231.7852 0042844 200.7311 292.7198 14.44524498338063",
-        verify_checksum = true)
+        true)
 end
