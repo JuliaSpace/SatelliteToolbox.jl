@@ -35,6 +35,17 @@ end
 #                                  Functions
 ################################################################################
 
+function _get_mant_exp(n)
+    if abs(n) < 1e-20
+        return 0., 0
+    end
+
+    exp  = floor(Int, log10(n)) + 1
+    mant = n/10.0^exp
+
+    return mant,exp
+end
+
 function _parse_tle(io::IO, verify_checksum::Bool = true)
     # State machine to read the TLE. It has three possible states:
     #
@@ -321,15 +332,15 @@ function compute_checksum(str::AbstractString)
 end
 
 """
-    function print_tle(io::IO, tle::TLE, color::Bool = true)
+    function _show_tle(io::IO, tle::TLE, color::Bool = true)
 
-Print the TLE `tle` in the IO `io`.
+Show the TLE `tle` in the IO `io`.
 
 If `color` is `true`, then the text will be printed using colors. If `color` is
 omitted, then it defaults to `true`.
 
 """
-function print_tle(io::IO, tle::TLE, color::Bool = true)
+function _show_tle(io::IO, tle::TLE, color::Bool = true)
     # Colors will be printed only for STDOUT.
     b = (color) ? _b : ""
     d = (color) ? _d : ""

@@ -137,3 +137,72 @@ end
         "2 22490  24.9690 231.7852 0042844 200.7311 292.7198 14.44524498338063",
         true)
 end
+
+# Test conversion to string
+# =========================
+
+@testset "Conversion from TLE to string" begin
+
+    # Conversion to string
+    # ==========================================================================
+
+    tles = read_tle("./tles_20200122.tle")
+    f    = open("./tles_20200122.tle", "r")
+
+    for i = 1:length(tles)
+        stri_name = readline(f, keep = true)
+        stri_l1   = readline(f, keep = true)
+        stri_l2   = readline(f, keep = false)
+
+        # The TLE for AMOS-4 has a `-` before the first time
+        # derivative, even though it is 0. Since this is happening only here,
+        # we will skip this case.
+        tles[i].sat_num == 39237 && continue
+
+        # The conversion of the exponent signal of BSTAR does not have a
+        # defined pattern if BSTAR = 0.
+        bstar_exp_le = false
+        if tles[i].bstar == 0
+            bstar_exp_le = stri_l1[60] == '-'
+        end
+
+        stri = stri_name * stri_l1 * stri_l2
+        strf = tle_to_str(tles[i], bstar_exp_le = bstar_exp_le)
+
+        @test strf == stri
+    end
+
+    close(f)
+
+    # Printing to IO
+    # ==========================================================================
+
+    str_tle_cbers4 = """
+    CBERS 4                 
+    1 40336U 14079A   18166.15595376 -.00000014  00000-0  10174-4 0  9993
+    2 40336  98.4141 237.7928 0001694  75.7582 284.3804 14.35485112184485"""
+
+    tle_cbers4 = read_tle_from_string(str_tle_cbers4)[1]
+
+    tle_wcs = TLE(tle_cbers4; checksum_l1 = 0, checksum_l2 = 1)
+
+    # Print without modifying the checksum.
+    io = IOBuffer()
+    print_tle(io, tle_wcs, recompute_checksum = false)
+    result = String(take!(io))
+
+    expected = """
+    CBERS 4                 
+    1 40336U 14079A   18166.15595376 -.00000014  00000-0  10174-4 0  9990
+    2 40336  98.4141 237.7928 0001694  75.7582 284.3804 14.35485112184481"""
+
+    @test result == expected
+
+    # Print recomputing the checksum.
+    io = IOBuffer()
+    print_tle(io, tle_wcs)
+    result = String(take!(io))
+    expected = str_tle_cbers4
+
+    @test result == expected
+end
