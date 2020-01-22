@@ -25,5 +25,6 @@ include("types.jl")
 
 include("gmst.jl")
 include("sgp4_model.jl")
+include("helpers.jl")
 
 end
