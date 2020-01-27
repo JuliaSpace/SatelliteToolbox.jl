@@ -7,7 +7,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export ground_station_accesses, list_ground_station_accesses,
+export ground_station_accesses, ground_station_gaps,
+       list_ground_station_accesses, list_ground_station_gaps,
        ground_station_visible
 
 """
@@ -136,6 +137,53 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
 end
 
 """
+    function ground_station_gaps(args...; kwargs...)
+
+Compute the gaps between the accesses of ground stations. The arguments and
+keywords are the same as the ones used in the function
+`ground_station_accesses`.
+
+Notice that the gap analysis starts in the orbit propagator epoch and ends in
+the instant defined by the argument `Δt`.
+
+"""
+function ground_station_gaps(orbp, args...; kwargs...)
+    # Get the epoch of the propagator.
+    JD₀ = epoch(orbp)
+    DT₀ = JDtoDate(DateTime, JD₀)
+
+    # Compute the list of ground station accesses.
+    accesses = ground_station_accesses(orbp, args...; kwargs...)
+
+    # Get the analysis period, which must be the second argument in `args...`.
+    Δt = args[2]
+
+    # Compute the last propagation instant.
+    JD₁ = JD₀ + Δt/86400
+    DT₁ = JDtoDate(DateTime, JD₁)
+
+    # Compute the gaps between accesses.
+    gaps = Matrix{DateTime}(undef,0,2)
+
+    # Check if the simulation did not start under the visibility of a ground
+    # station.
+    if accesses[1,1] != DT₀
+        gaps = vcat(gaps, [JDtoDate(DateTime, JD₀) accesses[1,1]])
+    end
+
+    # Check if the simulation did not end under the visibility of a ground
+    # station.
+    if accesses[end,2] != DT₁
+        aux  = JDtoDate(DateTime, JD₁)
+        gaps = vcat(gaps, [ accesses[:,2] vcat(accesses[2:end,1], aux) ])
+    else
+        gaps = vcat(gaps, [ accesses[1:end-1,2] accesses[2:end,1] ])
+    end
+
+    return gaps
+end
+
+"""
     function list_ground_station_accesses(io, vargs...; kwargs...)
 
 Print the ground station accesses to the io `io`. The arguments `vargs...` and
@@ -209,6 +257,95 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
                        "" "" "           Total access"  total_access;])
 
         # Highlighters for the minimum and maximum accesses.
+        hl_min = Highlighter((data,i,j)->i == id_min, crayon"bold red")
+        hl_max = Highlighter((data,i,j)->i == id_max, crayon"bold blue")
+
+        # Highlighter for statistics labels.
+        hl = Highlighter((data,i,j)->(j == 3) && (i-num ∈ (1,2,3,4)),
+                         crayon"bold")
+
+        # Print.
+        pretty_table(io, mp, header; alignment = [:r, :l, :l, :r],
+                     crop = :horizontal, formatter = ft_printf("%.3f",[4]),
+                     hlines = [num,num+3], highlighters = (hl,hl_min,hl_max))
+    end
+
+    return nothing
+end
+
+"""
+    function list_ground_station_gaps(io, vargs...; kwargs...)
+
+Print the ground station gaps to the io `io`. The arguments `vargs...` and
+keywords `kwargs...` are those of the function `ground_station_gaps`.
+
+Additionally, the following keywords can be used to modify the behavior of this
+function:
+
+* `format`: If `:pretty`, then a formatted table will be printed. If `:csv`,
+            then the access data will be printed using the CSV format.
+            (**Default** = `:pretty`)
+* `time_scale`: Select the time scale of the access duration (`:s` for seconds,
+                `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
+
+"""
+list_ground_station_gaps(vargs...; kwargs...) =
+    list_ground_station_gaps(stdout, vargs...; kwargs...)
+
+function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
+                                  time_scale::Symbol = :m, kwargs...)
+
+    # Compute the gaps.
+    gaps = ground_station_gaps(vargs...; kwargs...)
+
+    # If no gap was found, then inform the user and return.
+    if isempty(gaps)
+        println("No gap found!")
+        return nothing
+    end
+
+    # Check which scale to use when printing the gap duration.
+    if time_scale == :s
+        ts    = 1
+        label = "s"
+    elseif time_scale == :m
+        ts    = 60
+        label = "min"
+    else
+        ts    = 3600
+        label = "h"
+    end
+
+    # Compute the gaps duration.
+    gap_time = map((b,e)->(e-b).value/1000/ts, @view(gaps[:,1]), @view(gaps[:,2]))
+    num         = length(gap_time)
+
+    # Assemble the information to be printed.
+    header = ["   Gap #" "Beginning (UTC)" "End (UTC)" "Duration [$label]"]
+    mp     = hcat(string.(collect(1:1:num)), gaps, gap_time)
+
+    # Print the information depending on the format.
+
+    if format == :csv
+        writedlm(io, vcat(header,mp), ",")
+    else
+        # Statistics.
+        min_gap, id_min = findmin(gap_time)
+        max_gap, id_max = findmax(gap_time)
+        mean_gap        = mean(gap_time)
+        total_gap       = sum(gap_time)
+
+        # Mark the minimum and maximum gaps.
+        mp[id_min, 1] = "MIN " * mp[id_min,1]
+        mp[id_max, 1] = "MAX " * mp[id_max,1]
+
+        # Add the statistics to the end of the table.
+        mp = vcat(mp, ["" "" "            Minimum gap"  min_gap;
+                       "" "" "               Mean gap"  mean_gap;
+                       "" "" "            Maximum gap"  max_gap;
+                       "" "" "              Total gap"  total_gap;])
+
+        # Highlighters for the minimum and maximum gaps.
         hl_min = Highlighter((data,i,j)->i == id_min, crayon"bold red")
         hl_max = Highlighter((data,i,j)->i == id_max, crayon"bold blue")
 
