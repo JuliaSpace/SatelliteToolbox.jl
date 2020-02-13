@@ -281,7 +281,7 @@ function _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
     for y = oldest_year:newest_year
 		filename = "kp$y"
         sym = Symbol(filename)
-        file_y = @RemoteFile("ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/$filename.wdc",
+        file_y = @RemoteFile("ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/yearly/$filename.wdc",
                              file="$filename.wdc",
                              updates= (y == current_year) ? :daily : :never)
 
