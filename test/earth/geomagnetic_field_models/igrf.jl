@@ -128,10 +128,10 @@ end
         (elong > 180) && (elong = elong-360)
 
         if date < 2020
-            B = igrf12(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val{:geodetic})
+            B = igrf12(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
         else
             B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.") #=
-                =# igrf12(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val{:geodetic})
+                =# igrf12(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
         end
 
         x, y, z = B[:]

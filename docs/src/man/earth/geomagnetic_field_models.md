@@ -31,21 +31,21 @@ function igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns =
 It computes the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
 position (`r`, `λ`, `Ω`).
 
-The position representation is defined by `T`. If `T` is `Val{:geocentric}`,
+The position representation is defined by `T`. If `T` is `Val(:geocentric)`,
 then the input must be **geocentric** coordinates:
 
 1. Distance from the Earth center `r` \[m];
 1. Geocentric latitude `λ` (``-\pi/2``, ``+\pi/2``) \[rad]; and
 2. Geocentric longitude `Ω` (``-\pi``, +``\pi``) \[rad].
 
-If `T` is `Val{:geodetic}`, then the input must be **geodetic**
+If `T` is `Val(:geodetic)`, then the input must be **geodetic**
 coordinates:
 
 1. Altitude above the reference ellipsoid `h` (WGS-84) \[m];
 2. Geodetic latitude `λ` (``-\pi/2``, ``+\pi/2``) \[rad]; and
 3. Geodetic longitude `Ω` (``-\pi``, ``+\pi``) \[rad].
 
-If `T` is omitted, then it defaults to `Val{:geocentric}`.
+If `T` is omitted, then it defaults to `Val(:geocentric)`.
 
 Notice that the output vector will be represented in the same reference system
 selected by the parameter `T` (geocentric or geodetic). The Y-axis of the output
@@ -65,13 +65,13 @@ to STDOUT.
     accuracy is reduced.
 
 ```jldoctest
-julia> igrf12(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val{:geodetic})
+julia> igrf12(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val(:geodetic))
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15374.385312809889
   1267.9325221604724
  34168.28074619655
 
-julia> igrf12(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val{:geocentric})
+julia> igrf12(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val(:geocentric))
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
  15174.122905727732
   1262.6765496083972

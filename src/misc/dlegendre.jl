@@ -45,14 +45,14 @@ computed using the same normalization (see `N`) as the one selected here.
 The optional parameter `N` can be used to select the normalization. The
 following values are valid:
 
-* `Val{:full}`: Compute the fully normalized associated Legendre function (see
+* `Val(:full)`: Compute the fully normalized associated Legendre function (see
                 `dlegendre_fully_normalized!`).
-* `Val{:schmidt}`: Compute the Schmidt quasi-normalized associated Legendre
+* `Val(:schmidt)`: Compute the Schmidt quasi-normalized associated Legendre
                    function (see `dlegendre_schmidt_quasi_normalized!`).
-* `Val{:conv}`: Compute the conventional associated Legendre function (see
+* `Val(:conv)`: Compute the conventional associated Legendre function (see
                 `dlegendre_conventional!`).
 
-If `N` is omitted, then the full normalization will be used (`Val{:full}`).
+If `N` is omitted, then the full normalization will be used (`Val(:full)`).
 
 If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
 be included. If `ph_term` is not present, then it defaults to `false`.
@@ -61,15 +61,15 @@ be included. If `ph_term` is not present, then it defaults to `false`.
 dlegendre!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false) =
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
-dlegendre!(::Type{Val{:full}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
+dlegendre!(::Val{:full}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
-dlegendre!(::Type{Val{:schmidt}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
+dlegendre!(::Val{:schmidt}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
 
-dlegendre!(::Type{Val{:conv}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
+dlegendre!(::Val{:conv}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
            ph_term::Bool = false) =
     dlegendre_conventional!(dP, ϕ, P, ph_term)
 
@@ -90,36 +90,37 @@ set to `n_max`.
 The optional parameter `N` can be used to select the normalization. The
 following values are valid:
 
-* `Val{:full}`: Compute the fully normalized associated Legendre function (see
+* `Val(:full)`: Compute the fully normalized associated Legendre function (see
                 `legendre_fully_normalized`).
-* `Val{:schmidt}`: Compute the Schmidt quasi-normalized associated Legendre
+* `Val(:schmidt)`: Compute the Schmidt quasi-normalized associated Legendre
                    function (see `legendre_schmidt_quasi_normalized`).
-* `Val{:conv}`: Compute the conventional associated Legendre function (see
+* `Val(:conv)`: Compute the conventional associated Legendre function (see
                 `dlegendre_conventional!`).
 
-If `N` is omitted, then the full normalization will be used (`Val{:full}`).
+If `N` is omitted, then the full normalization will be used (`Val(:full)`).
 
 If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` will
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 # Returns
 
-A matrix with the first-order derivative of the Legendre associated functions
+* A matrix with the first-order derivative of the Legendre associated functions
 `P_n,m[cos(ϕ)]`.
+* A matrix with the Legendre associated functions `P_n,m[cos(ϕ)]`.
 
 """
 dlegendre(ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) =
     dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:full}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
+dlegendre(::Val{:full}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_fully_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:schmidt}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
+dlegendre(::Val{:schmidt}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_schmidt_quasi_normalized(float(ϕ), n_max, m_max, ph_term)
 
-dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
+dlegendre(::Val{:conv}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
           ph_term::Bool = false) =
     dlegendre_conventional(float(ϕ), n_max, m_max, ph_term)
 

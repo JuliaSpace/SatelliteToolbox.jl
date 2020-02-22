@@ -29,20 +29,20 @@ export igrf12syn
 Compute the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
 position (`r`, `λ`, `Ω`).
 
-The position representation is defined by `T`. If `T` is `Val{:geocentric}`,
+The position representation is defined by `T`. If `T` is `Val(:geocentric)`,
 then the input must be **geocentric** coordinates:
 
 1. Distance from the Earth center `r` [m];
 1. Geocentric latitude `λ` (-π/2, +π/2) \\[rad]; and
 2. Geocentric longitude `Ω` (-π, +π) \\[rad].
 
-If `T` is `Val{:geodetic}`, then the input must be **geodetic** coordinates:
+If `T` is `Val(:geodetic)`, then the input must be **geodetic** coordinates:
 
-1. Altitude above the reference ellipsoid `h` (WGS-84) \\[m];
+1 Altitude above the reference ellipsoid `h` (WGS-84) \\[m];
 2. Geodetic latitude `λ` (-π/2, +π/2) \\[rad]; and
 3. Geodetic longitude `Ω` (-π, +π) \\[rad].
 
-If `T` is omitted, then it defaults to `Val{:geocentric}`.
+If `T` is omitted, then it defaults to `Val(:geocentric)`.
 
 Notice that the output vector will be represented in the same reference system
 selected by the parameter `T` (geocentric or geodetic). The Y-axis of the output
@@ -69,14 +69,10 @@ available in Julia language.
 
 """
 igrf12(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
-    igrf12(date, r, λ, Ω, Val{:geocentric}; show_warns = show_warns)
+    igrf12(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
 
-function igrf12(date::Number,
-                r::Number,
-                λ::Number,
-                Ω::Number,
-                ::Type{Val{:geocentric}};
-                show_warns::Bool = true)
+function igrf12(date::Number, r::Number, λ::Number, Ω::Number,
+                ::Val{:geocentric}; show_warns::Bool = true)
 
     # Input verification
     # ==================
@@ -126,7 +122,7 @@ function igrf12(date::Number,
 
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
-    dP, P = dlegendre(Val{:schmidt}, θ, n_max, n_max, false)
+    dP, P = dlegendre(Val(:schmidt), θ, n_max, n_max, false)
 
     # Parameters and auxiliary variables
     # ==================================
@@ -280,11 +276,7 @@ function igrf12(date::Number,
     B_gc = SVector{3,Float64}(x,y,z)
 end
 
-function igrf12(date::Number,
-                h::Number,
-                λ::Number,
-                Ω::Number,
-                ::Type{Val{:geodetic}};
+function igrf12(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
                 show_warns = true)
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
@@ -297,7 +289,7 @@ function igrf12(date::Number,
     (λ_gc, r) = GeodetictoGeocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
-    B_gc = igrf12(date, r, λ_gc, Ω, Val{:geocentric}; show_warns = show_warns)
+    B_gc = igrf12(date, r, λ_gc, Ω, Val(:geocentric); show_warns = show_warns)
 
     # Convert to geodetic coordinates.
     D_gd_gc = create_rotation_matrix(λ_gc - λ,:Y)

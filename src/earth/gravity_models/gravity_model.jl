@@ -121,7 +121,7 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector,
     # required normalization and its time derivative.
     #
     # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
-    dP, P = dlegendre(Val{legendre_norm}, ϕ_gc-pi/2, n_max, n_max, false)
+    dP, P = dlegendre(Val(legendre_norm), ϕ_gc-pi/2, n_max, n_max, false)
 
     # Auxiliary variables.
     rn_fact = R0/r_gc
@@ -301,7 +301,7 @@ function compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector,
     # required normalization.
     #
     # Notice that cos(ϕ_gc-pi/2) = sin(ϕ_gc).
-    P = legendre(Val{legendre_norm}, ϕ_gc-pi/2, n_max, n_max, false)
+    P = legendre(Val(legendre_norm), ϕ_gc-pi/2, n_max, n_max, false)
 
     # Auxiliary variables.
     rn_fact = R0/r_gc

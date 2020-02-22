@@ -41,3 +41,14 @@
 @deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays)           eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays)
 @deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays, relative) eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays, relative)
 
+# Deprecation warnings related to Val{T} => Val(T)
+# ==============================================================================
+
+# IGRF
+@deprecate igrf12(date, r, λ, Ω, ::Type{Val{T}}; show_warns = true) where T igrf12(date, r, λ, Ω, Val(T); show_warns = show_warns)
+
+# Legendre
+@deprecate dlegendre!(::Type{Val{T}}, dP, ϕ, P, ph_term = false) where T            dlegendre!(Val(T), P, ϕ, dP, ph_term)
+@deprecate dlegendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T dlegendre(Val(T), ϕ, n_max, m_max, ph_term)
+@deprecate legendre!(::Type{Val{T}}, P, ϕ, ph_term = false) where T                 legendre!(Val(T), P, ϕ, ph_term)
+@deprecate legendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T  legendre(Val(T), ϕ, n_max, m_max, ph_term)
