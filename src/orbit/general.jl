@@ -45,7 +45,7 @@ end
 ################################################################################
 
 """
-    macro check_orbit(a, e)
+    @check_orbit(a, e)
 
 Verify if the orbit with semi-major axis `a` [m] and eccentricity `e` is valid.
 This macro throws an exception if the orbit is not valid.
@@ -79,7 +79,7 @@ end
 ################################################################################
 
 """
-    function Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
 
 Create an orbit with semi-major axis `a` [m], eccentricity `e`, inclination `i`
 [rad], right ascension of the ascending node `Ω` [rad], argument of perigee `ω`
@@ -99,8 +99,8 @@ Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number) =
 ################################################################################
 
 """
-    function angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function angvel(orb::Orbit, pert::Symbol = :J2)
+    angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
 axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -174,7 +174,7 @@ end
 @inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
-    function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
+    angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
 
 Compute the semi-major axis that will provide an angular velocity `n` [rad/s] in
 an orbit with eccentricity `e` and inclination `i` [rad], using the perturbation
@@ -335,8 +335,8 @@ function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2;
 end
 
 """
-    function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function dArgPer(orb::Orbit, pert::Symbol = :J2)
+    dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -398,8 +398,8 @@ end
 @inline dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
 
 """
-    function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function dRAAN(orb::Orbit, pert::Symbol = :J2)
+    dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
@@ -458,8 +458,8 @@ end
 
 
 """
-    function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    function period(orb::Orbit, pert::Symbol = :J2)
+    period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    period(orb::Orbit, pert::Symbol = :J2)
 
 Compute the period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e`, and inclination `i` [rad], using the perturbation terms

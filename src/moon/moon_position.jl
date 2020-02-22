@@ -16,7 +16,7 @@
 export moon_position_i
 
 """
-    function moon_position_i(JD::Number)
+    moon_position_i(JD_TDB::Number)
 
 Compute the Moon position represented in the IAU-76/FK5 (mean-equator,
 mean-equinox), also called as J2000, at the Julian Day `JD`. The algorithm was

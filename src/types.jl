@@ -16,6 +16,8 @@
 export JB2008_Output
 
 """
+    JB2008_Output
+
 Output structure of the Jacchia-Bowman 2008.
 
 # Fields
@@ -49,6 +51,8 @@ end
 export JR1971_Output
 
 """
+    JR1971_Output
+
 Output structure of the Jacchia-Roberts 1971 model.
 
 # Fields
@@ -82,6 +86,8 @@ end
 export NRLMSISE00_Structure, NRLMSISE00_Flags, NRLMSISE00_Output
 
 """
+    NRLMSISE00_Flags
+
 Flags to configure NRLMSISE-00.
 
 # Fields
@@ -142,6 +148,8 @@ Flags to configure NRLMSISE-00.
 end
 
 """
+    NRLMSISE00_Structure{T}
+
 Structure with the configuration parameters for NRLMSISE-00 model. It can be
 created using the function `conf_nrlmsise00`.
 
@@ -188,6 +196,8 @@ created using the function `conf_nrlmsise00`.
 end
 
 """
+    NRLMSISE00_Output
+
 Output structure for NRLMSISE00 model.
 
 # Fields
@@ -247,6 +257,8 @@ end
 export ICGEM, GravityModel_Coefs
 
 """
+    ICGEM
+
 Structure to store the information contained in ICGEM files.
 
 """
@@ -273,6 +285,8 @@ Structure to store the information contained in ICGEM files.
 end
 
 """
+    GravityModel_Coefs{T}
+
 Structure to store the information about a gravity model.
 
 """
@@ -293,6 +307,8 @@ end
 export EOPData_IAU1980, EOPData_IAU2000A
 
 """
+    EOPData_IAU1980{T}
+
 EOP Data for IAU 1980.
 
 # Fields
@@ -330,6 +346,8 @@ struct EOPData_IAU1980{T}
 end
 
 """
+    EOPData_IAU2000A{T}
+
 EOP Data for IAU 2000A.
 
 # Fields
@@ -374,6 +392,8 @@ end
 export Orbit
 
 """
+    Orbit{T1,T2}
+
 This structure defines the orbit in terms of the Keplerian elements.
 
 # Fields
@@ -406,7 +426,7 @@ function Orbit(t::T1, a::T2, e::T3, i::T4, Ω::T5, ω::T6, f::T7) where
 end
 
 """
-    mutable struct StateVector{T}
+    SatelliteStateVector{T}
 
 Store the state vector of the satellite.
 
@@ -432,14 +452,16 @@ end
 export OrbitPropagator
 
 """
+    OrbitPropagator{T}
+
 Abstract type of the orbit propagator. Every propagator structure must be a
 subtype of this type and must implement the following API functions:
 
-    function propagate!(orbp, t::Number)
-    function propagate!(orbp, t::AbstractVector)
-    function propagate_to_epoch!(orbp, JD::Number)
-    function propagate_to_epoch!(orbp, JD::AbstractVector)
-    function step!(orbp, Δt::Number)
+    propagate!(orbp, t::Number)
+    propagate!(orbp, t::AbstractVector)
+    propagate_to_epoch!(orbp, JD::Number)
+    propagate_to_epoch!(orbp, JD::AbstractVector)
+    step!(orbp, Δt::Number)
 
 """
 abstract type OrbitPropagator{T} end
@@ -450,6 +472,8 @@ abstract type OrbitPropagator{T} end
 export TwoBody_Structure, OrbitPropagatorTwoBody
 
 """
+    TwoBody_Structure{T}
+
 Low level Two Body orbit propagator structure.
 
 """
@@ -475,6 +499,8 @@ mutable struct TwoBody_Structure{T}
 end
 
 """
+    OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
+
 Structure that holds the information related to the Two Body orbit propagator.
 
 # Fields
@@ -498,6 +524,8 @@ end
 export J2_GravCte, J2_Structure, OrbitPropagatorJ2
 
 """
+    J2_GravCte{T}
+
 Gravitational constants for J2 orbit propagator.
 
 # Fields
@@ -514,6 +542,8 @@ Gravitational constants for J2 orbit propagator.
 end
 
 """
+    J2_Structure{T}
+
 Low level J2 orbit propagator structure.
 
 """
@@ -552,6 +582,8 @@ Low level J2 orbit propagator structure.
 end
 
 """
+    OrbitPropagatorJ2{T} <: OrbitPropagator{T}
+
 Structure that holds the information related to the J2 orbit propagator.
 
 # Fields
@@ -574,6 +606,8 @@ end
 export J4_GravCte, J4_Structure, OrbitPropagatorJ4
 
 """
+    J4_GravCte{T}
+
 Gravitational constants for J4 orbit propagator.
 
 # Fields
@@ -592,6 +626,8 @@ Gravitational constants for J4 orbit propagator.
 end
 
 """
+    J4_Structure{T}
+
 Low level J4 orbit propagator structure.
 
 """
@@ -630,6 +666,8 @@ Low level J4 orbit propagator structure.
 end
 
 """
+    OrbitPropagatorJ4{T} <: OrbitPropagator{T}
+
 Structure that holds the information related to the J4 orbit propagator.
 
 # Fields
@@ -652,6 +690,8 @@ end
 export OrbitPropagatorSGP4
 
 """
+    OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
+
 Structure that holds the information related to the SGP4 propagator.
 
 # Fields
@@ -675,6 +715,8 @@ end
 export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ECEFs_IAU_2006, T_ECIs_IAU_2006, T_ROT
 
 """
+    T_ECEFs
+
 Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by the
 IAU-76/FK5 theory.
 
@@ -682,6 +724,8 @@ IAU-76/FK5 theory.
 T_ECEFs = Union{Type{Val{:ITRF}}, Type{Val{:PEF}}}
 
 """
+    T_ECIs
+
 Union of all Earth-Centered Inertial (ECI) frames supported by the IAU-76/FK5
 theory.
 
@@ -693,6 +737,8 @@ T_ECIs = Union{Type{Val{:GCRF}},
                Type{Val{:TEME}}}
 
 """
+    T_ECIs_of_date
+
 Union of all *of date* Earth-Centered Inertial (ECI) frames supported by the
 IAU-76/FK5 theory.
 
@@ -701,6 +747,8 @@ T_ECIs_of_date = Union{Type{Val{:TOD}},
                        Type{Val{:MOD}},
                        Type{Val{:TEME}}}
 """
+    T_ECEFs_IAU_2006
+
 Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by IAU-2006/2010
 theory.
 
@@ -708,6 +756,8 @@ theory.
 T_ECEFs_IAU_2006 = Union{Type{Val{:ITRF}}, Type{Val{:TIRS}}}
 
 """
+    T_ECIs_IAU_2006
+
 Union of all Earth-Centered Inertial (ECI) frames supported by IAU-2006/2010
 theory.
 
@@ -715,6 +765,8 @@ theory.
 T_ECIs_IAU_2006 = Union{Type{Val{:GCRF}}, Type{Val{:CIRS}}}
 
 """
+    T_ROT
+
 Union of all supported rotation descriptions.
 
 """

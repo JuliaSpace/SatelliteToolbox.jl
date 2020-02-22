@@ -12,7 +12,7 @@ export compute_ss_orbit_by_num_rev_per_day
 export list_ss_orbits_by_rep_period, sort_list_ss_orbits_by_height
 
 """
-    function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
+    adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number)
 
 Compute the distance between adjacent ground tracks [m] at a given latitude
 `lat` [rad] for a ground repeating, Sun-synchronous orbit with period `T` [s],
@@ -35,7 +35,7 @@ function adjacent_track_distance_grss(T::Number, i::Number, To::Int, lat::Number
 end
 
 """
-    function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int, lat::Number)
+    adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int, lat::Number)
 
 Compute the distance between adjacent ground tracks [m] at a given latitude
 `lat` [rad] for a ground repeating, Sun-synchronous orbit with semi-major axis
@@ -56,7 +56,7 @@ function adjacent_track_distance_grss(a::Number, e::Number, i::Number, To::Int,
 end
 
 """
-    function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int, lat::Number)
+    adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int, lat::Number)
 
 Compute the angle between two adjacent ground tracks [rad] in a given latitude
 `lat` [rad] measured from the satellite position for a ground repeating,
@@ -85,7 +85,7 @@ function adjacent_track_angle_grss(h::Number, T::Number, i::Number, To::Int,
 end
 
 """
-    function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number, To::Int, lat::Number)
+    adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number, To::Int, lat::Number)
 
 Compute the angle between two adjacent ground tracks [rad] in a given latitude
 `lat` [rad] measured from the satellite position for a ground repeating,
@@ -107,7 +107,7 @@ function adjacent_track_angle_grss(h::Number, a::Number, e::Number, i::Number,
 end
 
 """
-    function compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
+    compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
 
 Compute the Sun-synchronous orbit given the number of revolutions per day
 `numRevPD` and the eccentricity `e`.
@@ -125,7 +125,7 @@ function compute_ss_orbit_by_num_rev_per_day(numRevPD::Number, e::Number)
 end
 
 """
-    function list_ss_orbits_by_rep_period(minRep::Int, maxRep::Int, minAlt::Number=-1.0, maxAlt::Number=-1.0, e::Number=0.0)
+    list_ss_orbits_by_rep_period(minRep::Int, maxRep::Int, minAlt::Number=-1.0, maxAlt::Number=-1.0, e::Number=0.0)
 
 Compute a list of repeating Sun-synchronous orbits.
 
@@ -219,7 +219,7 @@ end
 
 
 """
-### sort_list_ss_orbits_by_height(ss_orbits::Matrix)
+    sort_list_ss_orbits_by_height(ss_orbits::Matrix)
 
 Sort the list of Sun-synchronous orbits `ss_orbits` (see
 `list_ss_orbits_by_rep_period`) by height and return a new matrix.

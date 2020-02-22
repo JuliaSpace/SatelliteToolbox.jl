@@ -54,7 +54,7 @@ include("./nrlmsise00_coefs.jl")
 ################################################################################
 
 """
-    function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number [, f107A::Number, f107::Number, ap::Union{Number,AbstractVector}]; output_si::Bool = true, dversion::Bool = true)
+    nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number [, f107A::Number, f107::Number, ap::Union{Number,AbstractVector}]; output_si::Bool = true, dversion::Bool = true)
 
 **NRLMSISE-00**
 
@@ -209,7 +209,7 @@ end
 ################################################################################
 
 """
-    function conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector], flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
+    conf_nrlmsise00(year::Int, doy::Int, sec::Number, alt::Number, g_lat::Number, g_long::Number, lst::Number, f107A::Number, f107::Number, ap::[Number, AbstractVector], flags::NRLMSISE00_Flags = NRLMSISE00_Flags())
 
 Create the structure with the proper configuration to call the NRLMSISE-00
 model.
@@ -420,7 +420,7 @@ end
 ################################################################################
 
 """
-    function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 **NRLMSISE-00**
 
@@ -633,7 +633,7 @@ function gtd7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 end
 
 """
-    function gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    gtd7d(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 **NRLMSISE-00**
 

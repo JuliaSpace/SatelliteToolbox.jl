@@ -46,7 +46,7 @@ end
 ################################################################################
 
 """
-    function get_space_index(T, JD::Number; ...)
+    get_space_index(T, JD::Number; ...)
 
 Return the space index `T` at the day `JD` [Julian Day]. `T` can be:
 
@@ -193,7 +193,7 @@ end
 end
 
 """
-    function init_space_indices(...)
+    init_space_indices(...)
 
 Initialize all space indices. The files that will be initialized must be
 indicated by the array of symbols passed to the keyword argument

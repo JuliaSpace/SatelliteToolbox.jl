@@ -9,7 +9,7 @@
 export epoch
 
 """
-    function epoch(orbp)
+    epoch(orbp)
 
 Return the epoch of the propagator `orbp` [JD].
 

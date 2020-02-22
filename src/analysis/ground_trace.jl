@@ -9,7 +9,7 @@
 export ground_trace
 
 """
-    function ground_trace(orbp::OrbitPropagator{N}, eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing; ECI = TEME(), ECEF = PEF(), span = 1.0) where N
+    ground_trace(orbp::OrbitPropagator{N}, eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing; ECI = TEME(), ECEF = PEF(), span = 1.0) where N
 
 Compute the ground trace of the object with orbit defined by `orbp`.
 

@@ -17,7 +17,7 @@
 export svECItoECI
 
 """
-    function svECItoECI(sv::SatelliteStateVector, args...)
+    svECItoECI(sv::SatelliteStateVector, args...)
 
 Convert the satellite state vector `sv` from an ECI frame to another ECI frame.
 The arguments `args...` must match those of the function `rECItoECI` **wihtout**

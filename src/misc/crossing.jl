@@ -7,7 +7,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 """
-    function find_crossing(f::Function, t₀::Number, t₁::Number, s₀, s₁; Δ = 1e-3, max = 100)
+    find_crossing(f::Function, t₀::Number, t₁::Number, s₀, s₁; Δ = 1e-3, max = 100)
 
 Return the crossing time `tc` in which the function `f(t)` goes from the state
 `s₀` to the state `s₁`. It is assumed that `f(t₀) = s₀` and `f(t₁) = s₁`.

@@ -28,6 +28,8 @@
 JR1971_NT{T} = NamedTuple{ (:N₂, :O₂, :O, :Ar, :He, :H), NTuple{6,T} }
 
 """
+    JR1971_CONSTANTS{T}
+
 Structure with the constants for the Jacchia-Roberts 1971 Atmospheric Model.
 
 """
@@ -192,12 +194,16 @@ Structure with the constants for the Jacchia-Roberts 1971 Atmospheric Model.
 end
 
 """
+    _jr1971_constants
+
 Constants for the Jacchia-Roberts 1971 Atmospheric Model.
 
 """
 const _jr1971_constants = JR1971_CONSTANTS{Float64}()
 
 """
+    _jr1971_id
+
 Index of the species for the Jacchia-Roberts 1971 Atmospheric Model.
 
 """
@@ -208,7 +214,7 @@ const _jr1971_id = ( N₂ = 1, O₂ = 2, O  = 3, Ar = 4, He = 5, H  = 6 )
 ################################################################################
 
 """
-    function _jr1971_M(z::R) where R
+    _jr1971_M(z::R) where R
 
 Compute the mean molecular mass at altitude `z` [km] using the empirical profile
 in eq. 1 [3,4].
@@ -221,7 +227,7 @@ in eq. 1 [3,4].
 end
 
 """
-    function _jr1971_roots(p::Polynomial{R}) where R
+    _jr1971_roots(p::Polynomial{R}) where R
 
 Compute the roots of the polynomial `p` necessary to compute the density below
 125 km. It returns the value `r₁`, `r₂`, `x`, and `y`.
@@ -256,7 +262,7 @@ function _jr1971_roots(p::Vector{R}) where R
 end
 
 """
-    function _jr1971_T(z::R, Tx::R, T∞::R) where R<:Number
+    _jr1971_T(z::R, Tx::R, T∞::R) where R<:Number
 
 Compute the temperature [K] at height `z` [km] given the temperature `Tx` [K] at
 the inflection point, and the exospheric temperature `T∞` [K] according to the

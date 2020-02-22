@@ -9,7 +9,7 @@
 export satellite_sun_angle_earth_pointing
 
 """
-    function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Number = 0.1*pi/180.0)
+    satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, fN_k::Function, meanAnomaly::Bool = false, step::Number = 0.1*pi/180.0)
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 
@@ -166,7 +166,7 @@ function satellite_sun_angle_earth_pointing(JD0::Number,
 end
 
 """
-    function satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::AbstractVector, step::Number = 0.1*pi/180.0)
+    satellite_sun_angle_earth_pointing(JD0::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, numDays::Integer, N::AbstractVector, step::Number = 0.1*pi/180.0)
 
 Compute the Sun angle on a satellite surface for an Earth-pointing mission.
 

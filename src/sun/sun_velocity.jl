@@ -22,7 +22,7 @@
 export sun_velocity_i
 
 """
-    function sun_velocity_i(JD::Number)
+    sun_velocity_i(JD::Number)
 
 Compute the Sun velocity represented in the Mean Equinox of Date (MOD) at the
 Julian Day `JD`. The algorithm was obtained by computing the time derivative of

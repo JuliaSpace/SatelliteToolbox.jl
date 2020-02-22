@@ -98,8 +98,8 @@ const THDT          = 4.37526908801129966e-3
 ################################################################################
 
 """
-    function sgp4_init(spg4_gc::SGP4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
-    function sgp4_init(tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+    sgp4_init(spg4_gc::SGP4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
+    sgp4_init(tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
 
 Initialize the data structure of SGP4 algorithm.
 
@@ -309,7 +309,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 end
 
 """
-    function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
+    sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `sgp4d` (see `SGP4_Structure`) until the time `t`
 [min]. Notice that the values in `sgp4d` will be modified.
@@ -607,7 +607,7 @@ end
 ################################################################################
 
 """
-    function dsinit(epoch::T, nll_0::T, all_0::T, e_0::T, i_0::T, Ω_0::T, ω_0::T, M_0::T, dotM::T, dotω::T, dotΩ::T) where T<:Number
+    dsinit(epoch::T, nll_0::T, all_0::T, e_0::T, i_0::T, Ω_0::T, ω_0::T, M_0::T, dotM::T, dotω::T, dotΩ::T) where T<:Number
 
 Initialize the deep space structure. This function performs the initial
 computations and save the values at an instance of the structure
@@ -1002,7 +1002,7 @@ function dsinit(epoch::T,
 end
 
 """
-    function dssec!(sgp4_ds::SGP4_DeepSpace{T}, nll_0::T, e_0::T, i_0::T, ω_0::T, Ω_k::T, ω_k::T, M_k::T, dotω::T, Δt::Number) where T<:Number
+    dssec!(sgp4_ds::SGP4_DeepSpace{T}, nll_0::T, e_0::T, i_0::T, ω_0::T, Ω_k::T, ω_k::T, M_k::T, dotω::T, Δt::Number) where T<:Number
 
 Compute the secular effects.
 
@@ -1146,7 +1146,7 @@ function dssec!(sgp4_ds::SGP4_DeepSpace{T},
 end
 
 """
-    function dsper!(sgp4_ds::SGP4_DeepSpace{T}, e_k::T, i_k::T, Ω_k::T, ω_k::T, M_k::T, Δt:Number) where T<:Number
+    dsper!(sgp4_ds::SGP4_DeepSpace{T}, e_k::T, i_k::T, Ω_k::T, ω_k::T, M_k::T, Δt:Number) where T<:Number
 
 Compute the effects caused by Lunar-Solar periodics.
 

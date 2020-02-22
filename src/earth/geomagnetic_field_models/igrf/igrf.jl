@@ -22,7 +22,7 @@ export igrf12syn
 ################################################################################
 
 """
-    function igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
+    igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
 
 **IGRF v12 Model**
 
@@ -305,7 +305,7 @@ function igrf12(date::Number,
 end
 
 """
-    function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number; show_warns = true)
+    igrf12syn(isv::Int, date::Number, itype::Int, alt::Number, colat::Number, elong::Number; show_warns = true)
 
 This is a Julia implementation of the official IGRF source code, which was
 written in Fortran [2]. The input and output variables are exactly the same as

@@ -37,8 +37,8 @@ include("./jb2008_priv.jl")
 export jb2008
 
 """
-    function jb2008(JD::Number, glat::Number, glon::Number, h::Number)
-    function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number, F10ₐ::Number, S10::Number, S10ₐ::Number, M10::Number, M10ₐ::Number, Y10::Number, Y10ₐ::Number, DstΔTc::Number)
+    jb2008(JD::Number, glat::Number, glon::Number, h::Number)
+    jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number, F10ₐ::Number, S10::Number, S10ₐ::Number, M10::Number, M10ₐ::Number, Y10::Number, Y10ₐ::Number, DstΔTc::Number)
 
 Compute the atmospheric density using the Jacchia-Bowman 2008 (JB2008) model.
 

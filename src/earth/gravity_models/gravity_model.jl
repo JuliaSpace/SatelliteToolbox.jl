@@ -24,7 +24,7 @@ export create_gravity_model_coefs, compute_dU, compute_U, compute_g
 ################################################################################
 
 """
-    function create_gravity_model_coefs(icgem::ICGEM)
+    create_gravity_model_coefs(icgem::ICGEM)
 
 Return an instance of the structure `GravityModel_Coefs` based on the
 information obtained from an ICGEM file in `icgem` (see `parse_icgem`).
@@ -46,7 +46,7 @@ function create_gravity_model_coefs(icgem::ICGEM)
 end
 
 """
-    function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
+    compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
 
 Compute the derivatives w.r.t. the spherical coordinates of the gravitational
 field (`∂U/∂r`, `∂U/∂ϕ`, `∂U/∂λ`) defined by the coefficients `gm_coefs` (see
@@ -180,7 +180,7 @@ function compute_dU(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector,
 end
 
 """
-    function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
+    compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
 
 Compute the gravitational acceleration (ITRF) \\[m/s²] at position `r` \\[m]
 (ITRF) using the coefficients `gm_coefs` (see `GravityModel_Coefs`). The maximum
@@ -245,7 +245,7 @@ function compute_g(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector,
 end
 
 """
-    function compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
+    compute_U(gm_coefs::GravityModel_Coefs{T}, r::AbstractVector, n_max::Number = -1, m_max::Number = -1) where T<:Number
 
 Compute the gravitational potential [J/kg] at `r` (ITRF) \\[m] using the
 coefficients `gm_coefs` (see `GravityModel_Coefs`). The maximum degree that will

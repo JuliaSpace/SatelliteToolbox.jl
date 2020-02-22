@@ -32,7 +32,7 @@ export rTEMEtoPEF,  rPEFtoTEME
 # ==============================================================================
 
 """
-    function rTEMEtoTOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rTEMEtoTOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the True of Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -92,7 +92,7 @@ function rTEMEtoTOD(T::Type,
 end
 
 """
-    function rTODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rTODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -122,7 +122,7 @@ rTODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number 
 # ==============================================================================
 
 """
-    function rTEMEtoMOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rTEMEtoMOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Mean of Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -193,7 +193,7 @@ function rTEMEtoMOD(T::Type,
 end
 
 """
-    function rMODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rMODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -223,7 +223,7 @@ rMODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number 
 # ==============================================================================
 
 """
-    function rTEMEtoGCRF([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rTEMEtoGCRF([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_TT`
@@ -268,7 +268,7 @@ function rTEMEtoGCRF(T::Type,
 end
 
 """
-    function rGCRFtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    rGCRFtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
 Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -304,7 +304,7 @@ rGCRFtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number
 # ==============================================================================
 
 """
-    function rTEMEtoPEF([T,] JD_TT::Number)
+    rTEMEtoPEF([T,] JD_TT::Number)
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -332,7 +332,7 @@ function rTEMEtoPEF(T::Type, JD_UT1::Number)
 end
 
 """
-    function rPEFtoTEME([T,] JD_TT::Number)
+    rPEFtoTEME([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 True Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial

@@ -16,7 +16,7 @@
 export equation_of_time
 
 """
-    function equation_of_time(JD::Number)
+    equation_of_time(JD::Number)
 
 Compute the difference between the Sun apparent local time and the Sun mean
 local time [rad], which is called Equation of Time, at the Julian Day `JD`. The

@@ -20,7 +20,7 @@ export EGM96, JGM2, JGM3
 ################################################################################
 
 """
-    function load_gravity_model(T)
+    load_gravity_model(T)
 
 Load an embedded gravity model coefficients `T` and return an instance of the
 structure `GravityModel_Coefs` with the parsed values.

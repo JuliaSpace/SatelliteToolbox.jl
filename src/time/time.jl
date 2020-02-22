@@ -59,7 +59,7 @@ const ΔAT_Data = [2441499.500000     11.0;
                  ]
 
 """
-    function get_ΔAT(JD::Number)
+    get_ΔAT(JD::Number)
 
 Get the accumulated leap seconds (ΔAT) [s] between UTC and International Atomic
 Time (TAI) in the given `JD`. This function search for ΔAT in the array
@@ -93,7 +93,7 @@ end
 ################################################################################
 
 """
-    function JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number)
+    JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number)
 
 Convert the Julian Day in UTC `JD_UTC` to the Julian Day in UT1 using the
 accumulated difference `ΔUT1`, which is provided by IERS EOP Data.
@@ -102,7 +102,7 @@ accumulated difference `ΔUT1`, which is provided by IERS EOP Data.
 JD_UTCtoUT1(JD_UTC::Number, ΔUT1::Number) = JD_UTC + ΔUT1/86400
 
 """
-    function JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number)
+    JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number)
 
 Convert the Julian Day in UT1 `JD_UT1` to the Julian Day in UTC using the
 accumulated difference `ΔUT1`, which is provided by IERS EOP Data.
@@ -111,7 +111,7 @@ accumulated difference `ΔUT1`, which is provided by IERS EOP Data.
 JD_UT1toUTC(JD_UT1::Number, ΔUT1::Number) = JD_UT1 - ΔUT1/86400
 
 """
-    function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
+    JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
 
 Convert the Julian Day in UTC `JD_UTC` to the Julian Day in UT1 using the
 accumulated difference given by the EOP Data `eop` (see `get_iers_eop`). Notice
@@ -123,7 +123,7 @@ function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A
 end
 
 """
-    function JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
+    JD_UTCtoUT1(JD_UTC::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A})
 
 Convert the Julian Day in UT1 `JD_UT1` to the Julian Day in UTC using the
 accumulated difference given by the EOP Data `eop` (see `get_iers_eop`). Notice
@@ -135,7 +135,7 @@ function JD_UT1toUTC(JD_UT1::Number, eop::Union{EOPData_IAU1980,EOPData_IAU2000A
 end
 
 """
-    function JD_UTCtoTT(JD_UTC::Number [, ΔAT::Number])
+    JD_UTCtoTT(JD_UTC::Number [, ΔAT::Number])
 
 Convert the Julian Day in UTC `JD_UTC` to the Julian Day in TT (Terrestrial
 Time) using the accumulated difference `ΔAT` between UTC and the International
@@ -153,7 +153,7 @@ function JD_UTCtoTT(JD_UTC::Number)
 end
 
 """
-    function JD_TTtoUTC(JD_TT::Number, ΔAT::Number = 37)
+    JD_TTtoUTC(JD_TT::Number, ΔAT::Number = 37)
 
 Convert the Julian Day in TT `JD_TT` (Terrestrial Time) to the Julian Day in UTC
 (Terrestrial Time) using the accumulated difference `ΔAT` between UTC and the
@@ -171,7 +171,7 @@ function JD_TTtoUTC(JD_UTC::Number)
 end
 
 """
-    function is_leap_year(year::Int)
+    is_leap_year(year::Int)
 
 Check if the year `year` is a leap year. It returns `true` if `year` is a leap
 year, or `false` otherwise.

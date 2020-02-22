@@ -29,7 +29,7 @@ _fluxtable = @RemoteFile(
 ################################################################################
 
 """
-    function _init_fluxtable(;force_download = false, local_path = nothing)
+    _init_fluxtable(;force_download = false, local_path = nothing)
 
 Initialize the data in the file `fluxtable.txt` by creating `_fluxtable_data`.
 The initialization process is composed of:
@@ -59,7 +59,7 @@ function _init_fluxtable(;force_download = false, local_path = nothing)
 end
 
 """
-    function _parse_fluxtable(path::AbstractString)
+    _parse_fluxtable(path::AbstractString)
 
 Parse the `fluxtable.txt` file in `path` and return an instance of the structure
 `_fluxtable_Structure` with the initialize interpolations.

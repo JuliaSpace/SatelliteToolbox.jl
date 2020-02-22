@@ -53,7 +53,7 @@ export DatetoJD, JDtoDate
 ################################################################################
 
 """
-    function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
+    DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
 
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month = `M`
 (1-12), Day = `D`, Hour = `h` (0-24), minute = `m`, and second = `s`) to Julian
@@ -104,7 +104,7 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
 end
 
 """
-    function DatetoJD(date::Date)
+    DatetoJD(date::Date)
 
 Convert the date `date` to Julian Day.
 
@@ -115,7 +115,7 @@ function DatetoJD(date::Date)
 end
 
 """
-    function DatetoJD(dateTime::DateTime)
+    DatetoJD(dateTime::DateTime)
 
 Convert the date and time `dateTime` to Julian Day.
 
@@ -130,7 +130,7 @@ function DatetoJD(dateTime::DateTime)
 end
 
 """
-    function JDtoDate([T,] JD::Number)
+    JDtoDate([T,] JD::Number)
 
 Convert a date represented in Julian Day `JD` to Gregorian Calendar. The
 optional parameter `T` defines the return type. If `T` is omitted, then it

@@ -98,7 +98,7 @@ const j2_gc_jgm03 = J2_GravCte(
 ################################################################################
 
 """
-    function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number) where T
+    j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
@@ -163,7 +163,7 @@ function j2_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number,
 end
 
 """
-    function j2!(j2d::J2_Structure{T}, t::Number) where T
+    j2!(j2d::J2_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `j2d` (see `J2_Structure`) until the time `t`
 [s]. Notice that the values in `j2d` will be modified.

@@ -17,7 +17,7 @@
 export svECEFtoECEF
 
 """
-    function svECEFtoECEF(sv::SatelliteStateVector, args...)
+    svECEFtoECEF(sv::SatelliteStateVector, args...)
 
 Convert the satellite state vector `sv` from an ECEF frame to another ECEF
 frame. The arguments `args...` must match those of the function `rECEFtoECEF`

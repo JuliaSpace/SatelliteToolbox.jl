@@ -23,8 +23,8 @@
 export init_orbit_propagator
 
 """
-    function init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, ...)
-    function init_orbit_propagator(T, orb_0::Orbit, ...)
+    init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, ...)
+    init_orbit_propagator(T, orb_0::Orbit, ...)
 
 Initialize the orbit propagator `T` using the initial mean orbital elements. The
 propagator type `T` can be:
@@ -156,7 +156,7 @@ init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0) =
                           orb_0.Ω, orb_0.ω, orb_0.f, μ)
 
 """
-    function init_orbit_propagator(T, tle::TLE, ...)
+    init_orbit_propagator(T, tle::TLE, ...)
 
 Initialize the orbit propagator `T` using the TLE `tle`. The propagator type `T`
 can be:

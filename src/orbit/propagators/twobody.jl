@@ -34,7 +34,7 @@ Base.copy(m::TwoBody_Structure) =
 ################################################################################
 
 """
-    function twobody_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, μ::T) where T
+    twobody_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, μ::T) where T
 
 Initialize the data structure of Two Body orbit propagator algorithm.
 
@@ -73,7 +73,7 @@ function twobody_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
 end
 
 """
-    function twobody!(tbd::TwoBody_Structure, t::Number)
+    twobody!(tbd::TwoBody_Structure, t::Number)
 
 Propagate the orbit defined in `tbd` (see `TwoBody_Structure`) until the time
 `t` [s]. Notice that the values in `tbd` will be modified.

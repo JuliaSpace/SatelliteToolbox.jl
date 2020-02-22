@@ -16,7 +16,7 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    function rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; max_it = 10000, sgp4_gc = sgp4_gc_wgs84) where
+    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; max_it = 10000, sgp4_gc = sgp4_gc_wgs84) where {T,Tv<:AbstractVector}
 
 Compute the mean elements for SGP4 based on the position `vr` and velocity
 vectors `vr` represented in TEME reference frame. The epoch of those
@@ -127,7 +127,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}
 end
 
 """
-    function rv_to_tle(args...; name::String = "UNDEFINED", sat_num::Int = 9999, classification::Char = 'U', int_designator = "999999", elem_set_number::Int = 0, rev_num, kwargs...)
+    rv_to_tle(args...; name::String = "UNDEFINED", sat_num::Int = 9999, classification::Char = 'U', int_designator = "999999", elem_set_number::Int = 0, rev_num, kwargs...)
 
 Convert a set of position and velocity vectors represented in TEME reference
 frame to a TLE. The arguments `args` and keywords `kwargs` are the same as those

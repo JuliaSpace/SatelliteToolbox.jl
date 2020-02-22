@@ -14,7 +14,7 @@
 export beta_angle
 
 """
-    function beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, Δt::Integer, pert::Symbol = :J2)
+    beta_angle(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, Δt::Integer, pert::Symbol = :J2)
 
 Compute the beta angle of an orbit with semi-major axis `a` [m], eccentricity
 `e`, inclination `i` [rad], and initial right ascension of the ascending node

@@ -9,7 +9,7 @@
 export step!
 
 """
-    function step!(orbp, Δt::Number)
+    step!(orbp, Δt::Number)
 
 Propagate the orbit in `orbp` by `Δt` [s] using the algorithm of `orbp`. The new
 parameters will be written in `orbp`.

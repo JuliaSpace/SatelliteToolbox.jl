@@ -9,7 +9,7 @@
 export minimum_swath_grss, minimum_half_FOV_grss, swath_width
 
 """
-    function minimum_half_FOV_grss(h::Real, T::Real, i::Real, To::Integer)
+    minimum_half_FOV_grss(h::Real, T::Real, i::Real, To::Integer)
 
 Compute the minimum half FOV of a ground repeating Sun-synchronous (GRSS) orbit
 to cover the entire Equator within the revisit interval.
@@ -31,7 +31,7 @@ function minimum_half_FOV_grss(h::Real, T::Real, i::Real, To::Integer)
 end
 
 """
-    function minimum_half_FOV_grss(h::Real, a::Real, e::Real, i::Real, To::Integer)
+    minimum_half_FOV_grss(h::Real, a::Real, e::Real, i::Real, To::Integer)
 
 Compute the minimum half FOV of a ground repeating Sun-synchronous (GRSS) orbit
 to cover the entire Equator within the revisit interval.
@@ -54,7 +54,7 @@ function minimum_half_FOV_grss(h::Real, a::Real, e::Real, i::Real, To::Integer)
 end
 
 """
-    function minimum_swath_grss(T::Real, i::Real, To::Integer)
+    minimum_swath_grss(T::Real, i::Real, To::Integer)
 
 Compute the minimum swath of a ground repeating Sun-synchronous (GRSS) orbit to
 cover the entire Equator within the revisit interval.
@@ -75,7 +75,7 @@ function minimum_swath_grss(T::Real, i::Real, To::Integer)
 end
 
 """
-    function minimum_swath_grss(a::Real, e::Real, i::Real, To::Integer)
+    minimum_swath_grss(a::Real, e::Real, i::Real, To::Integer)
 
 Compute the minimum swath of a ground repeating Sun-synchronous (GRSS) orbit to
 cover the entire Equator within the revisit interval.
@@ -97,7 +97,7 @@ function minimum_swath_grss(a::Real, e::Real, i::Real, To::Integer)
 end
 
 """
-    function swath_width(h::real, HalfFOV::real)
+    swath_width(h::real, HalfFOV::real)
 
 Compute the swath width given the orbit altitude and the half FOV.
 

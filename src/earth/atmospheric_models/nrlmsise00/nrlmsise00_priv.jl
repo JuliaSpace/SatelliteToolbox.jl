@@ -26,7 +26,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 """
-    function _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number
+    _ccor(alt::T, r::T, h1::T, zh::T) where T<:Number
 
 Chemistry / Dissociation correction for MSIS models.
 
@@ -52,7 +52,7 @@ The chemistry / dissociation correction.
 end
 
 """
-    function _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number
+    _ccor2(alt::T, r::T, h1::T, zh::T, h2::T) where T<:Number
 
 Chemistry / Dissociation correction for MSIS models.
 
@@ -81,7 +81,7 @@ The chemistry / dissociation correction.
 end
 
 """
-    function _densm(re::T, gsurf::T, alt::T, d0::T, xm::T, tz::T, zn3::StaticVector{N3,T}, tn3::AbstractVector{T}, tgn3::AbstractVector{T}, zn2::StaticVector{N2,T}, tn2::AbstractVector{T}, tgn2::AbstractVector{T}) where T<:Number where N2 where N3
+    _densm(re::T, gsurf::T, alt::T, d0::T, xm::T, tz::T, zn3::StaticVector{N3,T}, tn3::AbstractVector{T}, tgn3::AbstractVector{T}, zn2::StaticVector{N2,T}, tn2::AbstractVector{T}, tgn2::AbstractVector{T}) where {T<:Number,N2,N3}
 
 Compute the temperature and density profiles for lower atmosphere.
 
@@ -213,7 +213,7 @@ function _densm(re::T, gsurf::T, alt::T, d0::T, xm::T, tz::T,
 end
 
 """
-    function _densu(re::T, gsurf::T, alt::T, dlb::T, tinf::T, tlb::T, xm::T, alpha::T, zlb::T, s2::T, zn1::StaticVector{N,T}, tn1::AbstractVector{T}, tgn1::AbstractVector{T}) where T<:Number where N
+    _densu(re::T, gsurf::T, alt::T, dlb::T, tinf::T, tlb::T, xm::T, alpha::T, zlb::T, s2::T, zn1::StaticVector{N,T}, tn1::AbstractVector{T}, tgn1::AbstractVector{T}) where {T<:Number,N}
 
 Compute the temperature and density profiles for MSIS models.
 
@@ -322,7 +322,7 @@ function _densu(re::T, gsurf::T, alt::T, dlb::T, tinf::T, tlb::T, xm::T,
 end
 
 """
-    function _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number
+    _dnet(dd::T, dm::T, zhm::T, xmm::T, xm::T) where T<:Number
 
 Turbopause correction for MSIS models.
 
@@ -369,7 +369,7 @@ end
 end
 
 """
-    function _globe7!(p::AbstractVector{T}, nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    _globe7!(p::AbstractVector{T}, nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 Compute G(L) function.
 
@@ -594,7 +594,7 @@ function _globe7!(p::AbstractVector{T},
 end
 
 """
-    function _glob7s(p::AbstractVector{T}, nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    _glob7s(p::AbstractVector{T}, nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 Version of Globe for lower atmosphere (1999-10-26).
 
@@ -739,7 +739,7 @@ function _glob7s(p::AbstractVector{T},
 end
 
 """
-    function gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
+    gts7(nrlmsise00d::NRLMSISE00_Structure{T}) where T<:Number
 
 Thermospheric portion of NRLMSISE-00. This function should not be called to
 compute NRLMSISE-00. Use `gtd7` or `gtd7d` instead.
@@ -1200,7 +1200,7 @@ end
 end
 
 """
-    function _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
+    _splini(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the integral of the cubic spline function from `xa[1]` to `x`.
 
@@ -1253,7 +1253,7 @@ end
 
 
 """
-    function _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}
+    _spline(x::StaticVector{N,T}, y::StaticVector{N,T}, yp1::T, ypn::T) where {T<:Number,N}
 
 Compute the 2nd derivatives of cubic spline interpolation function tabulated by
 `x` and `y` given the 2nd derivatives values at `x[1]` (`yp1`) and at `x[N]`
@@ -1321,7 +1321,7 @@ Values higher than `1e30` in the 2nd derivatives at the borders (`yp1` and
 end
 
 """
-    function _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
+    _splint(xa::StaticVector{N,T}, ya::StaticVector{N,T}, y2a::StaticVector{N,T}, x::T) where {T<:Number,N}
 
 Compute the cubic spline interpolation value at `x`.
 

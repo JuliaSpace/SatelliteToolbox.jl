@@ -11,7 +11,7 @@
 ################################################################################
 
 """
-### macro parse_value(T, str, line_num)
+    @parse_value(T, str, line_num)
 
 Parse the string `str` using the type `T`. If it is not succeeded, then throw an
 error indicating the line `line_num` with the problem.
@@ -302,7 +302,7 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
 end
 
 """
-    function compute_checksum(str::AbstractString)
+    compute_checksum(str::AbstractString)
 
 Compute the checksum of the line `str` modulo 10.
 
@@ -332,7 +332,7 @@ function compute_checksum(str::AbstractString)
 end
 
 """
-    function _show_tle(io::IO, tle::TLE, color::Bool = true)
+    _show_tle(io::IO, tle::TLE, color::Bool = true)
 
 Show the TLE `tle` in the IO `io`.
 

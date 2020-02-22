@@ -9,7 +9,7 @@
 export sgp4
 
 """
-    function sgp4(Δt, args...)
+    sgp4(Δt, args...)
 
 Function that initialize the SGP4 structure and propagate the orbit until the time Δt.
 

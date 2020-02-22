@@ -48,7 +48,7 @@ export rCIRStoGCRF_iau2006, rGCRFtoCIRS_iau2006
 # ==============================================================================
 
 """
-    function rITRFtoTIRS_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
+    rITRFtoTIRS_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Terrestrial Intermediate Reference System (TIRS) considering the
@@ -100,7 +100,7 @@ function rITRFtoTIRS_iau2006(T::Type, JD_TT::Number, x_p::Number, y_p::Number)
 end
 
 """
-    function rTIRStoITRF_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
+    rTIRStoITRF_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the International Terrestrial Reference Frame (ITRF) considering the
@@ -155,7 +155,7 @@ end
 # ==============================================================================
 
 """
-    function rTIRStoCIRS_iau2006([T::Type,] JD_UT1::Number)
+    rTIRStoCIRS_iau2006([T::Type,] JD_UT1::Number)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the Celestial Intermediate Reference System (CIRS) at the Julian Day
@@ -196,7 +196,7 @@ function rTIRStoCIRS_iau2006(T::Type, JD_UT1::Number)
 end
 
 """
-    function rCIRStoTIRS_iau2006([T::Type,] JD_UT1::Number)
+    rCIRStoTIRS_iau2006([T::Type,] JD_UT1::Number)
 
 Compute the rotation that aligns the Celestial Intermediate Reference System
 (CIRS) with the Terrestrial Intermediate Reference System (TIRS) at the Julian
@@ -240,7 +240,7 @@ end
 # ==============================================================================
 
 """
-    function rCIRStoGCRF_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
+    rCIRStoGCRF_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
 
 Compute the rotation that aligns the Celestial Intermediate Reference System
 (CIRS) with the Geocentric Celestial Reference Frame (GCRF) at the Julian Day
@@ -300,7 +300,7 @@ rCIRStoGCRF_iau2006(::Type{Quaternion}, JD_TT::Number, dX::Number = 0,
     dcm_to_quat(rCIRStoGCRF_iau2006(DCM, JD_TT, dX, dY))
 
 """
-    function rGCRFtoCIRS_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
+    rGCRFtoCIRS_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the Celestial Intermediate Reference System (CIRS) at the Julian Day

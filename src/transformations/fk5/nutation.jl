@@ -160,7 +160,7 @@ const nut_coefs_1980 = [
 ################################################################################
 
 """
-    function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
+    nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
 
 Compute the nutation parameters at the Julian Day `JD_TT` [Terrestrial Time]
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`

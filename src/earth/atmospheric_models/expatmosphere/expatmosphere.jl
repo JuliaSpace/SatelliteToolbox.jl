@@ -16,7 +16,7 @@
 export expatmosphere
 
 """
-    function expatmosphere(h::Number)
+    expatmosphere(h::Number)
 
 Compute the atmospheric density [kg/m³] at the altitude `h` \\[m] (above the
 ellipsoid) using the exponential atmospheric model:
@@ -56,6 +56,8 @@ end
 ################################################################################
 
 """
+    _expatmosphere_h₀
+
 Base altitude for the exponential atmospheric model [km].
 
 """
@@ -64,6 +66,8 @@ const _expatmosphere_h₀ = [0, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120,
                            500, 600, 700, 800, 900, 1000]
 
 """
+    _expatmosphere_ρ₀
+
 Nominal density for the exponential atmospheric model [kg/m³].
 
 """
@@ -76,6 +80,8 @@ const _expatmosphere_ρ₀ = [1.225, 3.899e-2, 1.774e-2, 3.972e-3, 1.057e-3,
                            3.019e-15]
 
 """
+    _expatmosphere_H
+
 Scale height for the exponential atmospheric model [km].
 
 """

@@ -9,8 +9,8 @@
 export satsv
 
 """
-    function satsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
-    function satsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
+    satsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
+    satsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
 
 Create a new satellite state vector (see `SatelliteStateVector`) using the
 position `r`, velocity `v`, and acceleration `a`. It is also possible to pass a

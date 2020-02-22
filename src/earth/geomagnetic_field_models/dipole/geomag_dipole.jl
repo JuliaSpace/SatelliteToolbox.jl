@@ -15,7 +15,7 @@
 export geomag_dipole
 
 """
-    function geomag_dipole(r_e::AbstractVector, pole_lat::Number, pole_lon::Number, m::Number)
+    geomag_dipole(r_e::AbstractVector, pole_lat::Number, pole_lon::Number, m::Number)
 
 Compute the geomagnetic field [nT] using the simplified dipole model at position
 `r_e` (ECEF reference frame). This function considers that the latitude of the
@@ -23,7 +23,7 @@ South magnetic pole (which lies in the North hemisphere) is `pole_lat` [rad] and
 the longitude is `pole_lon` [rad]. Furthermore, the dipole moment is considered
 to be `m` [A.m²].
 
-    function geomag_dipole(r_e::AbstractVector, year::Number = 2019)
+    geomag_dipole(r_e::AbstractVector, year::Number = 2019)
 
 Compute the geomagnetic field [nT] using the simplified dipole model at position
 `r_e` (ECEF reference frame). This function uses the year `year` to obtain the

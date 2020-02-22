@@ -17,6 +17,8 @@
 ################################################################################
 
 """
+    _SOLFSMY_Structure
+
 Structure to store the interpolations of the data in `SOLFSMY.TXT` file.
 
 # Fields
@@ -88,7 +90,7 @@ end
 ################################################################################
 
 """
-    function _init_solfsmy(;force_download = false, local_path = nothing)
+    _init_solfsmy(;force_download = false, local_path = nothing)
 
 Initialize the data in the file `SOLFSMY.TXT` by creating `_solfsmy_data`. The
 initialization process is composed of:
@@ -118,7 +120,7 @@ function _init_solfsmy(;force_download = false, local_path = nothing)
 end
 
 """
-    function _parse_solfsmy(path::AbstractString)
+    _parse_solfsmy(path::AbstractString)
 
 Parse the `SOLFSMY.TXT` file in `path` and retur an instance of the structure
 `_SOLFSMY_Structure` with the initialized interpolations.

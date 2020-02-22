@@ -18,7 +18,7 @@
 export eclipse_time_summary
 
 """
-    function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, Δd::Integer, relative::Bool = false, Δt₀::AbstractFloat = -1.0)
+    eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number, RAAN::Number, w::Number, Δd::Integer, relative::Bool = false, Δt₀::AbstractFloat = -1.0)
 
 Compute the eclipse time of an orbit with semi-major axis `a` [m], eccentricity
 `e`, inclination `i` [rad], initial right ascension of the ascending node `RAAN`

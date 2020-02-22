@@ -9,6 +9,8 @@
 export SGP4_GravCte, SGP4_Structure
 
 """
+    SGP4_GravCte{T<:Real}
+
 Gravitational constants for SGP4.
 
 # Fields
@@ -105,7 +107,10 @@ end
 end
 
 """
+    SGP4_Structure{T<:Real}
+
 Low level SGP4 structure.
+
 """
 @with_kw mutable struct SGP4_Structure{T<:Real}
     # TLE parameters.

@@ -68,7 +68,7 @@ const _jb2008_cht = (0.22e0, -0.20e-02, 0.115e-02, -0.211e-05)
 ################################################################################
 
 """
-    function _jb2008_grav(z::R) where R
+    _jb2008_grav(z::R) where R
 
 Compute the gravity [m/s] at altitude `z` [km] according to the model Jacchia
 1971 [3].
@@ -86,7 +86,7 @@ Compute the gravity [m/s] at altitude `z` [km] according to the model Jacchia
 end
 
 """
-    function _jb2008_highaltitude(h::Number, F10ₐ::Number)
+    _jb2008_highaltitude(h::Number, F10ₐ::Number)
 
 Compute the high altitude exospheric density correction factor in altitude `h`
 [km] and the averaged 10.7-cm solar flux (81-day centered on input time)
@@ -125,7 +125,7 @@ function _jb2008_highaltitude(h::Number, F10ₐ::Number)
 end
 
 """
-    function _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Number, δf::Function)
+    _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Number, δf::Function)
 
 Compute the integral of the function `δf` between `z₀` and `z₁` using the
 Newton-Cotes 4th degree method. `R` is a number that defines the step size, `Tx`
@@ -184,7 +184,7 @@ function _jb2008_int(z₀::Number, z₁::Number, R::Number, Tx::Number, T∞::Nu
 end
 
 """
-    function _jb2008_M(z::R) where R
+    _jb2008_M(z::R) where R
 
 Compute the mean molecular mass at altitude `z` [km] using the empirical profile
 in eq. 1 [3].
@@ -203,7 +203,7 @@ in eq. 1 [3].
 end
 
 """
-    function _jb2008_semiannual(doy::Number, h::Number, F10ₐ::Number, S10ₐ::Number, M10ₐ::Number)
+    _jb2008_semiannual(doy::Number, h::Number, F10ₐ::Number, S10ₐ::Number, M10ₐ::Number)
 
 Compute the semiannual variation of the density considering the JB2008 model
 [1].
@@ -260,7 +260,7 @@ function _jb2008_semiannual(doy::Number, h::Number, F10ₐ::Number, S10ₐ::Numb
 end
 
 """
-    function _jb2008_T(z::R, Tx::R, T∞::R) where R<:Number
+    _jb2008_T(z::R, Tx::R, T∞::R) where R<:Number
 
 Compute the temperature [K] at height `z` [km] given the temperature `Tx` [K] at
 the inflection point, and the exospheric temperature `T∞` [K] according to the
@@ -306,7 +306,7 @@ function _jb2008_T(z::R, Tx::R, T∞::R) where R<:Number
 end
 
 """
-    function _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
+    _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
 
 Compute the correction in the `Tc` for Jacchia-Bowman model.
 
@@ -423,7 +423,7 @@ function _jb2008_ΔTc(F10::Number, lst::Number, glat::Number, h::Number)
 end
 
 """
-    function _jb2008_δf1(z, Tx, T∞)
+    _jb2008_δf1(z, Tx, T∞)
 
 Auxiliary function to compute the integrand in `_jb2008_int`.
 
@@ -436,7 +436,7 @@ Auxiliary function to compute the integrand in `_jb2008_int`.
 end
 
 """
-    function _jb2008_δf2(z, Tx, T∞)
+    _jb2008_δf2(z, Tx, T∞)
 
 Auxiliary function to compute the integrand in `_jb2008_int`.
 

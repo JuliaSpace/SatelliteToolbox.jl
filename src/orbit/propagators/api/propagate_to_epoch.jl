@@ -9,8 +9,8 @@
 export propagate_to_epoch!
 
 """
-    function propagate_to_epoch!(orbp, JD::Number) where T
-    function propagate_to_epoch!(orbp, JD::AbstractVector) where T
+    propagate_to_epoch!(orbp, JD::Number) where T
+    propagate_to_epoch!(orbp, JD::AbstractVector) where T
 
 If `t` is a number, then propagate `orbp` until the epoch `JD` [Julian Day].
 Otherwise, if `JD` is an array, then propagate the orbit in `orbp` using the

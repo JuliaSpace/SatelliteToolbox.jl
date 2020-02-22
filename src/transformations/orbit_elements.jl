@@ -28,8 +28,8 @@ export rv_to_kepler
 export kepler_to_sv, sv_to_kepler
 
 """
-    function change_oe_frame(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number, conv_args...)
-    function change_oe_frame(oe::Orbit, conv_args...)
+    change_oe_frame(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number, conv_args...)
+    change_oe_frame(oe::Orbit, conv_args...)
 
 Change the reference frame of orbit elements. The orbit elements can be
 specified by `a`, `e`, `i`, `Ω`, `ω`, and `f`, or the structure `oe` (see
@@ -139,8 +139,8 @@ function change_oe_frame(oe::Orbit, conv_args...)
 end
 
 """
-    function kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
-    function kepler_to_rv(o::Orbit)
+    kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    kepler_to_rv(o::Orbit)
 
 Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
 representation (position vector `r` and velocity vector `v`). The Keplerian
@@ -206,7 +206,7 @@ end
 kepler_to_rv(o::Orbit) = kepler_to_rv(o.a, o.e, o.i, o.Ω, o.ω, o.f)
 
 """
-    function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)
+    rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)
 
 Convert a Cartesian representation (position vector `r` [m] and velocity vector
 `v` [m/s²]) to the Keplerian elements. Optionally, the user can specify the
@@ -407,7 +407,7 @@ function rv_to_kepler(r_i::AbstractVector, v_i::AbstractVector, t::Number = 0)
 end
 
 """
-    function rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
+    rv_to_kepler(x::Number, y::Number, z::Number, vx::Number, vy::Number, vz::Number)
 
 Convert a Cartesian representation (position vector `[x;y;z]` [m] and velocity
 vector `[vx;vy;vz]` [m/s²]) to the Keplerian elements.
@@ -429,7 +429,7 @@ end
 
 
 """
-    function kepler_to_sv(orb::Orbit)
+    kepler_to_sv(orb::Orbit)
 
 Convert the Keplerian elements in the structure `orb` to a state vector.
 
@@ -440,7 +440,7 @@ function kepler_to_sv(orb::Orbit)
 end
 
 """
-    function sv_to_kepler(sv::SatelliteStateVector)
+    sv_to_kepler(sv::SatelliteStateVector)
 
 Convert the state vector `sv` to Keplerian elements represented by an instance
 of the structure `Orbit`.

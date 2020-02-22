@@ -17,6 +17,8 @@
 ################################################################################
 
 """
+    _WDC_Structure
+
 Structure to store the interpolations of the data in WDC files.
 
 # Fields
@@ -49,7 +51,7 @@ export get_Kp, get_Ap
 # ==============================================================================
 
 """
-    function get_Kp(JD::Number)
+    get_Kp(JD::Number)
 
 Return the Kp index at Julian Day `JD`.
 
@@ -64,7 +66,7 @@ function get_Kp(JD::Number)
 end
 
 """
-    function get_Ap(JD::Number; mean::Tuple{Int} = (), daily = false)
+    get_Ap(JD::Number; mean::Tuple{Int} = (), daily = false)
 
 Return the Ap index.
 
@@ -118,7 +120,7 @@ end
 ################################################################################
 
 """
-    function _init_wdcfiles(;force_download = false, local_dir = nothing, wdcfiles_oldest_year = year(now())-3)
+    _init_wdcfiles(;force_download = false, local_dir = nothing, wdcfiles_oldest_year = year(now())-3)
 
 Initialize the data in the WDC files by creating `_wdcfiles_data`. The
 initialization process is composed of:
@@ -196,7 +198,7 @@ function _init_wdcfiles(;force_download = false, local_dir = nothing,
 end
 
 """
-    function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
+    _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
 
 Parse the WDC files with paths in `filepaths` related to the years in `years`.
 
@@ -251,7 +253,7 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
 end
 
 """
-    function _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
+    _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
 
 Configure all the WDC remote files between `newest_year` and `oldest_year`.
 Notice that previous years will never be updated whereas the current year will

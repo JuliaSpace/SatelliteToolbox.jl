@@ -17,7 +17,7 @@
 export svECItoECEF
 
 """
-    function svECItoECEF(sv::SatelliteStateVector, ECI, ECEF, JD_UTC [, eop_data])
+    svECItoECEF(sv::SatelliteStateVector, ECI, ECEF, JD_UTC [, eop_data])
 
 Convert the satellite state vector `sv` from the Earth-Centered Inertial (ECI)
 reference frame `ECI` to the Earth-Centered, Earth-Fixed (ECEF) reference frame

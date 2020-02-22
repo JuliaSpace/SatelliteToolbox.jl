@@ -30,7 +30,7 @@ export jr1971
 include("./jr1971_priv.jl")
 
 """
-    function jr1971(JD::Number, glat::Number, glon::Number, h::Number, F10::Number, F10ₐ::Number, Kp::Number)
+    jr1971(JD::Number, glat::Number, glon::Number, h::Number, F10::Number, F10ₐ::Number, Kp::Number)
 
 Compute the atmospheric density using the Jacchia-Roberts 1971 model.
 

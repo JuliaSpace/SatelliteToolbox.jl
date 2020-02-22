@@ -10,7 +10,7 @@
 export compute_RAAN_lt, sim_RAAN_J2
 
 """
-    function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
+    compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 
 Compute the RAAN (0,2π) \\[rad] so that the orbit plane local time is
 `asc_node_lt` [hour] at the Julian day `JD`.
@@ -38,7 +38,7 @@ function compute_RAAN_lt(JD::Number, asc_node_lt::Number)
 end
 
 """
-    function sim_RAAN_J2(a::Number, e::Number, i::Number, RAAN_0::Number, numDays::Integer)
+    sim_RAAN_J2(a::Number, e::Number, i::Number, RAAN_0::Number, numDays::Integer)
 
 Simulate the RAAN of an orbit with semi-major axis `a` [m], eccentricity `e`,
 inclination `i` [rad], and initial RAAN `RAAN_0` [rad] considering J2

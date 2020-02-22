@@ -17,7 +17,7 @@
 export rECItoECEF
 
 """
-    function rECItoECEF([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
+    rECItoECEF([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 an Earth-Centered, Earth-Fixed (`ECEF`) reference frame at the Julian Day [UTC]

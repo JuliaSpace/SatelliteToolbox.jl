@@ -12,8 +12,8 @@ export ground_station_accesses, ground_station_gaps,
        ground_station_visible
 
 """
-    function ground_station_accesses(orbp, vrs_e,     Δt, ECI, ECEF, vargs...; kwargs...)
-    function ground_station_accesses(orbp, [(WGS84)], Δt, ECI, ECEF, vargs...; kwargs...)
+    ground_station_accesses(orbp, vrs_e,     Δt, ECI, ECEF, vargs...; kwargs...)
+    ground_station_accesses(orbp, [(WGS84)], Δt, ECI, ECEF, vargs...; kwargs...)
 
 Compute the accesses of a satellite with orbit propagator `orbp` (see
 `init_orbit_propagator`) to the ground stations defined in the vector `vrs_e`.
@@ -137,7 +137,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
 end
 
 """
-    function ground_station_gaps(args...; kwargs...)
+    ground_station_gaps(args...; kwargs...)
 
 Compute the gaps between the accesses of ground stations. The arguments and
 keywords are the same as the ones used in the function
@@ -184,7 +184,7 @@ function ground_station_gaps(orbp, args...; kwargs...)
 end
 
 """
-    function list_ground_station_accesses(io, vargs...; kwargs...)
+    list_ground_station_accesses(io, vargs...; kwargs...)
 
 Print the ground station accesses to the io `io`. The arguments `vargs...` and
 keywords `kwargs...` are those of the function `ground_station_accesses`.
@@ -274,7 +274,7 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
 end
 
 """
-    function list_ground_station_gaps(io, vargs...; kwargs...)
+    list_ground_station_gaps(io, vargs...; kwargs...)
 
 Print the ground station gaps to the io `io`. The arguments `vargs...` and
 keywords `kwargs...` are those of the function `ground_station_gaps`.
@@ -363,7 +363,7 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
 end
 
 """
-    function ground_station_visible(r_e::AbstractVector, rs_e::AbstractVector, θ::Number)
+    ground_station_visible(r_e::AbstractVector, rs_e::AbstractVector, θ::Number)
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with position vector `rs_e` (ECEF) and a
@@ -387,7 +387,7 @@ end
 
 
 """
-    function ground_station_visible(r_e::AbstractVector, lat_s::Number, lon_s::Number, h_s::Number, θ::Number)
+    ground_station_visible(r_e::AbstractVector, lat_s::Number, lon_s::Number, h_s::Number, θ::Number)
 
 Check if the satellite with position vector `r_e` (ECEF) is inside the
 visibility circle of a ground station with latitude `lat_s` [rad], longitude

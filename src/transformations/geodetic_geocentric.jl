@@ -26,7 +26,7 @@ export ECEFtoGeodetic, GeodetictoECEF
 export GeodetictoGeocentric
 
 """
-    function ECEFtoGeodetic(r_e::AbstractVector)
+    ECEFtoGeodetic(r_e::AbstractVector)
 
 Convert the vector `r_e` [m] represented in the Earth-Centered, Earth-Fixed
 (ECEF) reference frame into Geodetic coordinates (WGS-84).
@@ -74,7 +74,7 @@ function ECEFtoGeodetic(r_e::AbstractVector)
 end
 
 """
-    function GeodetictoECEF(lat::Number, lon::Number, h::Number)
+    GeodetictoECEF(lat::Number, lon::Number, h::Number)
 
 Convert the latitude `lat` [rad], longitude `lon` [rad], and altitude `h` \\[m]
 (WGS-84) into a vector represented on the Earth-Centered, Earth-Fixed (ECEF)
@@ -100,7 +100,7 @@ function GeodetictoECEF(lat::Number, lon::Number, h::Number)
 end
 
 """
-    function GeodetictoGeocentric(ϕ_gd::Number, h::Number)
+    GeodetictoGeocentric(ϕ_gd::Number, h::Number)
 
 Compute the geocentric latitude and radius from the geodetic latitude `ϕ_gd`
 (-π/2,π/2) \\[rad] and height above the reference ellipsoid `h` \\[m] (WGS-84).

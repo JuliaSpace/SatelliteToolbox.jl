@@ -26,7 +26,7 @@ export dlegendre_schmidt_quasi_normalized!, dlegendre_schmidt_quasi_normalized
 export dlegendre_conventional!, dlegendre_conventional
 
 """
-    function dlegendre!([N,] dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre!([N,] dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[x]` w.r.t. `ϕ` [rad]:
@@ -74,7 +74,7 @@ dlegendre!(::Type{Val{:conv}}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix
     dlegendre_conventional!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre([N,] ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
+    dlegendre([N,] ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -128,7 +128,7 @@ dlegendre(::Type{Val{:conv}}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
 ################################################################################
 
 """
-    function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the fully normalized associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -264,7 +264,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
 end
 
 """
-    function dlegendre_fully_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
+    dlegendre_fully_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt fully normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -315,7 +315,7 @@ end
 ################################################################################
 
 """
-    function dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -350,7 +350,7 @@ dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number,
     dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
 
 """
-    function dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
+    dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -402,7 +402,7 @@ end
 ################################################################################
 
 """
-    function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -493,7 +493,7 @@ function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatr
 end
 
 """
-    function dlegendre_conventional(ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
+    dlegendre_conventional(ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
 
 Compute the first-order derivative of the conventional associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:

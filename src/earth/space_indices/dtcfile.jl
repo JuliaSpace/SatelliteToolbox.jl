@@ -13,6 +13,8 @@
 ################################################################################
 
 """
+    _DTCFILE_Structure
+
 Structure to store the interpolations of the data in `DTCFILE.TXT` file.
 
 # Fields
@@ -70,7 +72,7 @@ end
 ################################################################################
 
 """
-    function _init_dctfile(;force_download = false, local_path = nothing)
+    _init_dctfile(;force_download = false, local_path = nothing)
 
 Initialize the data in the file `DTCFILE.TXT` by creating `_dtcfile_data`. The
 initialization process is composed of:
@@ -100,7 +102,7 @@ function _init_dtcfile(;force_download = false, local_path = nothing)
 end
 
 """
-    function _parse_dtcfile(path::AbstractString)
+    _parse_dtcfile(path::AbstractString)
 
 Parse the `DTCFILE.TXT` file in `path` and return an instance of the structure
 `_DTCFILE_Structure` with the initialized interpolations.

@@ -22,7 +22,7 @@ export f_to_E, f_to_M
 ################################################################################
 
 """
-    function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
+    M_to_E(e::Number, M::Number, tol::Number = 1e-10)
 
 Compute the eccentric anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 mean anomaly `M` [rad]. This function uses the Newton-Raphson algorithm and the
@@ -55,7 +55,7 @@ tolerance to accept the solution is `tol`.
 end
 
 """
-    function M_to_f(e::Number, M::Number, tol::Number = 1e-10)
+    M_to_f(e::Number, M::Number, tol::Number = 1e-10)
 
 Compute the true anomaly (0,2π) \\[rad] given the eccentricity `e` and the mean
 anomaly `M` [rad]. This function uses the Newton-Raphson algorithm and the
@@ -75,7 +75,7 @@ end
 ################################################################################
 
 """
-    function E_to_f(e::Number, E::Number)
+    E_to_f(e::Number, E::Number)
 
 Compute the true anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 eccentric anomaly `E` [rad].
@@ -89,7 +89,7 @@ eccentric anomaly `E` [rad].
 end
 
 """
-    function E_to_M(e::Number, E::Number)
+    E_to_M(e::Number, E::Number)
 
 Compute the mean anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 eccentric anomaly `E` [rad].
@@ -102,7 +102,7 @@ E_to_M(e::Number, E::Number) = mod(E - e*sin(E), 2π)
 ################################################################################
 
 """
-    function f_to_E(e::Number,f::Number)
+    f_to_E(e::Number,f::Number)
 
 Compute the eccentric anomaly (0,2π) \\[rad] given the eccentricity `e` and
 the true anomaly `f` [rad].
@@ -115,7 +115,7 @@ the true anomaly `f` [rad].
 end
 
 """
-    function f_to_E(orb::Orbit)
+    f_to_E(orb::Orbit)
 
 Compute the eccentric anomaly (0,2π) \\[rad] given the orbit `orb` (see
 `Orbit`).
@@ -124,7 +124,7 @@ Compute the eccentric anomaly (0,2π) \\[rad] given the orbit `orb` (see
 f_to_E(orb::Orbit) = f_to_E(orb.e, orb.f)
 
 """
-    function f_to_M(e::Number, f::Number)
+    f_to_M(e::Number, f::Number)
 
 Compute the mean anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 true anomaly `f` [rad].
@@ -139,7 +139,7 @@ true anomaly `f` [rad].
 end
 
 """
-    function f_to_M(orb::Orbit)
+    f_to_M(orb::Orbit)
 
 Compute the mean anomaly (0,2π) \\[rad] given the orbit `orb` (see `Orbit`).
 

@@ -9,8 +9,8 @@
 export propagate!
 
 """
-    function propagate!(orbp, t::Number) where T
-    function propagate!(orbp, t::AbstractVector) where T
+    propagate!(orbp, t::Number) where T
+    propagate!(orbp, t::AbstractVector) where T
 
 If `t` is a number, then propagate `orbp` by `t` [s] from the orbit epoch.
 Otherwise, if `t` is an array, then propagate the orbit in `orbp` using the time

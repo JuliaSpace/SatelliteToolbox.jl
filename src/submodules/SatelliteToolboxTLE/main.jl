@@ -14,7 +14,7 @@ export print_tle, read_tle, read_tle_from_string, tle_to_str
 ################################################################################
 
 """
-    macro tle_str(str)
+    @tle_str(str)
 
 Parse a set of TLEs in the string `str` and return as an array of `TLE`. This
 version verifies the checksum of the TLE. If the checksum verification is not
@@ -41,7 +41,7 @@ macro tle_str(str)
 end
 
 """
-    macro tlenc_str(str)
+    @tlenc_str(str)
 
 Parse a set of TLEs in the string `str` and return as an array of `TLE`. This
 version **does not** verify the checksum of the TLE. If the checksum
@@ -86,7 +86,7 @@ end
 ################################################################################
 
 """
-    function print_tle(io::IO, tle; kwargs...)
+    print_tle(io::IO, tle; kwargs...)
 
 Print the TLE `tle` to the IO `io`. If `io` is omited, then `stdout` is used.
 
@@ -103,7 +103,7 @@ function print_tle(io::IO, tle; kwargs...)
 end
 
 """
-    function read_tle(tle_filename::String, verify_checksum::Bool = true)
+    read_tle(tle_filename::String, verify_checksum::Bool = true)
 
 Read the TLEs in the file `tle_filename` and return an array of `TLE` with the
 parsed TLEs.
@@ -121,8 +121,8 @@ omitted, then it defaults to `true`.
 end
 
 """
-    function read_tle_from_string(tles::String, verify_checksum::Bool = true)
-    function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
+    read_tle_from_string(tles::String, verify_checksum::Bool = true)
+    read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)
 
 Parse a set of TLEs in the string `tles` or one TLE with first line `tle_l1` and
 second line `tle_l2`. This function returns an array of `TLE` with the parsed
@@ -148,7 +148,7 @@ end
 
 
 """
-    function tle_to_str(tle::TLE; recompute_checksum = true, bstar_exp_le = true)
+    tle_to_str(tle::TLE; recompute_checksum = true, bstar_exp_le = true)
 
 Convert the TLE `tle` to a string. If `recompute_checksum` is `true`, then the
 checksums in `tle` will be ignored and they will be computed considering the TLE

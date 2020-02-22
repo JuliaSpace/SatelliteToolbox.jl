@@ -82,7 +82,7 @@ const j4_gc_jgm03 = J4_GravCte(
 ################################################################################
 
 """
-    function j4_init(j4_gc::J4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number) where T
+    j4_init(j4_gc::J4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number) where T
 
 Initialize the data structure of J4 orbit propagator algorithm.
 
@@ -162,7 +162,7 @@ function j4_init(j4_gc::J4_GravCte{T}, epoch::Number, a_0::Number, e_0::Number,
 end
 
 """
-    function j4!(j4d::J4_Structure{T}, t::Number) where T
+    j4!(j4d::J4_Structure{T}, t::Number) where T
 
 Propagate the orbit defined in `j4d` (see `J4_Structure`) until the time `t`
 [s]. Notice that the values in `j4d` will be modified.

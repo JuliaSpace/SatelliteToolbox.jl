@@ -20,7 +20,7 @@ export parse_icgem
 ################################################################################
 
 """
-    macro _keyword_found(keyword, keywords_found, current_line)
+    @_keyword_found(keyword, keywords_found, current_line)
 
 Check if the `keyword` exists in the list `keywords_found`. If `true`, then
 throw an error indicating that the problem occurred on the `current_line`.
@@ -38,7 +38,7 @@ macro _keyword_found(keyword, keywords_found, current_line)
 end
 
 """
-    macro _parse_float(input)
+    @_parse_float(input)
 
 Parse the `input` to float substituting all `D`s and `d`s  to `e`, so that we
 can convert numbers in FORTRAN format.
@@ -58,7 +58,7 @@ end
 ################################################################################
 
 """
-    function parse_icgem(filename::AbstractString)
+    parse_icgem(filename::AbstractString)
 
 Parse the ICGEM file `filename` and return an instance of the structure `ICGEM`
 with the parsed data.

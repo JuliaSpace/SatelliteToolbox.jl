@@ -17,7 +17,7 @@
 export rECEFtoECEF
 
 """
-    function rECEFtoECEF([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
+    rECEFtoECEF([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
 frame to another ECEF reference frame at the Julian Day [UTC] `JD_UTC`. The

@@ -20,7 +20,7 @@
 export precession_nutation_iau2006
 
 """
-    function precession_nutation_iau2006(JD_TT::Number)
+    precession_nutation_iau2006(JD_TT::Number)
 
 Compute the coordinates `X`, `Y`, and `s` related to the Celestial Intermediate
 Pole (CIP) with respect to the Geocentric Celestial Reference Frame (GCRF). This

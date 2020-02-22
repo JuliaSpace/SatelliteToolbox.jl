@@ -23,7 +23,7 @@ export read_iers_eop
 ################################################################################
 
 """
-    function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
+    get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
 
 Download and parse the IERS EOP C04 data. The data type is specified by
 `data_type` symbol. Supported values are:
@@ -55,7 +55,7 @@ function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
 end
 
 """
-    function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
+    get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
 
 Get the IERS EOP C04 IAU1980 data from the URL `url`. If `url` is omitted, then
 it defaults to https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
@@ -93,7 +93,7 @@ end
 
 
 """
-    function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt"; force_download = false)
+    get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt"; force_download = false)
 
 Get the IERS EOP C04 IAU2000A data from the URL `url`. If `url` is omitted, then
 it defaults to https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
@@ -130,7 +130,7 @@ function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/
 end
 
 """
-    function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
+    read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
 
 Read IERS EOP Data from the file `filename`. The user must specify if the data
 is related to the model IAU 1980 (`data_type = :IAU1980`), which is the default,
