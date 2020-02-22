@@ -1,6 +1,26 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.6.5
+-------------
+
+- ![Bugfix][badge-bugfix] The FTP address of WDC files was changed. (Issue
+  [#38][gh-issue-38])
+- ![Bugfix][badge-bugfix] A test related to an error thrown by the TLE submodule
+  was fixed. (Issue [#35][gh-issue-35])
+- ![Feature][badge-feature] It is now possible to compute the gaps between
+  accesses to the ground stations.
+- ![Feature][badge-feature] Initial version of the algorithm to convert a
+  osculating state vectors (position and velocity) to TLE. **This is still in
+  alpha stage and should be used with caution.**
+- ![Feature][badge-feature] The function `tle_to_str` can be used to convert an
+  object of type `TLE` to a string.
+- ![Enhancement][badge-enhancement] Improvements in the documentation of
+  functions and macros.
+- ![Enhancement][badge-enhancement] The minimum required version of
+  [OptionalData](https://github.com/helgee/OptionalData.jl) was updated. (PR
+  [#36][gh-pr-36])
+
 Version 0.6.4
 -------------
 
@@ -338,6 +358,10 @@ Version 0.1.0
 [gh-issue-28]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/28
 [gh-issue-30]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/30
 [gh-issue-34]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/34
+[gh-issue-35]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/35
+[gh-issue-38]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/38
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
+[gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
+[gh-pr-36]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/36
