@@ -52,3 +52,15 @@
 @deprecate dlegendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T dlegendre(Val(T), ϕ, n_max, m_max, ph_term)
 @deprecate legendre!(::Type{Val{T}}, P, ϕ, ph_term = false) where T                 legendre!(Val(T), P, ϕ, ph_term)
 @deprecate legendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T  legendre(Val(T), ϕ, n_max, m_max, ph_term)
+
+# Space indices
+for sym in (:F10, :F10obs, :F10adj, :Kp, :Ap, :Kp_vect, :Ap_vect, :S10, :S81a,
+            :M10, :M81a, :Y10, :Y81a, :DstΔTc)
+    qsym = Meta.quot(sym)
+    @eval @deprecate get_space_index(::Type{Val{$qsym}}, JD) get_space_index(Val($qsym), JD)
+end
+
+for sym in (:F10M, :F10Mobs, :F10Madj)
+    qsym = Meta.quot(sym)
+    @eval @deprecate get_space_index(::Type{Val{$qsym}}, JD; window = 81) get_space_index(Val($qsym), JD; window = window)
+end

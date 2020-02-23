@@ -157,9 +157,9 @@ function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number;
     else
         # TODO: The online version of NRLMSISE-00 seems to use 90 days, whereas
         # the NRLMSISE-00 source code mentions 81 days.
-        f107A = get_space_index(Val{:F10Madj}, JD; window = 90)
-        f107  = get_space_index(Val{:F10adj},  JD-1)
-        ap    = get_space_index(Val{:Ap},      JD)
+        f107A = get_space_index(Val(:F10Madj), JD; window = 90)
+        f107  = get_space_index(Val(:F10adj),  JD-1)
+        ap    = get_space_index(Val(:Ap),      JD)
     end
 
     # Call the NRLMSISE-00 model.

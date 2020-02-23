@@ -81,15 +81,15 @@ An instance of the structure `JB2008_Output` with the computed values.
 function jb2008(JD::Number, glat::Number, glon::Number, h::Number)
     # Get the data in the desired Julian Day considering the tabular time of the
     # model.
-    F10    = get_space_index(Val{:F10obs},  JD-1)
-    F10ₐ   = get_space_index(Val{:F10Mobs}, JD-1)
-    S10    = get_space_index(Val{:S10},     JD-1)
-    S10ₐ   = get_space_index(Val{:S81a},    JD-1)
-    M10    = get_space_index(Val{:M10},     JD-2)
-    M10ₐ   = get_space_index(Val{:M81a},    JD-2)
-    Y10    = get_space_index(Val{:Y10},     JD-5)
-    Y10ₐ   = get_space_index(Val{:Y81a},    JD-5)
-    DstΔTc = get_space_index(Val{:DstΔTc},  JD)
+    F10    = get_space_index(Val(:F10obs),  JD-1)
+    F10ₐ   = get_space_index(Val(:F10Mobs), JD-1)
+    S10    = get_space_index(Val(:S10),     JD-1)
+    S10ₐ   = get_space_index(Val(:S81a),    JD-1)
+    M10    = get_space_index(Val(:M10),     JD-2)
+    M10ₐ   = get_space_index(Val(:M81a),    JD-2)
+    Y10    = get_space_index(Val(:Y10),     JD-5)
+    Y10ₐ   = get_space_index(Val(:Y81a),    JD-5)
+    DstΔTc = get_space_index(Val(:DstΔTc),  JD)
 
     jb2008(JD, glat, glon, h, F10, F10ₐ, S10, S10ₐ, M10, M10ₐ, Y10, Y10ₐ, DstΔTc)
 end

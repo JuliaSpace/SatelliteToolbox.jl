@@ -12,6 +12,6 @@ for sym in [:F10, :F10obs, :F10adj, :F10M, :F10Mobs, :F10Madj, :Kp, :Ap,
 
     @eval begin
         export $sym
-        $sym() = Val{$qsym}
+        $sym() = Val($qsym)
     end
 end
