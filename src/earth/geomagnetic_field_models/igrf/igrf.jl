@@ -14,16 +14,18 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export igrf12
+export igrf
 
 ################################################################################
 #                                  Functions
 ################################################################################
 
 """
-    igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
+    igrf(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
 
-**IGRF v12 Model**
+**IGRF Model**
+
+*Current version: v12*
 
 Compute the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
 position (`r`, `λ`, `Ω`).
@@ -67,11 +69,11 @@ more readable code than the original one in FORTRAN, because it uses features
 available in Julia language.
 
 """
-igrf12(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
-    igrf12(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
+igrf(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
+    igrf(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
 
-function igrf12(date::Number, r::Number, λ::Number, Ω::Number,
-                ::Val{:geocentric}; show_warns::Bool = true)
+function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric};
+              show_warns::Bool = true)
 
     # Input verification
     # ==================
@@ -127,8 +129,8 @@ function igrf12(date::Number, r::Number, λ::Number, Ω::Number,
     # ==================================
 
     # Auxiliary variables to select the IGRF coefficients.
-    H = H_igrf12
-    G = G_igrf12
+    H = H_igrf
+    G = G_igrf
 
     # Reference radius [km].
     a = 6371.2
@@ -275,8 +277,8 @@ function igrf12(date::Number, r::Number, λ::Number, Ω::Number,
     B_gc = SVector{3,Float64}(x,y,z)
 end
 
-function igrf12(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
-                show_warns = true)
+function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
+              show_warns = true)
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
     # `igrf12syn`.  However, the result is exactly the same as the MATLAB
@@ -288,7 +290,7 @@ function igrf12(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic
     (λ_gc, r) = GeodetictoGeocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
-    B_gc = igrf12(date, r, λ_gc, Ω, Val(:geocentric); show_warns = show_warns)
+    B_gc = igrf(date, r, λ_gc, Ω, Val(:geocentric); show_warns = show_warns)
 
     # Convert to geodetic coordinates.
     D_gd_gc = create_rotation_matrix(λ_gc - λ,:Y)

@@ -40,6 +40,7 @@
 @deprecate satellite_check_station(r_e, lat_s, lon_s, h_s, minElev)         ground_station_visible(r_e, lat_s, lon_s, h_s, minElev)
 @deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays)           eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays)
 @deprecate satellite_eclipse_time(JD0, a, e, i, w, RAAN, numDays, relative) eclipse_time_summary(JD0, a, e, i, RAAN, w, numDays, relative)
+@deprecate igrf12(args...;kwargs...)                                        igrf(args...; kwargs...)
 
 # Deprecation warnings related to Val{T} => Val(T)
 # ==============================================================================
@@ -52,7 +53,7 @@
 # IGRF
 # ------------------------------------------------------------------------------
 
-@deprecate igrf12(date, r, λ, Ω, ::Type{Val{T}}; show_warns = true) where T igrf12(date, r, λ, Ω, Val(T); show_warns = show_warns)
+@deprecate igrf12(date, r, λ, Ω, ::Type{Val{T}}; show_warns = true) where T igrf(date, r, λ, Ω, Val(T); show_warns = show_warns)
 
 # Legendre
 # ------------------------------------------------------------------------------

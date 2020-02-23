@@ -1,8 +1,8 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
 #
-#   Coefficients for the IGRF v12 to be used in the function `igrf12`.
+#   Coefficients for the IGRF to be used in the function `igrf`.
 #
 #   This values were obtained from the official website [1].
 #
@@ -12,9 +12,10 @@
 #
 #   [1] https://www.ngdc.noaa.gov/IAGA/vmod/igrf12coeffs.txt
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-const G_igrf12 = [
+# Thos constant are based on v12 of the IGRF model.
+const G_igrf = [
 # deg  ord   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF     DGRF      DGRF      DGRF     IGRF      SV
 #   n    m 1900.0 1905.0 1910.0 1915.0 1920.0 1925.0 1930.0 1935.0 1940.0 1945.0 1950.0 1955.0 1960.0 1965.0 1970.0 1975.0 1980.0 1985.0 1990.0 1995.0   2000.0    2005.0    2010.0   2015.0 2015-20
     1    0 -31543 -31464 -31354 -31212 -31060 -30926 -30805 -30715 -30654 -30594 -30554 -30500 -30421 -30334 -30220 -30100 -29992 -29873 -29775 -29692 -29619.4 -29554.63 -29496.57 -29442.0    10.3
@@ -123,7 +124,7 @@ const G_igrf12 = [
    13   13      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0.1     -0.18     -0.26     -0.3     0.0
 ]
 
-const H_igrf12 = [
+const H_igrf = [
 # deg  ord   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   IGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF   DGRF     DGRF      DGRF      DGRF     IGRF      SV
 #   n    m 1900.0 1905.0 1910.0 1915.0 1920.0 1925.0 1930.0 1935.0 1940.0 1945.0 1950.0 1955.0 1960.0 1965.0 1970.0 1975.0 1980.0 1985.0 1990.0 1995.0   2000.0    2005.0    2010.0   2015.0 2015-20
     1    1   5922   5909   5898   5875   5845   5817   5808   5812   5821   5810   5815   5820   5791   5776   5737   5675   5604   5500   5406   5306   5186.1   5077.99   4944.26   4797.1   -26.6
