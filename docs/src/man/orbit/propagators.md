@@ -49,8 +49,8 @@ function init_orbit_proapgator(T, epoch::Number, f_0::Number, e_0::Number, i_0::
 
 where:
 
-* `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
+* `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
+  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
 * `epoch`: Initial orbit epoch \[Julian Day].
 * `a_0`: Initial semi-major axis \[m].
 * `e_0`: Initial eccentricity.
@@ -69,8 +69,8 @@ function init_orbit_propagator(T, orb_0::Orbit)
 
 where:
 
-* `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
+* `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
+  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
 * `orb_0`: Initial orbital elements (see `Orbit`).
 
 ```julia
@@ -79,8 +79,8 @@ function init_orbit_propagator(T, tle::TLE)
 
 where:
 
-* `T` is the type of the orbit propagator (`Val{:twobody}` for **Two Body**,
-  `Val{:J2}` for **J2**, and `Val{:J4}` for **J4**).
+* `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
+  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
 * `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
 
 There are some optional parameters that depend on the orbit propagator type that
@@ -159,7 +159,7 @@ function init_orbit_propagator(T, tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs8
 
 where:
 
-* `T` must be `Val{:sgp4}`;
+* `T` must be `Val(:sgp4)`;
 * `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
 * `sgp4_gc`: Gravitational constants (see `SGP4_GravCte`) (**Default** =
   `sgp4_gc_wgs84`).
@@ -240,7 +240,7 @@ frame. For more information, see [1].
 ## Examples
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val{:twobody}, 0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0);
+julia> orbp = init_orbit_propagator(Val(:twobody), 0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0);
 
 julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
 
@@ -258,7 +258,7 @@ julia> r
 ```
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val{:J2}, Orbit(0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+julia> orbp = init_orbit_propagator(Val(:J2), Orbit(0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
 julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
 
@@ -276,7 +276,7 @@ julia> r
 ```
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val{:J2}, Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+julia> orbp = init_orbit_propagator(Val(:J2), Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
 julia> o,r,v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
 
@@ -294,7 +294,7 @@ julia> r
 ```
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val{:J4}, Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+julia> orbp = init_orbit_propagator(Val(:J4), Orbit(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
 julia> o,r,v = propagate!(orbp, (0:3:24)*60*60);
 
@@ -318,7 +318,7 @@ julia> tle_scd1 = tle"""
        2 22490  24.9683 170.6788 0043029 357.3326 117.9323 14.44539175364603
        """[1];
 
-julia> orbp = init_orbit_propagator(Val{:sgp4}, tle_scd1);
+julia> orbp = init_orbit_propagator(Val(:sgp4), tle_scd1);
 
 julia> o,r,v = propagate!(orbp, (0:3:24)*60*60);
 
@@ -346,7 +346,7 @@ julia> v
  [-2391.636997068708, -6387.691108730701, 3161.6577154337137]
  [-7435.439550407853, 128.80933740830324, 866.5999572489661]
 
-julia> orbp = init_orbit_propagator(Val{:sgp4}, tle_scd1);
+julia> orbp = init_orbit_propagator(Val(:sgp4), tle_scd1);
 
 julia> o,r,v = step!(orbp, 3*60*60);
 

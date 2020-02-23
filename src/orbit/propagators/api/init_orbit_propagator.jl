@@ -29,9 +29,9 @@ export init_orbit_propagator
 Initialize the orbit propagator `T` using the initial mean orbital elements. The
 propagator type `T` can be:
 
-* `Val{:J2}`: J2 orbit propagator;
-* `Val{:J4}`: J4 orbit propagator; or
-* `Val{:twobody}`: Two-body orbit propagator.
+* `Val(:J2)`: J2 orbit propagator;
+* `Val(:J4)`: J4 orbit propagator; or
+* `Val(:twobody)`: Two-body orbit propagator.
 
 The mean orbital elements can be passed individually of using an instance of the
 structure `Orbit`.
@@ -94,7 +94,7 @@ of the semi-major axis, then it is possible to use the function `angvel_to_a` to
 convert.
 
 """
-function init_orbit_propagator(::Type{Val{:J2}}, epoch::Number, a_0::Number,
+function init_orbit_propagator(::Val{:J2}, epoch::Number, a_0::Number,
                                e_0::Number, i_0::Number, Ω_0::Number,
                                ω_0::Number, f_0::Number, dn_o2::Number = 0,
                                ddn_o6::Number = 0,
@@ -110,7 +110,7 @@ function init_orbit_propagator(::Type{Val{:J2}}, epoch::Number, a_0::Number,
     OrbitPropagatorJ2(orb_0, j2d)
 end
 
-function init_orbit_propagator(::Type{Val{:J4}}, epoch::Number, a_0::Number,
+function init_orbit_propagator(::Val{:J4}, epoch::Number, a_0::Number,
                                e_0::Number, i_0::Number, Ω_0::Number,
                                ω_0::Number, f_0::Number, dn_o2::Number = 0,
                                ddn_o6::Number = 0,
@@ -123,10 +123,10 @@ function init_orbit_propagator(::Type{Val{:J4}}, epoch::Number, a_0::Number,
     orb_0 = Orbit(epoch, j4d.al_0*j4_gc.R0, e_0, i_0, Ω_0, ω_0, j4d.f_k)
 
     # Create and return the orbit propagator structure.
-    OrbitPropagatorJ4(orb_0, j4d)
+    return OrbitPropagatorJ4(orb_0, j4d)
 end
 
-function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number,
+function init_orbit_propagator(::Val{:twobody}, epoch::Number,
                                a_0::Number, e_0::Number, i_0::Number,
                                Ω_0::Number, ω_0::Number, f_0::Number,
                                μ::T = m0) where T
@@ -138,21 +138,21 @@ function init_orbit_propagator(::Type{Val{:twobody}}, epoch::Number,
     orb_0 = Orbit(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0)
 
     # Create and return the orbit propagator structure.
-    OrbitPropagatorTwoBody(orb_0, tbd)
+    return OrbitPropagatorTwoBody(orb_0, tbd)
 end
 
-init_orbit_propagator(::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0,
+init_orbit_propagator(::Val{:J2}, orb_0::Orbit, dn_o2::Number = 0,
                       ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_egm08) =
-    init_orbit_propagator(Val{:J2}, orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
+    init_orbit_propagator(Val(:J2), orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
                           orb_0.ω, orb_0.f, dn_o2, ddn_o6, j2_gc)
 
-init_orbit_propagator(::Type{Val{:J4}}, orb_0::Orbit, dn_o2::Number = 0,
+init_orbit_propagator(::Val{:J4}, orb_0::Orbit, dn_o2::Number = 0,
                       ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_egm08) =
-    init_orbit_propagator(Val{:J4}, orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
+    init_orbit_propagator(Val(:J4), orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
                           orb_0.ω, orb_0.f, dn_o2, ddn_o6, j4_gc)
 
-init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0) =
-    init_orbit_propagator(Val{:twobody}, orb_0.t, orb_0.a, orb_0.e, orb_0.i,
+init_orbit_propagator(::Val{:twobody}, orb_0::Orbit, μ::Number = m0) =
+    init_orbit_propagator(Val(:twobody), orb_0.t, orb_0.a, orb_0.e, orb_0.i,
                           orb_0.Ω, orb_0.ω, orb_0.f, μ)
 
 """
@@ -161,10 +161,10 @@ init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0) =
 Initialize the orbit propagator `T` using the TLE `tle`. The propagator type `T`
 can be:
 
-* `Val{:J2}`: J2 orbit propagator;
-* `Val{:J4}`: J4 orbit propagator;
-* `Val{:twobody}`: Two-body orbit propagator; or
-* `Val{:sgp4}`: SGP4 orbit propagator.
+* `Val(:J2)`: J2 orbit propagator;
+* `Val(:J4)`: J4 orbit propagator;
+* `Val(:twobody)`: Two-body orbit propagator; or
+* `Val(:sgp4)`: SGP4 orbit propagator.
 
 ## Additional optional arguments for the J2 orbit propagator
 
@@ -211,8 +211,7 @@ perturbations and automatically applied them. This is sometimes called SGDP4
 algorithm.
 
 """
-function init_orbit_propagator(::Type{Val{:J2}},
-                               tle::TLE,
+function init_orbit_propagator(::Val{:J2}, tle::TLE,
                                j2_gc::J2_GravCte = j2_gc_egm08)
 
     # Unpack the gravitational constants to improve code readability.
@@ -245,21 +244,12 @@ function init_orbit_propagator(::Type{Val{:J2}},
     a_0   = (μm/nll_0)^(2/3)*R0
     f_0   = M_to_f(e_0, M_0)
 
-    init_orbit_propagator(Val{:J2},
-                          tle.epoch,
-                          a_0,
-                          e_0,
-                          i_0,
-                          Ω_0,
-                          ω_0,
-                          f_0,
-                          tle.dn_o2*2π/(86400)^2,
-                          tle.ddn_o6*2π/(86400)^3,
+    return init_orbit_propagator(Val(:J2), tle.epoch, a_0, e_0, i_0, Ω_0, ω_0,
+                          f_0, tle.dn_o2*2π/(86400)^2, tle.ddn_o6*2π/(86400)^3,
                           j2_gc_egm08)
 end
 
-function init_orbit_propagator(::Type{Val{:J4}},
-                               tle::TLE,
+function init_orbit_propagator(::Val{:J4}, tle::TLE,
                                j4_gc::J4_GravCte = j4_gc_egm08)
 
     # Unpack the gravitational constants to improve code readability.
@@ -292,15 +282,12 @@ function init_orbit_propagator(::Type{Val{:J4}},
     a_0   = (μm/nll_0)^(2/3)*R0
     f_0   = M_to_f(e_0, M_0)
 
-    init_orbit_propagator(Val{:J4}, tle.epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0,
-                          tle.dn_o2*2π/(86400)^2, tle.ddn_o6*2π/(86400)^3,
-                          j4_gc_egm08)
+    return init_orbit_propagator(Val(:J4), tle.epoch, a_0, e_0, i_0, Ω_0, ω_0,
+                                 f_0, tle.dn_o2*2π/(86400)^2,
+                                 tle.ddn_o6*2π/(86400)^3, j4_gc_egm08)
 end
 
-function init_orbit_propagator(::Type{Val{:twobody}},
-                               tle::TLE,
-                               μ::Number = m0)
-
+function init_orbit_propagator(::Val{:twobody}, tle::TLE, μ::Number = m0)
     # Constants.
     revday2radsec = 2π/86400    # Revolutions per day to radians per second.
     d2r           =  π/180      # Degrees to radians.
@@ -319,18 +306,11 @@ function init_orbit_propagator(::Type{Val{:twobody}},
     a_0 = (μ/n_0^2)^(1/3)
     f_0 = M_to_f(e_0, M_0)
 
-    init_orbit_propagator(Val{:twobody},
-                          tle.epoch,
-                          a_0,
-                          e_0,
-                          i_0,
-                          Ω_0,
-                          ω_0,
-                          f_0,
-                          μ)
+    init_orbit_propagator(Val(:twobody), tle.epoch, a_0, e_0, i_0, Ω_0, ω_0,
+                          f_0, μ)
 end
 
-function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE,
+function init_orbit_propagator(::Val{:sgp4}, tle::TLE,
                                sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 
     # Constants.
@@ -356,6 +336,6 @@ function init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE,
                   M_to_f(e_0, M_0))
 
     # Create and return the orbit propagator structure.
-    OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)
+    return OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)
 end
 

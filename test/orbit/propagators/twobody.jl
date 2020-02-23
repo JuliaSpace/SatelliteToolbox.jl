@@ -37,7 +37,7 @@
 #   was obtained:
 #
 #       julia> orb = rv_to_kepler(1131340, -2282343, 6672423, -5643.05, 4303.33, 2428.79)
-#       julia> orbp = init_orbit_propagator(Val{:twobody}, orb)
+#       julia> orbp = init_orbit_propagator(Val(:twobody), orb)
 #       julia> (o,r,v) = step!(orbp,40*60)
 #       julia> @printf("rf_ijk = %+f i %+f j %+f k", r[1]/1000, r[2]/1000, r[3]/1000)
 #           rf_ijk = -4219.752738 i +4363.029177 j -3958.766617 k
@@ -53,7 +53,7 @@
     aux     = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
     orb     = Orbit(DatetoJD(1986,6,19,18,35,0), aux.a, aux.e, aux.i, aux.Ω,
                     aux.ω, aux.f)
-    orbp    = init_orbit_propagator(Val{:twobody}, orb)
+    orbp    = init_orbit_propagator(Val(:twobody), orb)
     (o,r,v) = step!(orbp,40*60)
 
     # Testing position.

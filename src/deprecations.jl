@@ -45,15 +45,60 @@
 # ==============================================================================
 
 # IGRF
+# ------------------------------------------------------------------------------
+
 @deprecate igrf12(date, r, λ, Ω, ::Type{Val{T}}; show_warns = true) where T igrf12(date, r, λ, Ω, Val(T); show_warns = show_warns)
 
 # Legendre
+# ------------------------------------------------------------------------------
+
 @deprecate dlegendre!(::Type{Val{T}}, dP, ϕ, P, ph_term = false) where T            dlegendre!(Val(T), P, ϕ, dP, ph_term)
 @deprecate dlegendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T dlegendre(Val(T), ϕ, n_max, m_max, ph_term)
 @deprecate legendre!(::Type{Val{T}}, P, ϕ, ph_term = false) where T                 legendre!(Val(T), P, ϕ, ph_term)
 @deprecate legendre(::Type{Val{T}}, ϕ, n_max, m_max = -1, ph_term = false) where T  legendre(Val(T), ϕ, n_max, m_max, ph_term)
 
+# Orbit propagation
+# ------------------------------------------------------------------------------
+
+# Individual parameters
+
+@deprecate init_orbit_propagator(::Type{Val{:J2}}, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2 = 0, ddn_o6 = 0, j2_gc = j2_gc_egm08) where T #=
+=#  init_orbit_propagator(Val(:J2), epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6, j2_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:J4}}, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2 = 0, ddn_o6 = 0, j4_gc = j4_gc_egm08) where T #=
+=#  init_orbit_propagator(Val(:J4), epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6, j4_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:twobody}}, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, μ = m0) where T #=
+=#  init_orbit_propagator(Val(:twobody), epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, μ)
+
+# Orbit structure
+
+@deprecate init_orbit_propagator(::Type{Val{:J2}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_egm08) #=
+=#  init_orbit_propagator(Val(:J2), orb_0, dn_o2, ddn_o6, j2_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:J4}}, orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_egm08) #=
+=#  init_orbit_propagator(Val(:J4), orb_0, dn_o2, ddn_o6, j4_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:twobody}}, orb_0::Orbit, μ::Number = m0) #=
+=#  init_orbit_propagator(Val(:twobody), orb_0, μ)
+
+# TLE
+
+@deprecate init_orbit_propagator(::Type{Val{:J2}}, tle::TLE, j2_gc::J2_GravCte = j2_gc_egm08) #=
+=#  init_orbit_propagator(Val(:J2), tle, j2_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:J4}}, tle::TLE, j4_gc::J4_GravCte = j4_gc_egm08) #=
+=#  init_orbit_propagator(Val(:J4), tle, j4_gc)
+
+@deprecate init_orbit_propagator(::Type{Val{:twobody}}, tle::TLE, μ = m0) #=
+=#  init_orbit_propagator(Val(:twobody), tle, μ)
+
+@deprecate init_orbit_propagator(::Type{Val{:sgp4}}, tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84) #=
+=#  init_orbit_propagator(Val(:sgp4), tle, sgp4_gc)
+
 # Space indices
+# ------------------------------------------------------------------------------
+
 for sym in (:F10, :F10obs, :F10adj, :Kp, :Ap, :Kp_vect, :Ap_vect, :S10, :S81a,
             :M10, :M81a, :Y10, :Y81a, :DstΔTc)
     qsym = Meta.quot(sym)
