@@ -47,16 +47,11 @@ the ones described in the function `igrf12syn` in [2].
 # Remarks
 
 * The `date` must be greater or equal to 1900 and less than or equal 2025.
-Notice that a warning message is printed for dates grated than 2020.
+  Notice that a warning message is printed for dates grated than 2020.
 
 """
-function igrf12syn(isv::Int,
-                   date::Number,
-                   itype::Int,
-                   alt::Number,
-                   colat::Number,
-                   elong::Number;
-                   show_warns = true)
+function igrf12syn(isv::Int, date::Number, itype::Int, alt::Number,
+                   colat::Number, elong::Number; show_warns = true)
 
     # Check the data, since this model is valid for years between 1900 and 2025.
     ( (date < 1900) || (date > 2025) ) &&
@@ -248,5 +243,5 @@ function igrf12syn(isv::Int,
     z     = z*cd - one*sd
     f     = sqrt(x^2 + y^2 + z^2)
 
-    (x,y,z,f)
+    return x,y,z,f
 end
