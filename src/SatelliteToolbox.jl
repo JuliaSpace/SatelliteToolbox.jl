@@ -94,6 +94,7 @@ include("earth/geomagnetic_field_models/igrf/igrf.jl")
 include("earth/geomagnetic_field_models/igrf/igrf_coefs.jl")
 include("earth/geomagnetic_field_models/igrf/igrf12/igrf12syn.jl")
 include("earth/geomagnetic_field_models/igrf/igrf12/igrf12syn_coefs.jl")
+include("earth/geomagnetic_field_models/igrf/igrf13/igrf13syn.jl")
 include("earth/space_indices/space_indices.jl")
 
 include("./misc/crossing.jl")
