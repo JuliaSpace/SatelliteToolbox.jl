@@ -109,3 +109,46 @@ for sym in (:F10M, :F10Mobs, :F10Madj)
     qsym = Meta.quot(sym)
     @eval @deprecate get_space_index(::Type{Val{$qsym}}, JD; window = 81) get_space_index(Val($qsym), JD; window = window)
 end
+
+# Transformations
+# ------------------------------------------------------------------------------
+
+# ECEF to ECEF
+
+@deprecate rECEFtoECEF(::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf}    rECEFtoECEF(Val(To), Val(Tf), JD, eop_data)
+@deprecate rECEFtoECEF(T, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf} rECEFtoECEF(T, Val(To), Val(Tf), JD, eop_data)
+
+# ECEF to ECI
+
+@deprecate rECEFtoECI(::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}              rECEFtoECI(Val(To), Val(Tf), JD)
+@deprecate rECEFtoECI(::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf}    rECEFtoECI(Val(To), Val(Tf), JD, eop_data)
+@deprecate rECEFtoECI(T, ::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}           rECEFtoECI(T, Val(To), Val(Tf), JD)
+@deprecate rECEFtoECI(T, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf} rECEFtoECI(T, Val(To), Val(Tf), JD, eop_data)
+
+# ECI to ECEF
+
+@deprecate rECItoECEF(::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}              rECItoECEF(Val(To), Val(Tf), JD)
+@deprecate rECItoECEF(::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf}    rECItoECEF(Val(To), Val(Tf), JD, eop_data)
+@deprecate rECItoECEF(T, ::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}           rECItoECEF(T, Val(To), Val(Tf), JD)
+@deprecate rECItoECEF(T, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf} rECItoECEF(T, Val(To), Val(Tf), JD, eop_data)
+
+# ECI to ECI
+
+@deprecate rECItoECI(::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}                    rECItoECI(Val(To), Val(Tf), JD)
+@deprecate rECItoECI(::Type{Val{To}}, JDo, ::Type{Val{Tf}}, JDf) where {To,Tf}              rECItoECI(Val(To), JDo, Val(Tf), JDf)
+@deprecate rECItoECI(::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf}          rECItoECI(Val(To), Val(Tf), JD, eop_data)
+@deprecate rECItoECI(::Type{Val{To}}, JDo, ::Type{Val{Tf}}, JDf, eop_data) where {To,Tf}    rECItoECI(Val(To), JDo, Val(Tf), JDf, eop_data)
+@deprecate rECItoECI(T::T_ROT, ::Type{Val{To}}, ::Type{Val{Tf}}, JD) where {To,Tf}                 rECItoECI(T, Val(To), Val(Tf), JD)
+@deprecate rECItoECI(T::T_ROT, ::Type{Val{To}}, JDo, ::Type{Val{Tf}}, JDf) where {To,Tf}           rECItoECI(T, Val(To), JDo, Val(Tf), JDf)
+@deprecate rECItoECI(T::T_ROT, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf}       rECItoECI(T, Val(To), Val(Tf), JD, eop_data)
+@deprecate rECItoECI(T::T_ROT, ::Type{Val{To}}, JDo, ::Type{Val{Tf}}, JDf, eop_data) where {To,Tf} rECItoECI(T, Val(To), JDo, Val(Tf), JDf, eop_data)
+
+# State vector, ECEF to ECI
+
+@deprecate svECEFtoECI(sv, ::Type{Val{To}}, ::Type{Val{Tf}}, JD)           where {To,Tf} svECEFtoECI(sv, Val(To), Val(Tf), JD)
+@deprecate svECEFtoECI(sv, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf} svECEFtoECI(sv, Val(To), Val(Tf), JD, eop_data)
+
+# State vector, ECI to ECEF
+
+@deprecate svECItoECEF(sv, ::Type{Val{To}}, ::Type{Val{Tf}}, JD)           where {To,Tf} svECItoECEF(sv, Val(To), Val(Tf), JD)
+@deprecate svECItoECEF(sv, ::Type{Val{To}}, ::Type{Val{Tf}}, JD, eop_data) where {To,Tf} svECItoECEF(sv, Val(To), Val(Tf), JD, eop_data)

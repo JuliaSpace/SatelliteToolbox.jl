@@ -198,24 +198,19 @@ Quaternion{Float64}:
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECEF(T_ECI::Union{Type{Val{:J2000}},Type{Val{:TOD}},
-                                Type{Val{:MOD}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
+@inline rECItoECEF(T_ECI::Union{Val{:J2000},Val{:TOD}, Val{:MOD},Val{:TEME}},
+                   T_ECEF::Val{:PEF}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
 @inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:TOD}},
-                                Type{Val{:MOD}},Type{Val{:TEME}}},
-                   T_ECEF::Type{Val{:PEF}}, JD_UTC::Number) =
+                   T_ECI::Union{Val{:J2000},Val{:TOD}, Val{:MOD},Val{:TEME}},
+                   T_ECEF::Val{:PEF}, JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
 
-@inline rECItoECEF(T_ECI::Union{Type{Val{:CIRS}},Type{Val{:GCRF}}},
-                   T_ECEF::Type{Val{:TIRS}},
+@inline rECItoECEF(T_ECI::Union{Val{:CIRS},Val{:GCRF}}, T_ECEF::Val{:TIRS},
                    JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
-@inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Type{Val{:CIRS}},Type{Val{:GCRF}}},
-                   T_ECEF::Type{Val{:TIRS}},
-                   JD_UTC::Number) =
+@inline rECItoECEF(T::T_ROT, T_ECI::Union{Val{:CIRS},Val{:GCRF}},
+                   T_ECEF::Val{:TIRS}, JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))

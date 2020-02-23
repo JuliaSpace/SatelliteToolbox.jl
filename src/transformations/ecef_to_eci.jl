@@ -180,14 +180,12 @@ Quaternion{Float64}:
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC, eop_data)
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECEFtoECI(T_ECEF::Type{Val{:PEF}},
-                   T_ECI::Union{Type{Val{:J2000}},Type{Val{:MOD}},
-                                Type{Val{:TOD}},Type{Val{:TEME}}},
+@inline rECEFtoECI(T_ECEF::Val{:PEF},
+                   T_ECI::Union{Val{:J2000}, Val{:MOD}, Val{:TOD}, Val{:TEME}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
-@inline rECEFtoECI(T_ECEF::Type{Val{:TIRS}},
-                   T_ECI::Union{Type{Val{:CIRS}}, Type{Val{:GCRF}}},
+@inline rECEFtoECI(T_ECEF::Val{:TIRS}, T_ECI::Union{Val{:CIRS}, Val{:GCRF}},
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
@@ -198,10 +196,7 @@ Quaternion{Float64}:
 #                                 ITRF => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:GCRF}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:GCRF}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -219,16 +214,13 @@ function rECEFtoECI(T::T_ROT,
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+    return rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 end
 
 #                                ITRF => J2000
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:J2000}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:J2000}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -244,16 +236,13 @@ function rECEFtoECI(T::T_ROT,
     y_p      = eop_data.y(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
+    return rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
 end
 
 #                                 ITRF => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:MOD}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MOD}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -274,16 +263,13 @@ function rECEFtoECI(T::T_ROT,
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
     r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-    compose_rotation(r_PEF_ITRF, r_MOD_PEF)
+    return compose_rotation(r_PEF_ITRF, r_MOD_PEF)
 end
 
 #                                 ITRF => TOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:TOD}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:TOD}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -303,16 +289,13 @@ function rECEFtoECI(T::T_ROT,
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
     r_TOD_PEF  = rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 
-    compose_rotation(r_PEF_ITRF, r_TOD_PEF)
+    return compose_rotation(r_PEF_ITRF, r_TOD_PEF)
 end
 
 #                                 ITRF => TEME
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:ITRF}},
-                    ::Type{Val{:TEME}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:TEME}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -331,16 +314,13 @@ function rECEFtoECI(T::T_ROT,
     r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
     r_TEME_PEF = rPEFtoTEME(T, JD_UT1)
 
-    compose_rotation(r_PEF_ITRF, r_TEME_PEF)
+    return compose_rotation(r_PEF_ITRF, r_TEME_PEF)
 end
 
 #                                 PEF => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:GCRF}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:GCRF}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -361,16 +341,13 @@ function rECEFtoECI(T::T_ROT,
     r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
     r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
 
-    compose_rotation(r_MOD_PEF, r_GCRF_MOD)
+    return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
 
 #                                PEF => J2000
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:J2000}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:J2000}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     # Get the time in UT1 and TT.
@@ -381,14 +358,10 @@ function rECEFtoECI(T::T_ROT,
     r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
     r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
 
-    compose_rotation(r_MOD_PEF, r_GCRF_MOD)
+    return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:J2000}},
-                    JD_UTC::Number)
-
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:J2000}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = JD_UTCtoTT(JD_UTC)
@@ -397,16 +370,13 @@ function rECEFtoECI(T::T_ROT,
     r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
     r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
 
-    compose_rotation(r_MOD_PEF, r_GCRF_MOD)
+    return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
 
 #                                 PEF => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:MOD}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:MOD}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -424,27 +394,22 @@ function rECEFtoECI(T::T_ROT,
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    return rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 end
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:PEF}}, ::Type{Val{:MOD}},
-                    JD_UTC::Number)
-
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:MOD}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
+    return rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
 end
 
 #                                 PEF => TOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:TOD}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:TOD}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     arcsec2rad = π/648000
@@ -461,45 +426,38 @@ function rECEFtoECI(T::T_ROT,
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
+    return rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 end
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:PEF}}, ::Type{Val{:TOD}},
-                    JD_UTC::Number)
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:TOD}, JD_UTC::Number)
 
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    rPEFtoTOD_fk5(T, JD_UT1, JD_TT, 0)
+    return rPEFtoTOD_fk5(T, JD_UT1, JD_TT, 0)
 end
 
 #                                 PEF => TEME
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:TEME}},
-                    JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:TEME}, JD_UTC::Number,
                     eop_data::EOPData_IAU1980)
 
     # Get the time in UT1.
     JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
 
     # Compute the rotation.
-    rPEFtoTEME(T, JD_UT1)
+    return rPEFtoTEME(T, JD_UT1)
 end
 
-function rECEFtoECI(T::T_ROT,
-                    ::Type{Val{:PEF}},
-                    ::Type{Val{:TEME}},
-                    JD_UTC::Number)
+function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:TEME}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
 
     # Compute the rotation.
-    rPEFtoTEME(T, JD_UT1)
+    return rPEFtoTEME(T, JD_UT1)
 end
 
 ################################################################################
@@ -509,8 +467,8 @@ end
 #                                 ITRF => CIRS
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:CIRS}},
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:CIRS}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
 
     arcsec2rad = π/648000
 
@@ -532,8 +490,8 @@ end
 #                                 ITRF => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:GCRF}},
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:GCRF}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
 
     arcsec2rad = π/648000
 
@@ -558,8 +516,8 @@ end
 #                                 TIRS => CIRS
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:CIRS}},
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:CIRS}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
 
     # Get the time in UT1 and TT.
     JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
@@ -568,9 +526,7 @@ function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:CIRS}},
     return rTIRStoCIRS_iau2006(T, JD_UT1)
 end
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:CIRS}},
-                    JD_UTC::Number)
-
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:CIRS}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
 
@@ -581,8 +537,8 @@ end
 #                                 TIRS => GCRF
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:GCRF}},
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A)
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:GCRF}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
 
     arcsec2rad = π/648000
 
@@ -601,9 +557,7 @@ function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:GCRF}},
     return compose_rotation(r_CIRS_TIRS, r_GCRF_CIRS)
 end
 
-function rECEFtoECI(T::T_ROT, ::Type{Val{:TIRS}}, ::Type{Val{:GCRF}},
-                    JD_UTC::Number)
-
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:GCRF}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
 

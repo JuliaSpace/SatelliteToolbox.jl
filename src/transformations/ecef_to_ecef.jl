@@ -115,10 +115,7 @@ Quaternion{Float64}:
 #                                 ITRF <=> PEF
 # ==============================================================================
 
-function rECEFtoECEF(T::T_ROT,
-                     ::Type{Val{:ITRF}},
-                     ::Type{Val{:PEF}},
-                     JD_UTC::Number,
+function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:PEF}, JD_UTC::Number,
                      eop_data::EOPData_IAU1980)
     # Get the EOP data related to the desired epoch.
     #
@@ -127,14 +124,11 @@ function rECEFtoECEF(T::T_ROT,
     y_p = eop_data.y(JD_UTC)*π/648000
 
     # Return the rotation.
-    rITRFtoPEF_fk5(T, x_p, y_p)
+    return rITRFtoPEF_fk5(T, x_p, y_p)
 end
 
-@inline rECEFtoECEF(T::T_ROT,
-                    T_ECEFo::Type{Val{:PEF}},
-                    T_ECEFf::Type{Val{:ITRF}},
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980) =
+@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Val{:PEF}, T_ECEFf::Val{:ITRF},
+                    JD_UTC::Number, eop_data::EOPData_IAU1980) =
     inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
 
 ################################################################################
@@ -144,8 +138,8 @@ end
 #                                ITRF <=> TIRS
 # ==============================================================================
 
-function rECEFtoECEF(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:TIRS}},
-                     JD_UTC::Number, eop_data::EOPData_IAU2000A)
+function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:TIRS}, JD_UTC::Number,
+                     eop_data::EOPData_IAU2000A)
 
     arcsec2rad = π/648000
 
@@ -157,7 +151,6 @@ function rECEFtoECEF(T::T_ROT, ::Type{Val{:ITRF}}, ::Type{Val{:TIRS}},
     rITRFtoTIRS_iau2006(T, JD_UTC, x_p, y_p)
 end
 
-@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Type{Val{:TIRS}},
-                    T_ECEFf::Type{Val{:ITRF}}, JD_UTC::Number,
-                    eop_data::EOPData_IAU2000A) =
+@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Val{:TIRS}, T_ECEFf::Val{:ITRF},
+                    JD_UTC::Number, eop_data::EOPData_IAU2000A) =
     inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))

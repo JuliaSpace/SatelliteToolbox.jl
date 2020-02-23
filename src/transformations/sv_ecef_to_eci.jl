@@ -32,31 +32,31 @@ see the documentation of the function `rECEFtoECI`.
     and acceleration as measured by an observer on the ECI frame.
 
 """
-function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Type{Val{:ITRF}},
+function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
                      T_ECI::T_ECIs, JD_UTC::Number, eop_data::EOPData_IAU1980)
 
     # First, convert from the ITRF to PEF.
-    sv_pef = svECEFtoECEF(sv, Val{:ITRF}, Val{:PEF}, JD_UTC, eop_data)
+    sv_pef = svECEFtoECEF(sv, Val(:ITRF), Val(:PEF), JD_UTC, eop_data)
 
     # Now, convert from PEF to ECI.
-    return svECEFtoECI(sv_pef, Val{:PEF}, T_ECI, JD_UTC, eop_data)
+    return svECEFtoECI(sv_pef, Val(:PEF), T_ECI, JD_UTC, eop_data)
 end
 
-function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Type{Val{:ITRF}},
+function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
                      T_ECI::T_ECIs_IAU_2006, JD_UTC::Number,
                      eop_data::EOPData_IAU2000A)
 
     # First, convert from the ITRF to TIRS.
-    sv_tirs = svECEFtoECEF(sv, Val{:ITRF}, Val{:TIRS}, JD_UTC, eop_data)
+    sv_tirs = svECEFtoECEF(sv, Val(:ITRF), Val(:TIRS), JD_UTC, eop_data)
 
     # Now, convert from TIRS to ECI.
-    return svECEFtoECI(sv_tirs, Val{:TIRS}, T_ECI, JD_UTC, eop_data)
+    return svECEFtoECI(sv_tirs, Val(:TIRS), T_ECI, JD_UTC, eop_data)
 end
 
 function svECEFtoECI(sv::SatelliteStateVector,
-                     T_ECEF::Union{Type{Val{:PEF}},Type{Val{:TIRS}}},
+                     T_ECEF::Union{Val{:PEF},Val{:TIRS}},
                      T_ECI::Union{T_ECIs, T_ECIs_IAU_2006}, JD_UTC::Number,
-                     eop_data::Union{Nothing,EOPData_IAU1980, EOPData_IAU2000A} = nothing)
+                     eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing)
 
     # Get the matrix that converts the ECEF to the ECI.
     if eop_data == nothing

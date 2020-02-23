@@ -33,30 +33,30 @@ see the documentation of the function `rECItoECEF`.
 
 """
 function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs,
-                     T_ECEF::Type{Val{:ITRF}}, JD_UTC::Number,
+                     T_ECEF::Val{:ITRF}, JD_UTC::Number,
                      eop_data::EOPData_IAU1980)
 
     # First, convert from ECI to PEF.
-    sv_pef = svECItoECEF(sv, T_ECI, Val{:PEF}, JD_UTC, eop_data)
+    sv_pef = svECItoECEF(sv, T_ECI, Val(:PEF), JD_UTC, eop_data)
 
     # Now, convert from PEF to ITRF.
-    return svECEFtoECEF(sv_pef, Val{:PEF}, Val{:ITRF}, JD_UTC, eop_data)
+    return svECEFtoECEF(sv_pef, Val(:PEF), Val(:ITRF), JD_UTC, eop_data)
 end
 
 function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs_IAU_2006,
-                     T_ECEF::Type{Val{:ITRF}}, JD_UTC::Number,
+                     T_ECEF::Val{:ITRF}, JD_UTC::Number,
                      eop_data::EOPData_IAU2000A)
 
     # First, convert from ECI to TIRS.
-    sv_tirs = svECItoECEF(sv, T_ECI, Val{:TIRS}, JD_UTC, eop_data)
+    sv_tirs = svECItoECEF(sv, T_ECI, Val(:TIRS), JD_UTC, eop_data)
 
     # Now, convert from TIRS to ITRF.
-    return svECEFtoECEF(sv_tirs, Val{:TIRS}, Val{:ITRF}, JD_UTC, eop_data)
+    return svECEFtoECEF(sv_tirs, Val(:TIRS), Val(:ITRF), JD_UTC, eop_data)
 end
 
 function svECItoECEF(sv::SatelliteStateVector,
                      T_ECI::Union{T_ECIs, T_ECIs_IAU_2006},
-                     T_ECEF::Union{Type{Val{:PEF}},Type{Val{:TIRS}}},
+                     T_ECEF::Union{Val{:PEF},Val{:TIRS}},
                      JD_UTC::Number,
                      eop_data::Union{Nothing,EOPData_IAU1980, EOPData_IAU2000A} = nothing)
 

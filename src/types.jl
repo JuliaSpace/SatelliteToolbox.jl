@@ -721,7 +721,7 @@ Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by the
 IAU-76/FK5 theory.
 
 """
-T_ECEFs = Union{Type{Val{:ITRF}}, Type{Val{:PEF}}}
+T_ECEFs = Union{Val{:ITRF}, Val{:PEF}}
 
 """
     T_ECIs
@@ -730,11 +730,7 @@ Union of all Earth-Centered Inertial (ECI) frames supported by the IAU-76/FK5
 theory.
 
 """
-T_ECIs = Union{Type{Val{:GCRF}},
-               Type{Val{:J2000}},
-               Type{Val{:TOD}},
-               Type{Val{:MOD}},
-               Type{Val{:TEME}}}
+T_ECIs = Union{Val{:GCRF}, Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}}
 
 """
     T_ECIs_of_date
@@ -743,9 +739,7 @@ Union of all *of date* Earth-Centered Inertial (ECI) frames supported by the
 IAU-76/FK5 theory.
 
 """
-T_ECIs_of_date = Union{Type{Val{:TOD}},
-                       Type{Val{:MOD}},
-                       Type{Val{:TEME}}}
+T_ECIs_of_date = Union{Val{:TOD}, Val{:MOD}, Val{:TEME}}
 """
     T_ECEFs_IAU_2006
 
@@ -753,7 +747,7 @@ Union of all Earth-Centered Earth-Fixed (ECEF) frames supported by IAU-2006/2010
 theory.
 
 """
-T_ECEFs_IAU_2006 = Union{Type{Val{:ITRF}}, Type{Val{:TIRS}}}
+T_ECEFs_IAU_2006 = Union{Val{:ITRF}, Val{:TIRS}}
 
 """
     T_ECIs_IAU_2006
@@ -762,7 +756,7 @@ Union of all Earth-Centered Inertial (ECI) frames supported by IAU-2006/2010
 theory.
 
 """
-T_ECIs_IAU_2006 = Union{Type{Val{:GCRF}}, Type{Val{:CIRS}}}
+T_ECIs_IAU_2006 = Union{Val{:GCRF}, Val{:CIRS}}
 
 """
     T_ROT

@@ -55,9 +55,7 @@ representation is selected by the optional parameter `T`.
 rTEMEtoTOD(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
     rTEMEtoTOD(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rTEMEtoTOD(T::Type,
-                    JD_TT::Number,
-                    δΔϵ_1980::Number = 0,
+function rTEMEtoTOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
                     δΔψ_1980::Number = 0)
 
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
@@ -88,7 +86,7 @@ function rTEMEtoTOD(T::Type,
         ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
 
     # Compute the rotation.
-    angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
+    return angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
 end
 
 """
@@ -145,9 +143,7 @@ representation is selected by the optional parameter `T`.
 rTEMEtoMOD(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
     rTEMEtoMOD(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rTEMEtoMOD(T::Type,
-                    JD_TT::Number,
-                    δΔϵ_1980::Number = 0,
+function rTEMEtoMOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
                     δΔψ_1980::Number = 0)
 
     # Notice that, in this case, we will not use `rTEMEtoTOD`, and `rTODtoMOD`
@@ -189,7 +185,7 @@ function rTEMEtoMOD(T::Type,
     r_MOD_TOD = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
     # Return the full rotation.
-    compose_rotation(r_TOD_TEME, r_MOD_TOD)
+    return compose_rotation(r_TOD_TEME, r_MOD_TOD)
 end
 
 """
@@ -252,9 +248,7 @@ frame is what is usually called J2000 reference frame.
 rTEMEtoGCRF(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
     rTEMEtoGCRF(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
 
-function rTEMEtoGCRF(T::Type,
-                     JD_TT::Number,
-                     δΔϵ_1980::Number = 0,
+function rTEMEtoGCRF(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
                      δΔψ_1980::Number = 0)
 
     # Compute the rotation TEME => MOD.
@@ -264,7 +258,7 @@ function rTEMEtoGCRF(T::Type,
     r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
 
     # Return the full rotation.
-    compose_rotation(r_MOD_TEME, r_GCRF_MOD)
+    return compose_rotation(r_MOD_TEME, r_GCRF_MOD)
 end
 
 """
@@ -328,7 +322,7 @@ function rTEMEtoPEF(T::Type, JD_UT1::Number)
     θ_gmst = JDtoGMST(JD_UT1)
 
     # Compute the rotation.
-    angle_to_rot(T, θ_gmst, 0, 0, :ZYX)
+    return angle_to_rot(T, θ_gmst, 0, 0, :ZYX)
 end
 
 """
