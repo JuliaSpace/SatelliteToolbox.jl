@@ -10,19 +10,7 @@
 This package contains several functions to build simulations related with
 satellites. It is used on a daily basis on projects at the [Brazilian National
 Institute for Space Research (INPE)](http://www.inpe.br), and it is the engine
-of the [FOrPlan Satellite Simulator](http://old.esaconferencebureau.com/docs/default-source/16c11-secesa-docs/39_chagas_presentation.pdf?sfvrsn=2).
-
-## Requirements
-
-* Julia >= 1.0
-* Crayons >= 4.0.0
-* Interpolations >= 0.11.2
-* Parameters >= 0.10.3
-* OptionalData >= 0.2.1
-* PolynomialRoots >= 0.2.0
-* ReferenceFrameRotations >= 0.5.1
-* RemoteFiles >= 0.2.1
-* StaticArrays >= 0.10.3
+of the [Forplan Satellite Simulator](https://journals.sagepub.com/doi/abs/10.1177/1063293X18804006).
 
 ## Installation
 
