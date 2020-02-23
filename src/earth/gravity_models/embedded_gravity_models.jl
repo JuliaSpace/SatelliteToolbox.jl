@@ -41,21 +41,21 @@ For other models, you can downlad the `gfc` file at
 and load it using the functions `parse_icgem` and `create_gravity_model_coefs`.
 
 """
-function load_gravity_model(::Type{Val{:egm96}})
+function load_gravity_model(::Val{:egm96})
     dir      = @__DIR__
     filename = dir * "/coefficients/EGM96.gfc"
 
     return create_gravity_model_coefs(parse_icgem(filename))
 end
 
-function load_gravity_model(::Type{Val{:jgm2}})
+function load_gravity_model(::Val{:jgm2})
     dir      = @__DIR__
     filename = dir * "/coefficients/JGM2.gfc"
 
     return create_gravity_model_coefs(parse_icgem(filename))
 end
 
-function load_gravity_model(::Type{Val{:jgm3}})
+function load_gravity_model(::Val{:jgm3})
     dir      = @__DIR__
     filename = dir * "/coefficients/JGM3.gfc"
 
@@ -66,6 +66,6 @@ end
 #                             Auxiliary Functions
 ################################################################################
 
-@inline EGM96() = Val{:egm96}
-@inline JGM2()  = Val{:jgm2}
-@inline JGM3()  = Val{:jgm3}
+@inline EGM96() = Val(:egm96)
+@inline JGM2()  = Val(:jgm2)
+@inline JGM3()  = Val(:jgm3)
