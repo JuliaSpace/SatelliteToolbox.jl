@@ -148,10 +148,10 @@ end
 end
 
 @inline get_space_index(::Val{:Kp}, JD::Number) =
-    mean(get_space_index(Val{:Kp_vect}, JD))
+    mean(get_space_index(Val(:Kp_vect), JD))
 
 @inline get_space_index(::Val{:Ap}, JD::Number) =
-    mean(get_space_index(Val{:Ap_vect}, JD))
+    mean(get_space_index(Val(:Ap_vect), JD))
 
 @inline function get_space_index(::Val{:S10}, JD::Number)
     @_check_data(get(_solfsmy_data).S10, JD)
