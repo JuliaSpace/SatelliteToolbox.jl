@@ -142,23 +142,23 @@ end
 
 @testset "Function igrf" begin
     # Testing the geocentric part of the algorithm.
-    for i = 1:size(igrf12_geocentric_test, 1)
-        date  = igrf12_geocentric_test[i,1]
-        r     = igrf12_geocentric_test[i,2]
-        colat = igrf12_geocentric_test[i,3]
-        elong = igrf12_geocentric_test[i,4]
-        xt    = igrf12_geocentric_test[i,5]
-        yt    = igrf12_geocentric_test[i,6]
-        zt    = igrf12_geocentric_test[i,7]
-        ft    = igrf12_geocentric_test[i,8]
+    for i = 1:size(igrf13_geocentric_test, 1)
+        date  = igrf13_geocentric_test[i,1]
+        r     = igrf13_geocentric_test[i,2]
+        colat = igrf13_geocentric_test[i,3]
+        elong = igrf13_geocentric_test[i,4]
+        xt    = igrf13_geocentric_test[i,5]
+        yt    = igrf13_geocentric_test[i,6]
+        zt    = igrf13_geocentric_test[i,7]
+        ft    = igrf13_geocentric_test[i,8]
 
         # Call IGRF with the same inputs as those in the test.
         (elong > 180) && (elong = elong-360)
 
-        if date < 2020
+        if date <= 2025
             B = igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.") #=
+            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
                 =# igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
         end
 
@@ -173,23 +173,23 @@ end
     end
 
     # Testing the geodetic part of the algorithm.
-    for i = 1:size(igrf12_geodetic_test, 1)
-        date  = igrf12_geodetic_test[i,1]
-        h     = igrf12_geodetic_test[i,2]
-        colat = igrf12_geodetic_test[i,3]
-        elong = igrf12_geodetic_test[i,4]
-        xt    = igrf12_geodetic_test[i,5]
-        yt    = igrf12_geodetic_test[i,6]
-        zt    = igrf12_geodetic_test[i,7]
-        ft    = igrf12_geodetic_test[i,8]
+    for i = 1:size(igrf13_geodetic_test, 1)
+        date  = igrf13_geodetic_test[i,1]
+        h     = igrf13_geodetic_test[i,2]
+        colat = igrf13_geodetic_test[i,3]
+        elong = igrf13_geodetic_test[i,4]
+        xt    = igrf13_geodetic_test[i,5]
+        yt    = igrf13_geodetic_test[i,6]
+        zt    = igrf13_geodetic_test[i,7]
+        ft    = igrf13_geodetic_test[i,8]
 
         # Call IGRF with the same inputs as those in the test.
         (elong > 180) && (elong = elong-360)
 
-        if date < 2020
+        if date <= 2025
             B = igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.") #=
+            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
                 =# igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
         end
 

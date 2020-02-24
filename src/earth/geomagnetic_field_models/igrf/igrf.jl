@@ -25,7 +25,7 @@ export igrf
 
 **IGRF Model**
 
-*Current version: v12*
+*Current version: v13*
 
 Compute the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
 position (`r`, `λ`, `Ω`).
@@ -59,8 +59,8 @@ Z-axis completes a right-hand coordinate system.
 
 # Remarks
 
-The `date` must be greater or equal to 1900 and less than or equal 2025. Notice
-that a warning message is printed for dates greater than 2020.
+The `date` must be greater or equal to 1900 and less than or equal 2030. Notice
+that a warning message is printed for dates greater than 2025.
 
 # Disclaimer
 
@@ -75,12 +75,20 @@ igrf(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
 function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric};
               show_warns::Bool = true)
 
+    # Model data
+    # ==========
+
+    max_year = 2030    # Maximum year in which we can compute.
+    rel_year = 2025    # Maximum year with reliable data.
+    dat_year = 2020    # Last year in which real measurements are available.
+
     # Input verification
     # ==================
 
-    # Check the data, since this model is valid for years between 1900 and 2025.
-    ( (date < 1900) || (date > 2025) ) &&
-    error("This IGRF version will not work for years outside the interval [1900, 2025).")
+    # Check the data, since this model is valid for years between 1900 and
+    # `max_year`.
+    ( (date < 1900) || (date > max_year) ) &&
+    error("This IGRF version will not work for years outside the interval [1900, $max_year).")
 
     # Check if the latitude and longitude are valid.
     ( (λ < -pi/2) || (λ > pi/2) ) &&
@@ -89,10 +97,10 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     ( (Ω < -pi) || (Ω > pi) ) &&
     error("The longitude must be between -π and +π rad.")
 
-    # Warn the user that for dates after the year 2020 the accuracy maybe
+    # Warn the user that for dates after the year `rel_year` the accuracy maybe
     # reduced.
-    show_warns && (date > 2020) &&
-    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.")
+    show_warns && (date > rel_year) &&
+    @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than $rel_year.")
 
     # Input variables conversion
     # ==========================
@@ -111,7 +119,7 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     # Compute the epoch that will be used to obtain the coefficients. This is
     # necessary because the IGRF provides coefficients every 5 years. Between
     # two epochs, those coefficients must be interpolated.
-    idx   = (date < 2020) ? floor(Int, (date-1900)*0.2+1) : 24
+    idx   = floor(Int, clamp((date-1900)*0.2+1, 0, (rel_year-1900)/5))
     epoch = 1900 + (idx-1)*5
 
     # Compute the fraction of time from the epoch of the coefficient selected by
@@ -131,6 +139,13 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     # Auxiliary variables to select the IGRF coefficients.
     H = H_igrf
     G = G_igrf
+
+    # Get the last index of the matrices G and H, which must be the same.
+    ~, gend = size(G)
+    ~, hend = size(H)
+
+    (gend != hend) &&
+    error("Internal error: the matrices G and H must have the same number of columns.")
 
     # Reference radius [km].
     a = 6371.2
@@ -167,11 +182,11 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
         # time.
         Gnm_e0 = G[kg,idx+2]
 
-        if date < 2015
+        if date < dat_year
             Gnm_e1 = G[kg,idx+3]
             ΔG     = (Gnm_e1-Gnm_e0)/5
         else
-            ΔG     = G[kg,27]
+            ΔG     = G[kg,gend]
         end
 
         Gnm  = Gnm_e0 + ΔG*Δt
@@ -213,14 +228,14 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
             Gnm_e0 = G[kg,idx+2]
             Hnm_e0 = H[kh,idx+2]
 
-            if date < 2015
+            if date < dat_year
                 Gnm_e1 = G[kg,idx+3]
                 Hnm_e1 = H[kh,idx+3]
                 ΔG     = (Gnm_e1-Gnm_e0)/5
                 ΔH     = (Hnm_e1-Hnm_e0)/5
             else
-                ΔG     = G[kg,27]
-                ΔH     = H[kh,27]
+                ΔG     = G[kg,gend]
+                ΔH     = H[kh,hend]
             end
 
             Gnm    = Gnm_e0 + ΔG*Δt
@@ -275,13 +290,15 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     z = dVr
 
     B_gc = SVector{3,Float64}(x,y,z)
+
+    return B_gc
 end
 
 function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
               show_warns = true)
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
-    # `igrf12syn`.  However, the result is exactly the same as the MATLAB
+    # `igrf12syn`. However, the result is exactly the same as the MATLAB
     # function in [3]. Hence, this does not seem to be an error in the
     # conversion from geodetic to geocentric coordinates. This is probably
     # caused by a numerical error. Further verification is necessary.
@@ -295,5 +312,7 @@ function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
     # Convert to geodetic coordinates.
     D_gd_gc = create_rotation_matrix(λ_gc - λ,:Y)
     B_gd    = D_gd_gc*B_gc
+
+    return B_gd
 end
 
