@@ -11,21 +11,21 @@ end
 Currently, there is two models in this toolbox to compute the Earth geomagnetic
 field: the IGFR model and the simplified dipole model.
 
-## IGRF v12
+## IGRF
 
 There is a native Julia implementation of the [International Geomagnetic
-Reference Field (IGRF) v12](https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html). This
+Reference Field (IGRF) v13](https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html). This
 can be accessed by two functions:
 
-* `igrf12syn`: This is the native Julia implementation of the original FORTRAN
+* `igrf13syn`: This is the native Julia implementation of the original FORTRAN
   source-code with **the same** input parameters.
-* `igrf12`: An independent (more readable) implementation of the IGRF model.
-  However, it is not as fast as `igrf12syn` yet (~20% slower).
+* `igrf`: An independent (more readable) implementation of the IGRF model.
+  However, it is not as fast as `igrf13syn` yet (~20% slower).
 
-The `igrf12` function has the following signature:
+The `igrf` function has the following signature:
 
 ```julia
-function igrf12(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
+function igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
 ```
 
 It computes the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
@@ -58,41 +58,76 @@ Z-axis completes a right-hand coordinate system.
 If the keyword `show_warns` is `true` (default), then warnings will be printed
 to STDOUT.
 
+The latitude `λ` and longitude `Ω` can be passed in degrees instead of radians
+by using the function `igrfd`. All the other arguments and keywords of this
+function are the same as those in the function `igrf`.
+
 !!! note
 
-    The IGRF v12 implemented here can be used to compute the geomagnetic field
-    from 1900 up to 2025. Notice, however, that for dates after 2020 the
+    The IGRF v13 implemented here can be used to compute the geomagnetic field
+    from 1900 up to 2030. Notice, however, that for dates after 2025 the
     accuracy is reduced.
 
 ```jldoctest
-julia> igrf12(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val(:geodetic))
+julia> igrf(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val(:geodetic))
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
- 15374.385312809889
-  1267.9325221604724
- 34168.28074619655
+ 15365.787505205592
+  1274.9958640697
+ 34201.21820333791
 
-julia> igrf12(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val(:geocentric))
+julia> igrfd(2017.12313, 640e3, 50, 25, Val(:geodetic))
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
- 15174.122905727732
-  1262.6765496083972
- 34210.301848156094
+ 15365.787505205592
+  1274.9958640697
+ 34201.21820333791
+
+julia> igrf(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val(:geocentric))
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+ 15165.486702524944
+  1269.7264334427598
+ 34243.04928373083
+
+julia> igrfd(2017.12313, 6371e3+640e3, 50, 25, Val(:geocentric))
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+ 15165.486702524944
+  1269.7264334427598
+ 34243.04928373083
 ```
 
 ```julia
-julia> igrf12(2022, 6371e3+640e3, 50*pi/180, 25*pi/180)
-┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2020.
-└ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf.jl:99
+julia> igrf(2026, 6371e3+640e3, 50*pi/180, 25*pi/180)
+┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.
+└ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf/igrf.jl:103
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
- 15167.758261587729
-  1423.7811941605075
- 34342.17638944679
+ 15118.591511098817
+  1588.129544718571
+ 34668.84185460438
 
-julia> igrf12(2022, 6371e3+640e3, 50*pi/180, 25*pi/180; show_warns=false)
+julia> igrfd(2026, 6371e3+640e3, 50, 25)
+┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.
+└ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf/igrf.jl:103
 3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
- 15167.758261587729
-  1423.7811941605075
- 34342.17638944679
+ 15118.591511098817
+  1588.129544718571
+ 34668.84185460438
+
+julia> igrf(2026, 6371e3+640e3, 50*pi/180, 25*pi/180; show_warns = false)
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+ 15118.591511098817
+  1588.129544718571
+ 34668.84185460438
+
+julia> igrfd(2026, 6371e3+640e3, 50, 25; show_warns = false)
+3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+ 15118.591511098817
+  1588.129544718571
+ 34668.84185460438
 ```
+
+!!! info
+
+    For compatibility reasons, the v12 of the IGRF model is still available
+    using the function `igrf12syn`.
 
 ## Simplified dipole model
 
