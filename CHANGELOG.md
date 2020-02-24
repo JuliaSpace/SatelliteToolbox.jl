@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.7.1
+-------------
+
+- ![Bugfix][badge-bugfix] Some functions related to space indices were
+  deprecated. They were replaced by the correct versions.
+
 Version 0.7.0
 -------------
 
