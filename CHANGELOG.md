@@ -1,6 +1,23 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.7.0
+-------------
+
+- ![BREAKING][badge-breaking] All the deprecated functions in v0.4 and v0.5 were
+  removed.
+- ![Feature][badge-feature] The IGRF can be computed passing the latitude and
+  longitude in degrees by using the function `igrfd`.
+- ![Feature][badge-feature] IGRF v13 is now available using the functions
+  `igrf13syn` or `igrf`. The old v12 is still available for compatibility
+  reasons in the function `igrf12syn`.
+- ![Enhancement][badge-enhancement] Following the Julia documentation, all
+  functions that uses `Val` for multiple-dispatch now needs a value
+  `Val(:symbol)` instead of a type `Val{:symbol}`. All the old signatures still
+  work but have been marked as deprecated.
+- ![Deprecation][badge-deprecation] All functions that uses `Val{:symbol}` for
+  multiple-dispatch are now marked as deprecated in favor of `Val(:symbol)`.
+
 Version 0.6.5
 -------------
 
