@@ -203,3 +203,78 @@ end
         @test f ≈ ft atol=3e-1
     end
 end
+
+# Function igrfd
+# --------------
+
+@testset "Function igrfd" begin
+    # Testing the geocentric part of the algorithm.
+    for i = 1:size(igrf13_geocentric_test, 1)
+        date  = igrf13_geocentric_test[i,1]
+        r     = igrf13_geocentric_test[i,2]
+        colat = igrf13_geocentric_test[i,3]
+        elong = igrf13_geocentric_test[i,4]
+        xt    = igrf13_geocentric_test[i,5]
+        yt    = igrf13_geocentric_test[i,6]
+        zt    = igrf13_geocentric_test[i,7]
+        ft    = igrf13_geocentric_test[i,8]
+
+        # Call IGRF with the same inputs as those in the test.
+        (elong > 180) && (elong = elong-360)
+
+        if date <= 2025
+            B = igrfd(date, r*1000, 90-colat, elong)
+        else
+            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                =# igrfd(date, r*1000, 90-colat, elong)
+        end
+
+        x, y, z = B[:]
+        f       = norm(B)
+
+        # Test the values.
+        @test x ≈ xt atol=3e-1
+        @test y ≈ yt atol=3e-1
+        @test z ≈ zt atol=3e-1
+        @test f ≈ ft atol=3e-1
+    end
+
+    # Testing the geodetic part of the algorithm.
+    for i = 1:size(igrf13_geodetic_test, 1)
+        date  = igrf13_geodetic_test[i,1]
+        h     = igrf13_geodetic_test[i,2]
+        colat = igrf13_geodetic_test[i,3]
+        elong = igrf13_geodetic_test[i,4]
+        xt    = igrf13_geodetic_test[i,5]
+        yt    = igrf13_geodetic_test[i,6]
+        zt    = igrf13_geodetic_test[i,7]
+        ft    = igrf13_geodetic_test[i,8]
+
+        # Call IGRF with the same inputs as those in the test.
+        (elong > 180) && (elong = elong-360)
+
+        if date <= 2025
+            B = igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+        else
+            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                =# igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+        end
+
+        x, y, z = B[:]
+        f       = norm(B)
+
+        # Test the values.
+        @test x ≈ xt atol=3e-1
+        @test y ≈ yt atol=3e-1
+        @test z ≈ zt atol=3e-1
+        @test f ≈ ft atol=3e-1
+    end
+
+    # Errors
+    # --------------------------------------------------------------------------
+
+    @test_throws ErrorException igrfd(2010, 7000, -91,    0)
+    @test_throws ErrorException igrfd(2010, 7000, +91,    0)
+    @test_throws ErrorException igrfd(2010, 7000, 0, -181)
+    @test_throws ErrorException igrfd(2010, 7000, 0, +181)
+end

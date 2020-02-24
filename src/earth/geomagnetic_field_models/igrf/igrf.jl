@@ -14,14 +14,80 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export igrf
+export igrf, igrfd
 
 ################################################################################
 #                                  Functions
 ################################################################################
 
 """
-    igrf(date::Number, r::Number, λ::Number, Ω::Number, T; show_warns = true)
+    igrfd(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
+
+**IGRF Model**
+
+*Current version: v13*
+
+Compute the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
+position (`r`, `λ`, `Ω`).
+
+The position representation is defined by `T`. If `T` is `Val(:geocentric)`,
+then the input must be **geocentric** coordinates:
+
+1. Distance from the Earth center `r` [m];
+1. Geocentric latitude `λ` (-90°, +90°); and
+2. Geocentric longitude `Ω` (-180°, +180°).
+
+If `T` is `Val(:geodetic)`, then the input must be **geodetic** coordinates:
+
+1 Altitude above the reference ellipsoid `h` (WGS-84) \\[m];
+2. Geodetic latitude `λ` (-90°, +90°); and
+3. Geodetic longitude `Ω` (-180°, +180°).
+
+If `T` is omitted, then it defaults to `Val(:geocentric)`.
+
+Notice that the output vector will be represented in the same reference system
+selected by the parameter `T` (geocentric or geodetic). The Y-axis of the output
+reference system always points East. In case of **geocentric coordinates**, the
+Z-axis points toward the center of Earth and the X-axis completes a right-handed
+coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
+the ellipsoid at the selected location and points toward North, whereas the
+Z-axis completes a right-hand coordinate system.
+
+# Keywords
+
+* `show_warns`: Show warnings about the data (**Default** = `true`).
+
+# Remarks
+
+The `date` must be greater or equal to 1900 and less than or equal 2030. Notice
+that a warning message is printed for dates greater than 2025.
+
+# Disclaimer
+
+This function is an independent implementation of the IGRF model. It contains a
+more readable code than the original one in FORTRAN, because it uses features
+available in Julia language.
+
+"""
+@inline igrfd(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
+    igrfd(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
+
+@inline function igrfd(date::Number, rh::Number, λ::Number, Ω::Number, R::T;
+                       show_warns = true) where T<:Union{Val{:geocentric},
+                                                         Val{:geodetic}}
+
+    # Check if the latitude and longitude are valid.
+    ( (λ < -90) || (λ > 90) ) &&
+    error("The latitude must be between -90° and +90° rad.")
+
+    ( (Ω < -180) || (Ω > 180) ) &&
+    error("The longitude must be between -180° and +180° rad.")
+
+    return igrf(date, rh, deg2rad(λ), deg2rad(Ω), R; show_warns = show_warns)
+end
+
+"""
+igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
 
 **IGRF Model**
 
