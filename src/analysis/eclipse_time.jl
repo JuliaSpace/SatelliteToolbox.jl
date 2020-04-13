@@ -77,7 +77,7 @@ function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number,
     s_time = zeros(Δd)  # Sunlight time.
 
     # Configure the orbit propagator.
-    orbp = init_orbit_propagator(Val{:J2}, JD₀, a, e, i, RAAN, w, 0)
+    orbp = init_orbit_propagator(Val(:J2), JD₀, a, e, i, RAAN, w, 0)
 
     # Lambda functions
     # ==========================================================================
