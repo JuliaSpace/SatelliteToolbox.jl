@@ -14,8 +14,8 @@
 #       the local north-oriented reference frame. Geoscientific Model
 #       Development, 8, pp. 1979-1990.
 #
-#   [2] Ilk, K. H.: Ein eitrag zur Dynamik ausgedehnter
-#       Körper-Gravitationswechselwirkung, Deutsche Geodätische Kommis- sion.
+#   [2] Ilk, K. H.: Ein Beitrag zur Dynamik ausgedehnter
+#       Körper-Gravitationswechselwirkung, Deutsche Geodätische Kommission.
 #       Reihe C, Heft Nr. 288, München, 1983.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
