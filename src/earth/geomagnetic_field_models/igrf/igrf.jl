@@ -21,7 +21,7 @@ export igrf, igrfd
 ################################################################################
 
 """
-    igrfd(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
+    igrfd(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; show_warns = true)
 
 **IGRF Model**
 
@@ -53,6 +53,12 @@ coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
 the ellipsoid at the selected location and points toward North, whereas the
 Z-axis completes a right-hand coordinate system.
 
+The optional arguments `P` and `dP` must be two matrices with at least 14x14
+real numbers. If they are present, then they will be used to store the Legendre
+coefficients and their derivatives. In this case, no allocation will be
+performed when computing the magnetic field. If they are not present, then 2
+allocations will happen to create them.
+
 # Keywords
 
 * `show_warns`: Show warnings about the data (**Default** = `true`).
@@ -72,9 +78,26 @@ available in Julia language.
 @inline igrfd(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
     igrfd(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
 
+@inline igrfd(date::Number, r::Number, λ::Number, Ω::Number,
+              P::AbstractMatrix{T}, dP::AbstractMatrix{T};
+              show_warns = true) where T<:Real =
+    igrfd(date, r, λ, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
+
 @inline function igrfd(date::Number, rh::Number, λ::Number, Ω::Number, R::T;
-                       show_warns = true) where T<:Union{Val{:geocentric},
-                                                         Val{:geodetic}}
+                       show_warns = true) where {T<:Union{Val{:geocentric},
+                                                          Val{:geodetic}}}
+
+    P  = Matrix{Float64}(undef, 14, 14)
+    dP = Matrix{Float64}(undef, 14, 14)
+
+    return igrfd(date, rh, λ, Ω, R, P, dP; show_warns = show_warns)
+end
+
+@inline function igrfd(date::Number, rh::Number, λ::Number, Ω::Number, R::T,
+                       P::AbstractMatrix{S}, dP::AbstractMatrix{S};
+                       show_warns = true) where {T<:Union{Val{:geocentric},
+                                                          Val{:geodetic}},
+                                                 S<:Real}
 
     # Check if the latitude and longitude are valid.
     ( (λ < -90) || (λ > 90) ) &&
@@ -83,11 +106,11 @@ available in Julia language.
     ( (Ω < -180) || (Ω > 180) ) &&
     error("The longitude must be between -180° and +180° rad.")
 
-    return igrf(date, rh, deg2rad(λ), deg2rad(Ω), R; show_warns = show_warns)
+    return igrf(date, rh, deg2rad(λ), deg2rad(Ω), R, P, dP; show_warns = show_warns)
 end
 
 """
-igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
+    igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; show_warns = true)
 
 **IGRF Model**
 
@@ -119,6 +142,12 @@ coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
 the ellipsoid at the selected location and points toward North, whereas the
 Z-axis completes a right-hand coordinate system.
 
+The optional arguments `P` and `dP` must be two matrices with at least 14x14
+real numbers. If they are present, then they will be used to store the Legendre
+coefficients and their derivatives. In this case, no allocation will be
+performed when computing the magnetic field. If they are not present, then 2
+allocations will happen to create them.
+
 # Keywords
 
 * `show_warns`: Show warnings about the data (**Default** = `true`).
@@ -138,8 +167,23 @@ available in Julia language.
 igrf(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true) =
     igrf(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
 
-function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric};
-              show_warns::Bool = true)
+igrf(date::Number, r::Number, λ::Number, Ω::Number, P::AbstractMatrix{T},
+     dP::AbstractMatrix{T}; show_warns = true) where T<:Real =
+    igrf(date, r, λ, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
+
+function igrf(date::Number, r::Number, λ::Number, Ω::Number, R::T;
+              show_warns::Bool = true) where {T<:Union{Val{:geocentric},
+                                                       Val{:geodetic}}}
+
+    P  = Matrix{Float64}(undef, 14, 14)
+    dP = Matrix{Float64}(undef, 14, 14)
+
+    return igrf(date, r, λ, Ω, R, P, dP; show_warns = show_warns)
+end
+
+function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric},
+              P::AbstractMatrix{T}, dP::AbstractMatrix{T};
+              show_warns::Bool = true) where T<:Real
 
     # Model data
     # ==========
@@ -197,7 +241,8 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
 
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
-    dP, P = dlegendre(Val(:schmidt), θ, n_max, n_max, false)
+    legendre!(Val(:schmidt), P, θ, false)
+    dlegendre!(Val(:schmidt), dP, θ, P, false)
 
     # Parameters and auxiliary variables
     # ==================================
@@ -360,8 +405,9 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     return B_gc
 end
 
-function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
-              show_warns = true)
+function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic},
+              P::AbstractMatrix{T}, dP::AbstractMatrix{T};
+              show_warns = true) where T<:Real
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
     # `igrf12syn`. However, the result is exactly the same as the MATLAB
@@ -373,7 +419,7 @@ function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic};
     (λ_gc, r) = GeodetictoGeocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
-    B_gc = igrf(date, r, λ_gc, Ω, Val(:geocentric); show_warns = show_warns)
+    B_gc = igrf(date, r, λ_gc, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
 
     # Convert to geodetic coordinates.
     D_gd_gc = create_rotation_matrix(λ_gc - λ,:Y)

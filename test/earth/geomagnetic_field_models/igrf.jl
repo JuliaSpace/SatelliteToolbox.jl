@@ -141,6 +141,10 @@ end
 # -------------
 
 @testset "Function igrf" begin
+    # Auxiliary variables to use the version without allocations.
+    P  = Matrix{Float64}(undef, 14, 14)
+    dP = similar(P)
+
     # Testing the geocentric part of the algorithm.
     for i = 1:size(igrf13_geocentric_test, 1)
         date  = igrf13_geocentric_test[i,1]
@@ -156,20 +160,24 @@ end
         (elong > 180) && (elong = elong-360)
 
         if date <= 2025
-            B = igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
+            Ba = igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
+            Bn = igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180, P, dP)
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
-                =# igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
+            Ba = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180)
+            Bn = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrf(date, r*1000, (90-colat)*pi/180, elong*pi/180, P, dP)
         end
 
-        x, y, z = B[:]
-        f       = norm(B)
+        x, y, z = Ba[:]
+        f       = norm(Ba)
 
         # Test the values.
-        @test x ≈ xt atol=3e-1
-        @test y ≈ yt atol=3e-1
-        @test z ≈ zt atol=3e-1
-        @test f ≈ ft atol=3e-1
+        @test x   ≈ xt atol=3e-1
+        @test y   ≈ yt atol=3e-1
+        @test z   ≈ zt atol=3e-1
+        @test f   ≈ ft atol=3e-1
+        @test Ba == Bn
     end
 
     # Testing the geodetic part of the algorithm.
@@ -187,20 +195,24 @@ end
         (elong > 180) && (elong = elong-360)
 
         if date <= 2025
-            B = igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
+            Ba = igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
+            Bn = igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
-                =# igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
+            Ba = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic))
+            Bn = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrf(date, h*1000, (90-colat)*pi/180, elong*pi/180, Val(:geodetic), P, dP)
         end
 
-        x, y, z = B[:]
-        f       = norm(B)
+        x, y, z = Ba[:]
+        f       = norm(Ba)
 
         # Test the values.
-        @test x ≈ xt atol=3e-1
-        @test y ≈ yt atol=3e-1
-        @test z ≈ zt atol=3e-1
-        @test f ≈ ft atol=3e-1
+        @test x   ≈ xt atol=3e-1
+        @test y   ≈ yt atol=3e-1
+        @test z   ≈ zt atol=3e-1
+        @test f   ≈ ft atol=3e-1
+        @test Ba == Bn
     end
 end
 
@@ -208,6 +220,10 @@ end
 # --------------
 
 @testset "Function igrfd" begin
+        # Auxiliary variables to use the version without allocations.
+    P  = Matrix{Float64}(undef, 14, 14)
+    dP = similar(P)
+
     # Testing the geocentric part of the algorithm.
     for i = 1:size(igrf13_geocentric_test, 1)
         date  = igrf13_geocentric_test[i,1]
@@ -223,20 +239,24 @@ end
         (elong > 180) && (elong = elong-360)
 
         if date <= 2025
-            B = igrfd(date, r*1000, 90-colat, elong)
+            Ba = igrfd(date, r*1000, 90-colat, elong)
+            Bn = igrfd(date, r*1000, 90-colat, elong, P, dP)
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
-                =# igrfd(date, r*1000, 90-colat, elong)
+            Ba = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrfd(date, r*1000, 90-colat, elong)
+            Bn = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrfd(date, r*1000, 90-colat, elong, P, dP)
         end
 
-        x, y, z = B[:]
-        f       = norm(B)
+        x, y, z = Ba[:]
+        f       = norm(Ba)
 
         # Test the values.
-        @test x ≈ xt atol=3e-1
-        @test y ≈ yt atol=3e-1
-        @test z ≈ zt atol=3e-1
-        @test f ≈ ft atol=3e-1
+        @test x   ≈ xt atol=3e-1
+        @test y   ≈ yt atol=3e-1
+        @test z   ≈ zt atol=3e-1
+        @test f   ≈ ft atol=3e-1
+        @test Ba == Bn
     end
 
     # Testing the geodetic part of the algorithm.
@@ -254,20 +274,24 @@ end
         (elong > 180) && (elong = elong-360)
 
         if date <= 2025
-            B = igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+            Ba = igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+            Bn = igrfd(date, h*1000, 90-colat, elong, Val(:geodetic), P, dP)
         else
-            B = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
-                =# igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+            Ba = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrfd(date, h*1000, 90-colat, elong, Val(:geodetic))
+            Bn = @test_logs (:warn, "The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.") #=
+                 =# igrfd(date, h*1000, 90-colat, elong, Val(:geodetic), P, dP)
         end
 
-        x, y, z = B[:]
-        f       = norm(B)
+        x, y, z = Ba[:]
+        f       = norm(Ba)
 
         # Test the values.
-        @test x ≈ xt atol=3e-1
-        @test y ≈ yt atol=3e-1
-        @test z ≈ zt atol=3e-1
-        @test f ≈ ft atol=3e-1
+        @test x   ≈ xt atol=3e-1
+        @test y   ≈ yt atol=3e-1
+        @test z   ≈ zt atol=3e-1
+        @test f   ≈ ft atol=3e-1
+        @test Ba == Bn
     end
 
     # Errors

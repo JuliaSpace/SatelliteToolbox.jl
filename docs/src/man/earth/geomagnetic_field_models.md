@@ -25,7 +25,7 @@ can be accessed by two functions:
 The `igrf` function has the following signature:
 
 ```julia
-function igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T; show_warns = true)
+function igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; show_warns = true)
 ```
 
 It computes the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
@@ -54,6 +54,12 @@ Z-axis points toward the center of Earth and the X-axis completes a right-handed
 coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
 the ellipsoid at the selected location and points toward North, whereas the
 Z-axis completes a right-hand coordinate system.
+
+The optional arguments `P` and `dP` must be two matrices with at least 14x14
+real numbers. If they are present, then they will be used to store the Legendre
+coefficients and their derivatives. In this case, no allocation will be
+performed when computing the magnetic field. If they are not present, then 2
+allocations will happen to create them.
 
 If the keyword `show_warns` is `true` (default), then warnings will be printed
 to STDOUT.
