@@ -439,3 +439,12 @@ end
     @test m     == 0
     @test s     == 0
 end
+
+# Function DatetoJD(::DateTime)
+# ==============================================================================
+
+@testset "DatetoJD with DateTime" begin
+    JDdatetime = DatetoJD(DateTime(2020,8,14,12,4,1))
+    JDnums     = DatetoJD(2020,8,14,12,4,1)
+    @test JDdatetime == JDnums
+end
