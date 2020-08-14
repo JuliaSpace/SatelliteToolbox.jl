@@ -171,7 +171,7 @@ function JD_TTtoUTC(JD_UTC::Number)
 end
 
 """
-    is_leap_year(year::Int)
+    is_leap_year(year::Integer)
 
 Check if the year `year` is a leap year. It returns `true` if `year` is a leap
 year, or `false` otherwise.
@@ -181,7 +181,7 @@ year, or `false` otherwise.
 This algorithm was based on [3].
 
 """
-function is_leap_year(year::Int)
+function is_leap_year(year::Integer)
     # Check if `year` is positive. This algorithm does not handle negative
     # years.
     (year < 0) && throw(ArgumentError("The year must be positive."))
