@@ -53,7 +53,7 @@ export DatetoJD, JDtoDate
 ################################################################################
 
 """
-    DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
+    DatetoJD(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
 
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month = `M`
 (1-12), Day = `D`, Hour = `h` (0-24), minute = `m`, and second = `s`) to Julian
@@ -64,7 +64,7 @@ Day.
 The algorithm was obtained from \\[2] (Accessed on 2018-04-11).
 
 """
-function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
+function DatetoJD(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
     # Check the input.
     ( (M < 1) || (M > 12) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
@@ -93,8 +93,8 @@ function DatetoJD(Y::Int, M::Int, D::Int, h::Int, m::Int, s::Number)
     a = div(Y,100)
     b = div(a,4)
     c = 2-a+b
-    e = floor(Int,365.25*(Y+4716))
-    f = floor(Int,30.6001*(M+1))
+    e = floor(Integer,365.25*(Y+4716))
+    f = floor(Integer,30.6001*(M+1))
 
     # Compute the Julian Day considering the time of day.
     #
@@ -176,9 +176,9 @@ function JDtoDate(JD::Number)
     A = Z+1+W-X
     B = A+1524
     C = div(B-122.1,365.25)
-    D = floor(Int,365.25*C)
+    D = floor(Integer,365.25*C)
     E = div(B-D,30.6001)
-    F = floor(Int,30.6001*E)
+    F = floor(Integer,30.6001*E)
 
     # In this case, `dayf` will have the fractional part of the day.
     dayf   = B-D-F+(Q-Z)
@@ -191,11 +191,11 @@ function JDtoDate(JD::Number)
     sf = (mf   % 1)*60
 
     # Transform everything in integers.
-    year  = floor(Int, yearf)
-    month = floor(Int, monthf)
-    day   = floor(Int, dayf)
-    h     = floor(Int, hf)
-    m     = floor(Int, mf)
+    year  = floor(Integer, yearf)
+    month = floor(Integer, monthf)
+    day   = floor(Integer, dayf)
+    h     = floor(Integer, hf)
+    m     = floor(Integer, mf)
     s     = sf
 
     # Return.
@@ -215,7 +215,7 @@ function JDtoDate(::Type{Int}, JD::Number)
         (year, month, day, h, m, s) = JDtoDate(JD + Δs/86400)
     end
 
-    (year, month, day, h, m, round(Int,s))
+    (year, month, day, h, m, round(Integer,s))
 end
 
 function JDtoDate(::Type{Date}, JD::Number)
