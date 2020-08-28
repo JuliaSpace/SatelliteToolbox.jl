@@ -1,6 +1,19 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.7.2
+-------------
+
+- ![Bugfix][badge-bugfix] The function `DatetoJD` was failing in 32-bit
+  platforms when calling with a `DateTime` object. (PR [#43][gh-pr-43])
+- ![Bugfix][badge-bugfix] Remove a deprecated function in `eclipse_time`.
+- ![Enhancement][badge-enhancement] It is now possible to call the IGRF
+  functions `igrf` and `igrfd` passing a pre-allocated matrix for the
+  computation of the Legendre associated functions. Hence, in this case, no
+  allocation will be performed, leading to a huge performance gain.
+- ![Info][badge-info] This version support Julia 1.0 and 1.5. The support for
+  Julia 1.3 has been dropped.
+
 Version 0.7.1
 -------------
 
@@ -388,3 +401,4 @@ Version 0.1.0
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
 [gh-pr-36]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/36
+[gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
