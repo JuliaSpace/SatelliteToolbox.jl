@@ -239,6 +239,13 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     # Compute the maximum spherical harmonic degree for the selected date.
     n_max = (epoch < 1995) ? 10 : 13
 
+    # Make sure we have the required amount of space in the matrices.
+    (rows, cols) = size(P)
+    ((rows < n_max+1) || (cols < n_max+1)) && error("Matrix `P` must have at least $(n_max+1) rows and columns.")
+
+    (rows, cols) = size(dP)
+    ((rows < n_max+1) || (cols < n_max+1)) && error("Matrix `dP` must have at least $(n_max+1) rows and columns.")
+
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
     legendre!(Val(:schmidt), P, θ, false, n_max, n_max)
