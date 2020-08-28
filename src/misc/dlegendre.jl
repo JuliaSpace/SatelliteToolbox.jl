@@ -26,7 +26,7 @@ export dlegendre_schmidt_quasi_normalized!, dlegendre_schmidt_quasi_normalized
 export dlegendre_conventional!, dlegendre_conventional
 
 """
-    dlegendre!([N,] dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre!([N,] dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the first-order derivative of the associated Legendre function
 `P_n,m[x]` w.r.t. `ϕ` [rad]:
@@ -35,8 +35,9 @@ Compute the first-order derivative of the associated Legendre function
     --------------
           dϕ
 
-The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix.
+The derivatives will be stored in the matrix `dP`. The maximum degree and order
+that will be computed are given by the parameters `n_max` and `m_max`. If they
+are negative, then the dimensions of matrix `dP` will be used.
 
 This algorithm needs the matrix `P` with the associated Legendre function. This
 can be computed using the function `legendre`. Notice that this matrix must be
@@ -58,20 +59,21 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-dlegendre!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false) =
-    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
+dlegendre!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
+           ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1) =
+    dlegendre_fully_normalized!(dP, ϕ, P, ph_term, n_max, m_max)
 
 dlegendre!(::Val{:full}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
-           ph_term::Bool = false) =
-    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
+           ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1) =
+    dlegendre_fully_normalized!(dP, ϕ, P, ph_term, n_max, m_max)
 
 dlegendre!(::Val{:schmidt}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
-           ph_term::Bool = false) =
-    dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term)
+           ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1) =
+    dlegendre_schmidt_quasi_normalized!(dP, ϕ, P, ph_term, n_max, m_max)
 
 dlegendre!(::Val{:conv}, dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
-           ph_term::Bool = false) =
-    dlegendre_conventional!(dP, ϕ, P, ph_term)
+           ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1) =
+    dlegendre_conventional!(dP, ϕ, P, ph_term, n_max, m_max)
 
 """
     dlegendre([N,] ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
@@ -129,7 +131,7 @@ dlegendre(::Val{:conv}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
 ################################################################################
 
 """
-    dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the first-order derivative of the fully normalized associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -138,8 +140,9 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix.
+The derivatives will be stored in the matrix `dP`. The maximum degree and order
+that will be computed are given by the parameters `n_max` and `m_max`. If they
+are negative, then the dimensions of matrix `dP` will be used.
 
 This algorithm needs the matrix `P` with the fully normalized associated
 Legendre function. This can be computed using the function
@@ -156,17 +159,11 @@ set to `true`.
 
 """
 function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
-                                     P::AbstractMatrix, ph_term::Bool = false)
+                                     P::AbstractMatrix, ph_term::Bool = false,
+                                     n_max::Integer = -1, m_max::Integer = -1)
 
-    # Get the maximum degree and order of `P`.
-    (rows_P,  cols_P) = size(P)
-    n_max_P = rows_P - 1
-    m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
-
-    # Compute the maximum degree and order of `dP`.
-    (rows, cols) = size(dP)
-    n_max = min(rows - 1, n_max_P)
-    m_max = min(m_max_P - 1, cols <= rows ? cols - 1 : n_max)
+    # Obtain the maximum degree and order that must be computed.
+    n_max, m_max = _get_degree_and_order(dP, P, n_max, m_max)
 
     # The derivative is compute using the following equation [1, p. 1981]:
     #
@@ -250,14 +247,7 @@ function dlegendre_fully_normalized!(dP::AbstractMatrix, ϕ::Number,
             dP[n+1,m+1] *= fact
 
             # Check if the maximum desired order has been reached.
-            #
-            # Notice that we can compute the term `dP[m_max + 1, m_max + 1]` if
-            # there is space in `dP`.
-            if m >= m_max
-                if (n != m_max + 1) || (cols - 1 < n)
-                    break
-                end
-            end
+            m >= m_max && break
         end
     end
 
@@ -316,7 +306,7 @@ end
 ################################################################################
 
 """
-    dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the first-order derivative of the Schmidt quasi-normalized associated
 Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -325,8 +315,9 @@ Legendre function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix.
+The derivatives will be stored in the matrix `dP`. The maximum degree and order
+that will be computed are given by the parameters `n_max` and `m_max`. If they
+are negative, then the dimensions of matrix `dP` will be used.
 
 This algorithm needs the matrix `P` with the Schmidt quasi-normalized associated
 Legendre function. This can be computed using the function
@@ -343,12 +334,13 @@ set to `true`.
 
 """
 dlegendre_schmidt_quasi_normalized!(dP::AbstractMatrix, ϕ::Number,
-                                    P::AbstractMatrix, ph_term::Bool = false) =
+                                    P::AbstractMatrix, ph_term::Bool = false,
+                                    n_max::Integer = -1, m_max::Integer = -1) =
 
     # The algorithm to compute the first-order derivative using Schmidt
-    # normalizations is precisely the same as the one that computes using full
+    # normalization is precisely the same as the one that computes using full
     # normalization.
-    dlegendre_fully_normalized!(dP, ϕ, P, ph_term)
+    dlegendre_fully_normalized!(dP, ϕ, P, ph_term, n_max, m_max)
 
 """
     dlegendre_schmidt_quasi_normalized(ϕ::T, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false) where T<:AbstractFloat
@@ -403,7 +395,7 @@ end
 ################################################################################
 
 """
-    dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false)
+    dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the first-order derivative of the conventional associated Legendre
 function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
@@ -412,8 +404,9 @@ function `P_n,m[cos(ϕ)]` w.r.t. `ϕ` [rad]:
     --------------
           dϕ
 
-The derivatives will be stored in the matrix `dP`. Hence, the maximum degree and
-order that will be computed are given by the dimensions of this matrix.
+The derivatives will be stored in the matrix `dP`. The maximum degree and order
+that will be computed are given by the parameters `n_max` and `m_max`. If they
+are negative, then the dimensions of matrix `dP` will be used.
 
 This algorithm needs the matrix `P` with the conventional associated Legendre
 function. This can be computed using the function `legendre_conventional`.
@@ -429,17 +422,11 @@ set to `true`.
 
 """
 function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatrix,
-                                 ph_term::Bool = false)
+                                 ph_term::Bool = false, n_max::Integer = -1,
+                                 m_max::Integer = -1)
 
-    # Get the maximum degree and order of `P`.
-    (rows_P,  cols_P) = size(P)
-    n_max_P = rows_P - 1
-    m_max_P = cols_P <= rows_P ? cols_P - 1 : n_max_P
-
-    # Compute the maximum degree and order of `dP`.
-    (rows, cols) = size(dP)
-    n_max = min(rows - 1, n_max_P)
-    m_max = min(m_max_P - 1, cols <= rows ? cols - 1 : n_max)
+    # Obtain the maximum degree and order that must be computed.
+    n_max, m_max = _get_degree_and_order(dP, P, n_max, m_max)
 
     # The derivative is computed using the following equation [1, p. 1981]:
     #
@@ -479,14 +466,7 @@ function dlegendre_conventional!(dP::AbstractMatrix, ϕ::Number, P::AbstractMatr
             dP[n+1,m+1] *= fact
 
             # Check if the maximum desired order has been reached.
-            #
-            # Notice that we can compute the term `dP[m_max + 1, m_max + 1]` if
-            # there is space in `dP`.
-            if m >= m_max
-                if (n != m_max + 1) || (cols - 1 < n)
-                    break
-                end
-            end
+            m >= m_max && break
         end
     end
 
@@ -538,4 +518,35 @@ function dlegendre_conventional(ϕ::T, n_max::Integer, m_max::Integer = -1,
     dP = zeros(T, n_max + 1, m_max + 1)
     dlegendre_conventional!(dP, ϕ, P, ph_term)
     return dP, P
+end
+
+################################################################################
+#                                   Private
+################################################################################
+
+"""
+    _get_degree_and_order(dP, P, n_max, m_max)
+
+Return the maximum degree and order to compute the Legendre associated functions
+given the matrices `dP`, `P`, and the configuration values `n_max` and `m_max`.
+
+"""
+@inline function _get_degree_and_order(dP, P, n_max, m_max)
+    # Get the size of the matrices.
+    (Prows,  Pcols)  = size(P)
+    (dProws, dPcols) = size(dP)
+
+    rows = min(Prows, dProws)
+    cols = min(Pcols, dPcols)
+
+    # If the order or degree is less than 0, then the user wants to use all the
+    # available memory.
+    n_max < 0 && (n_max = rows - 1)
+    m_max < 0 && (m_max = cols <= rows ? cols - 1 : n_max)
+
+    # Make sure that the degree and order fits the matrix.
+    n_max > rows - 1 && (n_max = rows - 1)
+    ( (m_max > cols - 1) || (m_max > n_max) ) && (m_max = min(cols-1, n_max))
+
+    return n_max, m_max
 end

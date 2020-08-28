@@ -33,10 +33,11 @@ export legendre_schmidt_quasi_normalized!, legendre_schmidt_quasi_normalized
 export legendre_conventional!, legendre_conventional
 
 """
-    legendre!([N,] P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
+    legendre!([N,] P::AbstractMatrix, ϕ::Number, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
-Compute the associated Legendre function `P_n,m[cos(ϕ)]`. The maximum degree
-and order that will be computed are given by the dimensions of matrix `P`.
+Compute the associated Legendre function `P_n,m[cos(ϕ)]`. The maximum degree and
+order that will be computed are given by the parameters `n_max` and `m_max`. If
+they are negative, then the dimensions of matrix `P` will be used.
 
 The result will be stored at matrix `P`.
 
@@ -56,17 +57,21 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-legendre!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
-    legendre_fully_normalized!(P, float(ϕ), ph_term)
+legendre!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false,
+          n_max::Integer = -1, m_max::Integer = -1) =
+    legendre_fully_normalized!(P, float(ϕ), ph_term, n_max, m_max)
 
-legendre!(::Val{:full}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
-    legendre_fully_normalized!(P, float(ϕ), ph_term)
+legendre!(::Val{:full}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false,
+          n_max::Integer = -1, m_max::Integer = -1) =
+    legendre_fully_normalized!(P, float(ϕ), ph_term, n_max, m_max)
 
-legendre!(::Val{:schmidt}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
-    legendre_schmidt_quasi_normalized!(P, float(ϕ), ph_term)
+legendre!(::Val{:schmidt}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false,
+          n_max::Integer = -1, m_max::Integer = -1) =
+    legendre_schmidt_quasi_normalized!(P, float(ϕ), ph_term, n_max, m_max)
 
-legendre!(::Val{:conv}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false) =
-    legendre_conventional!(P, float(ϕ), ph_term)
+legendre!(::Val{:conv}, P::AbstractMatrix, ϕ::Number, ph_term::Bool = false,
+          n_max::Integer = -1, m_max::Integer = -1) =
+    legendre_conventional!(P, float(ϕ), ph_term, n_max, m_max)
 
 """
     legendre([N,] ϕ::Number, n_max::Integer, m_max::Integer = -1, ph_term::Bool = false)
@@ -115,11 +120,12 @@ legendre(::Val{:conv}, ϕ::Number, n_max::Integer, m_max::Integer = -1,
 ################################################################################
 
 """
-    legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
+    legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
-Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`.
-The maximum degree and order that will be computed are given by the dimensions
-of matrix `P`:
+Compute the fully normalized associated Legendre function `P_n,m[cos(ϕ)]`. The
+maximum degree and order that will be computed are given by the parameters
+`n_max` and `m_max`. If they are negative, then the dimensions of matrix `P`
+will be used:
 
     maximum degree -> number of rows
     maximum order  -> number of columns
@@ -147,12 +153,11 @@ Legendre function can be seen in [2, p. 546]. The conversion is obtained by:
 
 """
 function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
-                                    ph_term::Bool = false)
-    (rows, cols) = size(P)
+                                    ph_term::Bool = false, n_max::Integer = -1,
+                                    m_max::Integer = -1)
 
     # Obtain the maximum degree and order that must be computed.
-    n_max = rows - 1
-    m_max = cols <= rows ? cols - 1 : n_max
+    n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
     c = cos(ϕ)
@@ -168,7 +173,7 @@ function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
         elseif n == 1
             P[1+1,0+1] = +sqrt(3)*c
 
-            if cols > 1
+            if m_max > 0
                 P[1+1,1+1] = +sqrt(3)*s_fact
             end
 
@@ -181,19 +186,18 @@ function legendre_fully_normalized!(P::AbstractMatrix, ϕ::Number,
 
             if n == m
                 P[n+1,n+1] = s_fact*sqrt( (2n+1)/(2n) )*P[n-1+1,n-1+1]
-                continue
-            end
-
-            aux_nm = (n-m)*(n+m)
-            a_nm   = sqrt( aux_n / aux_nm )
-            b_nm   = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( aux_nm*(2n-3) ) )
-
-            # We assume that the matrix is not initialized. Hence, we must not
-            # access elements on the upper triangle.
-            if m != n-1
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
             else
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                aux_nm = (n-m)*(n+m)
+                a_nm   = sqrt( aux_n / aux_nm )
+                b_nm   = sqrt( ( (2n+1)*(n+m-1)*(n-m-1) ) / ( aux_nm*(2n-3) ) )
+
+                # We assume that the matrix is not initialized. Hence, we must
+                # not access elements on the upper triangle.
+                if m != n-1
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+                else
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                end
             end
 
             # Check if the maximum desired order has been reached.
@@ -253,11 +257,12 @@ end
 ################################################################################
 
 """
-    legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
+    legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the Schmidt quasi-normalized associated Legendre function
 `P_n,m[cos(ϕ)]` [3,4]. The maximum degree and order that will be computed are
-given by the dimensions of matrix `P`:
+given by the parameters `n_max` and `m_max`. If they are negative, then the
+dimensions of matrix `P` will be used:
 
     maximum degree -> number of rows
     maximum order  -> number of columns
@@ -285,12 +290,12 @@ This algorithm was based on [3,4]. The conversion is obtained by:
 
 """
 function legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number,
-                                            ph_term::Bool = false)
-    (rows, cols) = size(P)
+                                            ph_term::Bool = false,
+                                            n_max::Integer = -1,
+                                            m_max::Integer = -1)
 
     # Obtain the maximum degree and order that must be computed.
-    n_max = rows - 1
-    m_max = cols <= rows ? cols - 1 : n_max
+    n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
     c = cos(ϕ)
@@ -307,7 +312,7 @@ function legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number,
         elseif n == 1
             P[1+1,0+1] = +c
 
-            if cols > 1
+            if m_max > 0
                 P[1+1,1+1] = +s_fact
             end
 
@@ -320,19 +325,18 @@ function legendre_schmidt_quasi_normalized!(P::AbstractMatrix, ϕ::Number,
 
             if m == n
                 P[n+1,n+1] = s_fact*sqrt( aux_n/(2n) )*P[n-1+1,n-1+1]
-                continue
-            end
-
-            aux_nm = sqrt( (n-m)*(n+m) )
-            a_nm   = aux_n / aux_nm
-            b_nm   = sqrt( (n+m-1)*(n-m-1) ) / aux_nm
-
-            # We assume that the matrix is not initialized. Hence, we must not
-            # access elements on the upper triangle.
-            if m != n-1
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
             else
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                aux_nm = sqrt( (n-m)*(n+m) )
+                a_nm   = aux_n / aux_nm
+                b_nm   = sqrt( (n+m-1)*(n-m-1) ) / aux_nm
+
+                # We assume that the matrix is not initialized. Hence, we must not
+                # access elements on the upper triangle.
+                if m != n-1
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+                else
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                end
             end
 
             # Check if the maximum desired order has been reached.
@@ -393,11 +397,12 @@ end
 ################################################################################
 
 """
-    legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
+    legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false, n_max::Integer = -1, m_max::Integer = -1)
 
 Compute the conventional associated Legendre function `P_n,m[cos(ϕ)]`. The
-maximum degree and order that will be computed are given by the dimensions of
-matrix `P`:
+maximum degree and order that will be computed are given by the parameters
+`n_max` and `m_max`. If they are negative, then the dimensions of matrix `P`
+will be used:
 
     maximum degree -> number of rows
     maximum order  -> number of columns
@@ -408,12 +413,12 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 
 """
-function legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = false)
-    (rows, cols) = size(P)
+function legendre_conventional!(P::AbstractMatrix, ϕ::Number,
+                                ph_term::Bool = false, n_max::Integer = -1,
+                                m_max::Integer = -1)
 
     # Obtain the maximum degree and order that must be computed.
-    n_max = rows - 1
-    m_max = cols <= rows ? cols - 1 : n_max
+    n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
     c = cos(ϕ)
@@ -429,7 +434,7 @@ function legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = f
         elseif n == 1
             P[1+1,0+1] = +c
 
-            if cols > 1
+            if m_max > 0
                 P[1+1,1+1] = +s_fact
             end
 
@@ -442,19 +447,18 @@ function legendre_conventional!(P::AbstractMatrix, ϕ::Number, ph_term::Bool = f
 
             if n == m
                 P[n+1,n+1] = s_fact*aux_n*P[n-1+1,n-1+1]
-                continue
-            end
-
-            aux_nm = n-m # -> sqrt( (n-m)*(n-m) )
-            a_nm   = aux_n / aux_nm
-            b_nm   = (n+m-1) / aux_nm # -> sqrt( (n+m-1)*(n+m-1) ) / aux_nm
-
-            # We assume that the matrix is not initialized. Hence, we must not
-            # access elements on the upper triangle.
-            if m != n-1
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
             else
-                P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                aux_nm = n-m # -> sqrt( (n-m)*(n-m) )
+                a_nm   = aux_n / aux_nm
+                b_nm   = (n+m-1) / aux_nm # -> sqrt( (n+m-1)*(n+m-1) ) / aux_nm
+
+                # We assume that the matrix is not initialized. Hence, we must
+                # not access elements on the upper triangle.
+                if m != n-1
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1] - b_nm*P[n-2+1,m+1]
+                else
+                    P[n+1,m+1] = a_nm*c*P[n-1+1,m+1]
+                end
             end
 
             # Check if the maximum desired order has been reached.
@@ -491,4 +495,31 @@ function legendre_conventional(ϕ::T, n_max::Integer, m_max::Integer = -1,
     P = zeros(T, n_max+1, m_max+1)
     legendre_conventional!(P, ϕ, ph_term)
     return P
+end
+
+################################################################################
+#                                   Private
+################################################################################
+
+"""
+    _get_degree_and_order(P, n_max, m_max)
+
+Return the maximum degree and order to compute the Legendre associated functions
+given the matrix `P` and the configuration values `n_max` and `m_max`.
+
+"""
+@inline function _get_degree_and_order(P, n_max, m_max)
+    # Get the size of the matrix.
+    (rows, cols) = size(P)
+
+    # If the order or degree is less than 0, then the user wants to use all the
+    # available memory.
+    n_max < 0 && (n_max = rows - 1)
+    m_max < 0 && (m_max = cols <= rows ? cols - 1 : n_max)
+
+    # Make sure that the degree and order fits the matrix.
+    n_max > rows - 1 && (n_max = rows - 1)
+    ( (m_max > cols - 1) || (m_max > n_max) ) && (m_max = min(cols-1, n_max))
+
+    return n_max, m_max
 end
