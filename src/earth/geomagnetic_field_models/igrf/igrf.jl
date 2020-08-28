@@ -241,8 +241,8 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
 
     # Compute the Schmidt quasi-normalized associated Legendre functions and
     # their first order derivative, neglecting the phase term.
-    legendre!(Val(:schmidt), P, θ, false)
-    dlegendre!(Val(:schmidt), dP, θ, P, false)
+    legendre!(Val(:schmidt), P, θ, false, n_max, n_max)
+    dlegendre!(Val(:schmidt), dP, θ, P, false, n_max, n_max)
 
     # Parameters and auxiliary variables
     # ==================================
