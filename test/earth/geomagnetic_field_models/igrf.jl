@@ -214,6 +214,24 @@ end
         @test f   ≈ ft atol=3e-1
         @test Ba == Bn
     end
+
+    # Errors
+    # --------------------------------------------------------------------------
+
+    P₀  = zeros(10,10)
+    dP₀ = zeros(10,10)
+    P₁  = zeros(15,15)
+    dP₁ = zeros(15,15)
+
+    @test_throws ErrorException igrf(2020, 140e3, pi/4, pi/2, Val(:geodetic), P₀, dP₀)
+    @test_throws ErrorException igrf(2020, 140e3, pi/4, pi/2, Val(:geodetic), P₀, dP₁)
+    @test_throws ErrorException igrf(2020, 140e3, pi/4, pi/2, Val(:geodetic), P₁, dP₀)
+    @test_nowarn                igrf(2020, 140e3, pi/4, pi/2, Val(:geodetic), P₁, dP₁)
+
+    @test_throws ErrorException igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₀, dP₀)
+    @test_throws ErrorException igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₀, dP₁)
+    @test_throws ErrorException igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₁, dP₀)
+    @test_nowarn                igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₁, dP₁)
 end
 
 # Function igrfd
@@ -301,4 +319,19 @@ end
     @test_throws ErrorException igrfd(2010, 7000, +91,    0)
     @test_throws ErrorException igrfd(2010, 7000, 0, -181)
     @test_throws ErrorException igrfd(2010, 7000, 0, +181)
+
+    P₀  = zeros(10,10)
+    dP₀ = zeros(10,10)
+    P₁  = zeros(15,15)
+    dP₁ = zeros(15,15)
+
+    @test_throws ErrorException igrfd(2020, 140e3, 45, 90, Val(:geodetic), P₀, dP₀)
+    @test_throws ErrorException igrfd(2020, 140e3, 45, 90, Val(:geodetic), P₀, dP₁)
+    @test_throws ErrorException igrfd(2020, 140e3, 45, 90, Val(:geodetic), P₁, dP₀)
+    @test_nowarn                igrfd(2020, 140e3, 45, 90, Val(:geodetic), P₁, dP₁)
+
+    @test_throws ErrorException igrfd(2020, R0+140e3, 45, 90, Val(:geocentric), P₀, dP₀)
+    @test_throws ErrorException igrfd(2020, R0+140e3, 45, 90, Val(:geocentric), P₀, dP₁)
+    @test_throws ErrorException igrfd(2020, R0+140e3, 45, 90, Val(:geocentric), P₁, dP₀)
+    @test_nowarn                igrfd(2020, R0+140e3, 45, 90, Val(:geocentric), P₁, dP₁)
 end
