@@ -21,6 +21,14 @@ export read_iers_eop
 ################################################################################
 #                       Private Structures and Variables
 ################################################################################
+################################################################################
+
+# Interpolation types used in EOP data.
+const _eop_itp_linear{T} =
+    Interpolations.GriddedInterpolation{T,1,T, Gridded{Linear}, Tuple{Array{T,1}}}
+
+const _eop_etp_linear{T} =
+    Interpolations.Extrapolation{T, 1, _eop_itp_linear{T}, Gridded{Linear}, Flat{Nothing}}
 
 """
     get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
@@ -185,9 +193,9 @@ function parse_iers_eop_iau_1980(eop::Matrix)
     #
     # The interpolation will be linear between two points in the grid. The
     # extrapolation will be flat, considering the nearest point.
-	knots = (eop[:,4] .+ 2400000.5,)
+    knots = (eop[:,4] .+ 2400000.5,)
 
-    EOPData_IAU1980(
+    EOPData_IAU1980{_eop_etp_linear{Float64}}(
         extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
         extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
         extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
@@ -215,7 +223,7 @@ function parse_iers_eop_iau_2000A(eop::Matrix)
     # extrapolation will be flat, considering the nearest point.
 	knots = (eop[:,4] .+ 2400000.5,)
 
-    EOPData_IAU2000A(
+    EOPData_IAU2000A{_eop_etp_linear{Float64}}(
         extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
         extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
         extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
