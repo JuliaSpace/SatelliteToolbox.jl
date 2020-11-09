@@ -1,6 +1,14 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.7.3
+-------------
+
+- ![Bugfix][badge-bugfix] The source code was updated to be compatible with
+  PrettyTables.jl v0.10.
+- ![Enhancement][badge-enhancement] A type-instability related to EOP data was
+  removed, leading to a performance gain.
+
 Version 0.7.2
 -------------
 
