@@ -265,9 +265,12 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
                          crayon"bold")
 
         # Print.
-        pretty_table(io, mp, header; alignment = [:r, :l, :l, :r],
-                     crop = :horizontal, formatter = ft_printf("%.3f",[4]),
-                     hlines = [num,num+3], highlighters = (hl,hl_min,hl_max))
+        pretty_table(io, mp, header;
+                     alignment    = [:r, :l, :l, :r],
+                     body_hlines  = [num,num+3],
+                     crop         = :horizontal,
+                     formatters   = ft_printf("%.3f",[4]),
+                     highlighters = (hl,hl_min,hl_max))
     end
 
     return nothing
@@ -354,9 +357,12 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
                          crayon"bold")
 
         # Print.
-        pretty_table(io, mp, header; alignment = [:r, :l, :l, :r],
-                     crop = :horizontal, formatter = ft_printf("%.3f",[4]),
-                     hlines = [num,num+3], highlighters = (hl,hl_min,hl_max))
+        pretty_table(io, mp, header;
+                     alignment    = [:r, :l, :l, :r],
+                     body_hlines  = [num,num+3],
+                     crop         = :horizontal,
+                     formatters   = ft_printf("%.3f",[4]),
+                     highlighters = (hl,hl_min,hl_max))
     end
 
     return nothing
