@@ -167,6 +167,11 @@ end
         end
 
         stri = stri_name * stri_l1 * stri_l2
+
+        # If the OS is Windows, then we should remove `\r` to avoid testing
+        # failure.
+        Sys.iswindows() && (stri = replace(stri, "\r" => ""))
+
         strf = tle_to_str(tles[i], bstar_exp_le = bstar_exp_le)
 
         @test strf == stri
