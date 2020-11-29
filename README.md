@@ -1,9 +1,7 @@
 # SatelliteToolbox
 
-[![Build Status](https://travis-ci.org/JuliaSpace/SatelliteToolbox.jl.svg?branch=master)](https://travis-ci.org/JuliaSpace/SatelliteToolbox.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/x7ogyjfx1x5yj78j/branch/master?svg=true)](https://ci.appveyor.com/project/ronisbr/satellitetoolbox-jl/branch/master)
+[![Build status](https://github.com/JuliaSpace/SatelliteToolbox.jl/workflows/CI/badge.svg)](https://github.com/JuliaSpace/SatelliteToolbox.jl/actions)
 [![codecov](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl)
-[![Coverage Status](https://coveralls.io/repos/github/JuliaSpace/SatelliteToolbox.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaSpace/SatelliteToolbox.jl?branch=master)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)][docs-stable-url]
 [![](https://img.shields.io/badge/docs-dev-blue.svg)][docs-dev-url]
 
