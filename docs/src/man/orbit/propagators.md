@@ -35,7 +35,7 @@ is the SPG4/SDP4 algorithm, which will be called just SGP4 here.
 ## Initialization
 
 All the propagators need to be initialized first using the API function
-`init_orbit_proapgator`. The functions signature for each algorithm can be seen
+`init_orbit_propagator`. The functions signature for each algorithm can be seen
 as follows.
 
 ### Initialization of Two body, J2, and J4
@@ -44,7 +44,7 @@ The orbit propagators **two body**, **J2**, and **J4** can be initialized using
 three different methods.
 
 ```julia
-function init_orbit_proapgator(T, epoch::Number, f_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number)
+function init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number)
 ```
 
 where:
