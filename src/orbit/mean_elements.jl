@@ -203,6 +203,9 @@ described in the function `rv_to_mean_elements_sgp4`.
 
 Additionally, the user can specify some parameters of the generated TLE.
 
+This function returns the TLE and the covariance of the estimated elements
+(state vector).
+
 """
 function rv_to_tle(args...;
                    name::String = "UNDEFINED",
@@ -259,7 +262,7 @@ function rv_to_tle(args...;
               0)
 
     # Return the TLE string.
-    return tle
+    return tle, P
 end
 
 
