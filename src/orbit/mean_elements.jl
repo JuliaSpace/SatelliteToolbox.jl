@@ -182,9 +182,6 @@ described in the function `rv_to_mean_elements_sgp4`.
 
 Additionally, the user can specify some parameters of the generated TLE.
 
-This function prints the TLE to `stdout` using the function `print_tle` and also
-returns the TLE string.
-
 """
 function rv_to_tle(args...;
                    name::String = "UNDEFINED",
@@ -241,9 +238,6 @@ function rv_to_tle(args...;
               0)
 
     tle_str = tle_to_str(tle)
-
-    # Print the TLE to the `stdout`.
-    print(tle_str)
 
     # Return the TLE string.
     return tle_str
