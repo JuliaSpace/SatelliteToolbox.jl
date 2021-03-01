@@ -16,7 +16,7 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; mean_elements_epoch::Symbol = :end, max_it::Int = 25, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where
+    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T,Tv<:AbstractVector}
 
 Compute the mean elements for SGP4 based on the position `vr` and velocity
 vectors `vr` represented in TEME reference frame. The epoch of those
@@ -26,6 +26,8 @@ The matrix `W` defined the weights for the least-square algorithm.
 
 # Keywords
 
+* `estimate_bstar`: If `true`, then the BSTAR parameters of the TLE will be
+                    estimated.
 * `mean_elements_epoch`: If it is  `:end`, the epoch of the mean elements will
                          be equal to the last value in `vJD`. Otherwise, if it
                          is `:begin`, the epoch will be selected as the first
@@ -47,7 +49,8 @@ The matrix `W` defined the weights for the least-square algorithm.
     * Inclination [rad];
     * Right ascension of the ascending node [rad];
     * Argument of perigee [rad];
-    * True anomaly [rad].
+    * True anomaly [rad];
+    * BSTAR (0 if `estimate_bstar` is `false`).
 * The covariance matrix of the mean elements estimation.
 
 """
@@ -55,8 +58,9 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
                                   vr::AbstractVector{Tv},
                                   vv::AbstractVector{Tv},
                                   W = I;
+                                  estimate_bstar::Bool = true,
                                   mean_elements_epoch::Symbol = :end,
-                                  max_it::Int = 25,
+                                  max_it::Int = 50,
                                   sgp4_gc = sgp4_gc_wgs84,
                                   atol::Number = 2e-4,
                                   rtol::Number = 2e-4) where
@@ -79,7 +83,9 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
     # Initial guess of the mean elements.
     #
     # NOTE: x₁ is the previous estimate and x₂ is the current estimate.
-    x₁ = SVector{6,T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3])
+    x₁ = estimate_bstar ?
+        SVector{7,T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3], T(0.00001)) :
+        SVector{7,T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3], T(0))
     x₂ = x₁
 
     # Number of states in the input vector.
@@ -110,21 +116,25 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         # Variable to store the residue in this iteration.
         σ_i = T(0)
 
-        for k = 1:num_meas
+        @views for k = 1:num_meas
             # Obtain the measured ephemerides.
             y = vcat(vr[k], vv[k])
 
             # Obtain the computed ephemerides considering the current estimate
             # of the mean elements.
             Δt = (vJD[k] - epoch)*86400
-            r̂, v̂, ~ = _sgp4_sv(Δt, sgp4_gc, epoch, x₁...)
+
+            r̂, v̂, ~ = estimate_bstar ?
+                _sgp4_sv(Δt, sgp4_gc, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6], x₁[7]) :
+                _sgp4_sv(Δt, sgp4_gc, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6])
+
             ŷ = vcat(r̂, v̂)
 
             # Compute the error.
             b = y - ŷ
 
             # Compute the Jacobian.
-            A = _sgp4_jacobian(Δt, epoch, x₁, ŷ)
+            A = _sgp4_jacobian(Δt, epoch, x₁, ŷ; estimate_bstar = estimate_bstar)
 
             # Accumulation.
             ΣAᵀWA += A'*W*A
@@ -136,12 +146,13 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         σ_i /= num_meas
 
         # Update the estimate.
-        P  = pinv(ΣAᵀWA)
+        P  = SMatrix{num_states, num_states, T}(pinv(ΣAᵀWA))
         δx = P*ΣAᵀWb
 
         # Limit the correction to avoid divergence.
         for i = 1:num_states
-            abs(δx[i] / x₁[i]) > 0.01 && (δx[i] = 0.01 * abs(x₁[i]) * sign(δx[i]))
+            abs(δx[i] / x₁[i]) > 0.01 &&
+                (δx = setindex(δx, 0.01 * x₁[i] * sign(δx[i]), i))
         end
 
         x₂ = x₁ + δx
@@ -173,10 +184,11 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
     end
 
     # Convert the state vector to mean elements.
-    orb = rv_to_kepler((@view x₂[1:6])...)
+    orb = rv_to_kepler(x₂[1], x₂[2], x₂[3], x₂[4], x₂[5], x₂[6])
+    bstar = x₂[7]
 
     # Assemble the output vector.
-    xo = @SVector [orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f]
+    xo = @SVector [orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f, bstar]
 
     # Return the mean elements for SGP4 and the covariance matrix.
     return epoch, xo, P
@@ -234,7 +246,7 @@ function rv_to_tle(args...;
               JD,
               0.0,
               0.0,
-              0.0, # x[7],
+              x[7],
               elem_set_number,
               0,
               i₀,
@@ -293,18 +305,23 @@ function _sgp4_jacobian(Δt::T,
                         epoch::T,
                         x₁::SVector{NS, T},
                         y₁::SVector{NO, T};
+                        estimate_bstar::Bool = true,
                         pert::T = 1e-3,
                         perttol::T = 1e-5,
                         sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84) where {NS, NO, T}
 
     num_states = NS
     dim_obs    = NO
-    M          = Matrix{T}(undef, dim_obs, num_states)
+    M          = zeros(T, dim_obs, num_states)
 
     # Auxiliary variables.
     x₂ = copy(x₁)
 
-    @inbounds for j = 1:num_states
+    # If B* does not need to be estimated, then does not compute the last
+    # column.
+    J = num_states - !estimate_bstar
+
+    @inbounds for j = 1:J
         # State that will be perturbed.
         α = x₂[j]
 
