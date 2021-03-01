@@ -237,10 +237,8 @@ function rv_to_tle(args...;
               rev_num,
               0)
 
-    tle_str = tle_to_str(tle)
-
     # Return the TLE string.
-    return tle_str
+    return tle
 end
 
 
