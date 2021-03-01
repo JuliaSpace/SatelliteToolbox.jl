@@ -65,11 +65,20 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
     # Number of measurements.
     num_meas = length(vr)
 
+    # Check if the orbit epoch must be the first or the last element.
+    if mean_elements_epoch == :end
+        r₁ = last(vr)
+        v₁ = last(vv)
+        epoch = last(vJD)
+    else
+        r₁ = first(vr)
+        v₁ = first(vv)
+        epoch = first(vJD)
+    end
+
     # Initial guess of the mean elements.
     #
     # NOTE: x₁ is the previous estimate and x₂ is the current estimate.
-    r₁ = first(vr)
-    v₁ = first(vv)
     x₁ = SVector{6,T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3])
     x₂ = x₁
 
@@ -78,9 +87,6 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
 
     # Covariance matrix.
     P = SMatrix{num_states, num_states, T}(I)
-
-    # Epoch of the TLE generation.
-    epoch = mean_elements_epoch == :end ? last(vJD) : first(vJD)
 
     # Variable to store the last residue.
     σ_i₋₁ = T(NaN)
@@ -104,9 +110,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         # Variable to store the residue in this iteration.
         σ_i = T(0)
 
-        # We will interpolate backwards in time, so that the mean elements
-        # in x₂ are related to the newest measurement.
-        for k = num_meas:-1:1
+        for k = 1:num_meas
             # Obtain the measured ephemerides.
             y = vcat(vr[k], vv[k])
 
@@ -120,7 +124,6 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
             b = y - ŷ
 
             # Compute the Jacobian.
-            #
             A = _sgp4_jacobian(Δt, epoch, x₁, ŷ)
 
             # Accumulation.
@@ -135,6 +138,12 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         # Update the estimate.
         P  = pinv(ΣAᵀWA)
         δx = P*ΣAᵀWb
+
+        # Limit the correction to avoid divergence.
+        for i = 1:num_states
+            abs(δx[i] / x₁[i]) > 0.01 && (δx[i] = 0.01 * abs(x₁[i]) * sign(δx[i]))
+        end
+
         x₂ = x₁ + δx
 
         # Compute the residue variation.
@@ -154,8 +163,8 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         end
 
         # If the residue increased by three iterations and the residue is higher
-        # than 5e8, then we abort because the interations are diverging.
-        ( (Δd ≥ 3) && (σ_i > 5e8) ) && error("The iterations diverged!")
+        # than 5e8, then we abort because the iterations are diverging.
+        ( (Δd ≥ 3) && (σ_i > 5e11) ) && error("The iterations diverged!")
 
         # Check if the condition to stop has been reached.
         ((abs(σ_p) < rtol) || (σ_i < atol) || (it ≥ max_it)) && break
@@ -170,7 +179,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
     xo = @SVector [orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f]
 
     # Return the mean elements for SGP4 and the covariance matrix.
-    return vJD[end], xo, P
+    return epoch, xo, P
 end
 
 """
@@ -265,7 +274,7 @@ function _sgp4_sv(Δt::Number,
 
     # Obtain the required mean elements to initialize the SGP4.
     a₀ = orb_TEME.a/(1000sgp4_gc.R0) # .................... Semi-major axis [ER]
-    e₀ = orb_TEME.e                  # ........................ Excentricity [ ]
+    e₀ = orb_TEME.e                  # ........................ Eccentricity [ ]
     i₀ = orb_TEME.i                  # ....................... Inclination [rad]
     Ω₀ = orb_TEME.Ω                  # .............................. RAAN [rad]
     ω₀ = orb_TEME.ω                  # ................... Arg. of perigee [rad]
