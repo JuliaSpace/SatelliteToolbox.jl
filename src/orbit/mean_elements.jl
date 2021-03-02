@@ -152,7 +152,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         # Limit the correction to avoid divergence.
         for i = 1:num_states
             abs(δx[i] / x₁[i]) > 0.01 &&
-                (δx = setindex(δx, 0.01 * x₁[i] * sign(δx[i]), i))
+                (δx = setindex(δx, 0.01 * abs(x₁[i]) * sign(δx[i]), i))
         end
 
         x₂ = x₁ + δx
