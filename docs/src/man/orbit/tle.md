@@ -44,7 +44,7 @@ This function returns an array of TLEs. Each TLE is an instance of the structure
 
 ```julia-repl
 julia> tles = read_tle("tles")
-2-element Array{TLE,1}:
+2-element Vector{TLE}:
  TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
  TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
@@ -131,7 +131,7 @@ julia> tles = """
        """;
 
 julia> read_tle_from_string(tles)
-2-element Array{TLE,1}:
+2-element Vector{TLE}:
  TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
  TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
@@ -142,7 +142,7 @@ julia> tle_l2 = "2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396
 "2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366163"
 
 julia> read_tle_from_string(tle_l1, tle_l2)
-1-element Array{TLE,1}:
+1-element Vector{TLE}:
  TLE: UNDEFINED (Epoch = 2018-12-25T18:17:31.995)
 ```
 
@@ -159,7 +159,7 @@ julia> tles = tle"""
        1 25504U 98060A   18360.24309362  .00000218  00000-0  10518-4 0  9996
        2 25504  24.9967 319.8664 0017431 121.3810   9.7939 14.44057429 65541
        """
-2-element Array{TLE,1}:
+2-element Vector{TLE}:
  TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)
  TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 

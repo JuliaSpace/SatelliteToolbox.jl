@@ -76,25 +76,25 @@ function are the same as those in the function `igrf`.
 
 ```jldoctest
 julia> igrf(2017.12313, 640e3, 50*pi/180, 25*pi/180, Val(:geodetic))
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15365.787505205592
   1274.9958640697
  34201.21820333791
 
 julia> igrfd(2017.12313, 640e3, 50, 25, Val(:geodetic))
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15365.787505205592
   1274.9958640697
  34201.21820333791
 
 julia> igrf(2017.12313, 6371e3+640e3, 50*pi/180, 25*pi/180, Val(:geocentric))
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15165.486702524944
   1269.7264334427598
  34243.04928373083
 
 julia> igrfd(2017.12313, 6371e3+640e3, 50, 25, Val(:geocentric))
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15165.486702524944
   1269.7264334427598
  34243.04928373083
@@ -104,7 +104,7 @@ julia> igrfd(2017.12313, 6371e3+640e3, 50, 25, Val(:geocentric))
 julia> igrf(2026, 6371e3+640e3, 50*pi/180, 25*pi/180)
 ┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.
 └ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf/igrf.jl:103
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15118.591511098817
   1588.129544718571
  34668.84185460438
@@ -112,19 +112,19 @@ julia> igrf(2026, 6371e3+640e3, 50*pi/180, 25*pi/180)
 julia> igrfd(2026, 6371e3+640e3, 50, 25)
 ┌ Warning: The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than 2025.
 └ @ SatelliteToolbox ~/.julia/dev/SatelliteToolbox/src/earth/geomagnetic_field_models/igrf/igrf.jl:103
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15118.591511098817
   1588.129544718571
  34668.84185460438
 
 julia> igrf(2026, 6371e3+640e3, 50*pi/180, 25*pi/180; show_warns = false)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15118.591511098817
   1588.129544718571
  34668.84185460438
 
 julia> igrfd(2026, 6371e3+640e3, 50, 25; show_warns = false)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  15118.591511098817
   1588.129544718571
  34668.84185460438
@@ -171,13 +171,13 @@ considered as 2019.
 julia> r_e = [0;0;R0+200e3];
 
 julia> geomag_dipole(r_e)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
    1286.02428617178
   -4232.804339060698
  -53444.68086319672
 
 julia> geomag_dipole(r_e, 1986)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
    1715.2656071053527
   -4964.598060841779
  -54246.30480714958
@@ -185,13 +185,13 @@ julia> geomag_dipole(r_e, 1986)
 julia> r_e = [R0+200e3;0;0];
 
 julia> geomag_dipole(r_e)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  -2572.04857234356
  -4232.804339060698
  26722.34043159836
 
 julia> geomag_dipole(r_e, 1986)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  -3430.5312142107055
  -4964.598060841779
  27123.15240357479
