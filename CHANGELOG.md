@@ -1,6 +1,17 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.8.0
+-------------
+
+- ![BREAKING][badge-breaking] ![Enhancement][badge-enhancement] This version
+  contains improvements to the algorithm that converts position and velocity to
+  mean elements using SGP4 algorithm. However, those modifications changed the
+  returned vectors.
+- ![BREAKING][badge-breaking] The definition of `_space_indices_itp_constants`
+  changed due to an update in Interpolation.jl
+- ![Info][badge-info] The compat bounds were updated.
+
 Version 0.7.3
 -------------
 
