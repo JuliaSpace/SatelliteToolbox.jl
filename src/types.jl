@@ -600,6 +600,32 @@ mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
     j2d::J2_Structure{T}
 end
 
+#                        J2 osculating orbit propagator
+# ==============================================================================
+
+export J2osc_Strutcture
+
+"""
+    J2osc_Structure{T}
+
+Low level J2 osculating orbit propagator structure.
+
+"""
+@with_kw mutable struct J2osc_Structure{T}
+    # J2 orbit propagator to propagate the mean elements.
+    j2d::J2_Structure{T}
+    # Propagation time from epoch.
+    Δt::T
+    # Current osculating Keplerian elements.
+    a_k::T
+    e_k::T
+    i_k::T
+    Ω_k::T
+    ω_k::T
+    f_k::T
+    M_k::T
+end
+
 #                             J4 orbit propagator
 # ==============================================================================
 
