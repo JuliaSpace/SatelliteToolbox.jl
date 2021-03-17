@@ -90,7 +90,7 @@ const j2_gc_jgm03 = J2_GravCte(
 ################################################################################
 
 """
-    j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08 ) where T
+    j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08 ) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
@@ -117,8 +117,8 @@ The structure `J2_Structure` with the initialized parameters.
 
 """
 function j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
-                 Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number,
-                 ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08 ) where T
+                 Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0,
+                 ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
 
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
