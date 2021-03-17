@@ -30,16 +30,6 @@ export j4_gc_egm08, j4_gc_egm96, j4_gc_jgm02, j4_gc_jgm03
 export j4_init, j4!
 
 ################################################################################
-#                                  Overloads
-################################################################################
-
-# Copy for J4_Structure
-Base.copy(m::J4_Structure) = J4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
-
-# Deepcopy for J4_Structure.
-Base.deepcopy(m::J4_Structure) = J4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
-
-################################################################################
 #                                  Constants
 ################################################################################
 
@@ -85,7 +75,7 @@ const j4_gc_jgm03 = J4_GravCte(
 ################################################################################
 
 """
-    j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
+    j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
 
 Initialize the data structure of J4 orbit propagator algorithm.
 
@@ -112,8 +102,8 @@ The structure `J4_Structure` with the initialized parameters.
 
 """
 function j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
-                 Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number,
-                 ddn_o6::Number; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
+                 Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0,
+                 ddn_o6::Number = 0; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
 
     # Unpack the gravitational constants to improve code readability.
     @unpack_J4_GravCte j4_gc
