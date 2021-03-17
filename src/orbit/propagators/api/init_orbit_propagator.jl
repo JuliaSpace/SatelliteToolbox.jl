@@ -146,10 +146,16 @@ function init_orbit_propagator(::Val{:twobody}, epoch::Number,
                                μ::T = m0) where T
 
     # Create the new Two Body propagator structure.
-    tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, μ)
+    tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0; μ = μ)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0)
+    orb_0 = Orbit(tbd.epoch,
+                  tbd.a_0,
+                  tbd.e_0,
+                  tbd.i_0,
+                  tbd.Ω_0,
+                  tbd.ω_0,
+                  tbd.f_0)
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorTwoBody(orb_0, tbd)

@@ -35,25 +35,25 @@ export TwoBody_Structure, OrbitPropagatorTwoBody
 Low level Two Body orbit propagator structure.
 
 """
-mutable struct TwoBody_Structure{T}
-    # Initial parameters.
-    epoch::T
-    a_0::T
-    e_0::T
-    i_0::T
-    Ω_0::T
-    ω_0::T
-    M_0::T
-    f_0::T
-    # Propagation time from epoch.
-    Δt::T
-    # Mean motion.
-    n_0::T
-    # Current parameters.
-    M_k::T
-    f_k::T
-    # Standard gravitational parameter of the central body [m^3/s^2].
-    μ::T
+@with_kw mutable struct TwoBody_Structure{T}
+    # Initial mean orbital elements
+    # ==========================================================================
+    epoch::T # ......................... Epoch of the initial mean elements [JD]
+    a_0::T   # ..................... Initial mean normalized semi-major axis [m]
+    n_0::T   # ..................................... Initial mean motion [rad/s]
+    e_0::T   # .................................. Initial mean eccentricity [  ]
+    i_0::T   # .................................. Initial mean inclination [rad]
+    Ω_0::T   # ......................................... Initial mean RAAN [rad]
+    ω_0::T   # .......................... Initial mean argument of perigee [rad]
+    f_0::T   # ................................. Initial mean true anomaly [rad]
+    M_0::T   # ................................. Initial mean mean anomaly [rad]
+    μ::T     # .. Standard gravitational parameter of the central body [m^3/s^2]
+
+    # Current mean orbital elements
+    # ==========================================================================
+    Δt::T   # .............. Timespan from the epoch of the initial elements [s]
+    f_k::T  # .................................. Current mean true anomaly [rad]
+    M_k::T  # .................................. Current mean mean anomaly [rad]
 end
 
 """
