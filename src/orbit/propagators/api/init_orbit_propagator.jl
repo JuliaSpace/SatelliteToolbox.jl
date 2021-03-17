@@ -101,13 +101,20 @@ function init_orbit_propagator(::Val{:J2}, epoch::Number, a_0::Number,
                                j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
 
     # Create the new Two Body propagator structure.
-    j2d = j2_init(j2_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
+    j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6;
+                  j2_gc = j2_gc)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit(epoch, j2d.al_0*j2_gc.R0, e_0, i_0, Ω_0, ω_0, j2d.f_k)
+    orb_0 = Orbit(j2d.epoch,
+                  j2d.al_0*j2_gc.R0,
+                  j2d.e_0,
+                  j2d.i_0,
+                  j2d.Ω_0,
+                  j2d.ω_0,
+                  j2d.f_0)
 
     # Create and return the orbit propagator structure.
-    OrbitPropagatorJ2(orb_0, j2d)
+    return OrbitPropagatorJ2(orb_0, j2d)
 end
 
 function init_orbit_propagator(::Val{:J4}, epoch::Number, a_0::Number,

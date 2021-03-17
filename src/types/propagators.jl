@@ -1,6 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Structures related to the orbit propagators.
 #
@@ -105,37 +106,39 @@ Low level J2 orbit propagator structure.
 
 """
 @with_kw mutable struct J2_Structure{T}
-    # Initial mean orbital elements.
-    epoch::T
-    al_0::T    # Normalized semi-major axis [er].
-    n_0::T
-    e_0::T
-    i_0::T
-    Ω_0::T
-    ω_0::T
-    f_0::T
-    M_0::T
-    # Drag parameters.
-    dn_o2::T   # First time derivative of mean motion [rad/s²].
-    ddn_o6::T  # Second time derivative of mean motion [rad/s³].
-    # Propagation time from epoch.
-    Δt::T
-    # Current mean orbital elements.
-    al_k::T    # Normalized semi-major axis [er].
-    e_k::T
-    i_k::T
-    Ω_k::T
-    ω_k::T
-    f_k::T
-    M_k::T
-    # First-order time-derivative of the orbital elements.
-    δa::T
-    δe::T
-    δΩ::T
-    δω::T
-    δM_0::T
-    # J2 orbit propagator gravitational constants.
-    j2_gc::J2_GravCte{T}
+    # Initial mean orbital elements
+    # ==========================================================================
+    epoch::T              # ............ Epoch of the initial mean elements [JD]
+    al_0::T               # ....... Initial mean normalized semi-major axis [er]
+    n_0::T                # ........................ Initial mean motion [rad/s]
+    e_0::T                # ..................... Initial mean eccentricity [  ]
+    i_0::T                # ..................... Initial mean inclination [rad]
+    Ω_0::T                # ............................ Initial mean RAAN [rad]
+    ω_0::T                # ............. Initial mean argument of perigee [rad]
+    f_0::T                # .................... Initial mean true anomaly [rad]
+    M_0::T                # .................... Initial mean mean anomaly [rad]
+    dn_o2::T              # ...... First time derivative of mean motion [rad/s²]
+    ddn_o6::T             # ..... Second time derivative of mean motion [rad/s³]
+    j2_gc::J2_GravCte{T}  # ........ J2 orbit propagator gravitational constants
+
+    # Current mean orbital elements
+    # ==========================================================================
+    Δt::T   # .............. Timespan from the epoch of the initial elements [s]
+    al_k::T # ..................... Current mean normalized semi-major axis [er]
+    e_k::T  # ................................... Current mean eccentricity [  ]
+    i_k::T  # ................................... Current mean inclination [rad]
+    Ω_k::T  # .......................................... Current mean RAAN [rad]
+    ω_k::T  # ........................... Current mean argument of perigee [rad]
+    f_k::T  # .................................. Current mean true anomaly [rad]
+    M_k::T  # .................................. Current mean mean anomaly [rad]
+
+    # Auxiliary variables
+    # ==========================================================================
+    δa::T   # ........................... Semi-major axis time derivative [er/s]
+    δe::T   # ............................... Eccentricity time derivative [1/s]
+    δΩ::T   # ..................................... RAAN time derivative [rad/s]
+    δω::T   # ...................... Argument of perigee time derivative [rad/s]
+    δM_0::T # ............................. Mean anomaly time derivative [rad/s]
 end
 
 """
