@@ -124,10 +124,17 @@ function init_orbit_propagator(::Val{:J4}, epoch::Number, a_0::Number,
                                j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
 
     # Create the new J4 propagator structure.
-    j4d = j4_init(j4_gc, epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6)
+    j4d = j4_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6,
+                  j4_gc = j4_gc)
 
     # Create the `Orbit` structure.
-    orb_0 = Orbit(epoch, j4d.al_0*j4_gc.R0, e_0, i_0, Ω_0, ω_0, j4d.f_k)
+    orb_0 = Orbit(j4d.epoch,
+                  j4d.al_0*j4_gc.R0,
+                  j4d.e_0,
+                  j4d.i_0,
+                  j4d.Ω_0,
+                  j4d.ω_0,
+                  j4d.f_k)
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorJ4(orb_0, j4d)
