@@ -55,9 +55,9 @@ eop = read_iers_eop("./eop_IAU1980_2.txt", :IAU1980)
     f = M_to_f(e, 320*pi/180)
     epoch = DatetoJD(2016,6,1,11,0,0)
 
-    oe_TEME  = Orbit(0, a, e, i, Ω, ω, f)
+    oe_TEME  = KeplerianElements(0, a, e, i, Ω, ω, f)
     oe_J2000 = change_oe_frame(oe_TEME, TEME(), J2000(), epoch, eop)
-    m = f_to_M(oe_J2000)
+    m = get_M(oe_J2000)
 
     @test oe_J2000.a/1000   ≈ 7130.982 atol=1e-8
     @test oe_J2000.e        ≈ e        atol=1e-8
@@ -146,9 +146,9 @@ end
     # Circular and equatorial
     # =======================
 
-	orb_i = Orbit(0.0, 42164e3, 0, 0, 0, 0, 0 )
+	orb_i = KeplerianElements(0.0, 42164e3, 0, 0, 0, 0, 0 )
     orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
-	orb_e = Orbit(0.0, 42164e3, 0, 0, 0, 0, 0 )
+	orb_e = KeplerianElements(0.0, 42164e3, 0, 0, 0, 0, 0 )
 
     @test orb_o.a ≈ orb_e.a   atol = 1e-7
     @test orb_o.e ≈ orb_e.e   atol = 1e-7
@@ -157,9 +157,9 @@ end
     @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
     @test orb_o.f ≈ orb_e.f   atol = 1e-7
 
-	orb_i = Orbit(0.0, 42164e3, 0, 0, 10*π/180, 11*π/180, 12*π/180 )
+	orb_i = KeplerianElements(0.0, 42164e3, 0, 0, 10*π/180, 11*π/180, 12*π/180 )
     orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
-    orb_e = Orbit(0.0, 42164e3, 0, 0, 0, 0, (10+11+12)*π/180 )
+    orb_e = KeplerianElements(0.0, 42164e3, 0, 0, 0, 0, (10+11+12)*π/180 )
 
     @test orb_o.a ≈ orb_e.a   atol = 1e-7
     @test orb_o.e ≈ orb_e.e   atol = 1e-7
@@ -171,9 +171,9 @@ end
     # Elliptical equatorial
     # =====================
 
-    orb_i = Orbit(0.0, 42164e3, 0.05, 0, 10*π/180, 11*π/180, 12*π/180 )
+    orb_i = KeplerianElements(0.0, 42164e3, 0.05, 0, 10*π/180, 11*π/180, 12*π/180 )
     orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
-    orb_e = Orbit(0.0, 42164e3, 0.05, 0, 0, (10+11)*π/180, 12*π/180 )
+    orb_e = KeplerianElements(0.0, 42164e3, 0.05, 0, 0, (10+11)*π/180, 12*π/180 )
 
     @test orb_o.a ≈ orb_e.a   atol = 1e-7
     @test orb_o.e ≈ orb_e.e   atol = 1e-7
@@ -185,9 +185,9 @@ end
     # Circular inclined
     # =================
 
-    orb_i = Orbit(0.0, 42164e3, 0, π/4, 10*π/180, 11*π/180, 12*π/180 )
+    orb_i = KeplerianElements(0.0, 42164e3, 0, π/4, 10*π/180, 11*π/180, 12*π/180 )
     orb_o = sv_to_kepler( kepler_to_sv( orb_i ) )
-    orb_e = Orbit(0.0, 42164e3, 0, π/4, 10*π/180, 0, (11+12)*π/180 )
+    orb_e = KeplerianElements(0.0, 42164e3, 0, π/4, 10*π/180, 0, (11+12)*π/180 )
 
     @test orb_o.a ≈ orb_e.a   atol = 1e-7
     @test orb_o.e ≈ orb_e.e   atol = 1e-7

@@ -51,8 +51,8 @@
 
 @testset "Two Body orbit propagator" begin
     aux     = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
-    orb     = Orbit(DatetoJD(1986,6,19,18,35,0), aux.a, aux.e, aux.i, aux.Ω,
-                    aux.ω, aux.f)
+    orb     = KeplerianElements(DatetoJD(1986,6,19,18,35,0), aux.a, aux.e,
+                                aux.i, aux.Ω, aux.ω, aux.f)
     orbp    = init_orbit_propagator(Val(:twobody), orb)
     (o,r,v) = step!(orbp,40*60)
 

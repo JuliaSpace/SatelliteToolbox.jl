@@ -24,7 +24,7 @@ export init_orbit_propagator
 
 """
     init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, ...)
-    init_orbit_propagator(T, orb_0::Orbit, ...)
+    init_orbit_propagator(T, orb_0::KeplerianElements, ...)
 
 Initialize the orbit propagator `T` using the initial mean orbital elements. The
 propagator type `T` can be:
@@ -34,7 +34,7 @@ propagator type `T` can be:
 * `Val(:twobody)`: Two-body orbit propagator.
 
 The mean orbital elements can be passed individually of using an instance of the
-structure `Orbit`.
+structure `KeplerianElements`.
 
 # Args
 
@@ -47,8 +47,8 @@ structure `Orbit`.
 * `f_0`: Initial true anomaly [rad].
 * `n_0`: Initial angular velocity [rad/s].
 * `M_0`: Initial mean anomaly [rad].
-* `orb_0`: Instance of the structure `Orbit` with the initial mean orbital
-           elements [SI].
+* `orb_0`: Instance of the structure `KeplerianElements` with the initial mean
+           orbital elements [SI].
 
 ## Additional optional arguments for the J2 orbit propagator
 
@@ -104,14 +104,14 @@ function init_orbit_propagator(::Val{:J2}, epoch::Number, a_0::Number,
     j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6;
                   j2_gc = j2_gc)
 
-    # Create the `Orbit` structure.
-    orb_0 = Orbit(j2d.epoch,
-                  j2d.al_0*j2_gc.R0,
-                  j2d.e_0,
-                  j2d.i_0,
-                  j2d.Ω_0,
-                  j2d.ω_0,
-                  j2d.f_0)
+    # Create the `KeplerianElements` structure.
+    orb_0 = KeplerianElements(j2d.epoch,
+                              j2d.al_0*j2_gc.R0,
+                              j2d.e_0,
+                              j2d.i_0,
+                              j2d.Ω_0,
+                              j2d.ω_0,
+                              j2d.f_0)
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorJ2(orb_0, j2d)
@@ -127,14 +127,14 @@ function init_orbit_propagator(::Val{:J4}, epoch::Number, a_0::Number,
     j4d = j4_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6,
                   j4_gc = j4_gc)
 
-    # Create the `Orbit` structure.
-    orb_0 = Orbit(j4d.epoch,
-                  j4d.al_0*j4_gc.R0,
-                  j4d.e_0,
-                  j4d.i_0,
-                  j4d.Ω_0,
-                  j4d.ω_0,
-                  j4d.f_k)
+    # Create the `KeplerianElements` structure.
+    orb_0 = KeplerianElements(j4d.epoch,
+                              j4d.al_0*j4_gc.R0,
+                              j4d.e_0,
+                              j4d.i_0,
+                              j4d.Ω_0,
+                              j4d.ω_0,
+                              j4d.f_k)
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorJ4(orb_0, j4d)
@@ -148,14 +148,14 @@ function init_orbit_propagator(::Val{:twobody}, epoch::Number,
     # Create the new Two Body propagator structure.
     tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0; μ = μ)
 
-    # Create the `Orbit` structure.
-    orb_0 = Orbit(tbd.epoch,
-                  tbd.a_0,
-                  tbd.e_0,
-                  tbd.i_0,
-                  tbd.Ω_0,
-                  tbd.ω_0,
-                  tbd.f_0)
+    # Create the `KeplerianElements` structure.
+    orb_0 = KeplerianElements(tbd.epoch,
+                              tbd.a_0,
+                              tbd.e_0,
+                              tbd.i_0,
+                              tbd.Ω_0,
+                              tbd.ω_0,
+                              tbd.f_0)
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorTwoBody(orb_0, tbd)
@@ -164,7 +164,7 @@ end
 init_orbit_propagator(::Val{:J2}, orb_0::Orbit, dn_o2::Number = 0,
                       ddn_o6::Number = 0, j2_gc::J2_GravCte = j2_gc_egm08) =
     init_orbit_propagator(Val(:J2), orb_0.t, orb_0.a, orb_0.e, orb_0.i, orb_0.Ω,
-                          orb_0.ω, orb_0.f, dn_o2, ddn_o6, j2_gc)
+                                                orb_0.ω, orb_0.f, dn_o2, ddn_o6, j2_gc)
 
 init_orbit_propagator(::Val{:J4}, orb_0::Orbit, dn_o2::Number = 0,
                       ddn_o6::Number = 0, j4_gc::J4_GravCte = j4_gc_egm08) =
@@ -351,9 +351,14 @@ function init_orbit_propagator(::Val{:sgp4}, tle::TLE,
     sgp4d = sgp4_init(sgp4_gc, tle.epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0,
                       tle.bstar)
 
-    # Create the `Orbit` structure.
-    orb_0 = Orbit(epoch, 1000sgp4d.a_k*sgp4_gc.R0, e_0, i_0, Ω_0, ω_0,
-                  M_to_f(e_0, M_0))
+    # Create the `KeplerianElements` structure.
+    orb_0 = KeplerianElements(epoch,
+                              1000sgp4d.a_k*sgp4_gc.R0,
+                              e_0,
+                              i_0,
+                              Ω_0,
+                              ω_0,
+                              M_to_f(e_0, M_0))
 
     # Create and return the orbit propagator structure.
     return OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)

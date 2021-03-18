@@ -69,7 +69,7 @@ Structure that holds the information related to the Two Body orbit propagator.
 
 """
 mutable struct OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T}
+    orb::KeplerianElements{T}
 
     # Two Body orbit propagator related fields.
     tbd::TwoBody_Structure{T}
@@ -154,7 +154,7 @@ Structure that holds the information related to the J2 orbit propagator.
 
 """
 mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T}
+    orb::KeplerianElements{T}
 
     # J2 orbit propagator related fields.
     j2d::J2_Structure{T}
@@ -266,7 +266,7 @@ Structure that holds the information related to the J4 orbit propagator.
 
 """
 mutable struct OrbitPropagatorJ4{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T}
+    orb::KeplerianElements{T}
 
     # J4 orbit propagator related fields.
     j4d::J4_Structure{T}
@@ -289,7 +289,7 @@ Structure that holds the information related to the SGP4 propagator.
 * `sgp4d`: Structure that stores the SGP4 data (see `SGP4_Structure`).
 """
 mutable struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
-    orb::Orbit{T,T}
+    orb::KeplerianElements{T}
 
     # SGP4 related fields.
     sgp4_gc::SGP4_GravCte{T}

@@ -10,37 +10,6 @@ export @check_orbit
 export angvel, angvel_to_a, dArgPer, dRAAN, period
 
 ################################################################################
-#                                  Overloads
-################################################################################
-
-copy(orb::Orbit) = Orbit(orb.t, orb.a, orb.e, orb.i, orb.Ω, orb.ω, orb.f)
-
-function show(io::IO, mime::MIME"text/plain", orb::Orbit{T1,T2}) where {T1,T2}
-    d2r = 180/π
-
-    # Check if the IO supports color.
-    color = get(io, :color, false)
-
-    # Definition of colors that will be used for printing.
-    b = color ? _b : ""
-    d = color ? _d : ""
-    g = color ? _g : ""
-    y = color ? _y : ""
-
-    # Print the TLE information.
-    println("Orbit{", T1, ",", T2, "}:")
-    print("                 $(g)Orbit$(d)\n")
-    print("$(y)  ======================================$(d)\n")
-    print("$(b)                  t = $(d)"); @printf("%14.5f\n",    orb.t)
-    print("$(b)    Semi-major axis = $(d)"); @printf("%13.4f km\n", orb.a/1000)
-    print("$(b)       Eccentricity = $(d)"); @printf("%15.6f\n",    orb.e)
-    print("$(b)        Inclination = $(d)"); @printf("%13.4f ˚\n",  orb.i*d2r)
-    print("$(b)               RAAN = $(d)"); @printf("%13.4f ˚\n",  orb.Ω*d2r)
-    print("$(b)    Arg. of Perigee = $(d)"); @printf("%13.4f ˚\n",  orb.ω*d2r)
-    print("$(b)       True Anomaly = $(d)"); @printf("%13.4f ˚",    orb.f*d2r)
-end
-
-################################################################################
 #                                    Macros
 ################################################################################
 
@@ -73,34 +42,12 @@ macro check_orbit(a, e)
     end
 end
 
-
-################################################################################
-#                                  Functions
-################################################################################
-
-"""
-    Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
-
-Create an orbit with semi-major axis `a` [m], eccentricity `e`, inclination `i`
-[rad], right ascension of the ascending node `Ω` [rad], argument of perigee `ω`
-[rad], and true anomaly `f` [rad].
-
-# Returns
-
-An object of type `Orbit` with the specified orbit. The orbit epoch is defined
-as 0.0.
-
-"""
-Orbit(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number) =
-    Orbit(0.0, a, e, i, Ω, ω, f)
-
 ################################################################################
 #                                  Functions
 ################################################################################
 
 """
     angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
 axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -170,8 +117,6 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 
 end
-
-@inline angvel(orb::Orbit, pert::Symbol = :J2) = angvel(orb.a, orb.e, orb.i, pert)
 
 """
     angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
@@ -336,7 +281,6 @@ end
 
 """
     dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -399,7 +343,6 @@ end
 
 """
     dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
@@ -454,12 +397,8 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
-@inline dRAAN(orb::Orbit, pert::Symbol = :J2) = dRAAN(orb.a, orb.e, orb.i, pert)
-
-
 """
     period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    period(orb::Orbit, pert::Symbol = :J2)
 
 Compute the period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e`, and inclination `i` [rad], using the perturbation terms
@@ -479,5 +418,3 @@ If `pert` is omitted, then it defaults to `:J2`.
     n = angvel(a, e, i, pert)
     2π/n
 end
-
-@inline period(orb::Orbit, pert::Symbol = :J2) = period(orb.a, orb.e, orb.i, pert)
