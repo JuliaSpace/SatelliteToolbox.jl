@@ -48,11 +48,12 @@ end
 
 """
     angvel(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    angvel(orb::Orbit, pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
 axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
 perturbation terms specified by the symbol `pert`. The orbit can also be
-specified by `orb`, which is an instance of the structure `Orbit`.
+specified by `orb` (see [`Orbit`](@ref)).
 
 `pert` can be:
 
@@ -115,7 +116,12 @@ If `pert` is omitted, then it defaults to `:J2`.
     else
         throw(ArgumentError("The perturbation parameter $pert is not defined."))
     end
+end
 
+@inline function angvel(orb::Orbit, pert::Symbol = :J2)
+    # Convert first to Keplerian elements.
+    k = convert(KeplerianElements, orb)
+    return angvel(get_a(k), get_e(k), get_i(k), pert)
 end
 
 """
@@ -281,11 +287,12 @@ end
 
 """
     dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    dArgPer(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
 perturbation terms specified by the symbol `pert`. The orbit can also be
-specified by `orb`, which is an instance of the structure `Orbit`.
+specified by `orb` (see [`Orbit`](@ref)).
 
 `pert` can be:
 
@@ -336,16 +343,22 @@ If `pert` is omitted, then it defaults to `:J2`.
     else
         throw(ArgumentError("The perturbation parameter $pert is not defined."))
     end
+end
 
+function dArgPer(orb::Orbit, pert::Symbol = :J2)
+    # Convert first to Keplerian elements.
+    k = convert(KeplerianElements, orb)
+    return dArgPer(get_a(k), get_e(k), get_i(k), pert)
 end
 
 """
     dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    dRAAN(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
 [rad], using the perturbation terms specified by the symbol `pert`. The orbit
-can also be specified by `orb`, which is an instance of the structure `Orbit`.
+can also be specified by `orb` (see [`Orbit`](@ref)).
 
 `pert` can be:
 
@@ -395,15 +408,21 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
+function dRAAN(orb::Orbit, pert::Symbol = :J2)
+    # Convert first to Keplerian elements.
+    k = convert(KeplerianElements, orb)
+    return dRAAN(get_a(k), get_e(k), get_i(k), pert)
+end
+
 """
     period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
 Compute the period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e`, and inclination `i` [rad], using the perturbation terms
-specified by the symbol `pert`. The orbit can also be specified by `orb`, which
-is an instance of the structure `Orbit`.
+specified by the symbol `pert`. The orbit can also be specified by `orb` (see
+[`Orbit`](@ref)).
 
-`pert` can be:
+pert` can be:
 
 * `:J0`: Consider a Keplerian orbit.
 * `:J2`: Consider the perturbation terms up to J2.
@@ -414,5 +433,11 @@ If `pert` is omitted, then it defaults to `:J2`.
 """
 @inline function period(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     n = angvel(a, e, i, pert)
-    2π/n
+    return 2π/n
+end
+
+function period(orb::Orbit, pert::Symbol = :J2)
+    # Convert first to Keplerian elements.
+    k = convert(KeplerianElements, orb)
+    return dRAAN(get_a(k), get_e(k), get_i(k), pert)
 end
