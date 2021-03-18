@@ -103,10 +103,6 @@ is provided, the Julian Day UT1 will be accurately computed.
 `²`: In this case, the terms that account for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
 to the GCRF will not be available, reducing the precision.
-The conversion between the frames depends on EOP Data (see `get_iers_eop` and
-`read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
-be `EOPData_IAU1980`. The following table shows the requirements for EOP data
-given the selected frames.
 
 ## MOD and TOD
 
