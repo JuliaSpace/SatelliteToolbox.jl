@@ -12,7 +12,7 @@
 ################################################################################
 
 # Direct getters.
-@inline get_epoch(k::KeplerianElements) = k.epoch
+@inline get_epoch(k::KeplerianElements) = k.t
 @inline get_a(k::KeplerianElements) = k.a
 @inline get_e(k::KeplerianElements) = k.e
 @inline get_i(k::KeplerianElements) = k.i
