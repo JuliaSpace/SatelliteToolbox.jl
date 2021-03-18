@@ -7,6 +7,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+export kepler_to_sv
+
 ################################################################################
 #                                     API
 ################################################################################
@@ -26,6 +28,18 @@
 @inline get_v(k::KeplerianElements) = kepler_to_rv(k)[2]
 @inline get_rv(k::KeplerianElements) = kepler_to_rv(k)
 
+# Conversions.
+"""
+    kepler_to_sv(k::KeplerianElements)
+
+Convert the Keplerian elements `k` to a state vector.
+
+"""
+function kepler_to_sv(k::KeplerianElements{T}) where T
+    r_i, v_i = kepler_to_rv(k)
+    return OrbitStateVector{T}(t = k.t, r = r_i, v = v_i)
+end
+
 ################################################################################
 #                                  Overloads
 ################################################################################
@@ -37,14 +51,14 @@ getindex(k::KeplerianElements{T}, ::Colon) where T<:Number =
 #                                      IO
 ################################################################################
 
-function show(io::IO, orb::KeplerianElements{T}) where T
+function show(io::IO, k::KeplerianElements{T}) where T
     compact = get(io, :compact, true)
-    epoch_str = sprint(print, orb.t, context = :compact => compact)
-    jd_str = sprint(print, JDtoDate(DateTime, orb.t))
+    epoch_str = sprint(print, k.t, context = :compact => compact)
+    jd_str = sprint(print, JDtoDate(DateTime, k.t))
     print(io, "KeplerianElements{", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
-function show(io::IO, mime::MIME"text/plain", orb::KeplerianElements{T}) where T
+function show(io::IO, mime::MIME"text/plain", k::KeplerianElements{T}) where T
     d2r = 180/π
 
     # Check if the IO supports color.
@@ -60,14 +74,14 @@ function show(io::IO, mime::MIME"text/plain", orb::KeplerianElements{T}) where T
     y = color ? _y : ""
 
     # Convert the data to string.
-    date_str  = sprint(print, JDtoDate(DateTime, orb.t))
-    epoch_str = sprint(print, orb.t, context = :compact => compact)
-    a_str     = sprint(print, orb.a/1000, context = :compact => compact)
-    e_str     = sprint(print, orb.e, context = :compact => compact)
-    i_str     = sprint(print, rad2deg(orb.i), context = :compact => compact)
-    Ω_str     = sprint(print, rad2deg(orb.Ω), context = :compact => compact)
-    ω_str     = sprint(print, rad2deg(orb.ω), context = :compact => compact)
-    f_str     = sprint(print, rad2deg(orb.f), context = :compact => compact)
+    date_str  = sprint(print, JDtoDate(DateTime, k.t))
+    epoch_str = sprint(print, k.t, context = :compact => compact)
+    a_str     = sprint(print, k.a/1000, context = :compact => compact)
+    e_str     = sprint(print, k.e, context = :compact => compact)
+    i_str     = sprint(print, rad2deg(k.i), context = :compact => compact)
+    Ω_str     = sprint(print, rad2deg(k.Ω), context = :compact => compact)
+    ω_str     = sprint(print, rad2deg(k.ω), context = :compact => compact)
+    f_str     = sprint(print, rad2deg(k.f), context = :compact => compact)
 
     # Padding to align in the floating point.
     Δepoch = findfirst('.', epoch_str)

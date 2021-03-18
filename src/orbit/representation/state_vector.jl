@@ -7,7 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export orbsv
+export orbsv, sv_to_kepler
 
 ################################################################################
 #                                     API
@@ -27,6 +27,16 @@ export orbsv
 @inline get_ω(sv::OrbitStateVector) = get_ω(sv_to_kepler(sv))
 @inline get_f(sv::OrbitStateVector) = get_f(sv_to_kepler(sv))
 @inline get_M(sv::OrbitStateVector) = get_M(sv_to_kepler(sv))
+
+# Conversions.
+"""
+    sv_to_kepler(sv::OrbitStateVector)
+
+Convert the state vector `sv` to Keplerian elements represented by an instance
+of the structure `KeplerianElements`.
+
+"""
+@inline sv_to_kepler(sv::OrbitStateVector) = rv_to_kepler(sv.r, sv.v, sv.t)
 
 ################################################################################
 #                                Initialization
@@ -62,7 +72,7 @@ function orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3},
     len_v != 3 && @warn("Only the first 3 elements of the vector `v` will be used!")
     len_a != 3 && @warn("Only the first 3 elements of the vector `a` will be used!")
 
-    T = promote_type(T1,T2,T3,T4)
+    T = promote_type(T1, T2, T3, T4)
     return OrbitStateVector{T}(t = t, r = r[1:3], v = v[1:3], a = a[1:3])
 end
 

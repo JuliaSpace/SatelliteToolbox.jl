@@ -3,7 +3,9 @@
 # Description
 # ==============================================================================
 #
-#   Conversion between the orbit representations.
+#   This file contains an intermediate representation of the state vector. RV is
+#   a tuple with the position and velocity. This functions are used when
+#   converting a state vector to Keplerian elements and vice-versa.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -24,9 +26,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export kepler_to_rv
-export rv_to_kepler
-export kepler_to_sv, sv_to_kepler
+export kepler_to_rv, rv_to_kepler
 
 """
     kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
@@ -312,23 +312,3 @@ function rv_to_kepler(x::Number,  y::Number,  z::Number,
     # Compute the Keplerian orbit elements.
     return rv_to_kepler(r_i, v_i, t)
 end
-
-"""
-    kepler_to_sv(k::KeplerianElements)
-
-Convert the Keplerian elements `k` to a state vector.
-
-"""
-function kepler_to_sv(k::KeplerianElements{T}) where T
-    r_i, v_i = kepler_to_rv(k)
-    return OrbitStateVector{T}(t = k.t, r = r_i, v = v_i)
-end
-
-"""
-    sv_to_kepler(sv::OrbitStateVector)
-
-Convert the state vector `sv` to Keplerian elements represented by an instance
-of the structure `KeplerianElements`.
-
-"""
-sv_to_kepler(sv::OrbitStateVector) = rv_to_kepler(sv.r, sv.v, sv.t)
