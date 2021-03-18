@@ -75,9 +75,9 @@ function precession_nutation_iau2006(JD_TT::Number)
     # different. The value used here is shown in [1, p. 211].
 
     λ_M☿ = @evalpoly(T_TT, 4.402_608_842, 2608.790_314_157_4)
-    λ_M♀︎ = @evalpoly(T_TT, 3.176_146_697, 1021.328_554_621_1)
+    λ_M♀ = @evalpoly(T_TT, 3.176_146_697, 1021.328_554_621_1)
     λ_Me = @evalpoly(T_TT, 1.753_470_314,  628.307_584_999_1)
-    λ_M♂︎ = @evalpoly(T_TT, 6.203_480_913,  334.061_242_670_0)
+    λ_M♂ = @evalpoly(T_TT, 6.203_480_913,  334.061_242_670_0)
     λ_M♃ = @evalpoly(T_TT, 0.599_546_497,   52.969_096_264_1)
     λ_M♄ = @evalpoly(T_TT, 0.874_016_757,   21.329_910_496_0)
     λ_M⛢ = @evalpoly(T_TT, 5.481_293_872,    7.478_159_856_7)
@@ -88,9 +88,9 @@ function precession_nutation_iau2006(JD_TT::Number)
 
     # Convert to the interval [0,2π].
     λ_M☿ = mod(λ_M☿, 2π)
-    λ_M♀︎ = mod(λ_M♀︎, 2π)
+    λ_M♀ = mod(λ_M♀, 2π)
     λ_Me = mod(λ_Me, 2π)
-    λ_M♂︎ = mod(λ_M♂︎, 2π)
+    λ_M♂ = mod(λ_M♂, 2π)
     λ_M♃ = mod(λ_M♃, 2π)
     λ_M♄ = mod(λ_M♄, 2π)
     λ_M⛢ = mod(λ_M⛢, 2π)
@@ -121,7 +121,7 @@ function precession_nutation_iau2006(JD_TT::Number)
             Ac     = coefs[j, 3]
             ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
                      coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
-                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,10]*λ_M♀ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂ +
                      coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
                      coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
             sj,cj  = sincos(ap)
@@ -160,7 +160,7 @@ function precession_nutation_iau2006(JD_TT::Number)
             Ac     = coefs[j, 3]
             ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
                      coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
-                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,10]*λ_M♀ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂ +
                      coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
                      coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
             sj,cj  = sincos(ap)
@@ -207,7 +207,7 @@ function precession_nutation_iau2006(JD_TT::Number)
             Ac     = coefs[j, 3]
             ap     = coefs[j, 4]*M_m  + coefs[j, 5]*M_s  + coefs[j, 6]*u_Mm +
                      coefs[j, 7]*D_s  + coefs[j, 8]*Ω_m  + coefs[j, 9]*λ_M☿ +
-                     coefs[j,10]*λ_M♀︎ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂︎ +
+                     coefs[j,10]*λ_M♀ + coefs[j,11]*λ_Me + coefs[j,12]*λ_M♂ +
                      coefs[j,13]*λ_M♃ + coefs[j,14]*λ_M♄ + coefs[j,15]*λ_M⛢ +
                      coefs[j,16]*λ_M♆ + coefs[j,17]*p_λ
             sj,cj  = sincos(ap)
