@@ -314,21 +314,21 @@ function rv_to_kepler(x::Number,  y::Number,  z::Number,
 end
 
 """
-    kepler_to_sv(orb::Orbit)
+    kepler_to_sv(k::KeplerianElements)
 
-Convert the Keplerian elements in the structure `orb` to a state vector.
+Convert the Keplerian elements `k` to a state vector.
 
 """
-function kepler_to_sv(orb::Orbit)
-    r_i, v_i = kepler_to_rv(orb)
-    return orbsv(orb.t, r_i, v_i)
+function kepler_to_sv(k::KeplerianElements{T}) where T
+    r_i, v_i = kepler_to_rv(k)
+    return OrbitStateVector{T}(t = k.t, r = r_i, v = v_i)
 end
 
 """
     sv_to_kepler(sv::OrbitStateVector)
 
 Convert the state vector `sv` to Keplerian elements represented by an instance
-of the structure `Orbit`.
+of the structure `KeplerianElements`.
 
 """
 sv_to_kepler(sv::OrbitStateVector) = rv_to_kepler(sv.r, sv.v, sv.t)

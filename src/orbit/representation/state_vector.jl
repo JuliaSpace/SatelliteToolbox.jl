@@ -9,6 +9,29 @@
 
 export orbsv
 
+################################################################################
+#                                     API
+################################################################################
+
+# Direct getters.
+@inline get_epoch(sv::OrbitStateVector) = sv.t
+@inline get_r(sv::OrbitStateVector) = sv.r
+@inline get_v(sv::OrbitStateVector) = sv.v
+@inline get_rv(sv::OrbitStateVector) = sv.r, sv.r
+
+# Getters that require conversions.
+@inline get_a(sv::OrbitStateVector) = get_a(sv_to_kepler(sv))
+@inline get_e(sv::OrbitStateVector) = get_e(sv_to_kepler(sv))
+@inline get_i(sv::OrbitStateVector) = get_i(sv_to_kepler(sv))
+@inline get_Ω(sv::OrbitStateVector) = get_Ω(sv_to_kepler(sv))
+@inline get_ω(sv::OrbitStateVector) = get_ω(sv_to_kepler(sv))
+@inline get_f(sv::OrbitStateVector) = get_f(sv_to_kepler(sv))
+@inline get_M(sv::OrbitStateVector) = get_M(sv_to_kepler(sv))
+
+################################################################################
+#                                Initialization
+################################################################################
+
 """
     orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
     orbsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
@@ -59,10 +82,12 @@ end
 #                                  Overloads
 ################################################################################
 
-copy(sv::OrbitStateVector) = OrbitStateVector(sv.t, sv.r, sv.v, sv.a)
-
 getindex(sv::OrbitStateVector{T}, ::Colon) where T<:Number =
     SVector{9,T}(sv.r..., sv.v..., sv.a...)
+
+################################################################################
+#                                      IO
+################################################################################
 
 function show(io::IO, sv::OrbitStateVector{T}) where T
     t_str = @sprintf "%.g" sv.t
@@ -76,16 +101,26 @@ function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
     # Check if the `io` supports colors.
     color = get(io, :color, false)
 
+    # Compact printing.
+    compact = get(io, :compact, true)
+
     b = (color) ? _b : ""
     d = (color) ? _d : ""
 
-    t_str = @sprintf "%.g" sv.t
+    t_str  = sprint(print, sv.t)
+    JD_str = sprint(print, JDtoDate(DateTime, sv.t))
+    r_str  = sprint(print, sv.r./1000)
+    v_str  = sprint(print, sv.v./1000)
+
+    # Add units.
+    max_length = max(length(r_str), length(v_str))
+    r_str *= " "^(max_length - length(r_str) + 1) * " km"
+    v_str *= " "^(max_length - length(v_str) + 1) * " km/s"
 
     println(io, "OrbitStateVector{", string(T), "}: ")
-    println(io, "$b  t $d= ", t_str)
-    println(io, "$b  r $d= ", sv.r)
-    println(io, "$b  v $d= ", sv.v)
-      print(io, "$b  a $d= ", sv.a)
+    println(io, "$b  epoch :$d ", t_str, " (", JD_str, ")")
+    println(io, "$b      r :$d ", r_str)
+    print(io,   "$b      v :$d ", v_str)
 
     return nothing
 end

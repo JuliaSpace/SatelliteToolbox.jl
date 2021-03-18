@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export get_epoch, get_a, get_e, get_i, get_Ω, get_ω, get_f, get_raan, get_argp,
-       get_M
+       get_M, get_r, get_v, get_rv
 
 """
     get_epoch(orb)
