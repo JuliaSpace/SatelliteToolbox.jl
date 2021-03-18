@@ -1,28 +1,30 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Convert a satellite state vector from an Earth-Centered, Earth-Fixed (ECEF)
+#   Convert an orbit state vector from an Earth-Centered, Earth-Fixed (ECEF)
 #   reference frame to a Earth-Centered Inertial (ECI) reference frame.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export svECEFtoECI
 
 """
-    svECEFtoECI(sv::SatelliteStateVector, ECEF, ECI, JD_UTC [, eop_data])
+    svECEFtoECI(sv::OrbitStateVector, ECEF, ECI, JD_UTC [, eop_data])
 
-Convert the satellite state vector `sv` from the Earth-Centered, Earth-Fixed
-(ECEF) reference frame `ECEF` to the Earth-Centered Inertial (ECI) reference
-frame at the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending
-on the selection of the input and output reference system. For more information,
+Convert the orbit state vector `sv` from the Earth-Centered, Earth-Fixed (ECEF)
+reference frame `ECEF` to the Earth-Centered Inertial (ECI) reference frame at
+the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending on the
+selection of the input and output reference system. For more information,
 see the documentation of the function `rECEFtoECI`.
 
 !!! info
@@ -32,7 +34,7 @@ see the documentation of the function `rECEFtoECI`.
     and acceleration as measured by an observer on the ECI frame.
 
 """
-function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
+function svECEFtoECI(sv::OrbitStateVector, T_ECEF::Val{:ITRF},
                      T_ECI::T_ECIs, JD_UTC::Number, eop_data::EOPData_IAU1980)
 
     # First, convert from the ITRF to PEF.
@@ -42,7 +44,7 @@ function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
     return svECEFtoECI(sv_pef, Val(:PEF), T_ECI, JD_UTC, eop_data)
 end
 
-function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
+function svECEFtoECI(sv::OrbitStateVector, T_ECEF::Val{:ITRF},
                      T_ECI::T_ECIs_IAU_2006, JD_UTC::Number,
                      eop_data::EOPData_IAU2000A)
 
@@ -53,7 +55,7 @@ function svECEFtoECI(sv::SatelliteStateVector, T_ECEF::Val{:ITRF},
     return svECEFtoECI(sv_tirs, Val(:TIRS), T_ECI, JD_UTC, eop_data)
 end
 
-function svECEFtoECI(sv::SatelliteStateVector,
+function svECEFtoECI(sv::OrbitStateVector,
                      T_ECEF::Union{Val{:PEF},Val{:TIRS}},
                      T_ECI::Union{T_ECIs, T_ECIs_IAU_2006}, JD_UTC::Number,
                      eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing)

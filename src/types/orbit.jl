@@ -50,9 +50,9 @@ function KeplerianElements(t::T1, a::T2, e::T3, i::T4, Ω::T5, ω::T6, f::T7) wh
 end
 
 """
-    SatelliteStateVector{T}
+    OrbitStateVector{T}
 
-Store the state vector of the satellite.
+Store the state vector representation of an orbit.
 
 # Fields
 
@@ -62,7 +62,7 @@ Store the state vector of the satellite.
 * `a`: Acceleration vector [m/s²].
 
 """
-@with_kw_noshow mutable struct SatelliteStateVector{T}
+@with_kw_noshow mutable struct OrbitStateVector{T}
     t::T            = 0
     r::SVector{3,T} = SVector{3,T}(0,0,0)
     v::SVector{3,T} = SVector{3,T}(0,0,0)

@@ -1,25 +1,27 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Convert a satellite state vector from an Earth-Centered Inertial (ECI)
+#   Convert an orbit state vector from an Earth-Centered Inertial (ECI)
 #   reference frame to an Earth-Centered, Earth-Fixed (ECEF) reference frame.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export svECItoECEF
 
 """
-    svECItoECEF(sv::SatelliteStateVector, ECI, ECEF, JD_UTC [, eop_data])
+    svECItoECEF(sv::OrbitStateVector, ECI, ECEF, JD_UTC [, eop_data])
 
-Convert the satellite state vector `sv` from the Earth-Centered Inertial (ECI)
+Convert the orbit state vector `sv` from the Earth-Centered Inertial (ECI)
 reference frame `ECI` to the Earth-Centered, Earth-Fixed (ECEF) reference frame
 at the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending on
 the selection of the input and output reference system. For more information,
@@ -32,7 +34,7 @@ see the documentation of the function `rECItoECEF`.
     and acceleration as measured by an observer on the ECEF frame.
 
 """
-function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs,
+function svECItoECEF(sv::OrbitStateVector, T_ECI::T_ECIs,
                      T_ECEF::Val{:ITRF}, JD_UTC::Number,
                      eop_data::EOPData_IAU1980)
 
@@ -43,7 +45,7 @@ function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs,
     return svECEFtoECEF(sv_pef, Val(:PEF), Val(:ITRF), JD_UTC, eop_data)
 end
 
-function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs_IAU_2006,
+function svECItoECEF(sv::OrbitStateVector, T_ECI::T_ECIs_IAU_2006,
                      T_ECEF::Val{:ITRF}, JD_UTC::Number,
                      eop_data::EOPData_IAU2000A)
 
@@ -54,7 +56,7 @@ function svECItoECEF(sv::SatelliteStateVector, T_ECI::T_ECIs_IAU_2006,
     return svECEFtoECEF(sv_tirs, Val(:TIRS), Val(:ITRF), JD_UTC, eop_data)
 end
 
-function svECItoECEF(sv::SatelliteStateVector,
+function svECItoECEF(sv::OrbitStateVector,
                      T_ECI::Union{T_ECIs, T_ECIs_IAU_2006},
                      T_ECEF::Union{Val{:PEF},Val{:TIRS}},
                      JD_UTC::Number,
