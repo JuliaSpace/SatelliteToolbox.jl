@@ -339,8 +339,6 @@ If `pert` is omitted, then it defaults to `:J2`.
 
 end
 
-@inline dArgPer(orb::Orbit, pert::Symbol = :J2) = dArgPer(orb.a, orb.e, orb.i, pert)
-
 """
     dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
 
