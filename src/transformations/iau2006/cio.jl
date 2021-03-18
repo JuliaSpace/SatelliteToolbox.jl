@@ -8,6 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -71,8 +72,8 @@ function cio_iau2006(JD_TT::Number)
                           +0.000_005_928_5)
 
     Xc = zeros(typeof(X), 5)
-    coefs_v = (nut_coefs_iau2006_X0, nut_coefs_iau2006_X1, nut_coefs_iau2006_X2,
-               nut_coefs_iau2006_X3, nut_coefs_iau2006_X4)
+    coefs_v = (coefs_iau2006_CIP_x0, coefs_iau2006_CIP_x1, coefs_iau2006_CIP_x2,
+               coefs_iau2006_CIP_x3, coefs_iau2006_CIP_x4)
 
     @inbounds for i = 1:length(coefs_v)
 
@@ -110,8 +111,8 @@ function cio_iau2006(JD_TT::Number)
                         +0.000_000_135_8)
 
     Yc = zeros(typeof(Y), 5)
-    coefs_v = (nut_coefs_iau2006_Y0, nut_coefs_iau2006_Y1, nut_coefs_iau2006_Y2,
-               nut_coefs_iau2006_Y3, nut_coefs_iau2006_Y4)
+    coefs_v = (coefs_iau2006_CIP_y0, coefs_iau2006_CIP_y1, coefs_iau2006_CIP_y2,
+               coefs_iau2006_CIP_y3, coefs_iau2006_CIP_y4)
 
     @inbounds for i = 1:length(coefs_v)
 
@@ -157,8 +158,8 @@ function cio_iau2006(JD_TT::Number)
                                      +0.000_015_65)
 
     sc = zeros(typeof(s), 5)
-    coefs_v = (nut_coefs_iau2006_s0, nut_coefs_iau2006_s1, nut_coefs_iau2006_s2,
-               nut_coefs_iau2006_s3, nut_coefs_iau2006_s4)
+    coefs_v = (coefs_iau2006_CIO_s0, coefs_iau2006_CIO_s1, coefs_iau2006_CIO_s2,
+               coefs_iau2006_CIO_s3, coefs_iau2006_CIO_s4)
 
     @inbounds for i = 1:length(coefs_v)
 

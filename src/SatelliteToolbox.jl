@@ -150,10 +150,13 @@ include("transformations/fk5/nutation.jl")
 include("transformations/fk5/precession.jl")
 
 include("transformations/iau2006/cio.jl")
-include("transformations/iau2006/iau2006_const.jl")
 include("transformations/iau2006/iau2006.jl")
 include("transformations/iau2006/delaunay.jl")
 include("transformations/iau2006/planetary.jl")
+
+include("transformations/iau2006/constants/cio_s.jl")
+include("transformations/iau2006/constants/cip_x.jl")
+include("transformations/iau2006/constants/cip_y.jl")
 
 include("transformations/teme/teme.jl")
 
