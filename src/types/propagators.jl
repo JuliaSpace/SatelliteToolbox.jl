@@ -292,6 +292,5 @@ mutable struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
     orb::KeplerianElements{T}
 
     # SGP4 related fields.
-    sgp4_gc::SGP4_GravCte{T}
     sgp4d::SGP4_Structure{T}
 end

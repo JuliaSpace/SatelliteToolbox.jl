@@ -50,13 +50,13 @@ function init_orbit_propagator(::Val{:sgp4}, tle::TLE;
                               M_to_f(e_0, M_0))
 
     # Create and return the orbit propagator structure.
-    return OrbitPropagatorSGP4(orb_0, sgp4_gc, sgp4d)
+    return OrbitPropagatorSGP4(orb_0, sgp4d)
 end
 
 function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
     # Auxiliary variables.
     sgp4d   = orbp.sgp4d
-    sgp4_gc = orbp.sgp4_gc
+    sgp4_gc = sgp4d.sgp4_gc
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, t/60)
@@ -81,7 +81,7 @@ end
 function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     # Auxiliary variables.
     sgp4d   = orbp.sgp4d
-    sgp4_gc = orbp.sgp4_gc
+    sgp4_gc = sgp4d.sgp4_gc
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, sgp4d.Δt + Δt/60)
