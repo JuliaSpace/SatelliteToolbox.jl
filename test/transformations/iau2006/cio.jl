@@ -1,23 +1,25 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Tests related to IAU-2006 precession-nutation algorithm.
+#   Tests related to the components used to compute CIO in IAU-2006 theory.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# File: ./src/transformations/precession_nutation_iau2006.jl
-# ==========================================================
+# File: ./src/transformations/cio.jl
+# ==================================
 
-# Function precession_nutation_iau2006
-# ------------------------------------
+# Function cio_iau2006
+# --------------------
 
 ################################################################################
 #                                 Test Results
@@ -36,10 +38,10 @@
 #
 ################################################################################
 
-@testset "Function precession_nutation_iau2006" begin
+@testset "Function cio_iau2006" begin
     JD_TT = 2453101.828_154_745
 
-    X,Y,s = precession_nutation_iau2006(JD_TT)
+    X,Y,s = cio_iau2006(JD_TT)
 
     @test X*180/pi*3600 ≈ 80.531880 atol = 5e-5
     @test Y*180/pi*3600 ≈  7.273921 atol = 5e-5

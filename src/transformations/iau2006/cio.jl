@@ -1,9 +1,9 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Functions to compute the precession-nutation rotation according to IAU-2006
-#   theory.
+#   Functions to compute the Celestial Intermediate Origin (CIO).
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -17,26 +17,28 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export precession_nutation_iau2006
+export cio_iau2006
 
 """
-    precession_nutation_iau2006(JD_TT::Number)
+    cio_iau2006(JD_TT::Number)
 
-Compute the coordinates `X`, `Y`, and `s` related to the Celestial Intermediate
-Pole (CIP) with respect to the Geocentric Celestial Reference Frame (GCRF). This
-accounts for the effects of both precession and nutation of the CIP.
+Compute the coordinates `X` and `Y` of the Celestial Intermediate Pole (CIP)
+with respect to the Geocentric Celestial Reference Frame (GCRF), and the CIO
+locator `s`. The algorithm is based on the IAU-2006 theory.
+
+The CIO locator `s` provides the position of the CIO on the Equator of the CIP
+corresponding to the kinematical definition of the non-rotation origin in the
+GCRS when the CIP is moving with respect to the GCRS between the reference epoch
+and the epoch due to precession and nutation [1, p. 214].
 
 # Returns
 
-* The coordinate `X` of the CIP w.r.t. the GCRF;
-* The coordinate `Y` of the CIP w.r.t. the GCRF;
-* The CIO locator `s` that provides the position of the CIO on the Equator of
-  the CIP corresponding to the kinematical definition of the non-rotation origin
-  in the GCRS when the CIP is moving with respect to the GCRS between the
-  reference epoch and the epoch due to precession and nutation [1, p. 214].
+* The coordinate `X` of the CIP w.r.t. the GCRF.
+* The coordinate `Y` of the CIP w.r.t. the GCRF.
+* The CIO locator `s`.
 
 """
-function precession_nutation_iau2006(JD_TT::Number)
+function cio_iau2006(JD_TT::Number)
     # Compute the Julian Centuries from `JD_TT`.
     T_TT = (JD_TT - JD_J2000)/36525
 
@@ -55,33 +57,8 @@ function precession_nutation_iau2006(JD_TT::Number)
     # Planetary effects of the nutation and obliquity of the ecliptic
     # ===============================================================
 
-    # Mean Heliocentric longitudes of the planets.
-    #
-    # TODO: In the example in [1, p. 221], the value related to Uranus is slight
-    # different. The value used here is shown in [1, p. 211].
-
-    λ_M☿ = @evalpoly(T_TT, 4.402_608_842, 2608.790_314_157_4)
-    λ_M♀ = @evalpoly(T_TT, 3.176_146_697, 1021.328_554_621_1)
-    λ_Me = @evalpoly(T_TT, 1.753_470_314,  628.307_584_999_1)
-    λ_M♂ = @evalpoly(T_TT, 6.203_480_913,  334.061_242_670_0)
-    λ_M♃ = @evalpoly(T_TT, 0.599_546_497,   52.969_096_264_1)
-    λ_M♄ = @evalpoly(T_TT, 0.874_016_757,   21.329_910_496_0)
-    λ_M⛢ = @evalpoly(T_TT, 5.481_293_872,    7.478_159_856_7)
-    λ_M♆ = @evalpoly(T_TT, 5.311_886_287,    3.813_303_563_8)
-
-    # General precession in longitude.
-    p_λ = @evalpoly(T_TT, 0, 0.024_381_75, 0.000_005_386_91)
-
-    # Convert to the interval [0,2π].
-    λ_M☿ = mod(λ_M☿, 2π)
-    λ_M♀ = mod(λ_M♀, 2π)
-    λ_Me = mod(λ_Me, 2π)
-    λ_M♂ = mod(λ_M♂, 2π)
-    λ_M♃ = mod(λ_M♃, 2π)
-    λ_M♄ = mod(λ_M♄, 2π)
-    λ_M⛢ = mod(λ_M⛢, 2π)
-    λ_M♆ = mod(λ_M♆, 2π)
-    p_λ  = mod(p_λ,  2π)
+    λ_M☿, λ_M♀, λ_Me, λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ =
+        planetary_effects_args_iau2006(JD_TT)
 
     # X position of the CIP
     # ==========================================================================

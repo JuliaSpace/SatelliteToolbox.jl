@@ -13,9 +13,6 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-#   [2] Vallado, D. A (06-Feb-2018). Consolidated Errata of Fundamentals of
-#       Astrodynamics and Applications 4th Ed.
-#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 """

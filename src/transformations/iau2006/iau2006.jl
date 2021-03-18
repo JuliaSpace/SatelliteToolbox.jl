@@ -271,8 +271,8 @@ rCIRStoGCRF_iau2006(JD_TT::Number, dX::Number = 0, dY::Number = 0) =
 function rCIRStoGCRF_iau2006(::Type{DCM}, JD_TT::Number, dX::Number = 0,
                              dY::Number = 0)
 
-    # Compute the CIP position w.r.t. GCRS.
-    X, Y, s = precession_nutation_iau2006(JD_TT)
+    # Compute the rotations to obtain the Celestial Intermediate Origin (CIO).
+    X, Y, s = cio_iau2006(JD_TT)
 
     # Add the corrections.
     X += dX
@@ -331,8 +331,8 @@ rGCRFtoCIRS_iau2006(JD_TT::Number, dX::Number = 0, dY::Number = 0) =
 function rGCRFtoCIRS_iau2006(::Type{DCM}, JD_TT::Number, dX::Number = 0,
                              dY::Number = 0)
 
-    # Compute the CIP position w.r.t. GCRS.
-    X, Y, s = precession_nutation_iau2006(JD_TT)
+    # Compute the rotations to obtain the Celestial Intermediate Origin (CIO).
+    X, Y, s = cio_iau2006(JD_TT)
 
     # Add the corrections.
     X += dX
