@@ -49,6 +49,7 @@ println("")
 
 @testset "General orbit functions" begin
     include("./orbit/general.jl")
+    include("./orbit/representations.jl")
 end
 println("")
 
