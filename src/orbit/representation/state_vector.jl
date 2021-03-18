@@ -100,11 +100,10 @@ getindex(sv::OrbitStateVector{T}, ::Colon) where T<:Number =
 ################################################################################
 
 function show(io::IO, sv::OrbitStateVector{T}) where T
-    t_str = @sprintf "%.g" sv.t
-
-    print(io, "OrbitStateVector{", string(T), "}: ")
-    print(io, "t = ", t_str, " r = ", sv.r, " v = ", sv.v, " a = ", sv.a)
-    return nothing
+    compact = get(io, :compact, true)
+    epoch_str = sprint(print, sv.t, context = :compact => compact)
+    jd_str = sprint(print, JDtoDate(DateTime, sv.t))
+    print(io, "OrbitStateVector{", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
 function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
