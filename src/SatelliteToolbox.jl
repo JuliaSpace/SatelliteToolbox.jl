@@ -3,8 +3,8 @@ module SatelliteToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan, copy, cos, deepcopy, getindex, mod, setindex!, sin,
-       show
+import Base: asin, atan, convert, copy, cos, deepcopy, getindex, mod, setindex!,
+             sin, show
 
 using Crayons
 using Dates
@@ -123,6 +123,7 @@ include("orbit/propagators/api/propagate.jl")
 include("orbit/propagators/api/propagate_to_epoch.jl")
 include("orbit/propagators/api/step.jl")
 include("orbit/representation/api.jl")
+include("orbit/representation/conversions.jl")
 include("orbit/representation/keplerian_elements.jl")
 include("orbit/representation/rv.jl")
 include("orbit/representation/state_vector.jl")
