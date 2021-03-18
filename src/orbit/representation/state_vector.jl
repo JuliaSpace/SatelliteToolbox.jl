@@ -116,10 +116,10 @@ function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
     b = (color) ? _b : ""
     d = (color) ? _d : ""
 
-    t_str  = sprint(print, sv.t)
-    JD_str = sprint(print, JDtoDate(DateTime, sv.t))
-    r_str  = sprint(print, sv.r./1000)
-    v_str  = sprint(print, sv.v./1000)
+    t_str  = sprint(print, sv.t, context = :compact => compact)
+    JD_str = sprint(print, JDtoDate(DateTime, sv.t), context = :compact => compact)
+    r_str  = sprint(print, sv.r./1000, context = :compact => compact)
+    v_str  = sprint(print, sv.v./1000, context = :compact => compact)
 
     # Add units.
     max_length = max(length(r_str), length(v_str))

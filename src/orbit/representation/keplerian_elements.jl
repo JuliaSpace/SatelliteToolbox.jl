@@ -65,7 +65,7 @@ function show(io::IO, mime::MIME"text/plain", k::KeplerianElements{T}) where T
     color = get(io, :color, false)
 
     # Compact printing.
-    compact = get(io, :compact, false)
+    compact = get(io, :compact, true)
 
     # Definition of colors that will be used for printing.
     b = color ? _b : ""
