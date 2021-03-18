@@ -321,7 +321,7 @@ Convert the Keplerian elements in the structure `orb` to a state vector.
 """
 function kepler_to_sv(orb::Orbit)
     r_i, v_i = kepler_to_rv(orb)
-    satsv(orb.t, r_i, v_i)
+    return orbsv(orb.t, r_i, v_i)
 end
 
 """

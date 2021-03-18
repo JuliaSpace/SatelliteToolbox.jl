@@ -72,7 +72,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 
     r_gcrf = [5102.50895790; 6123.01140070; 6378.13692820]
     v_gcrf = [-4.7432201570; 0.7905364970; 5.5337557270]
-    sv_gcrf = satsv(JD_UTC, r_gcrf, v_gcrf)
+    sv_gcrf = orbsv(JD_UTC, r_gcrf, v_gcrf)
     sv_itrf = svECItoECEF(sv_gcrf, GCRF(), ITRF(), JD_UTC, eop_iau1980)
 
     @test sv_itrf.t === JD_UTC
@@ -117,7 +117,7 @@ end
 
     r_j2000  = [5102.50960000; 6123.01152000; 6378.13630000]
     v_j2000  = [-4.7432196000; 0.7905366000; 5.5337561900]
-    sv_j2000 = satsv(JD_UT1, r_j2000, v_j2000)
+    sv_j2000 = orbsv(JD_UT1, r_j2000, v_j2000)
     sv_pef   = svECItoECEF(sv_j2000, J2000(), PEF(), JD_UT1)
 
     @test sv_pef.t === JD_UT1
@@ -165,7 +165,7 @@ end
 
     r_gcrf = [5102.50895290; 6123.01139910; 6378.13693380]
     v_gcrf = [-4.7432201610; 0.7905364950; 5.5337557240]
-    sv_gcrf = satsv(JD_UTC, r_gcrf, v_gcrf)
+    sv_gcrf = orbsv(JD_UTC, r_gcrf, v_gcrf)
     sv_itrf = svECItoECEF(sv_gcrf, GCRF(), ITRF(), JD_UTC, eop_iau2000a)
 
     @test sv_itrf.t === JD_UTC
@@ -210,7 +210,7 @@ end
 
     r_gcrf = [5102.50895290; 6123.01139910; 6378.13693380]
     v_gcrf = [-4.7432201610; 0.7905364950; 5.5337557240]
-    sv_gcrf = satsv(JD_UT1, r_gcrf, v_gcrf)
+    sv_gcrf = orbsv(JD_UT1, r_gcrf, v_gcrf)
     sv_tirs = svECItoECEF(sv_gcrf, GCRF(), TIRS(), JD_UT1)
 
     @test sv_tirs.t === JD_UT1

@@ -7,11 +7,11 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export satsv
+export orbsv
 
 """
-    satsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
-    satsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
+    orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
+    orbsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
 
 Create a new satellite state vector (see `OrbitStateVector`) using the position
 `r`, velocity `v`, and acceleration `a`. It is also possible to pass a vector
@@ -43,7 +43,7 @@ function orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3},
     return OrbitStateVector{T}(t = t, r = r[1:3], v = v[1:3], a = a[1:3])
 end
 
-function satsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
+function orbsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
     len_vec = length(vec)
 
     len_vec ∉ [6,9] && error("The length of input vector must be 6, or 9.")

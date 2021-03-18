@@ -86,5 +86,5 @@ function svECItoECEF(sv::OrbitStateVector,
     # Compute the acceleration in the ECI frame.
     a_ecef = D*sv.a - vω × vω_x_r - 2vω × v_ecef
 
-    return satsv(sv.t, r_ecef, v_ecef, a_ecef)
+    return orbsv(sv.t, r_ecef, v_ecef, a_ecef)
 end

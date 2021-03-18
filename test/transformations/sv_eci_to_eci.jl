@@ -74,7 +74,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 
     r_gcrf   = [5102.50895790; 6123.01140070; 6378.13692820]
     v_gcrf   = [-4.7432201570; 0.7905364970; 5.5337557270]
-    sv_gcrf  = satsv(JD_UTC, r_gcrf, v_gcrf)
+    sv_gcrf  = orbsv(JD_UTC, r_gcrf, v_gcrf)
     sv_j2000 = svECItoECI(sv_gcrf, GCRF(), J2000(), JD_UTC, eop_iau1980)
 
     @test sv_j2000.t === JD_UTC
@@ -92,7 +92,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 
     r_j2000  = [5102.50960000; 6123.01152000; 6378.13630000]
     v_j2000  = [-4.7432196000; 0.7905366000; 5.5337561900]
-    sv_j2000 = satsv(JD_UTC, r_j2000, v_j2000)
+    sv_j2000 = orbsv(JD_UTC, r_j2000, v_j2000)
     sv_gcrf  = svECItoECI(sv_j2000, J2000(), GCRF(), JD_UTC, eop_iau1980)
 
     @test sv_gcrf.t === JD_UTC
@@ -140,7 +140,7 @@ end
 
     r_mod  = [5094.02837450; 6127.87081640; 6380.24851640]
     v_mod  = [-4.7462630520; 0.7860140450; 5.5317905620]
-    sv_mod = satsv(JD_UTC, r_mod, v_mod)
+    sv_mod = orbsv(JD_UTC, r_mod, v_mod)
     sv_tod = svECItoECI(sv_mod, MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     @test sv_tod.t === JD_UTC
@@ -158,7 +158,7 @@ end
 
     r_tod  = [5094.51620300; 6127.36527840; 6380.34453270]
     v_tod  = [-4.7460883850; 0.7860783240; 5.5319312880]
-    sv_tod = satsv(JD_UTC, r_tod, v_tod)
+    sv_tod = orbsv(JD_UTC, r_tod, v_tod)
     sv_mod = svECItoECI(sv_tod, TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     @test sv_mod.t === JD_UTC
@@ -214,7 +214,7 @@ end
 
     r_gcrf  = [5102.50895290; 6123.01139910; 6378.13693380]
     v_gcrf  = [-4.7432201610; 0.7905364950; 5.5337557240]
-    sv_gcrf = satsv(JD_UTC, r_gcrf, v_gcrf)
+    sv_gcrf = orbsv(JD_UTC, r_gcrf, v_gcrf)
     sv_cirs = svECItoECI(sv_gcrf, GCRF(), CIRS(), JD_UTC, eop_iau2000a)
 
     @test sv_cirs.t === JD_UTC
@@ -232,7 +232,7 @@ end
 
     r_cirs  = [+5100.01840470; +6122.78636480; +6380.34453270]
     v_cirs  = [-4.7453803300; +0.7903414530; +5.5319312880]
-    sv_cirs = satsv(JD_UTC, r_cirs, v_cirs)
+    sv_cirs = orbsv(JD_UTC, r_cirs, v_cirs)
     sv_gcrf = svECItoECI(sv_cirs, CIRS(), GCRF(), JD_UTC, eop_iau2000a)
 
     @test sv_gcrf.t === JD_UTC
