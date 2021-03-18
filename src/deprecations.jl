@@ -11,3 +11,5 @@
 # ==============================================================================
 
 @deprecate satsv(args...) orbsv(args...)
+@deprecate dArgPer(args...) dargp(args...)
+@deprecate dRAAN(args...) draan(arg...)

@@ -7,7 +7,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export @check_orbit
-export angvel, angvel_to_a, dArgPer, dRAAN, period
+export angvel, angvel_to_a, dargp, draan, period
 
 ################################################################################
 #                                    Macros
@@ -286,8 +286,8 @@ function angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2;
 end
 
 """
-    dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    dArgPer(orb::Orbit, pert::Symbol = :J2)
+    dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    dargp(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
 semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
@@ -303,7 +303,7 @@ specified by `orb` (see [`Orbit`](@ref)).
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-@inline function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
@@ -345,15 +345,15 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
-function dArgPer(orb::Orbit, pert::Symbol = :J2)
+function dargp(orb::Orbit, pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return dArgPer(get_a(k), get_e(k), get_i(k), pert)
+    return dargp(get_a(k), get_e(k), get_i(k), pert)
 end
 
 """
-    dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    dRAAN(orb::Orbit, pert::Symbol = :J2)
+    draan(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+    draan(orb::Orbit, pert::Symbol = :J2)
 
 Compute the time-derivative of the right ascension of the ascending node [rad/s]
 of an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i`
@@ -369,7 +369,7 @@ can also be specified by `orb` (see [`Orbit`](@ref)).
 If `pert` is omitted, then it defaults to `:J2`.
 
 """
-@inline function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function draan(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert == :J0
         return 0.0
@@ -408,10 +408,10 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
-function dRAAN(orb::Orbit, pert::Symbol = :J2)
+function draan(orb::Orbit, pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return dRAAN(get_a(k), get_e(k), get_i(k), pert)
+    return draan(get_a(k), get_e(k), get_i(k), pert)
 end
 
 """
@@ -439,5 +439,5 @@ end
 function period(orb::Orbit, pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return dRAAN(get_a(k), get_e(k), get_i(k), pert)
+    return draan(get_a(k), get_e(k), get_i(k), pert)
 end
