@@ -1,17 +1,20 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Functions related with the model IAU-2006, based on IAU-2010 conventions.
+#   Functions related with the CIO-based model IAU-2006 with IAU-2010
+#   conventions.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export rITRFtoTIRS_iau2006, rTIRStoITRF_iau2006
 export rTIRStoCIRS_iau2006, rCIRStoTIRS_iau2006
@@ -24,7 +27,7 @@ export rCIRStoGCRF_iau2006, rGCRFtoCIRS_iau2006
 # The conversion between the Geocentric Celestial Reference Frame (GCRF) to the
 # International Terrestrial Reference Frame (ITRF) is done by means of:
 #
-#                       GCRF <=> TIRS <=> CIRS <=> ITRF
+#                       GCRF <=> CIRS <=> TIRS <=> ITRF
 #
 # in which:
 #   - TIRS: Terrestrial Intermediate Reference System.
