@@ -7,7 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export Orbit, KeplerianElements
+export Orbit, KeplerianElements, OrbitStateVector
 
 """
     Orbit
