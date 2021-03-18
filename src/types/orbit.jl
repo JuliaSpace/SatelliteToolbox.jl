@@ -62,7 +62,7 @@ Store the state vector representation of an orbit.
 * `a`: Acceleration vector [m/s²].
 
 """
-@with_kw_noshow mutable struct OrbitStateVector{T}
+@with_kw_noshow mutable struct OrbitStateVector{T} <: Orbit{T}
     t::T            = 0
     r::SVector{3,T} = SVector{3,T}(0,0,0)
     v::SVector{3,T} = SVector{3,T}(0,0,0)
