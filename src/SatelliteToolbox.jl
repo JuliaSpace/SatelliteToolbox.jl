@@ -3,8 +3,8 @@ module SatelliteToolbox
 export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
 export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
 
-import Base: asin, atan, convert, copy, cos, deepcopy, getindex, mod, setindex!,
-             sin, show
+import Base: asin, atan, convert, copy, cos, deepcopy, getindex, length,
+             iterate, mod, setindex!, sin, show
 
 using Crayons
 using Dates
@@ -113,15 +113,17 @@ include("orbit/anomalies.jl")
 include("orbit/mean_elements.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
+
 include("orbit/propagators/j2.jl")
 include("orbit/propagators/j2osc.jl")
 include("orbit/propagators/j4.jl")
 include("orbit/propagators/twobody.jl")
-include("orbit/propagators/api/epoch.jl")
-include("orbit/propagators/api/init_orbit_propagator.jl")
-include("orbit/propagators/api/propagate.jl")
-include("orbit/propagators/api/propagate_to_epoch.jl")
-include("orbit/propagators/api/step.jl")
+include("orbit/propagators/api/api.jl")
+include("orbit/propagators/api/j2.jl")
+include("orbit/propagators/api/j4.jl")
+include("orbit/propagators/api/sgp4.jl")
+include("orbit/propagators/api/twobody.jl")
+
 include("orbit/representations/api.jl")
 include("orbit/representations/conversions.jl")
 include("orbit/representations/keplerian_elements.jl")
