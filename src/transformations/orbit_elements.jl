@@ -1,12 +1,14 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Conversions related to the orbit elements.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Schwarz, R (2014). Memorandum No. 2: Cartesian State Vectors to
 #       Keplerian Orbit Elements. Available at www.rene-schwarz.com
@@ -20,7 +22,7 @@
 #   [3] Kuga, H. K., Carrara, V., Rao, K. R (2005). Introdução à Mecânica
 #       Orbital. 2ª ed. Instituto Nacional de Pesquisas Espaciais.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export change_oe_frame
 
