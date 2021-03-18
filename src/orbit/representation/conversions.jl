@@ -21,8 +21,8 @@ function Base.convert(KT::Type{KeplerianElements{T}}, sv::OrbitStateVector) wher
     return convert(KT, k)
 end
 
-Base.convert(ST::Type{OrbitStateVector}, k::KeplerianElements{T}) where T =
-    Base.convert(KeplerianElements{T}, sv)
+Base.convert(::Type{OrbitStateVector}, k::KeplerianElements{T}) where T =
+    Base.convert(OrbitStateVector{T}, k)
 
 function Base.convert(ST::Type{OrbitStateVector{T}}, k::KeplerianElements) where T
     sv = kepler_to_sv(k)
