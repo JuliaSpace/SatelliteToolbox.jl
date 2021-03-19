@@ -16,7 +16,7 @@
 #
 #   [2] ftp://tai.bipm.org/iers/conv2010/chapter5/tab5.2e.txt
 #
-#   [3] Wallace, P. T.; Capitaine, N (2006). Precession-nutation procedures
+#   [3] Wallace, P. T., Capitaine, N (2006). Precession-nutation procedures
 #       consistent with IAU 2006 resolutions. Astronomy & Astrophysics.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -71,15 +71,15 @@ function nutation_eo_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0,
 
     # TODO: This equation is wrong in [1]! The one used here was obtained in
     # [3].
-    mϵ_2000 = @evalpoly(T_TT, +23.439_279,
-                               -0.013_010_2,
-                               -5.086e-8,
-                               +5.565e-7,
-                               -1.6e-10,
-                               -1.21e-11)
+    mϵ_2000 = @evalpoly(T_TT, +84381.406,
+                                 -46.836769,
+                                  -0.0001831,
+                                  +0.00200340,
+                                  -0.000000576,
+                                  -0.0000000434)
 
     # Reduce to the interval [0, 2π]°.
-    mϵ_2000 = mod(mϵ_2000, 360)*d2r
+    mϵ_2000 = mod(mϵ_2000*a2r, 2π)
 
     # Nutation in the obliquity
     # ==========================================================================
