@@ -21,7 +21,47 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export nutation_eo_iau2006
+export mean_obliquity_iau2006, nutation_eo_iau2006
+
+"""
+    mean_obliquity_iau2006(JD_TT::Number)
+
+Compute the mean obliquity of the ecliptic [rad] using the equinox-based
+IAU-2006 theory in the Julian day `JD_TT` [Terrestiral Time].
+
+The algorithm was obtained in [3].
+
+"""
+function mean_obliquity_iau2006(JD_TT::Number)
+    # Compute the Julian Centuries from `JD_TT`.
+    T_TT = (JD_TT - JD_J2000)/36525
+
+    # Auxiliary variables
+    # ===================
+
+    a2d = 1/3600
+    d2r = π/180
+    a2r = a2d*d2r
+
+    # Mean obliquity of the ecliptic
+    # ==============================
+
+    # Compute the mean obliquity of the ecliptic [s].
+
+    # TODO: This equation is wrong in [1]! The one used here was obtained in
+    # [3].
+    mϵ_2000 = @evalpoly(T_TT, +84381.406,
+                                 -46.836769,
+                                  -0.0001831,
+                                  +0.00200340,
+                                  -0.000000576,
+                                  -0.0000000434)
+
+    # Reduce to the interval [0, 2π]°.
+    mϵ_2000 = mod(mϵ_2000*a2r, 2π)
+
+    return mϵ_2000
+end
 
 """
     nutation_eo_iau2006(JD_TT::Number)
@@ -67,19 +107,7 @@ function nutation_eo_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0,
     # Mean obliquity of the ecliptic
     # ==============================
 
-    # Compute the mean obliquity of the ecliptic [s].
-
-    # TODO: This equation is wrong in [1]! The one used here was obtained in
-    # [3].
-    mϵ_2000 = @evalpoly(T_TT, +84381.406,
-                                 -46.836769,
-                                  -0.0001831,
-                                  +0.00200340,
-                                  -0.000000576,
-                                  -0.0000000434)
-
-    # Reduce to the interval [0, 2π]°.
-    mϵ_2000 = mod(mϵ_2000*a2r, 2π)
+    mϵ_2000 = mean_obliquity_iau2006(JD_TT)
 
     # Nutation in the obliquity
     # ==========================================================================
