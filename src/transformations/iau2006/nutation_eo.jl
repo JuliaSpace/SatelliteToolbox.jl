@@ -27,7 +27,10 @@ export nutation_eo_iau2006
     nutation_eo_iau2006(JD_TT::Number)
 
 Compute the nutation parameters and the Equation of Origins (EO) at the Julian
-Day `JD_TT` [TT] using the equinox-based 2006 IAU Theory of Nutation.
+Day `JD_TT` [TT] using the equinox-based 2006 IAU Theory of Nutation. Notice
+that one can provide corrections for the nutation in obliquity (`δΔϵ_2000`)
+\\[rad] and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained from
+IERS EOP Data (see `get_iers_eop`).
 
 # Returns
 
@@ -37,7 +40,8 @@ Day `JD_TT` [TT] using the equinox-based 2006 IAU Theory of Nutation.
 * The Equation of Origins (EO) [rad].
 
 """
-function nutation_eo_iau2006(JD_TT::Number)
+function nutation_eo_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0,
+                             δΔΨ_2000::Number =0)
     # Compute the Julian Centuries from `JD_TT`.
     T_TT = (JD_TT - JD_J2000)/36525
 
@@ -47,7 +51,9 @@ function nutation_eo_iau2006(JD_TT::Number)
     a2d = 1/3600
     d2r = π/180
     a2r = a2d*d2r
-    J2d = -2.7774e-6
+    r2d = 180/π
+    d2a = 3600
+    r2a = r2d*d2a
 
     # Fundamental arguments
     # =====================
@@ -82,12 +88,18 @@ function nutation_eo_iau2006(JD_TT::Number)
                            T_TT, M_s, M_m, u_Mm, D_s, Ω_m, λ_M☿, λ_M♀, λ_Me,
                            λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ)
 
+    # Apply the correction given EOP data.
+    Δϵ_2000 += δΔϵ_2000*r2a
+
     # Nutation in longitude
     # ==========================================================================
 
     ΔΨ_2000 = _iau2006_sum((coefs_iau2006_nut_lon0, coefs_iau2006_nut_lon1),
                            T_TT, M_s, M_m, u_Mm, D_s, Ω_m, λ_M☿, λ_M♀, λ_Me,
                            λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ)
+
+    # Apply the correction given EOP data.
+    ΔΨ_2000 += δΔΨ_2000*r2a
 
     # Equation of Origins (EO)
     # ==========================================================================

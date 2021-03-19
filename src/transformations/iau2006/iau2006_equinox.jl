@@ -57,7 +57,9 @@ export rTIRStoERS_iau2006, rERStoTIRS_iau2006
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the Earth Reference System (ERS) at the Julian Day
 `JD_UT1` [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
-theory.
+theory. Notice that one can provide corrections for the nutation longitude
+(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
+Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -77,10 +79,11 @@ the IAU-2006 theory, which consist of obtaining the Earth Rotation Angle (ERA)
 and subtracting the result of the Equation of Origins (EO).
 
 """
-rTIRStoERS_iau2006(JD_UT1::Number, JD_TT::Number) =
+rTIRStoERS_iau2006(JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0) =
     rTIRStoERS_iau2006(DCM, JD_UT1, JD_TT)
 
-function rTIRStoERS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number)
+function rTIRStoERS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number,
+                            δΔΨ_2000::Number = 0)
     # In this theory, the rotation of Earth is taken into account by the Earth
     # Rotation Angle, which is the angle between the Conventional International
     # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
@@ -91,7 +94,7 @@ function rTIRStoERS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number)
     θ_era = mod(θ_era, 2π)
 
     # Compute the Equation of the Origins (EO).
-    ~, ~, ~, EO = nutation_eo_iau2006(JD_TT)
+    ~, ~, ~, EO = nutation_eo_iau2006(JD_TT, 0, δΔΨ_2000)
 
     # Compute the Greenwich apparent sidereal angle (GAST).
     θ_gast2000 = θ_era - EO
@@ -101,11 +104,13 @@ function rTIRStoERS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number)
 end
 
 """
-    rERStoTIRS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rERStoTIRS_iau2006(JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Earth Reference System (ERS) with the
 Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
 [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006 theory.
+Notice that one can provide corrections for the nutation longitude (`δΔψ_2000`)
+\\[rad] that are usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -114,7 +119,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 # Returns
 
-The rotation that aligns the TIRS frame with the ERS frame. The rotation
+The rotation that aligns the ERS frame with the TIRS frame. The rotation
 representation is selected by the optional parameter `T`.
 
 # Remarks
@@ -125,10 +130,11 @@ the IAU-2006 theory, which consist of obtaining the Earth Rotation Angle (ERA)
 and subtracting the result of the Equation of Origins (EO).
 
 """
-rERStoTIRS_iau2006(JD_UT1::Number, JD_TT::Number) =
+rERStoTIRS_iau2006(JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0) =
     rERStoTIRS_iau2006(DCM, JD_UT1, JD_TT)
 
-function rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number)
+function rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number,
+                            δΔΨ_2000::Number = 0)
     # In this theory, the rotation of Earth is taken into account by the Earth
     # Rotation Angle, which is the angle between the Conventional International
     # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
