@@ -50,16 +50,14 @@ function cio_iau2006(JD_TT::Number)
     d2r = π/180
     a2r = a2d*d2r
 
-    # Delaunay arguments of the Sun and Moon
-    # ======================================
+    # Fundamental arguments
+    # =====================
 
-    M_s, M_m, u_Mm, D_s, Ω_m = delaunay_args_iau2006(JD_TT)
+    # Luni-solar part.
+    M_s, M_m, u_Mm, D_s, Ω_m = luni_solar_args_iau2006(JD_TT)
 
-    # Planetary effects of the nutation and obliquity of the ecliptic
-    # ===============================================================
-
-    λ_M☿, λ_M♀, λ_Me, λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ =
-        planetary_effects_args_iau2006(JD_TT)
+    # Planetary part.
+    λ_M☿, λ_M♀, λ_Me, λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ = planetary_args_iau2006(JD_TT)
 
     # X position of the CIP
     # ==========================================================================
