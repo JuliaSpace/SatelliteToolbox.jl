@@ -16,7 +16,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export rTIRStoERS_iau2006, rERStoTIRS_iau2006
+export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
+       rERStoMOD_iau2006, rMODtoERS_iau2006
 
 ################################################################################
 #                      IAU-2006 equinox-based reductions
@@ -30,7 +31,7 @@ export rTIRStoERS_iau2006, rERStoTIRS_iau2006
 # in which:
 #   - TIRS: Terrestrial Intermediate Reference System.
 #   - ERS: Earth Reference System.
-#   - MOD: Mean of Date.
+#   - MOD: Mean of Date reference frame.
 #   - MJ2000: Mean of J2000 (Mean Equator, Mean Equinox dynamical system).
 #   - GCRF: Geocentric Celestial Reference Frame.
 #
@@ -133,23 +134,65 @@ and subtracting the result of the Equation of Origins (EO).
 rERStoTIRS_iau2006(JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0) =
     rERStoTIRS_iau2006(DCM, JD_UT1, JD_TT)
 
-function rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number,
-                            δΔΨ_2000::Number = 0)
-    # In this theory, the rotation of Earth is taken into account by the Earth
-    # Rotation Angle, which is the angle between the Conventional International
-    # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
-    # is a reference meridian on Earth that is located about 100m away from
-    # Greenwich meridian along the equator of the Celestial Intermediate Pole
-    # (CIP) [1].
-    θ_era = 2π*(0.7790572732640 + 1.00273781191135448*(JD_UT1 - JD_J2000))
-    θ_era = mod(θ_era, 2π)
+rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0) =
+    inv_rotation(rTIRStoERS_iau2006(T, JD_UT1, JD_TT, δΔΨ_2000))
 
-    # Compute the Equation of the Origins (EO).
-    ~, ~, ~, EO = nutation_eo_iau2006(JD_TT)
+#                                ERS <=> MOD
+# ==============================================================================
 
-    # Compute the Greenwich apparent sidereal angle (GAST).
-    θ_gast2000 = θ_era - EO
+"""
+    rERStoMOD_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
 
-    # Compute the rotation between the TIRS and ERS.
-    return angle_to_rot(T, +θ_gast2000, 0, 0, :ZYX)
+Compute the rotation that aligns the Earth Reference System (ERS) with the
+Mean of Date (MOD) reference frame at Julian day `JD_TT` [Terrestrial Time].
+This algorithm uses the IAU-2006 theory.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the ERS frame with the MOD frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+The reference systems ERS and MOD are separated by the nutation of the pole.
+
+"""
+rERStoMOD_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0) =
+    rERStoMOD_iau2006(DCM, JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+function rERStoMOD_iau2006(T::Type, JD_TT::Number, δΔϵ_2000::Number = 0,
+                           δΔΨ_2000::Number = 0)
+    # Compute the angles used to compute the nutation.
+    mϵ_2000, Δϵ_2000, ΔΨ_2000, ~ = nutation_eo_iau2006(JD_TT, δΔϵ_2000, δΔΨ_2000)
+    return angle_to_rot(T, mϵ_2000 + Δϵ_2000, ΔΨ_2000, -mϵ_2000, :XZX)
 end
+
+"""
+    rMODtoERS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+
+Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
+Earth Reference System (ERS) at Julian day `JD_TT` [Terrestrial Time]. This
+algorithm uses the IAU-2006 theory.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the MOD frame with the ERS frame. The rotation
+representation is selected by the optional parameter `T`.
+
+"""
+rMODtoERS_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0) =
+    rMODtoERS_iau2006(DCM, JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+rMODtoERS_iau2006(T::Type, JD_TT::Number, δΔϵ_2000::Number = 0,
+                  δΔΨ_2000::Number = 0) =
+    inv_rotation(rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000))
