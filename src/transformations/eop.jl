@@ -14,11 +14,18 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] IERS (2010). Transformation between the International Terrestrial
+#       Reference System and the Geocentric Celestial Reference System. IERS
+#       Technical Note No. 36, Chapter 5.
+#
+#   [3] ftp://hpiers.obspm.fr/eop-pc/models/uai2000.package
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
 export read_iers_eop
+export dEps_dPsi
 
 ################################################################################
 #                       Private Structures and Variables
@@ -242,4 +249,48 @@ function parse_iers_eop_iau_2000A(eop::Matrix)
         extrapolate(interpolate(knots, eop[:,15], Gridded(Linear())), Flat()),
         extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
     )
+end
+
+################################################################################
+#                                   Helpers
+################################################################################
+
+"""
+    dEps_dPsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
+
+Returns the celestial pole offsets in obliquity (δϵ_2000) and longitude
+(δΨ_2000). This function obtains those values by converting the celestial pole
+offsets with respect to the GCRS (`dX` and `dY`). These values are necessary in
+the equinox-based IAU-2006 theory.
+
+The algorithm was obtained from [2, eq. 5.25] and [3, `DPSIDEPS2000_DXDY2000`].
+
+"""
+function dEps_dPsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
+    # Constants.
+    d2r = π/180
+    a2d = 1/3600
+    a2r = a2d*d2r
+
+    # Obtain the parameters `dX` and `dY` [arcseg].
+    dX = eop_iau2000a.dX(JD)
+    dY = eop_iau2000a.dY(JD)
+
+    # Compute the Julian century.
+    T_TT = (JD - JD_J2000)/36525
+
+    # Luni-solar precession [rad].
+    Ψ_a = @evalpoly(T_TT, 0, +5038.47875, -1.07259, -0.001147)*a2r
+
+    # Planetary precession [rad].
+    χ_a = @evalpoly(T_TT, 0, +10.5526, -2.38064, -0.001125)*a2r
+
+    sϵ₀, cϵ₀ = sincos(84381.406*a2r)
+
+    aux = Ψ_a * cϵ₀ - χ_a
+    den = aux^2 * sϵ₀ - sϵ₀
+    δϵ  = (aux * sϵ₀ * dX - sϵ₀ * dY)/den
+    δΨ  = (dX - aux * dY)/den
+
+    return δϵ, δΨ
 end
