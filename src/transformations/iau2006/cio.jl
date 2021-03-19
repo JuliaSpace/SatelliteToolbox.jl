@@ -53,7 +53,7 @@ function cio_iau2006(JD_TT::Number)
     # Delaunay arguments of the Sun and Moon
     # ======================================
 
-    M_s, M_m, u_Mm, D_s, Ω_m = delaunay_arguments_iau2006(JD_TT)
+    M_s, M_m, u_Mm, D_s, Ω_m = delaunay_args_iau2006(JD_TT)
 
     # Planetary effects of the nutation and obliquity of the ecliptic
     # ===============================================================

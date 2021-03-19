@@ -16,7 +16,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 """
-    delaunay_arguments_iau2006(JD_TT::Number)
+    delaunay_args_iau2006(JD_TT::Number)
 
 Compute the Delaunay arguments and they account for luni-solar nutation in
 the Julian Day `JD_TT` [TT] [1, p. 210].
@@ -24,7 +24,7 @@ the Julian Day `JD_TT` [TT] [1, p. 210].
 The returned values are in [rad].
 
 """
-function delaunay_arguments_iau2006(JD_TT::Number)
+function delaunay_args_iau2006(JD_TT::Number)
     # Compute the Julian Centuries from `JD_TT`.
     T_TT = (JD_TT - JD_J2000)/36525
 
