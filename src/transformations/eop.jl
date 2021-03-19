@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions related with the IERS (International Earth Orientation and
 #   Reference Systems Service) EOP (Earth Orientation Parameters) data.
@@ -8,11 +9,12 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
@@ -21,7 +23,6 @@ export read_iers_eop
 ################################################################################
 #                       Private Structures and Variables
 ################################################################################
-################################################################################
 
 # Interpolation types used in EOP data.
 const _eop_itp_linear{T} =
@@ -29,6 +30,10 @@ const _eop_itp_linear{T} =
 
 const _eop_etp_linear{T} =
     Interpolations.Extrapolation{T, 1, _eop_itp_linear{T}, Gridded{Linear}, Flat{Nothing}}
+
+################################################################################
+#                                  Functions
+################################################################################
 
 """
     get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
