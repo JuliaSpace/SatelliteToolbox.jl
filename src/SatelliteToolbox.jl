@@ -151,12 +151,16 @@ include("transformations/fk5/precession.jl")
 
 include("transformations/iau2006/cio.jl")
 include("transformations/iau2006/iau2006.jl")
+include("transformations/iau2006/iau2006_equinox.jl")
 include("transformations/iau2006/fundamental_args.jl")
 include("transformations/iau2006/misc.jl")
+include("transformations/iau2006/nutation_eo.jl")
 
 include("transformations/iau2006/constants/cio_s.jl")
 include("transformations/iau2006/constants/cip_x.jl")
 include("transformations/iau2006/constants/cip_y.jl")
+include("transformations/iau2006/constants/equation_of_origins.jl")
+include("transformations/iau2006/constants/nutation.jl")
 
 include("transformations/teme/teme.jl")
 
