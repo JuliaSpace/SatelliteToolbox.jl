@@ -19,6 +19,9 @@
 #   [3] Wallace, P. T., Capitaine, N (2006). Precession-nutation procedures
 #       consistent with IAU 2006 resolutions. Astronomy & Astrophysics.
 #
+#   [4] Capitaine, N., Wallace, P. T (2006). High precision methods for locating
+#       the celestial intermediate pole and origin. Astronomy & Astrophysics.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export mean_obliquity_iau2006, nutation_eo_iau2006
@@ -48,8 +51,8 @@ function mean_obliquity_iau2006(JD_TT::Number)
 
     # Compute the mean obliquity of the ecliptic [s].
 
-    # TODO: This equation is wrong in [1]! The one used here was obtained in
-    # [3].
+    # NOTE: This equation is wrong in [1, p. 216, eq. 3-68]! The one used here
+    # was obtained in [3].
     mϵ_2000 = @evalpoly(T_TT, +84381.406,
                                  -46.836769,
                                   -0.0001831,
@@ -57,7 +60,7 @@ function mean_obliquity_iau2006(JD_TT::Number)
                                   -0.000000576,
                                   -0.0000000434)
 
-    # Reduce to the interval [0, 2π]°.
+    # Reduce to the interval [0, 2π].
     mϵ_2000 = mod(mϵ_2000*a2r, 2π)
 
     return mϵ_2000
@@ -136,8 +139,8 @@ function nutation_eo_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0,
                        T_TT, M_s, M_m, u_Mm, D_s, Ω_m, λ_M☿, λ_M♀, λ_Me, λ_M♂,
                        λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ)
 
-    # TODO: This equation is wrong in [1]! The coefficients were obtained from
-    # [2].
+    # NOTE: This equation is wrong in [1, p. 216, eq. 3-66]! The coefficients
+    # were obtained from [2] and [4, eq. 69].
     EO = @evalpoly(T_TT,   -0.014_506,
                         -4612.156_534,
                            -1.391_581_7,
