@@ -622,7 +622,7 @@ function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MOD}, JD_UTC::Number,
     x_p = eop_data.x(JD_UTC)*arcsec2rad
     y_p = eop_data.y(JD_UTC)*arcsec2rad
 
-    # Obtain the correction of the nutation in longitude.
+    # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
     δΔϵ_2000 *= arcsec2rad
     δΔΨ_2000 *= arcsec2rad
@@ -649,7 +649,7 @@ function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MJ2000}, JD_UTC::Number,
     x_p = eop_data.x(JD_UTC)*arcsec2rad
     y_p = eop_data.y(JD_UTC)*arcsec2rad
 
-    # Obtain the correction of the nutation in longitude.
+    # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
     δΔϵ_2000 *= arcsec2rad
     δΔΨ_2000 *= arcsec2rad
