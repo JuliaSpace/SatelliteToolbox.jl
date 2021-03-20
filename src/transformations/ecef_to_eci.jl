@@ -593,9 +593,13 @@ function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:ERS}, JD_UTC::Number,
     x_p = eop_data.x(JD_UTC)*arcsec2rad
     y_p = eop_data.y(JD_UTC)*arcsec2rad
 
+    # Obtain the correction of the nutation in longitude.
+    ~, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔΨ_2000 *= arcsec2rad
+
     # Compute the rotation.
     r_TIRS_ITRF = rITRFtoTIRS_iau2006(T, JD_TT, x_p, y_p)
-    r_ERS_TIRS = rTIRStoERS_iau2006(T, JD_UT1, JD_TT)
+    r_ERS_TIRS = rTIRStoERS_iau2006(T, JD_UT1, JD_TT, δΔΨ_2000)
 
     return compose_rotation(r_TIRS_ITRF, r_ERS_TIRS)
 end
