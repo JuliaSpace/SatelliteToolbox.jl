@@ -231,3 +231,114 @@ end
     @test v_ers[2] ≈ +0.7860771040  atol=1e-9
     @test v_ers[3] ≈ +5.5319312880  atol=1e-9
 end
+
+# Functions rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006, rMJ2000toGCRF_iau2006, and rGCRFtoMJ2000_iau2006
+# ------------------------------------------------------------------------------------------------------
+
+# We are testing all these functions together because we have in [1] the result
+# MOD <=> GCRF using equinox-based IAU-2006 theory, but we do not have the
+# intermediate result MOD <=> MJ2000.
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   JD_TT  = 2453101.828154745
+#   r_mod  = +5094.02896110   i + 6127.87113500   j + 6380.24774200   k [km]
+#   v_mod  =    -4.7462624800 i +    0.7860141930 j +    5.5317910320 k [km/s]
+#
+# one gets the following:
+#
+#   r_gcrf = 5102.50895780  i + 6123.01140380 j + 6378.13692530 k [km]
+#   v_gcrf =  -4.7432201560 i + 0.7905364970  j + 5.5337557280  k [km/s]
+#
+################################################################################
+
+@testset "Functions rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006, rMJ2000toGCRF_iau2006, and rGCRFtoMJ2000_iau2006" begin
+    JD_TT  = 2453101.828154745
+
+    # MOD to GCRF
+    # ===========
+
+    r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
+    v_mod = [-4.7462624800; +0.7860141930; +5.5317910320]
+
+    # DCM
+    # ---
+
+    D_GCRF_MOD = rMJ2000toGCRF_iau2006(JD_TT)*rMODtoMJ2000_iau2006(JD_TT)
+
+    r_gcrf = D_GCRF_MOD*r_mod
+    v_gcrf = D_GCRF_MOD*v_mod
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=1e-7
+    @test r_gcrf[2] ≈ +6123.01140380 atol=1e-7
+    @test r_gcrf[3] ≈ +6378.13692530 atol=1e-7
+
+    @test v_gcrf[1] ≈ -4.7432201560  atol=1e-9
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
+    @test v_gcrf[3] ≈ +5.5337557280  atol=1e-9
+
+    # Quaternion
+    # ----------
+
+    q_GCRF_MOD = rMODtoMJ2000_iau2006(Quaternion, JD_TT) *
+                 rMJ2000toGCRF_iau2006(Quaternion, JD_TT)
+
+    r_gcrf = vect(q_GCRF_MOD\r_mod*q_GCRF_MOD)
+    v_gcrf = vect(q_GCRF_MOD\v_mod*q_GCRF_MOD)
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=1e-7
+    @test r_gcrf[2] ≈ +6123.01140380 atol=1e-7
+    @test r_gcrf[3] ≈ +6378.13692530 atol=1e-7
+
+    @test v_gcrf[1] ≈ -4.7432201560  atol=1e-9
+    @test v_gcrf[2] ≈ +0.7905364970  atol=1e-9
+    @test v_gcrf[3] ≈ +5.5337557280  atol=1e-9
+
+    # GCRF to MOD
+    # ===========
+
+    r_gcrf = [+5102.50895780; +6123.01140380; +6378.13692530]
+    v_gcrf = [-4.7432201560; +0.7905364970; +5.5337557280]
+
+    # DCM
+    # ---
+
+    D_MOD_GCRF = rMJ2000toMOD_iau2006(JD_TT) * rGCRFtoMJ2000_iau2006(JD_TT)
+
+    r_mod = D_MOD_GCRF*r_gcrf
+    v_mod = D_MOD_GCRF*v_gcrf
+
+    @test r_mod[1] ≈ +5094.02896110 atol=1e-7
+    @test r_mod[2] ≈ +6127.87113500 atol=1e-7
+    @test r_mod[3] ≈ +6380.24774200 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624800  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141930  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910320  atol=1e-9
+
+    # Quaternion
+    # ----------
+
+    q_MOD_GCRF = rGCRFtoMJ2000_iau2006(Quaternion, JD_TT) *
+                 rMJ2000toMOD_iau2006(Quaternion, JD_TT)
+
+    r_mod = vect(q_MOD_GCRF\r_gcrf*q_MOD_GCRF)
+    v_mod = vect(q_MOD_GCRF\v_gcrf*q_MOD_GCRF)
+
+    @test r_mod[1] ≈ +5094.02896110 atol=1e-7
+    @test r_mod[2] ≈ +6127.87113500 atol=1e-7
+    @test r_mod[3] ≈ +6380.24774200 atol=1e-7
+
+    @test v_mod[1] ≈ -4.7462624800  atol=1e-9
+    @test v_mod[2] ≈ +0.7860141930  atol=1e-9
+    @test v_mod[3] ≈ +5.5317910320  atol=1e-9
+end

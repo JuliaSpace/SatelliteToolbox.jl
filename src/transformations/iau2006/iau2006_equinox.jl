@@ -25,7 +25,8 @@
 
 export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
        rERStoMOD_iau2006, rMODtoERS_iau2006,
-       rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006
+       rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006,
+       rMJ2000toGCRF_iau2006, rGCRFtoMJ2000_iau2006
 
 ################################################################################
 #                      IAU-2006 equinox-based reductions
@@ -299,3 +300,77 @@ rMJ2000toMOD_iau2006(JD_TT::Number) = rMJ2000toMOD_iau2006(DCM, JD_TT)
 
 rMJ2000toMOD_iau2006(T::Type, JD_TT::Number) =
     inv_rotation(rMODtoMJ2000_iau2006(T, JD_TT))
+
+################################################################################
+#                               MJ2000 <=> GCRF
+################################################################################
+
+"""
+    rMJ2000toGCRF_iau2006([T::Type,] JD_TT::Number = 0)
+
+Compute the rotation that aligns the J2000 mean equatorial frame with the
+Geocentric Celestial Reference Frame (GCRF). This algorithm uses the IAU-2006
+theory. Notice that this rotation is just a bias matrix that does not depend on
+the date. However, this function receives the argument `JD_TT` just to keep the
+API compatibility.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the MJ2000 frame with the MOD frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+According to [1], the frame bias that converts MJ2000 <=> GCRF is not a precise
+transformation for all the times.
+
+"""
+rMJ2000toGCRF_iau2006(JD_TT::Number = 0) = rMJ2000toGCRF_iau2006(DCM, JD_TT)
+
+function rMJ2000toGCRF_iau2006(T::Type, JD_TT::Number = 0)
+    # Auxiliary variables.
+    d2r = π/180
+    a2d = 1/3600
+    a2r = a2d*d2r
+
+    δα₀ = -0.0146 * a2r
+    ξ₀  = -0.041775 * sin(84381.448 * a2r) * a2r
+    η₀  = -0.0068192 * a2r
+
+    return angle_to_rot(T, η₀, -ξ₀, -δα₀, :XYZ)
+end
+
+"""
+    rGCRFtoMJ2000_iau2006([T::Type,] JD_TT::Number = 0)
+
+Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
+with the J2000 mean equatorial frame. This algorithm uses the IAU-2006 theory.
+Notice that this rotation is just a bias matrix that does not depend on the
+date. However, this function receives the argument `JD_TT` just to keep the API
+compatibility.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the MJ2000 frame with the MOD frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+According to [1], the frame bias that converts MJ2000 <=> GCRF is not a precise
+transformation for all the times.
+
+"""
+rGCRFtoMJ2000_iau2006(JD_TT::Number = 0) = rGCRFtoMJ2000_iau2006(DCM, JD_TT)
+
+rGCRFtoMJ2000_iau2006(T::Type, JD_TT::Number = 0) =
+    inv_rotation(rMJ2000toGCRF_iau2006(T, JD_TT))
