@@ -63,14 +63,17 @@ export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
 # ==============================================================================
 
 """
-    rTIRStoERS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rTIRStoERS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the Earth Reference System (ERS) at the Julian Day
 `JD_UT1` [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
-theory. Notice that one can provide corrections for the nutation longitude
-(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
-Data (see `get_iers_eop`).
+theory.
+
+Notice that one can provide corrections for the nutation in longitude
+(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
+[`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This corrections are related to
+Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -120,8 +123,11 @@ end
 Compute the rotation that aligns the Earth Reference System (ERS) with the
 Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
 [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006 theory.
-Notice that one can provide corrections for the nutation longitude (`δΔψ_2000`)
-\\[rad] that are usually obtained from IERS EOP Data (see `get_iers_eop`).
+
+Notice that one can provide corrections for the nutation in longitude
+(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
+[`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This corrections are related to
+Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -151,11 +157,17 @@ rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number =
 # ==============================================================================
 
 """
-    rERStoMOD_iau2006([T::Type,] JD_TT::Number)
+    rERStoMOD_iau2006([T::Type,] JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Earth Reference System (ERS) with the
 Mean of Date (MOD) reference frame at Julian day `JD_TT` [Terrestrial Time].
 This algorithm uses the IAU-2006 theory.
+
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+corrections are related to Free Core Nutation (FCN) that models the effect of a
+liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -183,11 +195,17 @@ function rERStoMOD_iau2006(T::Type, JD_TT::Number, δΔϵ_2000::Number = 0,
 end
 
 """
-    rMODtoERS_iau2006([T::Type,] JD_TT::Number)
+    rMODtoERS_iau2006([T::Type,] JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
 Earth Reference System (ERS) at Julian day `JD_TT` [Terrestrial Time]. This
 algorithm uses the IAU-2006 theory.
+
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+corrections are related to Free Core Nutation (FCN) that models the effect of a
+liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -385,14 +403,18 @@ rGCRFtoMJ2000_iau2006(T::Type, JD_TT::Number = 0) =
 # single rotations.
 
 """
-    rTIRStoMOD_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rTIRStoMOD_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the Mean of Date (MOD) reference frame at the Julian Day
 `JD_UT1` [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
-theory. Notice that one can provide corrections for the nutation longitude
-(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
-Data (see `get_iers_eop`).
+theory.
+
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+corrections are related to Free Core Nutation (FCN) that models the effect of a
+liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -445,14 +467,18 @@ function rTIRStoMOD_iau2006(T::Type, JD_UT1::Number, JD_TT::Number,
 end
 
 """
-    rMODtoTIRS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rMODtoTIRS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
 Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
 [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
-theory. Notice that one can provide corrections for the nutation longitude
-(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
-Data (see `get_iers_eop`).
+theory.
+
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+corrections are related to Free Core Nutation (FCN) that models the effect of a
+liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion

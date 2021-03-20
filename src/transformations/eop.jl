@@ -259,9 +259,9 @@ end
     dEps_dPsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
 
 Returns the celestial pole offsets in obliquity (δϵ_2000) and longitude
-(δΨ_2000). This function obtains those values by converting the celestial pole
-offsets with respect to the GCRS (`dX` and `dY`). These values are necessary in
-the equinox-based IAU-2006 theory.
+(δΨ_2000) [arcsec]. This function obtains those values by converting the
+celestial pole offsets with respect to the GCRS (`dX` and `dY`). These values
+are necessary in the equinox-based IAU-2006 theory.
 
 The algorithm was obtained from [2, eq. 5.25] and [3, `DPSIDEPS2000_DXDY2000`].
 
