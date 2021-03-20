@@ -815,3 +815,45 @@ end
     @test r_mj2000[2] ≈ +6123.01152000 atol=5e-4
     @test r_mj2000[3] ≈ +6378.13630000 atol=5e-4
 end
+
+## TIRS => ERS
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_tirs = -1033.47503120   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+# one gets:
+#
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECEFtoECI TIRS => ERS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
+
+    D_ERS_TIRS = rECEFtoECI(TIRS(), ERS(), JD_UTC, eop_iau2000a)
+    r_ers = D_ERS_TIRS*r_tirs
+
+    @test r_ers[1] ≈ +5094.51462800 atol=5e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=5e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=5e-4
+
+    q_ERS_TIRS = rECEFtoECI(Quaternion, TIRS(), ERS(), JD_UTC, eop_iau2000a)
+    r_ers = vect(q_ERS_TIRS\r_tirs*q_ERS_TIRS)
+
+    @test r_ers[1] ≈ +5094.51462800 atol=5e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=5e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=5e-4
+end
