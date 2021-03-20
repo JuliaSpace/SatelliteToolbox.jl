@@ -67,8 +67,9 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `J2000()`: ECI will be selected as the J2000 reference frame.
 * `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
             (GCRF).
-* `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
+* `CIRS()`: ECI will be selected as the Celestial Intermediate Reference System
             (CIRS).
+* `ERS()`: ECI will be selected as the Earth Reference System (ERS).
 
 # EOP Data
 
@@ -78,22 +79,23 @@ be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
 of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
 requirements for EOP data given the selected frames.
 
-|   Model       |  ECEF  |   ECI   |    EOP Data     |
-|:--------------|:-------|:--------|:---------------=|
-| IAU-76/FK5    | `ITRF` | `GCRF`  | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `J2000` | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `MOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `TOD`   | EOP IAU1980     |
-| IAU-76/FK5    | `ITRF` | `TEME`  | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `GCRF`  | EOP IAU1980     |
-| IAU-76/FK5    | `PEF`  | `J2000` | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `MOD`   | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `TOD`   | Not required¹   |
-| IAU-76/FK5    | `PEF`  | `TEME`  | Not required¹   |
-| IAU-2006/2010 | `ITRF` | `CIRS`  | EOP IAU2000A    |
-| IAU-2006/2010 | `ITRF` | `GCRF`  | EOP IAU2000A    |
-| IAU-2006/2010 | `TIRS` | `CIRS`  | Not required¹   |
-| IAU-2006/2010 | `TIRS` | `GCRF`  | Not required¹ ² |
+|   Model                     |  ECEF  |   ECI   |    EOP Data     |
+|:----------------------------|:-------|:--------|:---------------=|
+| IAU-76/FK5                  | `ITRF` | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5                  | `ITRF` | `J2000` | EOP IAU1980     |
+| IAU-76/FK5                  | `ITRF` | `MOD`   | EOP IAU1980     |
+| IAU-76/FK5                  | `ITRF` | `TOD`   | EOP IAU1980     |
+| IAU-76/FK5                  | `ITRF` | `TEME`  | EOP IAU1980     |
+| IAU-76/FK5                  | `PEF`  | `GCRF`  | EOP IAU1980     |
+| IAU-76/FK5                  | `PEF`  | `J2000` | Not required¹   |
+| IAU-76/FK5                  | `PEF`  | `MOD`   | Not required¹   |
+| IAU-76/FK5                  | `PEF`  | `TOD`   | Not required¹   |
+| IAU-76/FK5                  | `PEF`  | `TEME`  | Not required¹   |
+| IAU-2006/2010 CIO-based     | `ITRF` | `CIRS`  | EOP IAU2000A    |
+| IAU-2006/2010 CIO-based     | `ITRF` | `GCRF`  | EOP IAU2000A    |
+| IAU-2006/2010 CIO-based     | `TIRS` | `CIRS`  | Not required¹   |
+| IAU-2006/2010 CIO-based     | `TIRS` | `GCRF`  | Not required¹ ² |
+| IAU-2006/2010 Equinox-based | `ITRF` | `ERS`   | EOP IAU2000A    |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
@@ -185,7 +187,7 @@ Quaternion{Float64}:
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
-@inline rECEFtoECI(T_ECEF::Val{:TIRS}, T_ECI::Union{Val{:CIRS}, Val{:GCRF}},
+@inline rECEFtoECI(T_ECEF::Val{:TIRS}, T_ECI::T_ECIs_IAU_2006,
                    JD_UTC::Number) =
     rECEFtoECI(DCM, T_ECEF, T_ECI, JD_UTC)
 
@@ -461,7 +463,7 @@ function rECEFtoECI(T::T_ROT, ::Val{:PEF}, ::Val{:TEME}, JD_UTC::Number)
 end
 
 ################################################################################
-#                                IAU-2006/2010
+#                           IAU-2006/2010 CIO-based
 ################################################################################
 
 #                                 ITRF => CIRS
@@ -569,4 +571,31 @@ function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:GCRF}, JD_UTC::Number)
     r_GCRF_CIRS = rCIRStoGCRF_iau2006(T, JD_TT)
 
     return compose_rotation(r_CIRS_TIRS, r_GCRF_CIRS)
+end
+
+################################################################################
+#                         IAU-2006/2010 equinox-based
+################################################################################
+
+#                                 ITRF => ERS
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:ERS}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    x_p = eop_data.x(JD_UTC)*arcsec2rad
+    y_p = eop_data.y(JD_UTC)*arcsec2rad
+
+    # Compute the rotation.
+    r_TIRS_ITRF = rITRFtoTIRS_iau2006(T, JD_TT, x_p, y_p)
+    r_ERS_TIRS = rTIRStoERS_iau2006(T, JD_UT1, JD_TT)
+
+    return compose_rotation(r_TIRS_ITRF, r_ERS_TIRS)
 end

@@ -35,6 +35,7 @@ IAU-76/FK5 theory.
 
 """
 T_ECIs_of_date = Union{Val{:TOD}, Val{:MOD}, Val{:TEME}}
+
 """
     T_ECEFs_IAU_2006
 
@@ -45,13 +46,31 @@ theory.
 T_ECEFs_IAU_2006 = Union{Val{:ITRF}, Val{:TIRS}}
 
 """
+    T_ECIs_IAU_2006_CIO
+
+Union of all Earth-Centered Inertial (ECI) frames supported by CIO-based
+IAU-2006/2010 theory.
+
+"""
+T_ECIs_IAU_2006_CIO = Union{Val{:GCRF}, Val{:CIRS}}
+
+"""
+    T_ECIs_IAU_2006_Equinox
+
+Union of all Earth-Centered Inertial (ECI) frames supported by Equinox-based
+IAU-2006/2010 theory.
+
+"""
+T_ECIs_IAU_2006_Equinox = Union{Val{:GCRF}, Val{:MJ2000}, Val{:MOD}, Val{:ERS}}
+
+"""
     T_ECIs_IAU_2006
 
 Union of all Earth-Centered Inertial (ECI) frames supported by IAU-2006/2010
 theory.
 
 """
-T_ECIs_IAU_2006 = Union{Val{:GCRF}, Val{:CIRS}}
+T_ECIs_IAU_2006 = Union{T_ECIs_IAU_2006_CIO, T_ECIs_IAU_2006_Equinox}
 
 """
     T_ROT
