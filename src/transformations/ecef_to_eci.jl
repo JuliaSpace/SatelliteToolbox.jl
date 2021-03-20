@@ -603,3 +603,30 @@ function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:ERS}, JD_UTC::Number,
 
     return compose_rotation(r_TIRS_ITRF, r_ERS_TIRS)
 end
+
+#                                 ITRF => MOD
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MOD}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Get the EOP data related to the desired epoch.
+    x_p = eop_data.x(JD_UTC)*arcsec2rad
+    y_p = eop_data.y(JD_UTC)*arcsec2rad
+
+    # Obtain the correction of the nutation in longitude.
+    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔϵ_2000 *= arcsec2rad
+    δΔΨ_2000 *= arcsec2rad
+
+    # Compute the rotation.
+    r_TIRS_ITRF = rITRFtoTIRS_iau2006(T, JD_TT, x_p, y_p)
+    r_MOD_TIRS = rTIRStoMOD_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+    return compose_rotation(r_TIRS_ITRF, r_MOD_TIRS)
+end
