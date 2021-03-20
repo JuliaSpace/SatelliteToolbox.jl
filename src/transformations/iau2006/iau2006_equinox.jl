@@ -14,10 +14,18 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] Capitaine, N., Wallace, P. T (2006). High precision methods for locating
+#       the celestial intermediate pole and origin. Astronomy & Astrophysics.
+#
+#   [3] IERS (2010). Transformation between the International Terrestrial
+#       Reference System and the Geocentric Celestial Reference System. IERS
+#       Technical Note No. 36, Chapter 5.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
-       rERStoMOD_iau2006, rMODtoERS_iau2006
+       rERStoMOD_iau2006, rMODtoERS_iau2006,
+       rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006
 
 ################################################################################
 #                      IAU-2006 equinox-based reductions
@@ -196,3 +204,98 @@ rMODtoERS_iau2006(JD_TT::Number, δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 
 rMODtoERS_iau2006(T::Type, JD_TT::Number, δΔϵ_2000::Number = 0,
                   δΔΨ_2000::Number = 0) =
     inv_rotation(rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000))
+
+#                                MOD <=> MJ2000
+# ==============================================================================
+
+"""
+    rMODtoMJ2000_iau2006([T::Type,] JD_TT::Number)
+
+Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
+J2000 mean equatorial frame at Julian day `JD_TT` [Terrestrial Time]. This
+algorithm uses the IAU-2006 theory.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the MOD frame with the MJ2000 frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+The J2000 reference frame here is not equal to the previous definition in FK5
+theory. It is the reason why it is internally called `MJ2000`. According to [3]:
+
+> The mean equinox of J2000.0 to be considered is not the “rotational dynamical
+> mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
+> equinox of J2000.0” to which the recent numerical or analytical solutions
+> refer.  The latter is associated with the ecliptic in the inertial sense,
+> which is the plane perpendicular to the angular momentum vector of the orbital
+> motion of the Earth-Moon barycenter as computed from the velocity of the
+> barycenter relative to an inertial system. The rotational equinox is
+> associated with the ecliptic in the rotational sense, which is perpendicular
+> to the angular momentum vector computed from the velocity referred to the
+> rotating orbital plane of the Earth-Moon barycenter. (The difference between
+> the two angular momenta is the angular momentum associated with the rotation
+> of the orbital plane.)
+
+"""
+rMODtoMJ2000_iau2006(JD_TT::Number) = rMODtoMJ2000_iau2006(DCM, JD_TT)
+
+function rMODtoMJ2000_iau2006(T::Type, JD_TT::Number)
+    # Compute the angles used in the precession model.
+    Ψ_a, ω_a, χ_a = precession_iau2006(JD_TT)
+    ϵ_0 = 84381.406*pi/180/3600
+
+    # NOTE: According to [2], the matrix as written in [1, p. 218] rotates the
+    # MJ2000 to the MOD. Hence, we need the inverse matrix. Furthermore, the
+    # equation in [1, p. 218, eq. 3-73] uses mϵ_2000 instead of ϵ_0 as in
+    # [2, eq. 12].
+    return compose_rotation(angle_to_rot(T, -χ_a, ω_a, Ψ_a, :ZXZ),
+                            angle_to_rot(T, -ϵ_0, 0, 0, :XYZ))
+end
+
+"""
+    rMJ2000toMOD_iau2006([T::Type,] JD_TT::Number)
+
+Compute the rotation that aligns the J2000 mean equatorial frame with the Mean
+of Date (MOD) reference frame with the at Julian day `JD_TT` [Terrestrial Time].
+This algorithm uses the IAU-2006 theory.
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the MJ2000 frame with the MOD frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+The J2000 reference frame here is not equal to the previous definition in FK5
+theory. It is the reason why it is internally called `MJ2000`. According to [3]:
+
+> The mean equinox of J2000.0 to be considered is not the “rotational dynamical
+> mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
+> equinox of J2000.0” to which the recent numerical or analytical solutions
+> refer.  The latter is associated with the ecliptic in the inertial sense,
+> which is the plane perpendicular to the angular momentum vector of the orbital
+> motion of the Earth-Moon barycenter as computed from the velocity of the
+> barycenter relative to an inertial system. The rotational equinox is
+> associated with the ecliptic in the rotational sense, which is perpendicular
+> to the angular momentum vector computed from the velocity referred to the
+> rotating orbital plane of the Earth-Moon barycenter. (The difference between
+> the two angular momenta is the angular momentum associated with the rotation
+> of the orbital plane.)
+
+"""
+rMJ2000toMOD_iau2006(JD_TT::Number) = rMJ2000toMOD_iau2006(DCM, JD_TT)
+
+rMJ2000toMOD_iau2006(T::Type, JD_TT::Number) =
+    inv_rotation(rMODtoMJ2000_iau2006(T, JD_TT))
