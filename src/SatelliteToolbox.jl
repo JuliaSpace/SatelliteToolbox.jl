@@ -155,6 +155,7 @@ include("transformations/iau2006/iau2006_equinox.jl")
 include("transformations/iau2006/fundamental_args.jl")
 include("transformations/iau2006/misc.jl")
 include("transformations/iau2006/nutation_eo.jl")
+include("transformations/iau2006/precession.jl")
 
 include("transformations/iau2006/constants/cio_s.jl")
 include("transformations/iau2006/constants/cip_x.jl")
