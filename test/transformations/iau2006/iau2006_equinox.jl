@@ -342,3 +342,112 @@ end
     @test v_mod[2] ≈ +0.7860141930  atol=1e-9
     @test v_mod[3] ≈ +5.5317910320  atol=1e-9
 end
+
+# Functions rTIRStoMOD_iau2006 and rMODtoTIRS_iau2006
+# ---------------------------------------------------
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   JD_UT1 = 2453101.827406783
+#   JD_TT  = 2453101.828154745
+#   r_tirs  = -1033.47503120   i + 7901.30558560   j + 6380.34453270   k [km]
+#   v_tirs  =    -3.2256327470 i -    2.8724425110 j +    5.5319312880 k [km/s]
+#
+# one gets the following:
+#
+#   r_mod  = +5094.02896110   i + 6127.87113500   j + 6380.24774200   k [km]
+#   v_mod  =    -4.7462624800 i +    0.7860141930 j +    5.5317910320 k [km/s]
+#
+################################################################################
+
+@testset "Functions rTIRStoMOD_iau2006 and rMODtoTIRS_iau2006" begin
+    JD_UT1 = 2453101.827406783
+    JD_TT  = 2453101.828154745
+    LOD    = 0.0015563
+    w      = 7.292115146706979e-5*(1-LOD/86400)
+
+    # rTIRStoMOD_iau2006
+    # ==================
+
+    r_tirs  = [-1033.47503120; 7901.30558560; 6380.34453270]
+    v_tirs  = [-3.2256327470; -2.8724425110; +5.5319312880]
+
+    # DCM
+    # ---
+
+    D_MOD_TIRS = rTIRStoMOD_iau2006(JD_UT1, JD_TT)
+
+    r_mod = D_MOD_TIRS*r_tirs
+    v_mod = D_MOD_TIRS*(v_tirs + [0;0;w] × r_tirs)
+
+    @test r_mod[1] ≈ +5094.02896110 atol=5e-6
+    @test r_mod[2] ≈ +6127.87113500 atol=5e-6
+    @test r_mod[3] ≈ +6380.24774200 atol=5e-6
+
+    @test v_mod[1] ≈ -4.7462624800  atol=5e-9
+    @test v_mod[2] ≈ +0.7860141930  atol=5e-9
+    @test v_mod[3] ≈ +5.5317910320  atol=5e-9
+
+    # Quaternion
+    # ----------
+
+    q_MOD_TIRS = rTIRStoMOD_iau2006(Quaternion, JD_UT1, JD_TT)
+
+    r_mod = vect(q_MOD_TIRS\r_tirs*q_MOD_TIRS)
+    v_mod = vect(q_MOD_TIRS\(v_tirs + [0;0;w] × r_tirs)*q_MOD_TIRS)
+
+    @test r_mod[1] ≈ +5094.02896110 atol=5e-6
+    @test r_mod[2] ≈ +6127.87113500 atol=5e-6
+    @test r_mod[3] ≈ +6380.24774200 atol=5e-6
+
+    @test v_mod[1] ≈ -4.7462624800  atol=5e-9
+    @test v_mod[2] ≈ +0.7860141930  atol=5e-9
+    @test v_mod[3] ≈ +5.5317910320  atol=5e-9
+
+    # rERStoTIRS_iau2006
+    # ==================
+
+    r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
+    v_mod = [-4.7462624800; +0.7860141930; +5.5317910320]
+
+    # DCM
+    # ---
+
+    D_TIRS_MOD = rMODtoTIRS_iau2006(JD_UT1, JD_TT)
+
+    r_tirs = D_TIRS_MOD*r_mod
+    v_tirs = D_TIRS_MOD*v_mod - [0;0;w] × r_tirs
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-6
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-6
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-6
+
+    @test v_tirs[1] ≈ -3.2256327470  atol=5e-9
+    @test v_tirs[2] ≈ -2.8724425110  atol=5e-9
+    @test v_tirs[3] ≈ +5.5319312880  atol=5e-9
+
+    # Quaternion
+    # ----------
+
+    q_TIRS_MOD = rMODtoTIRS_iau2006(Quaternion, JD_UT1, JD_TT)
+
+    r_tirs = vect(q_TIRS_MOD\r_mod*q_TIRS_MOD)
+    v_tirs = vect(q_TIRS_MOD\v_mod*q_TIRS_MOD) - [0;0;w] × r_tirs
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-6
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-6
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-6
+
+    @test v_tirs[1] ≈ -3.2256327470  atol=5e-9
+    @test v_tirs[2] ≈ -2.8724425110  atol=5e-9
+    @test v_tirs[3] ≈ +5.5319312880  atol=5e-9
+end

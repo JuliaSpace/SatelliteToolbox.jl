@@ -26,7 +26,8 @@
 export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
        rERStoMOD_iau2006, rMODtoERS_iau2006,
        rMODtoMJ2000_iau2006, rMJ2000toMOD_iau2006,
-       rMJ2000toGCRF_iau2006, rGCRFtoMJ2000_iau2006
+       rMJ2000toGCRF_iau2006, rGCRFtoMJ2000_iau2006,
+       rTIRStoMOD_iau2006, rMODtoTIRS_iau2006
 
 ################################################################################
 #                      IAU-2006 equinox-based reductions
@@ -150,7 +151,7 @@ rERStoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number =
 # ==============================================================================
 
 """
-    rERStoMOD_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rERStoMOD_iau2006([T::Type,] JD_TT::Number)
 
 Compute the rotation that aligns the Earth Reference System (ERS) with the
 Mean of Date (MOD) reference frame at Julian day `JD_TT` [Terrestrial Time].
@@ -182,7 +183,7 @@ function rERStoMOD_iau2006(T::Type, JD_TT::Number, δΔϵ_2000::Number = 0,
 end
 
 """
-    rMODtoERS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+    rMODtoERS_iau2006([T::Type,] JD_TT::Number)
 
 Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
 Earth Reference System (ERS) at Julian day `JD_TT` [Terrestrial Time]. This
@@ -374,3 +375,107 @@ rGCRFtoMJ2000_iau2006(JD_TT::Number = 0) = rGCRFtoMJ2000_iau2006(DCM, JD_TT)
 
 rGCRFtoMJ2000_iau2006(T::Type, JD_TT::Number = 0) =
     inv_rotation(rMJ2000toGCRF_iau2006(T, JD_TT))
+
+################################################################################
+#                              Multiple Rotations
+################################################################################
+
+# The functions with multiple rotations must be added here only when the it will
+# decrease the computational burden compared to calling the functions with the
+# single rotations.
+
+"""
+    rTIRStoMOD_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+
+Compute the rotation that aligns the Terrestrial Intermediate Reference System
+(TIRS) with the Mean of Date (MOD) reference frame at the Julian Day
+`JD_UT1` [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
+theory. Notice that one can provide corrections for the nutation longitude
+(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
+Data (see `get_iers_eop`).
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the TIRS frame with the ERS frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
+because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
+`nutation_eo`, which has a high computational burden. In this case, the composed
+algorithm is about 2x faster than calling those function separately.
+
+"""
+rTIRStoMOD_iau2006(JD_UT1::Number, JD_TT::Number, δΔϵ_2000::Number = 0,
+                    δΔΨ_2000::Number = 0) =
+    rTIRStoMOD_iau2006(DCM, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+function rTIRStoMOD_iau2006(T::Type, JD_UT1::Number, JD_TT::Number,
+                            δΔϵ_2000::Number = 0, δΔΨ_2000::Number = 0)
+
+    # In this theory, the rotation of Earth is taken into account by the Earth
+    # Rotation Angle, which is the angle between the Conventional International
+    # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
+    # is a reference meridian on Earth that is located about 100m away from
+    # Greenwich meridian along the equator of the Celestial Intermediate Pole
+    # (CIP) [1].
+    θ_era = 2π*(0.7790572732640 + 1.00273781191135448*(JD_UT1 - JD_J2000))
+    θ_era = mod(θ_era, 2π)
+
+    # Compute the Equation of the Origins (EO).
+    mϵ_2000, Δϵ_2000, ΔΨ_2000, EO = nutation_eo_iau2006(JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+    # Compute the Greenwich apparent sidereal angle (GAST).
+    θ_gast2000 = θ_era - EO
+
+    # Compute the rotation between the TIRS and ERS.
+    r_ERS_TIRS = angle_to_rot(T, -θ_gast2000, 0, 0, :ZYX)
+
+    # Compute the rotation between ERS and MOD.
+    r_MOD_ERS = angle_to_rot(T, mϵ_2000 + Δϵ_2000, ΔΨ_2000, -mϵ_2000, :XZX)
+
+    # Return the composed rotation.
+    return compose_rotation(r_ERS_TIRS, r_MOD_ERS)
+end
+
+"""
+    rMODtoTIRS_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number)
+
+Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
+Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
+[UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
+theory. Notice that one can provide corrections for the nutation longitude
+(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP
+Data (see `get_iers_eop`).
+
+The rotation type is described by the optional variable `T`. If it is `DCM`,
+then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
+will be returned. In case this parameter is omitted, then it falls back to
+`DCM`.
+
+# Returns
+
+The rotation that aligns the TIRS frame with the ERS frame. The rotation
+representation is selected by the optional parameter `T`.
+
+# Remarks
+
+This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
+because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
+`nutation_eo`, which has a high computational burden. In this case, the composed
+algorithm is about 2x faster than calling those function separately.
+
+"""
+rMODtoTIRS_iau2006(JD_UT1::Number, JD_TT::Number, δΔϵ_2000::Number = 0,
+                   δΔΨ_2000::Number = 0) =
+    rMODtoTIRS_iau2006(DCM, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
+
+rMODtoTIRS_iau2006(T::Type, JD_UT1::Number, JD_TT::Number, δΔϵ_2000::Number = 0,
+                   δΔΨ_2000::Number = 0) =
+    inv_rotation(rTIRStoMOD_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000))
