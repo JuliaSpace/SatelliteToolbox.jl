@@ -42,7 +42,8 @@ export rTIRStoERS_iau2006, rERStoTIRS_iau2006,
 #   - TIRS: Terrestrial Intermediate Reference System.
 #   - ERS: Earth Reference System.
 #   - MOD: Mean of Date reference frame.
-#   - MJ2000: Mean of J2000 (Mean Equator, Mean Equinox dynamical system).
+#   - MJ2000: J2000 mean equatorial frame (mean Equator, mean equinox dynamical
+#             system).
 #   - GCRF: Geocentric Celestial Reference Frame.
 #
 # Every rotation will be coded as a function using the IAU-2006 theory with the

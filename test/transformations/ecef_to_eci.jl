@@ -770,3 +770,48 @@ end
     @test r_mod[2] ≈ +6127.87113500 atol=5e-4
     @test r_mod[3] ≈ +6380.24774200 atol=5e-4
 end
+
+## ITRF => MJ2000
+## ==============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+# one gets:
+#
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECEFtoECI ITRF => MJ2000" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
+
+    D_MJ2000_ITRF = rECEFtoECI(ITRF(), MJ2000(), JD_UTC, eop_iau2000a)
+    r_mj2000 = D_MJ2000_ITRF*r_itrf
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=5e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=5e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=5e-4
+
+    q_MJ2000_ITRF = rECEFtoECI(Quaternion, ITRF(), MJ2000(), JD_UTC, eop_iau2000a)
+    r_mj2000 = vect(q_MJ2000_ITRF\r_itrf*q_MJ2000_ITRF)
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=5e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=5e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=5e-4
+end
