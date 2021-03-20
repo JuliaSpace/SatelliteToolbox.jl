@@ -22,6 +22,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+export precession_iau2006
+
 """
     precession_iau2006(JD_TT::Number)
 
