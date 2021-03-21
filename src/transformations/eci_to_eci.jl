@@ -106,7 +106,9 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 CIO-based     | `GCRF`   | `CIRS`   | Not required¹ | First              |
 | IAU-2006/2010 CIO-based     | `CIRS`   | `CIRS`   | Not required¹ | Second             |
 | IAU-2006/2010 Equinox-based | `GCRF`   | `MJ2000` | Not required  | First²             |
+| IAU-2006/2010 Equinox-based | `GCRF`   | `MOD`    | Not required  | First              |
 | IAU-2006/2010 Equinox-based | `MJ2000` | `GCRF`   | Not required  | First²             |
+| IAU-2006/2010 Equinox-based | `MOD`    | `GCRF`   | Not required  | First              |
 
 `¹`: In this case, the terms that account for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
@@ -573,4 +575,27 @@ rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MJ2000}, JD_UTC::Number,
 rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MJ2000}, JD_UTC::Number) =
     rGCRFtoMJ2000_iau2006(T)
 
+#                                 GCRF <=> MOD
+# ==============================================================================
 
+rECItoECI(T::T_ROT, ::Val{:MOD}, ::Val{:GCRF}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rECItoECI(T, Val(:MOD), Val(:GCRF), JD_UTC)
+
+function rECItoECI(T::T_ROT, ::Val{:MOD}, ::Val{:GCRF}, JD_UTC::Number)
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Compute and return the composed rotation.
+    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+
+    return compose_rotation(r_MJ2000_MOD, r_GCRF_MJ2000)
+end
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MOD}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rECItoECI(T, Val(:GCRF), Val(:MOD), JD_UTC)
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MOD}, JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, Val(:MOD), Val(:GCRF), JD_UTC))
