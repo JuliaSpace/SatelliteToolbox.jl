@@ -107,8 +107,10 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 CIO-based     | `CIRS`   | `CIRS`   | Not required¹ | Second             |
 | IAU-2006/2010 Equinox-based | `GCRF`   | `MJ2000` | Not required  | First²             |
 | IAU-2006/2010 Equinox-based | `GCRF`   | `MOD`    | Not required  | First              |
+| IAU-2006/2010 Equinox-based | `GCRF`   | `ERS`    | Not required³ | First              |
 | IAU-2006/2010 Equinox-based | `MJ2000` | `GCRF`   | Not required  | First²             |
 | IAU-2006/2010 Equinox-based | `MOD`    | `GCRF`   | Not required  | First              |
+| IAU-2006/2010 Equinox-based | `ERS`    | `GCRF`   | Not required³ | First              |
 
 `¹`: In this case, the terms that account for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
@@ -117,6 +119,10 @@ to the GCRF will not be available, reducing the precision.
 `²`: The transformation between GCRF and MJ2000 is a constant rotation matrix
 called bias. Hence, the date does not modify it. However, this signature was
 kept to avoid complications in the API.
+
+`³`: In this case, the terms that corrects the nutation in obliquity and in
+longitude due to the free core nutation will not be available, reducing the
+precision.
 
 ## MOD and TOD
 
@@ -599,3 +605,46 @@ rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MOD}, JD_UTC::Number,
 
 rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MOD}, JD_UTC::Number) =
     inv_rotation(rECItoECI(T, Val(:MOD), Val(:GCRF), JD_UTC))
+
+#                                 GCRF <=> ERS
+# ==============================================================================
+
+function rECItoECI(T::T_ROT, ::Val{:ERS}, ::Val{:GCRF}, JD_UTC::Number,
+                   eop_data::EOPData_IAU2000A)
+
+    arcsec2rad = π/648000
+
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Obtain the correction of the nutation in obliquity and longitude.
+    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔϵ_2000 *= arcsec2rad
+    δΔΨ_2000 *= arcsec2rad
+
+    # Compute and return the composed rotation.
+    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+
+    return compose_rotation(r_MOD_ERS, r_MJ2000_MOD, r_GCRF_MJ2000)
+end
+
+function rECItoECI(T::T_ROT, ::Val{:ERS}, ::Val{:GCRF}, JD_UTC::Number)
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Compute and return the composed rotation.
+    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, 0, 0)
+    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+
+    return compose_rotation(r_MOD_ERS, r_MJ2000_MOD, r_GCRF_MJ2000)
+end
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:ERS}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    inv_rotation(rECItoECI(T, Val(:ERS), Val(:GCRF), JD_UTC, eop_data))
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:ERS}, JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, Val(:ERS), Val(:GCRF), JD_UTC))

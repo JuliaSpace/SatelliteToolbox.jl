@@ -1327,7 +1327,7 @@ end
 end
 
 ## GCRF <=> MOD
-## ===============
+## ============
 
 ################################################################################
 #                                 Test Results
@@ -1405,4 +1405,85 @@ end
     @test r_mod[1] ≈ +5094.02896110 atol=1e-7
     @test r_mod[2] ≈ +6127.87113500 atol=1e-7
     @test r_mod[3] ≈ +6380.24774200 atol=1e-7
+end
+
+## GCRF <=> ERS
+## ============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_gcrf = 5102.50895780  i + 6123.01140380 j + 6378.13692530 k [km]
+#
+# one gets the following (this is the result in Table 3-6):
+#
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECItoECI GCRF <=> ERS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## ERS => GCRF
+    ## ===========
+
+    r_ers = [+5094.51462800; +6127.36658790; +6380.34453270]
+
+    ## DCM
+    ## ---
+
+    D_GCRF_ERS = rECItoECI(ERS(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = D_GCRF_ERS*r_ers
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=5e-5
+    @test r_gcrf[2] ≈ +6123.01140380 atol=5e-5
+    @test r_gcrf[3] ≈ +6378.13692530 atol=5e-5
+
+    ## Quaternion
+    ## ----------
+
+    q_GCRF_ERS = rECItoECI(Quaternion, ERS(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = vect(conj(q_GCRF_ERS)*r_ers*q_GCRF_ERS)
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=5e-5
+    @test r_gcrf[2] ≈ +6123.01140380 atol=5e-5
+    @test r_gcrf[3] ≈ +6378.13692530 atol=5e-5
+
+    ## GCRF => ERS
+    ## ===========
+
+    r_gcrf = [+5102.50895780; +6123.01140380; +6378.13692530]
+
+    ## DCM
+    ## ---
+
+    D_ERS_GCRF = rECItoECI(GCRF(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = D_ERS_GCRF*r_gcrf
+
+    @test r_ers[1] ≈ +5094.51462800 atol=5e-5
+    @test r_ers[2] ≈ +6127.36658790 atol=5e-5
+    @test r_ers[3] ≈ +6380.34453270 atol=5e-5
+
+    ## Quaternion
+    ## ----------
+
+    q_ERS_GCRF = rECItoECI(Quaternion, GCRF(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = vect(conj(q_ERS_GCRF)*r_gcrf*q_ERS_GCRF)
+
+    @test r_ers[1] ≈ +5094.51462800 atol=5e-5
+    @test r_ers[2] ≈ +6127.36658790 atol=5e-5
+    @test r_ers[3] ≈ +6380.34453270 atol=5e-5
 end
