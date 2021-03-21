@@ -692,8 +692,6 @@ function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:ERS}, JD_UTC::Number,
 end
 
 function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:ERS}, JD_UTC::Number)
-    arcsec2rad = π/648000
-
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = JD_UTCtoTT(JD_UTC)
