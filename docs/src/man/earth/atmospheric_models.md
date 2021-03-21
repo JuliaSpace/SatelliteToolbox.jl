@@ -94,7 +94,7 @@ following fields:
 ```jldoctest
 julia> jr1971(DatetoJD(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 1.34)
 JR1971_Output{Float64}
-  nN2: Float64 2.843498099130382e7
+  nN2: Float64 2.8434980991303828e7
   nO2: Float64 174222.87498004676
   nO: Float64 1.4139107014677634e11
   nAr: Float64 8.972570981074634
