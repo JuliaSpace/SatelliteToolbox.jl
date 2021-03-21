@@ -101,6 +101,7 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 Equinox-based | `ITRF` | `MJ2000` | EOP IAU2000A    |
 | IAU-2006/2010 Equinox-based | `TIRS` | `ERS`    | Not required¹ ³ |
 | IAU-2006/2010 Equinox-based | `TIRS` | `MOD`    | Not required¹ ³ |
+| IAU-2006/2010 Equinox-based | `TIRS` | `MJ2000` | Not required¹ ³ |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
@@ -729,3 +730,42 @@ function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD}, JD_UTC::Number)
     # Compute the rotation.
     return rTIRStoMOD_iau2006(T, JD_UT1, JD_TT)
 end
+
+#                                TIRS => MJ2000
+# ==============================================================================
+
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MJ2000}, JD_UTC::Number,
+                    eop_data::EOPData_IAU2000A)
+    arcsec2rad = π/648000
+
+    # Get the time in UT1 and TT.
+    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Obtain the correction of the nutation in obliquity and longitude.
+    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔϵ_2000 *= arcsec2rad
+    δΔΨ_2000 *= arcsec2rad
+
+    # Compute the rotation.
+    r_MOD_TIRS   = rTIRStoMOD_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    r_MJ2000_MOD = rMODtoMJ2000_iau2006(T, JD_TT)
+
+    return compose_rotation(r_MOD_TIRS, r_MJ2000_MOD)
+end
+
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MJ2000}, JD_UTC::Number)
+    # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
+    JD_UT1 = JD_UTC
+    JD_TT  = JD_UTCtoTT(JD_UTC)
+
+    # Compute the rotation.
+    r_MOD_TIRS   = rTIRStoMOD_iau2006(T, JD_UT1, JD_TT)
+    r_MJ2000_MOD = rMODtoMJ2000_iau2006(T, JD_TT)
+
+    return compose_rotation(r_MOD_TIRS, r_MJ2000_MOD)
+end
+
+# NOTE: We do not implement the conversion TIRS => GCRF using equinox-based
+# IAU-2006/2010 theory because the CIO-based approach is faster and more
+# precise.
