@@ -687,7 +687,7 @@ function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:ERS}, JD_UTC::Number,
 
     # Obtain the correction of the nutation in longitude.
     ~, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
-    @show δΔΨ_2000 *= arcsec2rad
+    δΔΨ_2000 *= arcsec2rad
 
     # Compute the rotation.
     return rTIRStoERS_iau2006(T, JD_UT1, JD_TT, δΔΨ_2000)
