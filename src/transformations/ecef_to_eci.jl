@@ -26,7 +26,8 @@ which can be `DCM` or `Quaternion`. The ECEF frame is selected by the input
 `ECEF` and the `ECI` frame is selected by the input `ECI`. The possible values
 are listed below. The model used to compute the rotation is specified by the
 selection of the origin and destination frames. Currently, there are two models
-supported: IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO approach only).
+supported: IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO and equinox
+approaches).
 
 # Rotation description
 

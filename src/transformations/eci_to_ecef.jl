@@ -26,7 +26,7 @@ be `DCM` or `Quaternion`. The ECI frame is selected by the input `ECI` and the
 `ECEF` frame is selected by the input `ECEF`. The possible values are listed
 below. The model used to compute the rotation is specified by the selection of
 the origin and destination frames. Currently, there are two models supported:
-IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO approach only).
+IAU-76/FK5 and IAU-2006 with 2010 conventions (CIO and equinox approaches).
 
 # Rotation description
 
@@ -58,6 +58,8 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
             (GCRF).
 * `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
             (CIRS).
+* `ERS()`: ECI will be selected as the Earth Reference System (ERS).
+* `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
 
 # ECEF Frame
 
