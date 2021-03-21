@@ -78,22 +78,28 @@ be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
 of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
 requirements for EOP data given the selected frames.
 
-|   Model       |   ECI   |  ECEF  |    EOP Data     |
-|:--------------|:--------|:-------|:----------------|
-| IAU-76/FK5    | `GCRF`  | `ITRF` | EOP IAU1980     |
-| IAU-76/FK5    | `J2000` | `ITRF` | EOP IAU1980     |
-| IAU-76/FK5    | `MOD`   | `ITRF` | EOP IAU1980     |
-| IAU-76/FK5    | `TOD`   | `ITRF` | EOP IAU1980     |
-| IAU-76/FK5    | `TEME`  | `ITRF` | EOP IAU1980     |
-| IAU-76/FK5    | `GCRF`  | `PEF`  | EOP IAU1980     |
-| IAU-76/FK5    | `J2000` | `PEF`  | Not required¹   |
-| IAU-76/FK5    | `MOD`   | `PEF`  | Not required¹   |
-| IAU-76/FK5    | `TOD`   | `PEF`  | Not required¹   |
-| IAU-76/FK5    | `TEME`  | `PEF`  | Not required¹   |
-| IAU-2006/2010 | `CIRS`  | `ITRF` | EOP IAU2000A    |
-| IAU-2006/2010 | `GCRF`  | `ITRF` | EOP IAU2000A    |
-| IAU-2006/2010 | `CIRS`  | `TIRS` | Not required¹   |
-| IAU-2006/2010 | `GCRF`  | `TIRS` | Not required¹ ² |
+|   Model                     |   ECI    |  ECEF  |    EOP Data     |
+|:----------------------------|:---------|:-------|:----------------|
+| IAU-76/FK5                  | `GCRF`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5                  | `J2000`  | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5                  | `MOD`    | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5                  | `TOD`    | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5                  | `TEME`   | `ITRF` | EOP IAU1980     |
+| IAU-76/FK5                  | `GCRF`   | `PEF`  | EOP IAU1980     |
+| IAU-76/FK5                  | `J2000`  | `PEF`  | Not required¹   |
+| IAU-76/FK5                  | `MOD`    | `PEF`  | Not required¹   |
+| IAU-76/FK5                  | `TOD`    | `PEF`  | Not required¹   |
+| IAU-76/FK5                  | `TEME`   | `PEF`  | Not required¹   |
+| IAU-2006/2010 CIO-based     | `CIRS`   | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 CIO-based     | `GCRF`   | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 CIO-based     | `CIRS`   | `TIRS` | Not required¹   |
+| IAU-2006/2010 CIO-based     | `GCRF`   | `TIRS` | Not required¹ ² |
+| IAU-2006/2010 Equinox-based | `ERS`    | `TIRS` | EOP IAU2000A    |
+| IAU-2006/2010 Equinox-based | `MOD`    | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 Equinox-based | `MJ2000` | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 Equinox-based | `ERS`    | `TIRS` | Not required¹ ³ |
+| IAU-2006/2010 Equinox-based | `MOD`    | `TIRS` | Not required¹ ³ |
+| IAU-2006/2010 Equinox-based | `MJ2000` | `TIRS` | Not required¹ ³ |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
 to compute the Greenwich Mean Sidereal Time. This is an approximation, but
@@ -194,19 +200,18 @@ Quaternion{Float64}:
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECEF(T_ECI::Union{Val{:J2000},Val{:TOD}, Val{:MOD},Val{:TEME}},
+@inline rECItoECEF(T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
                    T_ECEF::Val{:PEF}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
 @inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Val{:J2000},Val{:TOD}, Val{:MOD},Val{:TEME}},
+                   T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
                    T_ECEF::Val{:PEF}, JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
 
-@inline rECItoECEF(T_ECI::Union{Val{:CIRS},Val{:GCRF}}, T_ECEF::Val{:TIRS},
-                   JD_UTC::Number) =
+@inline rECItoECEF(T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
-@inline rECItoECEF(T::T_ROT, T_ECI::Union{Val{:CIRS},Val{:GCRF}},
-                   T_ECEF::Val{:TIRS}, JD_UTC::Number) =
+@inline rECItoECEF(T::T_ROT, T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS},
+                   JD_UTC::Number) =
     inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))

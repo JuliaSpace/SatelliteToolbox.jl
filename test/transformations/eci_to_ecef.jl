@@ -1,17 +1,19 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Tests related to ECI to ECEF transformations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Get the current EOP Data.
 #
@@ -514,7 +516,7 @@ end
 end
 
 ################################################################################
-#                                IAU-2006/2010
+#                           IAU-2006/2010 CIO-based
 ################################################################################
 
 ## GCRF => TIRS
@@ -683,4 +685,266 @@ end
     @test r_itrf[1] ≈ -1033.4793830 atol=3e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=3e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=3e-4
+end
+
+################################################################################
+#                         IAU-2006/2010 equinox-based
+################################################################################
+
+## ERS => ITRF
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+# one gets:
+#
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+################################################################################
+
+@testset "Function rECItoECEF ERS => ITRF" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_ers = [+5094.51462800; +6127.36658790; +6380.34453270]
+
+    D_ITRF_ERS = rECItoECEF(ERS(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = D_ITRF_ERS*r_ers
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+
+    q_ITRF_ERS = rECItoECEF(Quaternion, ERS(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = vect(q_ITRF_ERS\r_ers*q_ITRF_ERS)
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+end
+
+## MOD => ITRF
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_mod  = +5094.02896110   i + 6127.87113500   j + 6380.24774200   k [km]
+#
+# one gets:
+#
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+################################################################################
+
+@testset "Function rECItoECEF MOD => ITRF" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
+
+    D_ITRF_MOD = rECItoECEF(MOD(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = D_ITRF_MOD*r_mod
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+
+    q_ITRF_MOD = rECItoECEF(Quaternion, MOD(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = vect(q_ITRF_MOD\r_mod*q_ITRF_MOD)
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+end
+
+## MJ2000 => ITRF
+## ==============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC     = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# one gets:
+#
+#   r_itrf = -1033.4793830    i + 7901.2952754    j + 6380.3565958    k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECItoECEF MJ2000 => ITRF" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_mj2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+    D_ITRF_MJ2000 = rECItoECEF(MJ2000(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = D_ITRF_MJ2000*r_mj2000
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+
+    q_ITRF_MJ2000 = rECItoECEF(Quaternion, MJ2000(), ITRF(), JD_UTC, eop_iau2000a)
+    r_itrf = vect(q_ITRF_MJ2000\r_mj2000*q_ITRF_MJ2000)
+
+    @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
+    @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
+    @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
+end
+
+## ERS => TIRS
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+# one gets:
+#
+#   r_tirs = -1033.47503120   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECItoECEF ERS => TIRS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_ers = [+5094.51462800; +6127.36658790; +6380.34453270]
+
+    D_TIRS_ERS = rECItoECEF(ERS(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = D_TIRS_ERS*r_ers
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
+
+    q_TIRS_ERS = rECItoECEF(Quaternion, ERS(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = vect(q_TIRS_ERS\r_ers*q_TIRS_ERS)
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
+end
+
+## MOD => TIRS
+## ===========
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_mod  = +5094.02896110   i + 6127.87113500   j + 6380.24774200   k [km]
+#
+# one gets:
+#
+#   r_tirs = -1033.47503120   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+################################################################################
+
+@testset "Function rECItoECEF MOD => TIRS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
+
+    D_TIRS_MOD = rECItoECEF(MOD(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = D_TIRS_MOD*r_mod
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
+
+    q_TIRS_MOD = rECItoECEF(Quaternion, MOD(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = vect(q_TIRS_MOD\r_mod*q_TIRS_MOD)
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
+end
+
+## MJ2000 => TIRS
+## ==============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC     = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# one gets:
+#
+#   r_tirs = -1033.47503120   i + 7901.30558560   j + 6380.34453270   k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECItoECEF MJ2000 => TIRS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    r_mj2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+    D_TIRS_MJ2000 = rECItoECEF(MJ2000(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = D_TIRS_MJ2000*r_mj2000
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
+
+    q_TIRS_MJ2000 = rECItoECEF(Quaternion, MJ2000(), TIRS(), JD_UTC, eop_iau2000a)
+    r_tirs = vect(q_TIRS_MJ2000\r_mj2000*q_TIRS_MJ2000)
+
+    @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
+    @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
+    @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
 end
