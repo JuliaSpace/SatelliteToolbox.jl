@@ -109,7 +109,9 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 Equinox-based | `GCRF`   | `MOD`    | Not required  | First              |
 | IAU-2006/2010 Equinox-based | `GCRF`   | `ERS`    | Not required³ | First              |
 | IAU-2006/2010 Equinox-based | `MJ2000` | `GCRF`   | Not required  | First²             |
+| IAU-2006/2010 Equinox-based | `MJ2000` | `MOD`    | Not required  | First              |
 | IAU-2006/2010 Equinox-based | `MOD`    | `GCRF`   | Not required  | First              |
+| IAU-2006/2010 Equinox-based | `MOD`    | `MJ2000` | Not required  | First              |
 | IAU-2006/2010 Equinox-based | `ERS`    | `GCRF`   | Not required³ | First              |
 
 `¹`: In this case, the terms that account for the free-core nutation and time
@@ -648,3 +650,25 @@ rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:ERS}, JD_UTC::Number,
 
 rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:ERS}, JD_UTC::Number) =
     inv_rotation(rECItoECI(T, Val(:ERS), Val(:GCRF), JD_UTC))
+
+#                                MJ2000 <=> MOD
+# ==============================================================================
+
+rECItoECI(T::T_ROT, ::Val{:MOD}, ::Val{:MJ2000}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rECItoECI(T, Val(:MOD), Val(:MJ2000), JD_UTC)
+
+function rECItoECI(T::T_ROT, ::Val{:MOD}, ::Val{:MJ2000}, JD_UTC::Number)
+    # Get the time in TT.
+    JD_TT = JD_UTCtoTT(JD_UTC)
+
+    # Compute the rotation.
+    return rMODtoMJ2000_iau2006(T, JD_TT)
+end
+
+rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:MOD}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rECItoECI(T, Val(:MJ2000), Val(:MOD), JD_UTC)
+
+rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:MOD}, JD_UTC::Number) =
+    inv_rotation(rECItoECI(T, Val(:MOD), Val(:MJ2000), JD_UTC))
