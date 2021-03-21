@@ -1237,3 +1237,91 @@ end
     @test r_gcrf[2] ≈ +6123.01139910 atol=1e-4
     @test r_gcrf[3] ≈ +6378.13693380 atol=1e-4
 end
+
+################################################################################
+#                         IAU-2006/2010 equinox-based
+################################################################################
+
+## GCRF <=> MJ2000
+## ===============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC    = April 6, 2004, 07:51:28.386009
+#   r_gcrf = 5102.50895780  i + 6123.01140380 j + 6378.13692530 k [km]
+#
+# one gets the following (this is the result in Table 3-6):
+#
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECItoECI GCRF <=> MJ2000" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## GCRF => MJ2000
+    ## ==============
+
+    r_gcrf = [+5102.50895780; +6123.01140380; +6378.13692530]
+
+    ## DCM
+    ## ---
+
+    D_MJ2000_GCRF = rECItoECI(GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
+
+    r_mj2000 = D_MJ2000_GCRF*r_gcrf
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=8e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=8e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_MJ2000_GCRF = rECItoECI(Quaternion, GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
+
+    r_mj2000 = vect(conj(q_MJ2000_GCRF)*r_gcrf*q_MJ2000_GCRF)
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=8e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=8e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=8e-4
+
+    ## MJ2000 => GCRF
+    ## ==============
+
+    r_mj2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+    ## DCM
+    ## ---
+
+    D_GCRF_MJ2000 = rECItoECI(MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = D_GCRF_MJ2000*r_mj2000
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=8e-4
+    @test r_gcrf[2] ≈ +6123.01140380 atol=8e-4
+    @test r_gcrf[3] ≈ +6378.13692530 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_GCRF_MJ2000 = rECItoECI(Quaternion, MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
+
+    r_gcrf = vect(conj(q_GCRF_MJ2000)*r_mj2000*q_GCRF_MJ2000)
+
+    @test r_gcrf[1] ≈ +5102.50895780 atol=8e-4
+    @test r_gcrf[2] ≈ +6123.01140380 atol=8e-4
+    @test r_gcrf[3] ≈ +6378.13692530 atol=8e-4
+end

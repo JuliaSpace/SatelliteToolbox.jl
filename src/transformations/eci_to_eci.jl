@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Rotations from an Earth-Centered Inertial (ECI) reference frame to another
 #   ECI reference frame.
@@ -8,11 +9,12 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export rECItoECI
 
@@ -33,7 +35,7 @@ or `Quaternion`. The origin ECI frame is selected by the input `ECIo` and the
 destination ECI frame is selected by the input `ECIf`. The model used to compute
 the rotation is specified by the selection of the origin and destination frames.
 Currently, there are two models supported: IAU-76/FK5 and IAU-2006 with 2010
-conventions (CIO approach only).
+conventions (CIO and equinox approaches).
 
 [^1]: TEME is an *of date* frame.
 
@@ -69,6 +71,7 @@ The supported ECI frames for both origin `ECIo` and destination `ECIf` are:
             (GCRF).
 * `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
             (CIRS).
+* `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
 
 # EOP Data
 
@@ -78,34 +81,40 @@ be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
 of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
 requirements for EOP data given the selected frames.
 
-|   Model       |   ECIo  |   ECIf  |    EOP Data   | Function Signature |
-|:--------------|:--------|:--------|:--------------|:-------------------|
-| IAU-76/FK5    | `GCRF`  | `J2000` | EOP IAU1980   | First              |
-| IAU-76/FK5    | `GCRF`  | `MOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5    | `GCRF`  | `TOD`   | EOP IAU1980   | First              |
-| IAU-76/FK5    | `GCRF`  | `TEME`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `J2000` | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `J2000` | `MOD`   | Not required  | First              |
-| IAU-76/FK5    | `J2000` | `TOD`   | Not required  | First              |
-| IAU-76/FK5    | `J2000` | `TEME`  | Not required  | First              |
-| IAU-76/FK5    | `MOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `MOD`   | `J2000` | Not required  | First              |
-| IAU-76/FK5    | `MOD`   | `TOD`   | Not required  | Second             |
-| IAU-76/FK5    | `MOD`   | `TEME`  | Not required  | Second             |
-| IAU-76/FK5    | `TOD`   | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TOD`   | `J2000` | Not required  | First              |
-| IAU-76/FK5    | `TOD`   | `MOD`   | Not required  | Second             |
-| IAU-76/FK5    | `TOD`   | `TEME`  | Not required  | Second             |
-| IAU-76/FK5    | `TEME`  | `GCRF`  | EOP IAU1980   | First              |
-| IAU-76/FK5    | `TEME`  | `J2000` | Not required  | First              |
-| IAU-76/FK5    | `TEME`  | `MOD`   | Not required  | Second             |
-| IAU-76/FK5    | `TEME`  | `TOD`   | Not required  | Second             |
-| IAU-2006/2010 | `GCRF`  | `CIRS`  | Not required¹ | First              |
-| IAU-2006/2010 | `CIRS`  | `CIRS`  | Not required¹ | Second             |
+|   Model                     |   ECIo   |   ECIf   |    EOP Data   | Function Signature |
+|:----------------------------|:---------|:---------|:--------------|:-------------------|
+| IAU-76/FK5                  | `GCRF`   | `J2000`  | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `GCRF`   | `MOD`    | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `GCRF`   | `TOD`    | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `GCRF`   | `TEME`   | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `J2000`  | `GCRF`   | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `J2000`  | `MOD`    | Not required  | First              |
+| IAU-76/FK5                  | `J2000`  | `TOD`    | Not required  | First              |
+| IAU-76/FK5                  | `J2000`  | `TEME`   | Not required  | First              |
+| IAU-76/FK5                  | `MOD`    | `GCRF`   | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `MOD`    | `J2000`  | Not required  | First              |
+| IAU-76/FK5                  | `MOD`    | `TOD`    | Not required  | Second             |
+| IAU-76/FK5                  | `MOD`    | `TEME`   | Not required  | Second             |
+| IAU-76/FK5                  | `TOD`    | `GCRF`   | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `TOD`    | `J2000`  | Not required  | First              |
+| IAU-76/FK5                  | `TOD`    | `MOD`    | Not required  | Second             |
+| IAU-76/FK5                  | `TOD`    | `TEME`   | Not required  | Second             |
+| IAU-76/FK5                  | `TEME`   | `GCRF`   | EOP IAU1980   | First              |
+| IAU-76/FK5                  | `TEME`   | `J2000`  | Not required  | First              |
+| IAU-76/FK5                  | `TEME`   | `MOD`    | Not required  | Second             |
+| IAU-76/FK5                  | `TEME`   | `TOD`    | Not required  | Second             |
+| IAU-2006/2010 CIO-based     | `GCRF`   | `CIRS`   | Not required¹ | First              |
+| IAU-2006/2010 CIO-based     | `CIRS`   | `CIRS`   | Not required¹ | Second             |
+| IAU-2006/2010 Equinox-based | `GCRF`   | `MJ2000` | Not required  | First²             |
+| IAU-2006/2010 Equinox-based | `MJ2000` | `GCRF`   | Not required  | First²             |
 
 `¹`: In this case, the terms that account for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
 to the GCRF will not be available, reducing the precision.
+
+`²`: The transformation between GCRF and MJ2000 is a constant rotation matrix
+called bias. Hence, the date does not modify it. However, this signature was
+kept to avoid complications in the API.
 
 ## MOD and TOD
 
@@ -475,7 +484,7 @@ function rECItoECI(T::T_ROT, T_ECIo::T_ECIs_of_date, JD_UTCo::Number,
 end
 
 ################################################################################
-#                                IAU-2006/2010
+#                           IAU-2006/2010 CIO-based
 ################################################################################
 
 #                                GCRF <=> CIRS
@@ -542,3 +551,26 @@ function rECItoECI(T::T_ROT, T_ECIo::Val{:CIRS}, JD_UTCo::Number,
     # Return the full rotation.
     return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
 end
+
+################################################################################
+#                         IAU-2006/2010 equinox-based
+################################################################################
+
+#                               GCRF <=> MJ2000
+# ==============================================================================
+
+rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:GCRF}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rMJ2000toGCRF_iau2006(T)
+
+rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:GCRF}, JD_UTC::Number) =
+    rMJ2000toGCRF_iau2006(T)
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MJ2000}, JD_UTC::Number,
+          eop_data::EOPData_IAU2000A) =
+    rGCRFtoMJ2000_iau2006(T)
+
+rECItoECI(T::T_ROT, ::Val{:GCRF}, ::Val{:MJ2000}, JD_UTC::Number) =
+    rGCRFtoMJ2000_iau2006(T)
+
+
