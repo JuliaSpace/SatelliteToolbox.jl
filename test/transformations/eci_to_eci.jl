@@ -1571,3 +1571,87 @@ end
     @test r_mod[2] ≈ +6127.87113500 atol=8e-4
     @test r_mod[3] ≈ +6380.24774200 atol=8e-4
 end
+
+## MJ2000 <=> ERS
+## ==============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC     = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# one gets the following (this is the result in Table 3-6):
+#
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECItoECI MJ2000 <=> ERS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## ERS => MJ2000
+    ## =============
+
+    r_ers = [+5094.51462800; +6127.36658790; +6380.34453270]
+
+    ## DCM
+    ## ---
+
+    D_MJ2000_ERS = rECItoECI(ERS(), MJ2000(), JD_UTC, eop_iau2000a)
+
+    r_mj2000 = D_MJ2000_ERS*r_ers
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=8e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=8e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_MJ2000_ERS = rECItoECI(Quaternion, ERS(), MJ2000(), JD_UTC, eop_iau2000a)
+
+    r_mj2000 = vect(conj(q_MJ2000_ERS)*r_ers*q_MJ2000_ERS)
+
+    @test r_mj2000[1] ≈ +5102.50960000 atol=8e-4
+    @test r_mj2000[2] ≈ +6123.01152000 atol=8e-4
+    @test r_mj2000[3] ≈ +6378.13630000 atol=8e-4
+
+    ## MJ2000 => ERS
+    ## =============
+
+    r_mj2000 = [5102.50960000; 6123.01152000; 6378.13630000]
+
+    ## DCM
+    ## ---
+
+    D_ERS_MJ2000 = rECItoECI(MJ2000(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = D_ERS_MJ2000*r_mj2000
+
+    @test r_ers[1] ≈ +5094.51462800 atol=8e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=8e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_ERS_MJ2000 = rECItoECI(Quaternion, MJ2000(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = vect(conj(q_ERS_MJ2000)*r_mj2000*q_ERS_MJ2000)
+
+    @test r_ers[1] ≈ +5094.51462800 atol=8e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=8e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=8e-4
+end
