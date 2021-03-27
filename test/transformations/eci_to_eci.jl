@@ -17,10 +17,10 @@
 
 # Get the current EOP Data.
 #
-# TODO: The EOP data obtained from IERS website does not match the values in the
-# examples in [1]. However, this should be enough, because 1) the individual
-# functions at the low level are tested using the same values of [1], and 2) the
-# difference is smaller than 30 cm.
+# TODO: The EOP data obtained from IERS website does not match the values in
+# the examples in [1]. However, this should be enough, because 1) the
+# individual functions at the low level are tested using the same values of
+# [1], and 2) the difference is smaller than 30 cm.
 
 eop_iau1980  = read_iers_eop("./eop_IAU1980.txt",  :IAU1980)
 eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
@@ -1650,6 +1650,90 @@ end
     q_ERS_MJ2000 = rECItoECI(Quaternion, MJ2000(), ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = vect(conj(q_ERS_MJ2000)*r_mj2000*q_ERS_MJ2000)
+
+    @test r_ers[1] ≈ +5094.51462800 atol=8e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=8e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=8e-4
+end
+
+## MOD <=> ERS
+## ==============
+
+################################################################################
+#                                 Test Results
+################################################################################
+#
+# Scenario 01
+# ===========
+#
+# Example 3-14: Performing an IAU-2000 reduction [1, p. 220]
+#
+# According to this example and Table 3-6, using:
+#
+#   UTC     = April 6, 2004, 07:51:28.386009
+#   r_j2000 = 5102.50960000  i + 6123.01152000   j + 6378.13630000   k [km]
+#
+# one gets the following (this is the result in Table 3-6):
+#
+#   r_ers  = +5094.51462800   i + 6127.36658790   j + 6380.34453270   k [km]
+#
+# Notice that the transformation we are testing here does not convert to the
+# original J2000. However, this result is close enough for a test comparison.
+#
+################################################################################
+
+@testset "Function rECItoECI MOD <=> ERS" begin
+    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+
+    ## ERS => MOD
+    ## ==========
+
+    r_ers = [+5094.51462800; +6127.36658790; +6380.34453270]
+
+    ## DCM
+    ## ---
+
+    D_MOD_ERS = rECItoECI(ERS(), MOD(), JD_UTC, eop_iau2000a)
+
+    r_mod = D_MOD_ERS*r_ers
+
+    @test r_mod[1] ≈ +5094.02896110 atol=8e-4
+    @test r_mod[2] ≈ +6127.87113500 atol=8e-4
+    @test r_mod[3] ≈ +6380.24774200 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_MOD_ERS = rECItoECI(Quaternion, ERS(), MOD(), JD_UTC, eop_iau2000a)
+
+    r_mod = vect(conj(q_MOD_ERS)*r_ers*q_MOD_ERS)
+
+    @test r_mod[1] ≈ +5094.02896110 atol=8e-4
+    @test r_mod[2] ≈ +6127.87113500 atol=8e-4
+    @test r_mod[3] ≈ +6380.24774200 atol=8e-4
+
+    ## MOD => ERS
+    ## ==========
+
+    r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
+
+    ## DCM
+    ## ---
+
+    D_ERS_MOD = rECItoECI(MOD(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = D_ERS_MOD*r_mod
+
+    @test r_ers[1] ≈ +5094.51462800 atol=8e-4
+    @test r_ers[2] ≈ +6127.36658790 atol=8e-4
+    @test r_ers[3] ≈ +6380.34453270 atol=8e-4
+
+    ## Quaternion
+    ## ----------
+
+    q_ERS_MOD = rECItoECI(Quaternion, MOD(), ERS(), JD_UTC, eop_iau2000a)
+
+    r_ers = vect(conj(q_ERS_MOD)*r_mod*q_ERS_MOD)
 
     @test r_ers[1] ≈ +5094.51462800 atol=8e-4
     @test r_ers[2] ≈ +6127.36658790 atol=8e-4
