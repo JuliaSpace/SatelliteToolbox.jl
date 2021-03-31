@@ -756,14 +756,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
-    D_MOD_ITRF = rECEFtoECI(ITRF(), MOD(), JD_UTC, eop_iau2000a)
+    D_MOD_ITRF = rECEFtoECI(ITRF(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = D_MOD_ITRF*r_itrf
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4
     @test r_mod[2] ≈ +6127.87113500 atol=5e-4
     @test r_mod[3] ≈ +6380.24774200 atol=5e-4
 
-    q_MOD_ITRF = rECEFtoECI(Quaternion, ITRF(), MOD(), JD_UTC, eop_iau2000a)
+    q_MOD_ITRF = rECEFtoECI(Quaternion, ITRF(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = vect(q_MOD_ITRF\r_itrf*q_MOD_ITRF)
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4
@@ -885,14 +885,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
-    D_MOD_TIRS = rECEFtoECI(TIRS(), MOD(), JD_UTC, eop_iau2000a)
+    D_MOD_TIRS = rECEFtoECI(TIRS(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = D_MOD_TIRS*r_tirs
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4
     @test r_mod[2] ≈ +6127.87113500 atol=5e-4
     @test r_mod[3] ≈ +6380.24774200 atol=5e-4
 
-    q_MOD_TIRS = rECEFtoECI(Quaternion, TIRS(), MOD(), JD_UTC, eop_iau2000a)
+    q_MOD_TIRS = rECEFtoECI(Quaternion, TIRS(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = vect(q_MOD_TIRS\r_tirs*q_MOD_TIRS)
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4
@@ -927,14 +927,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
-    D_MOD_TIRS = rECEFtoECI(TIRS(), MOD(), JD_UTC, eop_iau2000a)
+    D_MOD_TIRS = rECEFtoECI(TIRS(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = D_MOD_TIRS*r_tirs
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4
     @test r_mod[2] ≈ +6127.87113500 atol=5e-4
     @test r_mod[3] ≈ +6380.24774200 atol=5e-4
 
-    q_MOD_TIRS = rECEFtoECI(Quaternion, TIRS(), MOD(), JD_UTC, eop_iau2000a)
+    q_MOD_TIRS = rECEFtoECI(Quaternion, TIRS(), MOD06(), JD_UTC, eop_iau2000a)
     r_mod = vect(q_MOD_TIRS\r_tirs*q_MOD_TIRS)
 
     @test r_mod[1] ≈ +5094.02896110 atol=5e-4

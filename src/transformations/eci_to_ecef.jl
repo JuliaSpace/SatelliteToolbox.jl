@@ -59,7 +59,16 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `CIRS()`: ECEF will be selected as the Celestial Intermediate Reference System
             (CIRS).
 * `ERS()`: ECI will be selected as the Earth Reference System (ERS).
+* `MOD06()`: ECI will be selected as the Mean of Date (MOD) according to the
+             definition in IAU-2006/2010 theory.
 * `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
+
+!!! note
+
+    The frames `MOD()` and `MOD06()` are virtually the same. However, we
+    selected different names to make clear which theory are being used since
+    mixing transformation between frames from IAU-76/FK5 and IAU-2006/2010 must
+    be performed with caution.
 
 # ECEF Frame
 
@@ -97,10 +106,10 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 CIO-based     | `CIRS`   | `TIRS` | Not required¹   |
 | IAU-2006/2010 CIO-based     | `GCRF`   | `TIRS` | Not required¹ ² |
 | IAU-2006/2010 Equinox-based | `ERS`    | `TIRS` | EOP IAU2000A    |
-| IAU-2006/2010 Equinox-based | `MOD`    | `ITRF` | EOP IAU2000A    |
+| IAU-2006/2010 Equinox-based | `MOD06`  | `ITRF` | EOP IAU2000A    |
 | IAU-2006/2010 Equinox-based | `MJ2000` | `ITRF` | EOP IAU2000A    |
 | IAU-2006/2010 Equinox-based | `ERS`    | `TIRS` | Not required¹ ³ |
-| IAU-2006/2010 Equinox-based | `MOD`    | `TIRS` | Not required¹ ³ |
+| IAU-2006/2010 Equinox-based | `MOD06`  | `TIRS` | Not required¹ ³ |
 | IAU-2006/2010 Equinox-based | `MJ2000` | `TIRS` | Not required¹ ³ |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1

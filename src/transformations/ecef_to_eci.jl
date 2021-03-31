@@ -71,7 +71,16 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 * `CIRS()`: ECI will be selected as the Celestial Intermediate Reference System
             (CIRS).
 * `ERS()`: ECI will be selected as the Earth Reference System (ERS).
+* `MOD06()`: ECI will be selected as the Mean of Date (MOD) according to the
+             definition in IAU-2006/2010 theory.
 * `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
+
+!!! note
+
+    The frames `MOD()` and `MOD06()` are virtually the same. However, we
+    selected different names to make clear which theory are being used since
+    mixing transformation between frames from IAU-76/FK5 and IAU-2006/2010 must
+    be performed with caution.
 
 # EOP Data
 
@@ -98,10 +107,10 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 CIO-based     | `TIRS` | `CIRS`   | Not required¹   |
 | IAU-2006/2010 CIO-based     | `TIRS` | `GCRF`   | Not required¹ ² |
 | IAU-2006/2010 Equinox-based | `ITRF` | `ERS`    | EOP IAU2000A    |
-| IAU-2006/2010 Equinox-based | `ITRF` | `MOD`    | EOP IAU2000A    |
+| IAU-2006/2010 Equinox-based | `ITRF` | `MOD06`  | EOP IAU2000A    |
 | IAU-2006/2010 Equinox-based | `ITRF` | `MJ2000` | EOP IAU2000A    |
 | IAU-2006/2010 Equinox-based | `TIRS` | `ERS`    | Not required¹ ³ |
-| IAU-2006/2010 Equinox-based | `TIRS` | `MOD`    | Not required¹ ³ |
+| IAU-2006/2010 Equinox-based | `TIRS` | `MOD06`  | Not required¹ ³ |
 | IAU-2006/2010 Equinox-based | `TIRS` | `MJ2000` | Not required¹ ³ |
 
 `¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
@@ -618,7 +627,7 @@ end
 #                                 ITRF => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MOD}, JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:ITRF}, ::Val{:MOD06}, JD_UTC::Number,
                     eop_data::EOPData_IAU2000A)
     arcsec2rad = π/648000
 
@@ -706,7 +715,7 @@ end
 #                                 TIRS => MOD
 # ==============================================================================
 
-function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD}, JD_UTC::Number,
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD06}, JD_UTC::Number,
                     eop_data::EOPData_IAU2000A)
     arcsec2rad = π/648000
 
@@ -723,7 +732,7 @@ function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD}, JD_UTC::Number,
     return rTIRStoMOD_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
 end
 
-function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD}, JD_UTC::Number)
+function rECEFtoECI(T::T_ROT, ::Val{:TIRS}, ::Val{:MOD06}, JD_UTC::Number)
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = JD_UTCtoTT(JD_UTC)

@@ -61,7 +61,7 @@ Union of all Earth-Centered Inertial (ECI) frames supported by Equinox-based
 IAU-2006/2010 theory.
 
 """
-T_ECIs_IAU_2006_Equinox = Union{Val{:GCRF}, Val{:MJ2000}, Val{:MOD}, Val{:ERS}}
+T_ECIs_IAU_2006_Equinox = Union{Val{:GCRF}, Val{:MJ2000}, Val{:MOD06}, Val{:ERS}}
 
 """
     T_ECIs_IAU_2006

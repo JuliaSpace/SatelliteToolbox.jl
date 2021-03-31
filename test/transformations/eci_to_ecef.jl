@@ -760,14 +760,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
 
-    D_ITRF_MOD = rECItoECEF(MOD(), ITRF(), JD_UTC, eop_iau2000a)
+    D_ITRF_MOD = rECItoECEF(MOD06(), ITRF(), JD_UTC, eop_iau2000a)
     r_itrf = D_ITRF_MOD*r_mod
 
     @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
     @test r_itrf[2] ≈ +7901.2952754 atol=5e-4
     @test r_itrf[3] ≈ +6380.3565958 atol=5e-4
 
-    q_ITRF_MOD = rECItoECEF(Quaternion, MOD(), ITRF(), JD_UTC, eop_iau2000a)
+    q_ITRF_MOD = rECItoECEF(Quaternion, MOD06(), ITRF(), JD_UTC, eop_iau2000a)
     r_itrf = vect(q_ITRF_MOD\r_mod*q_ITRF_MOD)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=5e-4
@@ -889,14 +889,14 @@ end
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
     r_mod = [+5094.02896110; +6127.87113500; +6380.24774200]
 
-    D_TIRS_MOD = rECItoECEF(MOD(), TIRS(), JD_UTC, eop_iau2000a)
+    D_TIRS_MOD = rECItoECEF(MOD06(), TIRS(), JD_UTC, eop_iau2000a)
     r_tirs = D_TIRS_MOD*r_mod
 
     @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
     @test r_tirs[2] ≈ +7901.30558560 atol=5e-4
     @test r_tirs[3] ≈ +6380.34453270 atol=5e-4
 
-    q_TIRS_MOD = rECItoECEF(Quaternion, MOD(), TIRS(), JD_UTC, eop_iau2000a)
+    q_TIRS_MOD = rECItoECEF(Quaternion, MOD06(), TIRS(), JD_UTC, eop_iau2000a)
     r_tirs = vect(q_TIRS_MOD\r_mod*q_TIRS_MOD)
 
     @test r_tirs[1] ≈ -1033.47503120 atol=5e-4
