@@ -1693,7 +1693,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_ERS = rECItoECI(ERS(), MOD06(), JD_UTC, eop_iau2000a)
+    D_MOD_ERS = rECItoECI(ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = D_MOD_ERS*r_ers
 
@@ -1704,7 +1704,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_ERS = rECItoECI(Quaternion, ERS(), MOD06(), JD_UTC, eop_iau2000a)
+    q_MOD_ERS = rECItoECI(Quaternion, ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = vect(conj(q_MOD_ERS)*r_ers*q_MOD_ERS)
 
@@ -1720,7 +1720,7 @@ end
     ## DCM
     ## ---
 
-    D_ERS_MOD = rECItoECI(MOD06(), ERS(), JD_UTC, eop_iau2000a)
+    D_ERS_MOD = rECItoECI(MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = D_ERS_MOD*r_mod
 
@@ -1731,7 +1731,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ERS_MOD = rECItoECI(Quaternion, MOD06(), ERS(), JD_UTC, eop_iau2000a)
+    q_ERS_MOD = rECItoECI(Quaternion, MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = vect(conj(q_ERS_MOD)*r_mod*q_ERS_MOD)
 

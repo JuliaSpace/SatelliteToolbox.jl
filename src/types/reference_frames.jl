@@ -7,7 +7,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ECEFs_IAU_2006, T_ECIs_IAU_2006, T_ROT
+export T_ECEFs, T_ECIs, T_ECIs_of_date, T_ECEFs_IAU_2006, T_ECIs_IAU_2006,
+       T_ECIs_IAU_2006_Equinox_of_date, T_ROT
 
 """
     T_ECEFs
@@ -71,6 +72,15 @@ theory.
 
 """
 T_ECIs_IAU_2006 = Union{T_ECIs_IAU_2006_CIO, T_ECIs_IAU_2006_Equinox}
+
+"""
+    T_ECIs_IAU_2006_Equinox_of_date
+
+Union of all *of date* Earth-Centered Inertial (ECI) frames supported by the
+equinox-based IAU-2006/2010 theory.
+
+"""
+T_ECIs_IAU_2006_Equinox_of_date = Union{Val{:MOD06}, Val{:ERS}}
 
 """
     T_ROT

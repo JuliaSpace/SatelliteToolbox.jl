@@ -214,6 +214,11 @@ Quaternion{Float64}:
                   eop_data::EOPData_IAU2000A) =
     rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
 
+@inline rECItoECI(T_ECIo::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCo::Number,
+                  T_ECIf::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCf::Number,
+                  eop_data::EOPData_IAU2000A) =
+    rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf, eop_data)
+
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECI(T_ECIo::Val{:J2000},
                   T_ECIf::Union{Val{:MOD}, Val{:TOD}, Val{:TEME}},
@@ -236,6 +241,11 @@ Quaternion{Float64}:
  @inline rECItoECI(T_ECIo::Val{:CIRS}, JD_UTCo::Number,
                    T_ECIf::Val{:CIRS}, JD_UTCf::Number) =
     rECItoECI(DCM, T_ECIo, JD_UTCo, T_ECIf, JD_UTCf)
+
+@inline rECItoECI(T_ECIo::T_ECIs_IAU_2006_Equinox_of_date,
+                  T_ECIf::T_ECIs_IAU_2006_Equinox_of_date,
+                  JD_UTC::Number) =
+    rECItoECI(DCM, T_ECIo, T_ECIf, JD_UTC)
 
 ################################################################################
 #                                  IAU-76/FK5
@@ -728,40 +738,35 @@ rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:ERS}, JD_UTC::Number,
 rECItoECI(T::T_ROT, ::Val{:MJ2000}, ::Val{:ERS}, JD_UTC::Number) =
     inv_rotation(rECItoECI(T, Val(:ERS), Val(:MJ2000), JD_UTC))
 
-#                                 MOD <=> ERS
-# =============================================================================
+#                             Between ERS and MOD
+# ==============================================================================
 
-function rECItoECI(T::T_ROT, ::Val{:ERS}, ::Val{:MOD06}, JD_UTC::Number,
-                   eop_data::EOPData_IAU2000A)
+function rECItoECI(T::T_ROT,
+        T_ECIo::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCo::Number,
+        T_ECIf::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCf::Number,
+        eop_data::EOPData_IAU2000A)
 
-    arcsec2rad = π/648000
+    # In this case, we convert origin to GCRF and then convert back to the
+    # destination. This is necessary because the user may want to change the
+    # epoch.
+    r_GCRF_ECIo = rECItoECI(T, T_ECIo,     Val(:GCRF), JD_UTCo, eop_data)
+    r_ECIf_GCRF = rECItoECI(T, Val(:GCRF), T_ECIf,     JD_UTCf, eop_data)
 
-    # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
-
-    # Obtain the correction of the nutation in obliquity and longitude.
-    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= arcsec2rad
-    δΔΨ_2000 *= arcsec2rad
-
-    # Compute the rotation.
-    return rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    # Return the full rotation.
+    return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
 end
 
-function rECItoECI(T::T_ROT, ::Val{:ERS}, ::Val{:MOD06}, JD_UTC::Number)
+function rECItoECI(T::T_ROT,
+        T_ECIo::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCo::Number,
+        T_ECIf::T_ECIs_IAU_2006_Equinox_of_date, JD_UTCf::Number)
 
-    arcsec2rad = π/648000
+    # In this case, we convert origin to GCRF and then convert back to the
+    # destination. This is necessary because the user may want to change the
+    # epoch. Notice that, differently from IAU-76/FK5, we can convert to GCRF
+    # without using EOP data with minor degradation in precsion.
+    r_GCRF_ECIo = rECItoECI(T, T_ECIo,      Val(:GCRF), JD_UTCo)
+    r_ECIf_GCRF = rECItoECI(T, Val(:GCRF), T_ECIf,      JD_UTCf)
 
-    # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
-
-    # Compute the rotation.
-    return rERStoMOD_iau2006(T, JD_TT, 0, 0)
+    # Return the full rotation.
+    return compose_rotation(r_GCRF_ECIo, r_ECIf_GCRF)
 end
-
-rECItoECI(T::T_ROT, ::Val{:MOD06}, ::Val{:ERS}, JD_UTC::Number,
-          eop_data::EOPData_IAU2000A) =
-    inv_rotation(rECItoECI(T, Val(:ERS), Val(:MOD06), JD_UTC, eop_data))
-
-rECItoECI(T::T_ROT, ::Val{:MOD06}, ::Val{:ERS}, JD_UTC::Number) =
-    inv_rotation(rECItoECI(T, Val(:ERS), Val(:MOD06), JD_UTC))
