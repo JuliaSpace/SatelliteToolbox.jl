@@ -1,6 +1,6 @@
 The SatelliteToolbox.jl package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2014-2019: Ronan Arraes Jardim Chagas.
+> Copyright (c) 2014-2021: Ronan Arraes Jardim Chagas.
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
