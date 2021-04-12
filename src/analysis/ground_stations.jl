@@ -51,7 +51,7 @@ ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
     ground_station_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
 
 function ground_station_accesses(orbp, vgs_wgs84::AbstractVector{T}, vargs...;
-                             kwargs...) where T<:Tuple
+                                 kwargs...) where T<:Tuple
 
     vrs_e = [GeodetictoECEF(gs_wgs84...) for gs_wgs84 in vgs_wgs84]
     return ground_station_accesses(orbp, vrs_e, vargs...; kwargs...)
@@ -61,17 +61,17 @@ ground_station_accesses(orbp, rs_e::AbstractVector{T}, vargs...; kwargs...) wher
     T<:Number = ground_station_accesses(orbp, [rs_e], vargs...; kwargs...)
 
 function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
-                             ECI::Union{T_ECIs, T_ECIs_IAU_2006},
-                             ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006}, vargs...;
-                             θ::Number = 10*pi/180,
-                             reduction::Function = v->|(v...),
-                             step::Number = 60) where T<:AbstractVector
+                                 ECI::Union{T_ECIs, T_ECIs_IAU_2006},
+                                 ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006}, vargs...;
+                                 θ::Number = 10*pi/180,
+                                 reduction::Function = v->|(v...),
+                                 step::Number = 60) where T<:AbstractVector
 
     # Time vector of the analysis.
     t = 0:step:Δt
 
     # Get the epoch of the propagator.
-    JD₀ = epoch(orbp)
+    JD₀ = get_epoch(orbp)
 
     # Matrix that will contain the accesses.
     accesses = Matrix{DateTime}(undef,0,2)
@@ -149,7 +149,7 @@ the instant defined by the argument `Δt`.
 """
 function ground_station_gaps(orbp, args...; kwargs...)
     # Get the epoch of the propagator.
-    JD₀ = epoch(orbp)
+    JD₀ = get_epoch(orbp)
     DT₀ = JDtoDate(DateTime, JD₀)
 
     # Compute the list of ground station accesses.
@@ -203,7 +203,7 @@ list_ground_station_accesses(vargs...; kwargs...) =
     list_ground_station_accesses(stdout, vargs...; kwargs...)
 
 function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
-                          time_scale::Symbol = :m, kwargs...)
+                                      time_scale::Symbol = :m, kwargs...)
 
     # Compute the accesses.
     accesses = ground_station_accesses(vargs...; kwargs...)
@@ -232,7 +232,7 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
     num         = length(access_time)
 
     # Assemble the information to be printed.
-    header = ["Access #" "Beginning (UTC)" "End (UTC)" "Duration [$label]"]
+    header = ["Access #", "Beginning (UTC)", "End (UTC)", "Duration [$label]"]
     mp     = hcat(string.(collect(1:1:num)), accesses, access_time)
 
     # Print the information depending on the format.
@@ -265,10 +265,11 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
                          crayon"bold")
 
         # Print.
-        pretty_table(io, mp, header;
+        pretty_table(io, mp;
                      alignment    = [:r, :l, :l, :r],
                      body_hlines  = [num,num+3],
                      crop         = :horizontal,
+                     header       = header,
                      formatters   = ft_printf("%.3f",[4]),
                      highlighters = (hl,hl_min,hl_max))
     end
@@ -324,7 +325,7 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
     num         = length(gap_time)
 
     # Assemble the information to be printed.
-    header = ["   Gap #" "Beginning (UTC)" "End (UTC)" "Duration [$label]"]
+    header = ["   Gap #", "Beginning (UTC)", "End (UTC)", "Duration [$label]"]
     mp     = hcat(string.(collect(1:1:num)), gaps, gap_time)
 
     # Print the information depending on the format.
@@ -357,10 +358,11 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
                          crayon"bold")
 
         # Print.
-        pretty_table(io, mp, header;
+        pretty_table(io, mp;
                      alignment    = [:r, :l, :l, :r],
                      body_hlines  = [num,num+3],
                      crop         = :horizontal,
+                     header       = header,
                      formatters   = ft_printf("%.3f",[4]),
                      highlighters = (hl,hl_min,hl_max))
     end
