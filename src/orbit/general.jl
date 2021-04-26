@@ -439,5 +439,5 @@ end
 function period(orb::Orbit, pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return draan(get_a(k), get_e(k), get_i(k), pert)
+    return period(get_a(k), get_e(k), get_i(k), pert)
 end
