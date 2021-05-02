@@ -68,13 +68,9 @@ Structure that holds the information related to the Two Body orbit propagator.
         `TwoBody_Structure`).
 
 """
-mutable struct OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
-    orb::KeplerianElements{T}
-
-    # Two Body orbit propagator related fields.
+struct OrbitPropagatorTwoBody{T} <: OrbitPropagator{T}
     tbd::TwoBody_Structure{T}
 end
-
 
 #                             J2 Orbit Propagator
 # ==============================================================================
@@ -148,22 +144,18 @@ Structure that holds the information related to the J2 orbit propagator.
 
 # Fields
 
-* `orb`: Mean orbital elements (see `Orbit`).
 * `j2d`: Structure that stores the J2 orbit propagator data (see
          `J2_Structure`).
 
 """
-mutable struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
-    orb::KeplerianElements{T}
-
-    # J2 orbit propagator related fields.
+struct OrbitPropagatorJ2{T} <: OrbitPropagator{T}
     j2d::J2_Structure{T}
 end
 
 #                        J2 osculating orbit propagator
 # ==============================================================================
 
-export J2osc_Strutcture
+export J2osc_Strutcture, OrbitPropagatorJ2osc
 
 """
     J2osc_Structure{T}
@@ -197,15 +189,11 @@ propagator.
 
 # Fields
 
-* `orb`: Mean orbital elements (see `Orbit`).
 * `j2oscd`: Structure that stores the J2 osculating orbit propagator data (see
             `J2osc_Structure`).
 
 """
-mutable struct OrbitPropagatorJ2osc{T} <: OrbitPropagator{T}
-    orb::KeplerianElements{T}
-
-    # J2 osculating orbit propagator related fields.
+struct OrbitPropagatorJ2osc{T} <: OrbitPropagator{T}
     j2oscd::J2osc_Structure{T}
 end
 
@@ -283,15 +271,11 @@ Structure that holds the information related to the J4 orbit propagator.
 
 # Fields
 
-* `orb`: Mean orbital elements (see `Orbit`).
 * `j4d`: Structure that stores the J4 orbit propagator data (see
          `J4_Structure`).
 
 """
-mutable struct OrbitPropagatorJ4{T} <: OrbitPropagator{T}
-    orb::KeplerianElements{T}
-
-    # J4 orbit propagator related fields.
+struct OrbitPropagatorJ4{T} <: OrbitPropagator{T}
     j4d::J4_Structure{T}
 end
 
@@ -307,13 +291,9 @@ Structure that holds the information related to the SGP4 propagator.
 
 # Fields
 
-* `orb`: Mean orbital elements (see `Orbit`).
-* `sgp4_gc`: Gravitational contents of the SGP4 algorithm (see `SGP4_GravCte`).
 * `sgp4d`: Structure that stores the SGP4 data (see `SGP4_Structure`).
-"""
-mutable struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
-    orb::KeplerianElements{T}
 
-    # SGP4 related fields.
+"""
+struct OrbitPropagatorSGP4{T} <: OrbitPropagator{T}
     sgp4d::SGP4_Structure{T}
 end

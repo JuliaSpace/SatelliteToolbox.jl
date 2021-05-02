@@ -47,7 +47,7 @@
 
         # Propagate the orbit.
         t = SGP4_results[:,1]*60
-        (orbm, r_TEME, v_TEME) = propagate!(orbp, t)
+        r_TEME, v_TEME = propagate!(orbp, t)
 
         # Compare the results.
         @inbounds for k = 1:length(t)
@@ -82,7 +82,7 @@
 
     # Propagate the orbit.
     t = SGP4_results[:,1]   # [min.]
-    (orbm, r_TEME, v_TEME) = propagate_to_epoch!(orbp, tle[1].epoch .+ t/1440)
+    r_TEME, v_TEME = propagate_to_epoch!(orbp, tle[1].epoch .+ t/1440)
 
     # Compare the results.
     @inbounds for k = 1:length(t)

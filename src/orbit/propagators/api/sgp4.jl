@@ -7,7 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-get_epoch(orbp::OrbitPropagatorSGP4)    = orbp.sgp4d.epoch
+get_epoch(orbp::OrbitPropagatorSGP4) = orbp.sgp4d.epoch
 
 """
     init_orbit_propagator(Val(:sgp4), tle::TLE, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
@@ -40,17 +40,8 @@ function init_orbit_propagator(::Val{:sgp4}, tle::TLE;
     sgp4d = sgp4_init(sgp4_gc, tle.epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0,
                       tle.bstar)
 
-    # Create the `KeplerianElements` structure.
-    orb_0 = KeplerianElements(epoch,
-                              1000sgp4d.a_k*sgp4_gc.R0,
-                              e_0,
-                              i_0,
-                              Ω_0,
-                              ω_0,
-                              M_to_f(e_0, M_0))
-
     # Create and return the orbit propagator structure.
-    return OrbitPropagatorSGP4(orb_0, sgp4d)
+    return OrbitPropagatorSGP4(sgp4d)
 end
 
 function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
@@ -61,21 +52,8 @@ function propagate!(orbp::OrbitPropagatorSGP4{T}, t::Number) where T
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, t/60)
 
-    # Convert km to m.
-    r_teme *= 1000
-    v_teme *= 1000
-
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(sgp4d.epoch + t/86400,
-                                 sgp4d.a_k*sgp4_gc.R0*1000,
-                                 sgp4d.e_k,
-                                 sgp4d.i_k,
-                                 sgp4d.Ω_k,
-                                 sgp4d.ω_k,
-                                 M_to_f(sgp4d.e_k, sgp4d.M_k))
-
-    # Return.
-    return orbp.orb, r_teme, v_teme
+    # Return the information in [m].
+    return 1000r_teme, 1000v_teme
 end
 
 function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
@@ -86,19 +64,6 @@ function step!(orbp::OrbitPropagatorSGP4{T}, Δt::Number) where T
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, sgp4d.Δt + Δt/60)
 
-    # Convert km to m.
-    r_teme *= 1000
-    v_teme *= 1000
-
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(sgp4d.epoch + sgp4d.Δt*60/86400,
-                                 sgp4d.a_k*sgp4_gc.R0*1000,
-                                 sgp4d.e_k,
-                                 sgp4d.i_k,
-                                 sgp4d.Ω_k,
-                                 sgp4d.ω_k,
-                                 M_to_f(sgp4d.e_k, sgp4d.M_k))
-
-    # Return the information about the step.
-    return orbp.orb, r_teme, v_teme
+    # Return the information in [m].
+    return 1000r_teme, 1000v_teme
 end

@@ -47,18 +47,8 @@ function init_orbit_propagator(::Val{:J2osc}, epoch::Number, a_0::Number,
     j2oscd = j2osc_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6;
                         j2_gc = j2_gc)
 
-    # Create the `KeplerianElements` structure.
-    j2d = j2oscd.j2d
-    orb_0 = KeplerianElements(j2d.epoch,
-                              j2d.al_0*j2_gc.R0,
-                              j2d.e_0,
-                              j2d.i_0,
-                              j2d.Ω_0,
-                              j2d.ω_0,
-                              j2d.f_0)
-
     # Create and return the orbit propagator structure.
-    return OrbitPropagatorJ2osc(orb_0, j2oscd)
+    return OrbitPropagatorJ2osc(j2oscd)
 end
 
 function init_orbit_propagator(::Val{:J2osc},
@@ -80,27 +70,8 @@ function propagate!(orbp::OrbitPropagatorJ2osc{T}, t::Number) where T
     # Propagate the orbit.
     r_i, v_i = j2osc!(j2oscd, t)
 
-    # Update the elements in the `orb` structure, which are the mean elements.
-    j2d = j2oscd.j2d
-    orbp.orb = KeplerianElements(j2d.epoch + t/86400,
-                                 j2d.al_k*j2d.j2_gc.R0,
-                                 j2d.e_k,
-                                 j2d.i_k,
-                                 j2d.Ω_k,
-                                 j2d.ω_k,
-                                 j2d.f_k)
-
-    # Create the osculating element object.
-    orb = KeplerianElements(j2oscd.j2d.epoch + t/86400,
-                            j2oscd.a_k,
-                            j2oscd.e_k,
-                            j2oscd.i_k,
-                            j2oscd.Ω_k,
-                            j2oscd.ω_k,
-                            j2oscd.f_k)
-
     # Return.
-    return orb, r_i, v_i
+    return r_i, v_i
 end
 
 function step!(orbp::OrbitPropagatorJ2osc, Δt::Number)
@@ -110,25 +81,6 @@ function step!(orbp::OrbitPropagatorJ2osc, Δt::Number)
     # Propagate the orbit.
     r_i, v_i = j2osc!(j2oscd, j2oscd.Δt + Δt)
 
-    # Update the elements in the `orb` structure.
-    j2d = j2oscd.j2d
-    orbp.orb = KeplerianElements(orb.t + Δt/86400,
-                                 j2d.al_k*j2d.j2_gc.R0,
-                                 j2d.e_k,
-                                 j2d.i_k,
-                                 j2d.Ω_k,
-                                 j2d.ω_k,
-                                 j2d.f_k)
-
-    # Create the osculating element object.
-    orb = KeplerianElements(j2oscd.j2d.epoch + t/86400,
-                            j2oscd.a_k,
-                            j2oscd.e_k,
-                            j2oscd.i_k,
-                            j2oscd.Ω_k,
-                            j2oscd.ω_k,
-                            j2oscd.f_k)
-
     # Return the information about the step.
-    return orb, r_i, v_i
+    return r_i, v_i
 end

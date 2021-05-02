@@ -7,7 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-get_epoch(orbp::OrbitPropagatorJ4)      = orbp.j4d.epoch
+get_epoch(orbp::OrbitPropagatorJ4) = orbp.j4d.epoch
 
 """
     init_orbit_propagator(Val(:J4), epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
@@ -47,17 +47,8 @@ function init_orbit_propagator(::Val{:J4}, epoch::Number, a_0::Number,
     j4d = j4_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6,
                   j4_gc = j4_gc)
 
-    # Create the `KeplerianElements` structure.
-    orb_0 = KeplerianElements(j4d.epoch,
-                              j4d.al_0*j4_gc.R0,
-                              j4d.e_0,
-                              j4d.i_0,
-                              j4d.Ω_0,
-                              j4d.ω_0,
-                              j4d.f_k)
-
     # Create and return the orbit propagator structure.
-    return OrbitPropagatorJ4(orb_0, j4d)
+    return OrbitPropagatorJ4(j4d)
 end
 
 function init_orbit_propagator(::Val{:J4},
@@ -79,36 +70,17 @@ function propagate!(orbp::OrbitPropagatorJ4{T}, t::Number) where T
     # Propagate the orbit.
     r_i, v_i = j4!(j4d, t)
 
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(j4d.epoch + t/86400,
-                                 j4d.al_k*j4d.j4_gc.R0,
-                                 j4d.e_k,
-                                 j4d.i_k,
-                                 j4d.Ω_k,
-                                 j4d.ω_k,
-                                 j4d.f_k)
-
     # Return.
-    return orbp.orb, r_i, v_i
+    return r_i, v_i
 end
 
 function step!(orbp::OrbitPropagatorJ4, Δt::Number)
     # Auxiliary variables.
-    orb = orbp.orb
     j4d = orbp.j4d
 
     # Propagate the orbit.
     r_i, v_i = j4!(j4d, j4d.Δt + Δt)
 
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(orb.t + Δt/86400,
-                                 j4d.al_k*j4d.j4_gc.R0,
-                                 j4d.e_k,
-                                 j4d.i_k,
-                                 j4d.Ω_k,
-                                 j4d.ω_k,
-                                 j4d.f_k)
-
     # Return the information about the step.
-    return orbp.orb, r_i, v_i
+    return r_i, v_i
 end

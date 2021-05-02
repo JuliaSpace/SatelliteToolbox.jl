@@ -37,12 +37,8 @@ instants defined in the vector `t` [s].
 In both cases, the orbit propagator algorithm is the one related to the
 structure `orbp`.
 
-The structure `orbp` will contain the elements at the last propagation instant.
-
 # Returns
 
-* The Keplerian elements represented in inertial frame in each time instant
-  (see [`KeplerianElements`](@ref)) [SI units].
 * The position vector represented in inertial frame in each time instant [m].
 * The velocity vector represented in inertial frame in each time instant [m].
 
@@ -59,16 +55,14 @@ function propagate!(orbp::OrbitPropagator{T}, t::AbstractVector) where T
     result_r   = Vector{SVector{3,T}}(undef, num_elems)
     result_v   = Vector{SVector{3,T}}(undef, num_elems)
 
-    for k = 1:num_elems
+    @inbounds for k = 1:num_elems
         # Propagate the orbit.
-        orb, r_i_k, v_i_k = propagate!(orbp, t[k])
-
-        result_orb[k] = orb
-        result_r[k]   = r_i_k
-        result_v[k]   = v_i_k
+        r_i_k, v_i_k = propagate!(orbp, t[k])
+        result_r[k]  = r_i_k
+        result_v[k]  = v_i_k
     end
 
-    return result_orb, result_r, result_v
+    return result_r, result_v
 end
 
 """
@@ -82,12 +76,8 @@ epochs defined in the vector `t` [Julian Day].
 In both cases, the orbit propagator algorithm is the one related to the
 structure `orbp`.
 
-The structure `orbp` will contain the elements at the last propagation instant.
-
 # Returns
 
-* The Keplerian elements represented in inertial frame in each time instant
-  (see [`KeplerianElements`](@ref)) [SI units].
 * The position vector represented in inertial frame in each time instant [m].
 * The velocity vector represented in inertial frame in each time instant [m].
 
@@ -107,8 +97,6 @@ parameters will be written in `orbp`.
 
 # Returns
 
-* The Keplerian elements represented in the inertial frame after the step (see
-  [`KeplerianElements`](@ref)) [SI units].
 * The position vector represented in the inertial frame after the step [m].
 * The velocity vector represented in the inertial frame after the step [m].
 

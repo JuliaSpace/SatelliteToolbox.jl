@@ -40,17 +40,8 @@ function init_orbit_propagator(::Val{:twobody}, epoch::Number,
     # Create the new Two Body propagator structure.
     tbd = twobody_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0; μ = μ)
 
-    # Create the `KeplerianElements` structure.
-    orb_0 = KeplerianElements(tbd.epoch,
-                              tbd.a_0,
-                              tbd.e_0,
-                              tbd.i_0,
-                              tbd.Ω_0,
-                              tbd.ω_0,
-                              tbd.f_0)
-
     # Create and return the orbit propagator structure.
-    return OrbitPropagatorTwoBody(orb_0, tbd)
+    return OrbitPropagatorTwoBody(tbd)
 end
 
 function init_orbit_propagator(::Val{:twobody}, orb_0::Orbit; μ::T = m0) where T
@@ -68,12 +59,7 @@ function propagate!(orbp::OrbitPropagatorTwoBody{T}, t::Number) where T
     # Propagate the orbit.
     r_i, v_i = twobody!(tbd, t)
 
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(orbp.orb;
-                                 t = tbd.epoch + t/86400,
-                                 f = tbd.f_k)
-
-    return orbp.orb, r_i, v_i
+    return r_i, v_i
 end
 
 function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
@@ -83,11 +69,6 @@ function step!(orbp::OrbitPropagatorTwoBody, Δt::Number)
     # Propagate the orbit.
     r_i, v_i = twobody!(tbd, tbd.Δt + Δt)
 
-    # Update the elements in the `orb` structure.
-    orbp.orb = KeplerianElements(orbp.orb;
-                                 t = orbp.orb.t + Δt/86400,
-                                 f = tbd.f_k)
-
     # Return the information about the step.
-    return orbp.orb, r_i, v_i
+    return r_i, v_i
 end
