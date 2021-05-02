@@ -1,12 +1,14 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
-#   Functions to convert osculating elements to mean elements.
+#   Functions to convert osculating elements to mean elements using SGP4.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A; Crawford, P (2008). SGP4 orbit determination. AIAA/AAS
 #       Astrodynamics Specialist Conference, Honoulu, HI.
