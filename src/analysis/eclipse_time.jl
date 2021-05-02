@@ -85,13 +85,13 @@ function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number,
     # Function to compute the lightning condition given an instant of the day
     # `t`, the day from orbit epoch `d`, and the Sun vector `s_i`.
     f(t,d,s_i)::Int = begin
-        ~, r_i, ~ = propagate!(orbp, 86400d + t)
+        r_i, ~ = propagate!(orbp, 86400d + t)
         return satellite_lighting_condition(r_i, s_i)
     end
 
     # Return `true` if the lightning condition given an instant of the day `t`,
     # the day from orbit epoch `d`, and the Sun vector `s_i` is equal `state`.
-    fb(t,d,s_i,state)::Bool = f(t,d,s_i) == state
+    fb(t, d, s_i, state)::Bool = f(t, d, s_i) == state
 
     # Accumulate the time step `Δt` according to the state `state`.
     accum(Δt, state, ind, s, p, u)::Nothing = begin
