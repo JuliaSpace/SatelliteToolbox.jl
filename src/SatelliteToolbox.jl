@@ -113,7 +113,9 @@ include("orbit/anomalies.jl")
 include("orbit/orbit_sun_sync.jl")
 include("orbit/orbit_sun_sync_ground_reap.jl")
 
+include("orbit/mean_elements/j2osc.jl")
 include("orbit/mean_elements/sgp4.jl")
+
 include("orbit/propagators/j2.jl")
 include("orbit/propagators/j2osc.jl")
 include("orbit/propagators/j4.jl")
