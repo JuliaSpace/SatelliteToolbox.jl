@@ -26,13 +26,12 @@ export j2osc_init, j2osc!
 ################################################################################
 
 """
-    j2osc_init(j2_gc::J2_GravCte{T}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number) where T
+    j2osc_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
 
 Initialize the data structure of J2 osculating orbit propagator algorithm.
 
 # Args
 
-* `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
 * `epoch`: Epoch of the orbital elements [Julian Day].
 * `a_0`: Initial semi-major axis [m].
 * `e_0`: Initial eccentricity.
@@ -42,7 +41,7 @@ Initialize the data structure of J2 osculating orbit propagator algorithm.
 * `f_0`: Initial true anomaly [rad].
 * `dn_o2`: First time derivative of the mean motion divided by two [rad/s^2].
 * `ddn_o6`: Second time derivative of the mean motion divided by six [rad/s^3].
-#
+
 # Keywords
 
 * `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
@@ -87,8 +86,7 @@ Propagate the orbit defined in `j2oscd` (see `J2osc_Structure`) until the time
 # Remarks
 
 The inertial frame in which the output is represented depends on which frame it
-was used to generate the orbit parameters. If the orbit parameters are obtained
-from a TLE, then the inertial frame will be TEME. Notice, however, that the
+was used to generate the orbit parameters. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 
 """
