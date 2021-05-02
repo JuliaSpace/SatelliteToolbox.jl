@@ -174,16 +174,39 @@ Low level J2 osculating orbit propagator structure.
 @with_kw mutable struct J2osc_Structure{T}
     # J2 orbit propagator to propagate the mean elements.
     j2d::J2_Structure{T}
+
     # Propagation time from epoch.
     Δt::T
-    # Current osculating Keplerian elements.
-    a_k::T
-    e_k::T
-    i_k::T
-    Ω_k::T
-    ω_k::T
-    f_k::T
-    M_k::T
+
+    # Current osculating Keplerian elements
+    # ==========================================================================
+    a_k::T # ................................... Osculating semi-major axis [er]
+    e_k::T # ....................................... Osculating eccentricity [ ]
+    i_k::T # ...................................... Osculating inclination [rad]
+    Ω_k::T # ............................................. Osculating RAAN [rad]
+    ω_k::T # .............................. Osculating argument of perigee [rad]
+    f_k::T # ..................................... Osculating true anomaly [rad]
+    M_k::T # ..................................... Osculating mean anomaly [rad]
+end
+
+"""
+    OrbitPropagatorJ2osc{T} <: OrbitPropagator{T}
+
+Structure that holds the information related to the J2 osculating orbit
+propagator.
+
+# Fields
+
+* `orb`: Mean orbital elements (see `Orbit`).
+* `j2oscd`: Structure that stores the J2 osculating orbit propagator data (see
+            `J2osc_Structure`).
+
+"""
+mutable struct OrbitPropagatorJ2osc{T} <: OrbitPropagator{T}
+    orb::KeplerianElements{T}
+
+    # J2 osculating orbit propagator related fields.
+    j2oscd::J2osc_Structure{T}
 end
 
 #                             J4 orbit propagator
