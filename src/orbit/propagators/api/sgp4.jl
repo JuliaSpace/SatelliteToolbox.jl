@@ -9,6 +9,19 @@
 
 get_epoch(orbp::OrbitPropagatorSGP4) = orbp.sgp4d.epoch
 
+function get_mean_elements(orbp::OrbitPropagatorSGP4)
+    sgp4d = orbp.sgp4d
+    orb = KeplerianElements(sgp4d.epoch + sgp4d.Δt/86400,
+                            sgp4d.a_k * (1000 * sgp4d.sgp4_gc.R0),
+                            sgp4d.e_k,
+                            sgp4d.i_k,
+                            sgp4d.Ω_k,
+                            sgp4d.ω_k,
+                            M_to_f(sgp4d.e_k, sgp4d.M_k))
+
+    return orb
+end
+
 """
     init_orbit_propagator(Val(:sgp4), tle::TLE, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
 

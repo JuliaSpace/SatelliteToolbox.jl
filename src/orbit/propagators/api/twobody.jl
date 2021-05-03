@@ -9,6 +9,19 @@
 
 get_epoch(orbp::OrbitPropagatorTwoBody) = orbp.tbd.epoch
 
+function get_mean_elements(orbp::OrbitPropagatorTwoBody)
+    tbd = orbp.tbd
+    orb = KeplerianElements(tbd.epoch + tbd.Δt/86400,
+                            tbd.a_0,
+                            tbd.e_0,
+                            tbd.i_0,
+                            tbd.Ω_0,
+                            tbd.ω_0,
+                            tbd.f_k)
+
+    return orb
+end
+
 """
     init_orbit_propagator(::Val{:twobody}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number; μ::T = m0) where T
 

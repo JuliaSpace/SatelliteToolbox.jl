@@ -9,6 +9,19 @@
 
 get_epoch(orbp::OrbitPropagatorJ4) = orbp.j4d.epoch
 
+function get_mean_elements(orbp::OrbitPropagatorJ4)
+    j4d = orbp.j4d
+    orb = KeplerianElements(j4d.epoch + j4d.Δt/86400,
+                            j4d.al_k * j4d.j4_gc.R0,
+                            j4d.e_k,
+                            j4d.i_k,
+                            j4d.Ω_k,
+                            j4d.ω_k,
+                            j4d.f_k)
+
+    return orb
+end
+
 """
     init_orbit_propagator(Val(:J4), epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
     init_orbit_propagator(Val(:J4), orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0; j4_gc::J4_GravCte = j4_gc_egm08)
