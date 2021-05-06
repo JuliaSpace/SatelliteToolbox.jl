@@ -242,7 +242,7 @@ frame. For more information, see [1].
 ```jldoctest
 julia> orbp = init_orbit_propagator(Val(:twobody), 0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0);
 
-julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
+julia> r, v = propagate!(orbp, collect(0:3:24)*60*60);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -260,7 +260,7 @@ julia> r
 ```jldoctest
 julia> orbp = init_orbit_propagator(Val(:J2), KeplerianElements(0.0, 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
-julia> o,r,v = propagate!(orbp, collect(0:3:24)*60*60);
+julia> r, v = propagate!(orbp, collect(0:3:24)*60*60);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -278,7 +278,7 @@ julia> r
 ```jldoctest
 julia> orbp = init_orbit_propagator(Val(:J2), KeplerianElements(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
-julia> o,r,v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
+julia> r, v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -296,7 +296,7 @@ julia> r
 ```jldoctest
 julia> orbp = init_orbit_propagator(Val(:J4), KeplerianElements(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
-julia> o,r,v = propagate!(orbp, (0:3:24)*60*60);
+julia> r, v = propagate!(orbp, (0:3:24)*60*60);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -320,7 +320,7 @@ julia> tle_scd1 = tle"""
 
 julia> orbp = init_orbit_propagator(Val(:sgp4), tle_scd1);
 
-julia> o,r,v = propagate!(orbp, (0:3:24)*60*60);
+julia> r, v = propagate!(orbp, (0:3:24)*60*60);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -348,21 +348,21 @@ julia> v
 
 julia> orbp = init_orbit_propagator(Val(:sgp4), tle_scd1);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
-julia> o,r,v = step!(orbp, 3*60*60);
+julia> r, v = step!(orbp, 3*60*60);
 
 julia> r
 3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):

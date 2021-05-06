@@ -77,8 +77,8 @@ In this package, the time-derivative of the argument of perigee \[rad/s] can be
 computed by the following functions:
 
 ```julia
-function dArgPer(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-function dArgPer(orb::Orbit, pert::Symbol = :J2)
+function dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+function dargp(orb::Orbit, pert::Symbol = :J2)
 ```
 
 where:
@@ -91,13 +91,13 @@ where:
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
-julia> dArgPer(7130982, 0.001111, deg2rad(98.405))
+julia> dargp(7130982, 0.001111, deg2rad(98.405))
 -6.082892348533058e-7
 
-julia> dArgPer(7130982, 0.001111, deg2rad(63.435))
+julia> dargp(7130982, 0.001111, deg2rad(63.435))
 -2.433253158726004e-12
 
-julia> dArgPer(7130982, 0.001111, deg2rad(98.405), :J0)
+julia> dargp(7130982, 0.001111, deg2rad(98.405), :J0)
 0.0
 ```
 
