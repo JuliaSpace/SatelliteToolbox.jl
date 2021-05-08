@@ -107,7 +107,7 @@ end
     GeodetictoGeocentric(ϕ_gd::Number, h::Number)
 
 Compute the geocentric latitude and radius from the geodetic latitude `ϕ_gd`
-(-π/2,π/2) \\[rad] and height above the reference ellipsoid `h` \\[m] (WGS-84).
+(-π/2, π/2) [rad] and height above the reference ellipsoid `h` \\[m] (WGS-84).
 Notice that the longitude is the same in both geocentric and geodetic
 coordinates.
 
@@ -123,18 +123,18 @@ Based on algorithm in [4, p. 3].
 """
 function GeodetictoGeocentric(ϕ_gd::Number, h::Number)
     # Auxiliary variables to decrease computational burden.
-    sin_ϕ_gd  = sin(ϕ_gd)
-    sin2_ϕ_gd = sin_ϕ_gd^2
-    e2_wgs84  = e_wgs84^2
+    sin_ϕ_gd, cos_ϕ_gd = sincos(ϕ_gd)
+    sin²_ϕ_gd = sin_ϕ_gd^2
+    e²_wgs84  = e_wgs84^2
 
     # Radius of curvature in the prime vertical [m].
-    N    = a_wgs84/sqrt(1 - e2_wgs84*sin2_ϕ_gd )
+    N    = a_wgs84/√(1 - e²_wgs84 * sin²_ϕ_gd )
 
     # Compute the geocentric latitude and radius from the Earth center.
-    ρ    = (N + h)*cos(ϕ_gd)
-    z    = (N * (1 - e2_wgs84) + h)*sin_ϕ_gd
-    r    = sqrt(ρ^2 + z^2)
-    ϕ_gc = asin(z/r)
+    ρ    = (N + h) * cos_ϕ_gd
+    z    = (N * (1 - e²_wgs84) + h) * sin_ϕ_gd
+    r    = √(ρ^2 + z^2)
+    ϕ_gc = asin(z / r)
 
-    (ϕ_gc, r)
+    return ϕ_gc, r
 end
