@@ -61,7 +61,7 @@
             norm_g_online = test_out[k,3]/100000
 
             # Use the model to compute the gravity using all the coefficients.
-            norm_g = norm(compute_g(coef, GeodetictoECEF(lat, lon, 0)))
+            norm_g = norm(compute_g(coef, geodetic_to_ecef(lat, lon, 0)))
 
             # Compare the results.
             @test norm_g_online ≈ norm_g atol=5e-8 rtol=0
@@ -115,7 +115,7 @@ end
             U_online = test_out[k,3]
 
             # Use the model to compute the gravity using all the coefficients.
-            U = compute_U(coef, GeodetictoECEF(lat, lon, 0))
+            U = compute_U(coef, geodetic_to_ecef(lat, lon, 0))
 
             # Compare the results.
             @test U_online ≈ U atol=1e-6 rtol=0

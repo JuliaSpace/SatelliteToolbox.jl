@@ -26,7 +26,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export ecef_to_geodetic, GeodetictoECEF
+export ecef_to_geodetic, geodetic_to_ecef
 export GeocentrictoGeodetic, GeodetictoGeocentric
 
 """
@@ -79,7 +79,7 @@ function ecef_to_geodetic(r_e::AbstractVector)
 end
 
 """
-    GeodetictoECEF(lat::Number, lon::Number, h::Number)
+    geodetic_to_ecef(lat::Number, lon::Number, h::Number)
 
 Convert the latitude `lat` [rad], longitude `lon` [rad], and altitude `h` \\[m]
 (WGS-84) into a vector represented on the Earth-Centered, Earth-Fixed (ECEF)
@@ -90,7 +90,7 @@ reference frame.
 Based on algorithm in [3].
 
 """
-function GeodetictoECEF(lat::Number, lon::Number, h::Number)
+function geodetic_to_ecef(lat::Number, lon::Number, h::Number)
     # Auxiliary variables.
     sin_lat, cos_lat = sincos(lat)
     sin_lon, cos_lon = sincos(lon)

@@ -53,7 +53,7 @@ ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
 function ground_station_accesses(orbp, vgs_wgs84::AbstractVector{T}, vargs...;
                                  kwargs...) where T<:Tuple
 
-    vrs_e = [GeodetictoECEF(gs_wgs84...) for gs_wgs84 in vgs_wgs84]
+    vrs_e = [geodetic_to_ecef(gs_wgs84...) for gs_wgs84 in vgs_wgs84]
     return ground_station_accesses(orbp, vrs_e, vargs...; kwargs...)
 end
 
@@ -411,7 +411,7 @@ otherwise.
 function ground_station_visible(r_e::AbstractVector, lat_s::Number,
                                 lon_s::Number, h_s::Number, θ::Number)
     # Convert the ground station LLA to the ECEF frame.
-    rs_e = GeodetictoECEF(lat_s, lon_s, h_s)
+    rs_e = geodetic_to_ecef(lat_s, lon_s, h_s)
 
     return ground_station_visible(r_e, rs_e, θ)
 end

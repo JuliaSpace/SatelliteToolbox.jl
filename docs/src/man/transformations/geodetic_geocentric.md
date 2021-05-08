@@ -46,19 +46,19 @@ The Geodetic latitude `lat` \[rad], longitude `lon` \[rad], and altitude `h`
 following function:
 
 ```julia
-function GeodetictoECEF(lat::Number, lon::Number, h::Number)
+function geodetic_to_ecef(lat::Number, lon::Number, h::Number)
 ```
 
 in which a 3x1 vector will be returned.
 
 ```jldoctest
-julia> GeodetictoECEF(0,0,0)
+julia> geodetic_to_ecef(0,0,0)
 3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
  6.378137e6
  0.0
  0.0
 
-julia> GeodetictoECEF(deg2rad(-22),deg2rad(-45),0)
+julia> geodetic_to_ecef(deg2rad(-22),deg2rad(-45),0)
 3-element StaticArrays.SVector{3, Float64} with indices SOneTo(3):
   4.1835869067109847e6
  -4.1835869067109837e6
