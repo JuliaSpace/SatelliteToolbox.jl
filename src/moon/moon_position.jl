@@ -173,7 +173,7 @@ end
 
 function moon_position_i(JD_TDB::Number, ::Val{:fast})
     # Constants.
-    deg2rad = π/180
+    deg2rad = π / 180
 
     # Number of Julian centuries from J2000 epoch.
     T_TDB = (JD_TDB - JD_J2000)/36525.0
@@ -201,24 +201,26 @@ function moon_position_i(JD_TDB::Number, ::Val{:fast})
     ϵ = @evalpoly(T_TDB, 23.439_291, -0.013_004_2, -1.64e-7, +5.04e-7)
 
     # Convert to radians and limit to the interval [0,2π].
-    λₑ = mod2pi(λₑ*deg2rad)
-    ϕₑ = mod2pi(ϕₑ*deg2rad)
-    P  = mod2pi( P*deg2rad)
-    ϵ  = mod2pi( ϵ*deg2rad)
+    λₑ = mod2pi(λₑ * deg2rad)
+    ϕₑ = mod2pi(ϕₑ * deg2rad)
+    P  = mod2pi( P * deg2rad)
+    ϵ  = mod2pi( ϵ * deg2rad)
 
     # Compute the distance from Earth to the Moon [m].
-    r = R0/sin(P)
+    r = R0 / sin(P)
 
     # Auxiliary variables.
-    sinλ, cosλ = sincos(λₑ)
-    sinϕ, cosϕ = sincos(ϕₑ)
-    sinϵ, cosϵ = sincos(ϵ)
+    sin_λ, cos_λ = sincos(λₑ)
+    sin_ϕ, cos_ϕ = sincos(ϕₑ)
+    sin_ϵ, cos_ϵ = sincos(ϵ)
 
-    # Compute the Moon vector represented in J2000 (IAU-76/KF5 mean-equator,
-    # mean-equinox).
-    r_J2000 = SVector{3,Float64}(r*(cosϕ*cosλ),
-                                 r*(cosϵ*cosϕ*sinλ - sinϵ*sinϕ),
-                                 r*(sinϵ*cosϕ*sinλ + cosϵ*sinϕ))
+    # Compute the Moon vector represented in MOD (IAU-76/KF5 mean-equator,
+    # mean-equinox of date).
+    r_mod = SVector(
+        r * (cos_ϕ * cos_λ),
+        r * (cos_ϵ * cos_ϕ * sin_λ - sin_ϵ * sin_ϕ),
+        r * (sin_ϵ * cos_ϕ * sin_λ + cos_ϵ * sin_ϕ)
+    )
 
-    return r_J2000
+    return r_mod
 end
