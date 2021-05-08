@@ -22,12 +22,12 @@ export svECEFtoECEF
     svECEFtoECEF(sv::OrbitStateVector, args...)
 
 Convert the orbit state vector `sv` from an ECEF frame to another ECEF frame.
-The arguments `args...` must match those of the function `rECEFtoECEF`
+The arguments `args...` must match those of the function `r_ecef_to_ecef`
 **wihtout** the rotation representation.
 
 """
 function svECEFtoECEF(sv::OrbitStateVector, args...)
-    D = rECEFtoECEF(DCM, args...)
+    D = r_ecef_to_ecef(DCM, args...)
 
     # Since both frames does not have a significant angular velocity between
     # them, then we just need to convert the representations.

@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Rotations from an Earth-Centered, Earth-Fixed (ECEF) reference frame to
 #   another ECEF reference frame.
@@ -8,16 +9,17 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export rECEFtoECEF
+export r_ecef_to_ecef
 
 """
-    rECEFtoECEF([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
+    r_ecef_to_ecef([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
 frame to another ECEF reference frame at the Julian Day [UTC] `JD_UTC`. The
@@ -75,38 +77,46 @@ frame into alignment with the ECI reference frame.
 ```julia-repl
 julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
-julia> rECEFtoECEF(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          0.0         4.35684e-7
   0.0          1.0         1.44762e-6
  -4.35684e-7  -1.44762e-6  1.0
 
-julia> rECEFtoECEF(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
 
 julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
 
-julia> rECEFtoECEF(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          3.08408e-11  -4.3531e-7
  -3.14708e-11  1.0          -1.44727e-6
   4.3531e-7    1.44727e-6    1.0
 
-julia> rECEFtoECEF(Quaternion, TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.9999999999997146 - 7.236343481345639e-7.i + 2.176551830689726e-7.j + 1.5577911634233308e-11.k
 ```
 """
-@inline rECEFtoECEF(T_ECEFo::T_ECEFs,
-                    T_ECEFf::T_ECEFs,
-                    JD_UTC::Number,
-                    eop_data::EOPData_IAU1980) =
-    rECEFtoECEF(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+@inline function r_ecef_to_ecef(
+    T_ECEFo::T_ECEFs,
+    T_ECEFf::T_ECEFs,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
+    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+end
 
-@inline rECEFtoECEF(T_ECEFo::T_ECEFs_IAU_2006, T_ECEFf::T_ECEFs_IAU_2006,
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A) =
-    rECEFtoECEF(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+@inline function r_ecef_to_ecef(
+    T_ECEFo::T_ECEFs_IAU_2006,
+    T_ECEFf::T_ECEFs_IAU_2006,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
+    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+end
 
 ################################################################################
 #                                  IAU-76/FK5
@@ -115,8 +125,13 @@ Quaternion{Float64}:
 #                                 ITRF <=> PEF
 # ==============================================================================
 
-function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:PEF}, JD_UTC::Number,
-                     eop_data::EOPData_IAU1980)
+function r_ecef_to_ecef(
+    T::T_ROT,
+    ::Val{:ITRF},
+    ::Val{:PEF},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
@@ -127,9 +142,15 @@ function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:PEF}, JD_UTC::Number,
     return rITRFtoPEF_fk5(T, x_p, y_p)
 end
 
-@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Val{:PEF}, T_ECEFf::Val{:ITRF},
-                    JD_UTC::Number, eop_data::EOPData_IAU1980) =
-    inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+@inline function r_ecef_to_ecef(
+    T::T_ROT,
+    T_ECEFo::Val{:PEF},
+    T_ECEFf::Val{:ITRF},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
+    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+end
 
 ################################################################################
 #                                IAU-2006/2010
@@ -138,9 +159,13 @@ end
 #                                ITRF <=> TIRS
 # ==============================================================================
 
-function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:TIRS}, JD_UTC::Number,
-                     eop_data::EOPData_IAU2000A)
-
+function r_ecef_to_ecef(
+    T::T_ROT,
+    ::Val{:ITRF},
+    ::Val{:TIRS},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
     arcsec2rad = π/648000
 
     # Get the EOP data related to the desired epoch.
@@ -148,9 +173,15 @@ function rECEFtoECEF(T::T_ROT, ::Val{:ITRF}, ::Val{:TIRS}, JD_UTC::Number,
     y_p = eop_data.y(JD_UTC)*arcsec2rad
 
     # Return the rotation.
-    rITRFtoTIRS_iau2006(T, JD_UTC, x_p, y_p)
+    return rITRFtoTIRS_iau2006(T, JD_UTC, x_p, y_p)
 end
 
-@inline rECEFtoECEF(T::T_ROT, T_ECEFo::Val{:TIRS}, T_ECEFf::Val{:ITRF},
-                    JD_UTC::Number, eop_data::EOPData_IAU2000A) =
-    inv_rotation(rECEFtoECEF(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+@inline function r_ecef_to_ecef(
+    T::T_ROT,
+    T_ECEFo::Val{:TIRS},
+    T_ECEFf::Val{:ITRF},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
+    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+end

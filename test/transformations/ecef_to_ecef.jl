@@ -26,8 +26,8 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 # File: ./src/transformations/ecef_to_ecef.jl
 # ===========================================
 
-# Functions: rECEFtoECEF
-# ----------------------
+# Functions: r_ecef_to_ecef
+# -------------------------
 
 # ITRF <=> PEF
 # ============
@@ -58,7 +58,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 #
 ################################################################################
 
-@testset "Function rECEFtoECEF ITRF <=> PEF" begin
+@testset "Function r_ecef_to_ecef ITRF <=> PEF" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## ITRF => PEF
@@ -70,7 +70,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## DCM
     ## ---
 
-    D_PEF_ITRF = rECEFtoECEF(ITRF(), PEF(), JD_UTC, eop_iau1980)
+    D_PEF_ITRF = r_ecef_to_ecef(ITRF(), PEF(), JD_UTC, eop_iau1980)
 
     r_pef = D_PEF_ITRF*r_itrf
     v_pef = D_PEF_ITRF*v_itrf
@@ -86,7 +86,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## Quaternion
     ## ----------
 
-    q_PEF_ITRF = rECEFtoECEF(Quaternion, ITRF(), PEF(), JD_UTC, eop_iau1980)
+    q_PEF_ITRF = r_ecef_to_ecef(Quaternion, ITRF(), PEF(), JD_UTC, eop_iau1980)
 
     r_pef = vect(conj(q_PEF_ITRF)*r_itrf*q_PEF_ITRF)
     v_pef = vect(conj(q_PEF_ITRF)*v_itrf*q_PEF_ITRF)
@@ -108,7 +108,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## DCM
     ## ---
 
-    D_ITRF_PEF = rECEFtoECEF(PEF(), ITRF(), JD_UTC, eop_iau1980)
+    D_ITRF_PEF = r_ecef_to_ecef(PEF(), ITRF(), JD_UTC, eop_iau1980)
 
     r_itrf = D_ITRF_PEF*r_pef
     v_itrf = D_ITRF_PEF*v_pef
@@ -124,7 +124,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## Quaternion
     ## ----------
 
-    q_ITRF_PEF = rECEFtoECEF(Quaternion, PEF(), ITRF(), JD_UTC, eop_iau1980)
+    q_ITRF_PEF = r_ecef_to_ecef(Quaternion, PEF(), ITRF(), JD_UTC, eop_iau1980)
 
     r_itrf = vect(conj(q_ITRF_PEF)*r_pef*q_ITRF_PEF)
     v_itrf = vect(conj(q_ITRF_PEF)*v_pef*q_ITRF_PEF)
@@ -167,7 +167,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECEFtoECEF ITRF <=> TIRS" begin
+@testset "Function r_ecef_to_ecef ITRF <=> TIRS" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## ITRF => TIRS
@@ -179,7 +179,7 @@ end
     ## DCM
     ## ---
 
-    D_TIRS_ITRF = rECEFtoECEF(ITRF(), TIRS(), JD_UTC, eop_iau2000a)
+    D_TIRS_ITRF = r_ecef_to_ecef(ITRF(), TIRS(), JD_UTC, eop_iau2000a)
 
     r_tirs = D_TIRS_ITRF*r_itrf
     v_tirs = D_TIRS_ITRF*v_itrf
@@ -195,7 +195,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TIRS_ITRF = rECEFtoECEF(Quaternion, ITRF(), TIRS(), JD_UTC, eop_iau2000a)
+    q_TIRS_ITRF = r_ecef_to_ecef(Quaternion, ITRF(), TIRS(), JD_UTC, eop_iau2000a)
 
     r_tirs = vect(conj(q_TIRS_ITRF)*r_itrf*q_TIRS_ITRF)
     v_tirs = vect(conj(q_TIRS_ITRF)*v_itrf*q_TIRS_ITRF)
@@ -217,7 +217,7 @@ end
     ## DCM
     ## ---
 
-    D_ITRF_TIRS = rECEFtoECEF(TIRS(), ITRF(), JD_UTC, eop_iau2000a)
+    D_ITRF_TIRS = r_ecef_to_ecef(TIRS(), ITRF(), JD_UTC, eop_iau2000a)
 
     r_itrf = D_ITRF_TIRS*r_tirs
     v_itrf = D_ITRF_TIRS*v_tirs
@@ -233,7 +233,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ITRF_TIRS = rECEFtoECEF(Quaternion, TIRS(), ITRF(), JD_UTC, eop_iau2000a)
+    q_ITRF_TIRS = r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), JD_UTC, eop_iau2000a)
 
     r_itrf = vect(conj(q_ITRF_TIRS)*r_tirs*q_ITRF_TIRS)
     v_itrf = vect(conj(q_ITRF_TIRS)*v_tirs*q_ITRF_TIRS)
