@@ -27,7 +27,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export ecef_to_geodetic, geodetic_to_ecef
-export GeocentrictoGeodetic, GeodetictoGeocentric
+export geocentric_to_geodetic, GeodetictoGeocentric
 
 """
     ecef_to_geodetic(r_e::AbstractVector)
@@ -107,7 +107,7 @@ function geodetic_to_ecef(lat::Number, lon::Number, h::Number)
 end
 
 """
-    GeocentrictoGeodetic(ϕ_gc::Number, r::Number)
+    geocentric_to_geodetic(ϕ_gc::Number, r::Number)
 
 Compute the geodetic latitude and altitude (WGS-84) from the geocentric latitude
 `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m]. Notice that the longitude is the
@@ -123,7 +123,7 @@ same in both geocentric and geodetic coordinates.
 Based on algorithm in [5].
 
 """
-function GeocentrictoGeodetic(ϕ_gc::Number, r::Number)
+function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
     # Obtain the `z` component and the equatorial component `re`.
     sin_ϕ_gc, cos_ϕ_gc = sincos(ϕ_gc)
     re = r * cos_ϕ_gc
