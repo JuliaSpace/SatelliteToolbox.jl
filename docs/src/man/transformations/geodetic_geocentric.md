@@ -41,8 +41,8 @@ julia> ecef_to_geodetic([0;0;R0])
 
 # Geodetic to ECEF
 
-The Geodetic latitude `lat` \[rad], longitude `lon` \[rad], and altitude `h`
-\[m] can be converted to a vector represented in an ECEF reference frame by the
+The Geodetic latitude `lat` [rad], longitude `lon` [rad], and altitude `h` [m]
+can be converted to a vector represented in an ECEF reference frame by the
 following function:
 
 ```julia
@@ -65,10 +65,38 @@ julia> geodetic_to_ecef(deg2rad(-22),deg2rad(-45),0)
  -2.3744128953028163e6
 ```
 
+# Geocentric to Geodetic
+
+Given a Geocentric latitude `ϕ_gc` [rad] and distance from the center of Earth
+`r` [m], one can obtain the Geodetic coordinates (Geodetic latitude and altitude
+above the reference ellipsoid - WGS84) using the following function:
+
+```julia
+function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
+```
+
+in which a tuple with two values will be returned:
+
+* The Geodetic latitude [rad]; and
+* The altitude about the reference ellipsoid (WGS-84) [m].
+
+!!! note
+
+    The longitude is the same in both Geodetic and Geocentric representations.
+
+```jldoctest
+julia> geocentric_to_geodetic(deg2rad(-22), R0)
+(2.759935275870326, -1.2753294586178299e7)
+
+julia> geodetic_to_geocentric(0,0)
+(0.0, 6.378137e6)
+```
+
+
 # Geodetic to Geocentric
 
-Given a Geodetic latitude `ϕ_gd` \[rad] and altitude above the reference
-ellipsoid `h` \[m], one can obtain the Geocentric coordinates (Geocentric
+Given a Geodetic latitude `ϕ_gd` [rad] and altitude above the reference
+ellipsoid `h` [m], one can obtain the Geocentric coordinates (Geocentric
 latitude and position from the center of Earth) using the following function:
 
 ```julia
