@@ -102,6 +102,7 @@ include("./misc/legendre.jl")
 include("./misc/dlegendre.jl")
 include("./misc/icgem.jl")
 
+include("./moon/constants.jl")
 include("./moon/moon_position.jl")
 
 include("sun/equation_of_time.jl")
