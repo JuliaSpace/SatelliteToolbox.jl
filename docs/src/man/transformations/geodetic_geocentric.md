@@ -19,23 +19,23 @@ Earth-Fixed frame (ECEF) `r_e` to the Geodetic latitude, longitude, and altitude
 by the following function:
 
 ```julia
-function ECEFtoGeodetic(r_e::AbstractVector)
+function ecef_to_geodetic(r_e::AbstractVector)
 ```
 
 which returns a tuple with:
 
-* The Geocentric latitude \[rad];
-* The longitude \[rad]; and
-* The altitude above the reference ellipsoid \[m].
+* The Geocentric latitude [rad];
+* The longitude [rad]; and
+* The altitude above the reference ellipsoid [m].
 
 ```jldoctest
-julia> ECEFtoGeodetic([R0;0;0])
+julia> ecef_to_geodetic([R0;0;0])
 (0.0, 0.0, 0.0)
 
-julia> ECEFtoGeodetic([0;R0;0])
+julia> ecef_to_geodetic([0;R0;0])
 (0.0, 1.5707963267948966, 0.0)
 
-julia> ECEFtoGeodetic([0;0;R0])
+julia> ecef_to_geodetic([0;0;R0])
 (1.5707963267948966, 0.0, 21384.685754820704)
 ```
 

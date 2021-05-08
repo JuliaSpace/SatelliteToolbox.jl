@@ -16,8 +16,8 @@
 # File: ./src/transformations/geodetic_geocentric.jl
 # ==================================================
 
-# Function: ECEFtoGeodetic
-# ------------------------
+# Function: ecef_to_geodetic
+# --------------------------
 
 ################################################################################
 #                                 Test Results
@@ -53,13 +53,13 @@
 #
 ################################################################################
 
-@testset "Function ECEFtoGeodetic" begin
+@testset "Function ecef_to_geodetic" begin
     # Scenario 01
     # ===========
 
     r = [6524.834e3, 6862.875e3, 6448.296e3]
 
-    ϕ_gd, λ_gd, h = ECEFtoGeodetic(r)
+    ϕ_gd, λ_gd, h = ecef_to_geodetic(r)
 
     @test rad2deg(ϕ_gd) ≈ 34.352496 atol = 1e-6
     @test rad2deg(λ_gd) ≈ 46.4464   atol = 1e-4
@@ -71,14 +71,14 @@
     aux = rand(0:1000)
 
     Z = R0 + aux
-    ϕ_gd, λ_gd, h = ECEFtoGeodetic([0;0;Z])
+    ϕ_gd, λ_gd, h = ecef_to_geodetic([0;0;Z])
 
     @test rad2deg(ϕ_gd) ≈ 90
     @test rad2deg(λ_gd) ≈ 0
     @test h             ≈ Z - SatelliteToolbox.b_wgs84
 
     Z = -R0 + aux
-    ϕ_gd, λ_gd, h = ECEFtoGeodetic([0;0;Z])
+    ϕ_gd, λ_gd, h = ecef_to_geodetic([0;0;Z])
 
     @test rad2deg(ϕ_gd) ≈ -90
     @test rad2deg(λ_gd) ≈ 0

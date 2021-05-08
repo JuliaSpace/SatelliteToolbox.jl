@@ -13,3 +13,5 @@
 @deprecate satsv(args...) orbsv(args...)
 @deprecate dArgPer(args...) dargp(args...)
 @deprecate dRAAN(args...) draan(args...)
+
+@deprecate ECEFtoGeodetic(args...) ecef_to_geodetic(args...)

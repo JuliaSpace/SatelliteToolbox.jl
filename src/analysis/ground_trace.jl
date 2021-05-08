@@ -62,7 +62,7 @@ function ground_trace(orbp::OrbitPropagator, Δt::Number;
     end
 
     # Convert to Geodetic coordinates.
-    geod = ECEFtoGeodetic.(r_e)
+    geod = ecef_to_geodetic.(r_e)
     return map(x->(x[1],x[2]), geod)
 end
 
