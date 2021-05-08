@@ -423,7 +423,7 @@ function igrf(date::Number, h::Number, λ::Number, Ω::Number, ::Val{:geodetic},
     # caused by a numerical error. Further verification is necessary.
 
     # Convert the geodetic coordinates to geocentric coordinates.
-    (λ_gc, r) = GeodetictoGeocentric(λ, h)
+    (λ_gc, r) = geodetic_to_geocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
     B_gc = igrf(date, r, λ_gc, Ω, Val(:geocentric), P, dP; show_warns = show_warns)

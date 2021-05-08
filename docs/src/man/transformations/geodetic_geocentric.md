@@ -72,22 +72,22 @@ ellipsoid `h` \[m], one can obtain the Geocentric coordinates (Geocentric
 latitude and position from the center of Earth) using the following function:
 
 ```julia
-function GeodetictoGeocentric(ϕ_gd::Number, h::Number)
+function geodetic_to_geocentric(ϕ_gd::Number, h::Number)
 ```
 
 in which a tuple with two values will be returned:
 
-* The Geocentric latitude \[rad]; and
-* The distance from the center of Earth \[m].
+* The Geocentric latitude [rad]; and
+* The distance from the center of Earth [m].
 
 !!! note
 
     The longitude is the same in both Geodetic and Geocentric representations.
 
 ```jldoctest
-julia> GeodetictoGeocentric(deg2rad(-22), 0)
+julia> geodetic_to_geocentric(deg2rad(-22), 0)
 (-0.38164509973650357, 6.375157677217675e6)
 
-julia> GeodetictoGeocentric(0,0)
+julia> geodetic_to_geocentric(0,0)
 (0.0, 6.378137e6)
 ```

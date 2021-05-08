@@ -16,3 +16,4 @@
 
 @deprecate ECEFtoGeodetic(args...) ecef_to_geodetic(args...)
 @deprecate GeodetictoECEF(args...) geodetic_to_ecef(args...)
+@deprecate GeodetictoGeocentric(args...) geodetic_to_geocentric(args...)

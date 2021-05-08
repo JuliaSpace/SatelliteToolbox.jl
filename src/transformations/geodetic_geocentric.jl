@@ -27,7 +27,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export ecef_to_geodetic, geodetic_to_ecef
-export geocentric_to_geodetic, GeodetictoGeocentric
+export geocentric_to_geodetic, geodetic_to_geocentric
 
 """
     ecef_to_geodetic(r_e::AbstractVector)
@@ -164,7 +164,7 @@ function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
 end
 
 """
-    GeodetictoGeocentric(ϕ_gd::Number, h::Number)
+    geodetic_to_geocentric(ϕ_gd::Number, h::Number)
 
 Compute the geocentric latitude and radius from the geodetic latitude `ϕ_gd`
 (-π/2, π/2) [rad] and height above the reference ellipsoid `h` \\[m] (WGS-84).
@@ -181,7 +181,7 @@ coordinates.
 Based on algorithm in [4, p. 3].
 
 """
-function GeodetictoGeocentric(ϕ_gd::Number, h::Number)
+function geodetic_to_geocentric(ϕ_gd::Number, h::Number)
     # Auxiliary variables to decrease computational burden.
     sin_ϕ_gd, cos_ϕ_gd = sincos(ϕ_gd)
     sin²_ϕ_gd = sin_ϕ_gd^2
