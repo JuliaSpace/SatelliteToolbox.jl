@@ -128,11 +128,12 @@ function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
     sin_ϕ_gc, cos_ϕ_gc = sincos(ϕ_gc)
     re = r * cos_ϕ_gc
     z  = r * sin_ϕ_gc
+    sign_z = z == 0 ? +1 : sign(z)
 
     # Auxiliary variables.
     a  = a_wgs84
     a² = a^2
-    b  = b_wgs84
+    b  = sign_z * b_wgs84
     b² = b^2
 
     # Compute the parameters.
@@ -145,18 +146,24 @@ function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
 
     if D ≥ 0
         aux = √D
-        v = (aux - Q)^(1/3) - (aux + Q)^(1/3)
+        v = (aux - Q)^(1/3) - (Q + aux)^(1/3)
     else
-        v = 2 * √(-P) * cos( acos(Q / (-P)^(3 / 2)) / 3)
+        aux = √(-P)
+        v = 2 * aux * cos(acos(Q / (P * aux)) / 3)
     end
 
-    # We must select the correct root depending on where we are (North or South
-    # hemisphere) to avoid complex results.
-    G = (sign(z) * √(E² + v) + E)/2
-    t = sign(z) * √(G^2 + (F - v * G) / (2 * G - E)) - G
+    G = (√(E² + v) + E)/2
+
+    # NOTE: Reference [5] appears to have an error in Eq. (13), where we must
+    # have G^2 instead of G inside the square root. The correct version can be
+    # seen here:
+    #
+    #   https://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-BG.htm
+    #
+    t = √(G^2 + (F - v * G) / (2 * G - E)) - G
 
     # Compute the geodetic latitude and altitude.
-    ϕ_gd = atan(a * (1 - t^2), 2b * t)
+    ϕ_gd = atan(a * (1 - t^2)/(2b * t))
     sin_ϕ_gd, cos_ϕ_gd = sincos(ϕ_gd)
     h = (re - a * t) * cos_ϕ_gd + (z - b) * sin_ϕ_gd
 
