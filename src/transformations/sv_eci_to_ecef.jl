@@ -16,10 +16,10 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export svECItoECEF
+export sv_eci_to_ecef
 
 """
-    svECItoECEF(sv::OrbitStateVector, ECI, ECEF, JD_UTC [, eop_data])
+    sv_eci_to_ecef(sv::OrbitStateVector, ECI, ECEF, JD_UTC [, eop_data])
 
 Convert the orbit state vector `sv` from the Earth-Centered Inertial (ECI)
 reference frame `ECI` to the Earth-Centered, Earth-Fixed (ECEF) reference frame
@@ -34,34 +34,41 @@ see the documentation of the function `r_eci_to_ecef`.
     and acceleration as measured by an observer on the ECEF frame.
 
 """
-function svECItoECEF(sv::OrbitStateVector, T_ECI::T_ECIs,
-                     T_ECEF::Val{:ITRF}, JD_UTC::Number,
-                     eop_data::EOPData_IAU1980)
-
+function sv_eci_to_ecef(
+    sv::OrbitStateVector,
+    T_ECI::T_ECIs,
+    T_ECEF::Val{:ITRF},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
     # First, convert from ECI to PEF.
-    sv_pef = svECItoECEF(sv, T_ECI, Val(:PEF), JD_UTC, eop_data)
+    sv_pef = sv_eci_to_ecef(sv, T_ECI, Val(:PEF), JD_UTC, eop_data)
 
     # Now, convert from PEF to ITRF.
     return sv_ecef_to_ecef(sv_pef, Val(:PEF), Val(:ITRF), JD_UTC, eop_data)
 end
 
-function svECItoECEF(sv::OrbitStateVector, T_ECI::T_ECIs_IAU_2006,
-                     T_ECEF::Val{:ITRF}, JD_UTC::Number,
-                     eop_data::EOPData_IAU2000A)
-
+function sv_eci_to_ecef(
+    sv::OrbitStateVector,
+    T_ECI::T_ECIs_IAU_2006,
+    T_ECEF::Val{:ITRF},
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
     # First, convert from ECI to TIRS.
-    sv_tirs = svECItoECEF(sv, T_ECI, Val(:TIRS), JD_UTC, eop_data)
+    sv_tirs = sv_eci_to_ecef(sv, T_ECI, Val(:TIRS), JD_UTC, eop_data)
 
     # Now, convert from TIRS to ITRF.
     return sv_ecef_to_ecef(sv_tirs, Val(:TIRS), Val(:ITRF), JD_UTC, eop_data)
 end
 
-function svECItoECEF(sv::OrbitStateVector,
-                     T_ECI::Union{T_ECIs, T_ECIs_IAU_2006},
-                     T_ECEF::Union{Val{:PEF},Val{:TIRS}},
-                     JD_UTC::Number,
-                     eop_data::Union{Nothing,EOPData_IAU1980, EOPData_IAU2000A} = nothing)
-
+function sv_eci_to_ecef(
+    sv::OrbitStateVector,
+    T_ECI::Union{T_ECIs, T_ECIs_IAU_2006},
+    T_ECEF::Union{Val{:PEF}, Val{:TIRS}},
+    JD_UTC::Number,
+    eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing
+)
     # Get the matrix that converts the ECI to the ECEF.
     if eop_data == nothing
         D = r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
@@ -73,8 +80,8 @@ function svECItoECEF(sv::OrbitStateVector,
     # we must account from it when converting the velocity and acceleration. The
     # angular velocity between those frames is computed using `we` and corrected
     # by the length of day (LOD) parameter of the EOP data, if available.
-    ω  = we * ( 1 - (eop_data != nothing ? eop_data.LOD(JD_UTC)/86400 : 0 ) )
-    vω = SVector{3}(0,0,ω)
+    ω  = we * (1 - (eop_data != nothing ? eop_data.LOD(JD_UTC)/86400 : 0))
+    vω = SVector{3}(0, 0, ω)
 
     # Compute the position in the ECEF frame.
     r_ecef = D*sv.r
@@ -84,7 +91,7 @@ function svECItoECEF(sv::OrbitStateVector,
     v_ecef = D*sv.v - vω_x_r
 
     # Compute the acceleration in the ECI frame.
-    a_ecef = D*sv.a - vω × vω_x_r - 2vω × v_ecef
+    a_ecef = D * sv.a - vω × vω_x_r - 2vω × v_ecef
 
     return orbsv(sv.t, r_ecef, v_ecef, a_ecef)
 end
