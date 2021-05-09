@@ -64,9 +64,9 @@ return an element with the same type of the input.
 ```julia-repl
 julia> eop = get_iers_eop(:IAU1980);
 
-julia> teme_epoch = DatetoJD(2016,6,1,11,0,0);
+julia> teme_epoch = date_to_jd(2016,6,1,11,0,0);
 
-julia> tod_epoch  = DatetoJD(2016,1,1,0,0,0);
+julia> tod_epoch  = date_to_jd(2016,1,1,0,0,0);
 
 julia> k_teme     = KeplerianElements(teme_epoch,
                                       7130.982e3,

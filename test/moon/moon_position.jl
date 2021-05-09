@@ -37,7 +37,7 @@
 ################################################################################
 
 @testset "Function moon_position_i (Meeus)" begin
-    JD_TDB = DatetoJD(1992, 04, 12, 0, 0, 0)
+    JD_TDB = date_to_jd(1992, 04, 12, 0, 0, 0)
 
     r_moon_mod = moon_position_i(JD_TDB)
 
@@ -75,7 +75,7 @@ end
 ################################################################################
 
 @testset "Function moon_position_i (fast)" begin
-    JD_UTC = DatetoJD(1994,4,28,0,0,0)
+    JD_UTC = date_to_jd(1994,4,28,0,0,0)
     JD_TBD = JD_UTC
 
     r_J2000 = moon_position_i(JD_TBD, Val(:fast))

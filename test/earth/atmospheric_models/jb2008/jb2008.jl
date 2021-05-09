@@ -104,7 +104,7 @@
                     ρ     = parse(Float64, tokens[6])
 
                     # Run the model.
-                    JD  = DatetoJD(year, 1, 1, hour, min, sec) - 1 + doy
+                    JD  = date_to_jd(year, 1, 1, hour, min, sec) - 1 + doy
                     out = jb2008(JD, glat, glon, h)
 
                     # Compare the results.

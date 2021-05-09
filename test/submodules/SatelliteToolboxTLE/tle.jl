@@ -84,8 +84,8 @@ end
     2 22490  24.9690 231.7852 0042844 200.7311 292.7198 14.44524498338060
     """
 
-    date_1 = JDtoDate(tles[1].epoch)
-    date_2 = JDtoDate(tles[2].epoch)
+    date_1 = jd_to_date(tles[1].epoch)
+    date_2 = jd_to_date(tles[2].epoch)
 
     @test date_1[1] == 2075
     @test date_2[1] == 1976

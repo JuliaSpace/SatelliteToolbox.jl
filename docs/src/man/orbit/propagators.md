@@ -276,9 +276,9 @@ julia> r
 ```
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val(:J2), KeplerianElements(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+julia> orbp = init_orbit_propagator(Val(:J2), KeplerianElements(date_to_jd(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
-julia> r, v = propagate_to_epoch!(orbp, DatetoJD(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
+julia> r, v = propagate_to_epoch!(orbp, date_to_jd(1986,6,19,0,0,0) .+ collect(0:3:24)/24);
 
 julia> r
 9-element Vector{StaticArrays.SVector{3, Float64}}:
@@ -294,7 +294,7 @@ julia> r
 ```
 
 ```jldoctest
-julia> orbp = init_orbit_propagator(Val(:J4), KeplerianElements(DatetoJD(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
+julia> orbp = init_orbit_propagator(Val(:J4), KeplerianElements(date_to_jd(1986,6,19,0,0,0), 7130982.0, 0.001111, 98.405*pi/180, pi/2, 0.0, 0.0));
 
 julia> r, v = propagate!(orbp, (0:3:24)*60*60);
 

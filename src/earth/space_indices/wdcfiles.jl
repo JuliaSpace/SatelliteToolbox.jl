@@ -64,7 +64,7 @@ function get_Kp(JD::Number)
     Kp_day = get(SatelliteToolbox._wdc_data).Kp(JD)
 
     # Get the hour of the day and return the appropriate Kp.
-    y, m, d, h, min, sec = JDtoDate(JD)
+    y, m, d, h, min, sec = jd_to_date(JD)
 
     return Kp_day[ floor(Int, h/3) + 1 ]
 end
@@ -95,7 +95,7 @@ function get_Ap(JD::Number; mean::Tuple = (), daily = false)
             return sum(Ap_day)/8
         else
             # Get the hour of the day and return the appropriate Ap.
-            y, m, d, h, min, sec = JDtoDate(JD)
+            y, m, d, h, min, sec = jd_to_date(JD)
 
             return Ap_day[ floor(Int, h/3) + 1 ]
         end
@@ -240,7 +240,7 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
                 # The JD of the data will be computed at noon. Hence, we will be
                 # able to use the nearest-neighbor algorithm in the
                 # interpolations.
-                JD_k  = DatetoJD(year, month, day, 12, 0, 0)
+                JD_k  = date_to_jd(year, month, day, 12, 0, 0)
 
                 # Get the vector of Kps and Aps.
                 Ap_k = zeros(Float64,8)

@@ -91,23 +91,23 @@ description that will be used is given by `T`, which can be `DCM` or
 as described in the section [EOP Data](@ref).
 
 ```jldoctest ECEF_ECI
-julia> r_ecef_to_ecef(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
   1.0          0.0         -4.3531e-7
  -6.30011e-13  1.0         -1.44727e-6
   4.3531e-7    1.44727e-6   1.0
 
-julia> r_ecef_to_ecef(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
   1.0          3.08408e-11  -4.3531e-7
  -3.14708e-11  1.0          -1.44727e-6
   4.3531e-7    1.44727e-6    1.0
 
-julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
 
-julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.9999999999997146 - 7.236343481345639e-7.i + 2.176551830689726e-7.j + 1.5577911634233308e-11.k
 ```
@@ -172,17 +172,17 @@ to the GCRF will not be available, reducing the precision.
     Otherwise, the corrected frame will be used.
 
 ```jldoctest ECEF_ECI
-julia> r_eci_to_eci(DCM, GCRF(), J2000(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_eci(DCM, GCRF(), J2000(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
   1.0          -2.45463e-12   4.56602e-10
   2.45473e-12   1.0          -1.84455e-9
  -4.56602e-10   1.84455e-9    1.0
 
-julia> r_eci_to_eci(Quaternion, TEME(), GCRF(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_eci(Quaternion, TEME(), GCRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999986335698654 + 1.8300414020900853e-5.i + 0.0006653038276169474.j - 0.0015132396749411375.k
 
-julia> r_eci_to_eci(TOD(), DatetoJD(1986,6,19,21,35,0), TOD(), DatetoJD(1987,5,19,3,0,0), eop_IAU1980)
+julia> r_eci_to_eci(TOD(), date_to_jd(1986,6,19,21,35,0), TOD(), date_to_jd(1987,5,19,3,0,0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  1.0          -0.000224087  -9.73784e-5
  0.000224086   1.0          -5.79859e-6
@@ -192,19 +192,19 @@ julia> r_eci_to_eci(Quaternion, TOD(), JD_J2000, MOD(), JD_J2000, eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999993282687 - 1.400220690336851e-5.i + 1.3473593746216003e-5.j - 3.107834312843103e-5.k
 
-julia> r_eci_to_eci(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
+julia> r_eci_to_eci(J2000(), TEME(), date_to_jd(1986,6,19,21,35,0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
   0.999995    0.0030265    0.00133055
  -0.00302645  0.999995    -3.86125e-5
  -0.00133066  3.45854e-5   0.999999
 
-julia> r_eci_to_eci(CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_eci_to_eci(CIRS(), GCRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  0.999999     3.88379e-8  -0.00133066
  7.18735e-9   1.0          3.45882e-5
  0.00133066  -3.45882e-5   0.999999
 
-julia> r_eci_to_eci(Quaternion, CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_eci_to_eci(Quaternion, CIRS(), GCRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.9999997785177528 + 1.7294102099105917e-5.i + 0.0006653310148723835.j + 7.912627369563795e-9.k
 ```
@@ -257,47 +257,47 @@ to the GCRF will not be available, reducing the precision.
     Otherwise, the corrected frame will be used.
 
 ```jldoctest ECEF_ECI
-julia> r_ecef_to_eci(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(DCM, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
-julia> r_ecef_to_eci(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
-julia> r_ecef_to_eci(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_ecef_to_eci(ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33502e-5
  -0.000797312   0.00106478   0.999999
 
-julia> r_ecef_to_eci(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_ecef_to_eci(PEF(), J2000(), date_to_jd(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45854e-5
  -0.000796885   0.00106622   0.999999
 
-julia> r_ecef_to_eci(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(PEF(), J2000(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00133066
  -0.78518      -0.619267     3.45854e-5
  -0.000796879   0.00106623   0.999999
 
-julia> r_ecef_to_eci(TIRS(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_ecef_to_eci(TIRS(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45884e-5
  -0.000796885   0.00106623   0.999999
 
-julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 - 0.0005909969666939257.i + 0.00030510511316206974.j + 0.8997962182293519.k
 
-julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.4363098936309669 - 0.000590996988144556.i + 0.0003051056555230158.j + 0.8997962182365703.k
 ```
@@ -321,47 +321,47 @@ Section [ECEF to ECI](@ref), but with the inputs `ECI`  and `ECEF` swapped.
     supported.
 
 ```jldoctest ECEF_ECI
-julia> r_eci_to_ecef(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(DCM, GCRF(), ITRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
-julia> r_eci_to_ecef(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(GCRF(), ITRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
-julia> r_eci_to_ecef(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_eci_to_ecef(GCRF(), ITRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000797312
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33502e-5   0.999999
 
-julia> r_eci_to_ecef(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_eci_to_ecef(J2000(), PEF(), date_to_jd(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106622
  -0.00133066   3.45854e-5   0.999999
 
-julia> r_eci_to_ecef(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(J2000(), PEF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267    -0.78518     -0.000796879
   0.78518     -0.619267     0.00106623
  -0.00133066   3.45854e-5   0.999999
 
-julia> r_eci_to_ecef(GCRF(), TIRS(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_eci_to_ecef(GCRF(), TIRS(), date_to_jd(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106623
  -0.00133066   3.45884e-5   0.999999
 
-julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 + 0.0005909969666939257.i - 0.00030510511316206974.j - 0.8997962182293519.k
 
-julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.4363098936309669 + 0.000590996988144556.i - 0.0003051056555230158.j - 0.8997962182365703.k
 ```

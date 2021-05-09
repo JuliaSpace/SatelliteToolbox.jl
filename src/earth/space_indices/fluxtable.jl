@@ -104,7 +104,7 @@ function _parse_fluxtable(path::AbstractString)
             year  = parse(Int, tokens[1][1:4])
             month = parse(Int, tokens[1][5:6])
             day   = parse(Int, tokens[1][7:8])
-            JD_k  = DatetoJD(year, month, day, 12, 0, 0)
+            JD_k  = date_to_jd(year, month, day, 12, 0, 0)
 
             # If the current data is equal to the last one, it means we have a
             # duplicated data. In this case, always use the lastest one.

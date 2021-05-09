@@ -77,15 +77,15 @@ julia> init_space_indices()
 [ Info: Downloading file 'kp2016.wdc' from 'ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/kp2016.wdc'.
 [ Info: Downloading file 'kp2018.wdc' from 'ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/kp2018.wdc'.
 
-julia> get_space_index(F10(), DatetoJD(2018, 6, 19, 18, 35, 00))
+julia> get_space_index(F10(), date_to_jd(2018, 6, 19, 18, 35, 00))
 79.0
 
-julia> get_space_index(F10M(), DatetoJD(2018, 6, 19, 18, 35, 00))
+julia> get_space_index(F10M(), date_to_jd(2018, 6, 19, 18, 35, 00))
 73.47037037037039
 
-julia> get_space_index(F10M(), DatetoJD(2018, 6, 19, 18, 35, 00); window = 51)
+julia> get_space_index(F10M(), date_to_jd(2018, 6, 19, 18, 35, 00); window = 51)
 74.60196078431372
 
-julia> get_space_index(Ap(), DatetoJD(2018, 6, 19, 18, 35, 00))
+julia> get_space_index(Ap(), date_to_jd(2018, 6, 19, 18, 35, 00))
 5.125
 ```

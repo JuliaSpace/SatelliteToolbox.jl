@@ -46,14 +46,14 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
-export DatetoJD, JDtoDate
+export date_to_jd, jd_to_date
 
 ################################################################################
 #                                  Functions
 ################################################################################
 
 """
-    DatetoJD(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
+    date_to_jd(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
 
 Convert a date represented using the Gregorian Calendar (Year = `y`, Month = `M`
 (1-12), Day = `D`, Hour = `h` (0-24), minute = `m`, and second = `s`) to Julian
@@ -64,7 +64,7 @@ Day.
 The algorithm was obtained from \\[2] (Accessed on 2018-04-11).
 
 """
-function DatetoJD(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
+function date_to_jd(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
     # Check the input.
     ( (M < 1) || (M > 12) ) && throw(ArgumentError("Invalid month. It must be an integer between 1 and 12."))
     ( (D < 1) || (D > 31) ) && throw(ArgumentError("Invalid day. It must be an integer between 1 and 31."))
@@ -104,24 +104,24 @@ function DatetoJD(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s:
 end
 
 """
-    DatetoJD(date::Date)
+    date_to_jd(date::Date)
 
 Convert the date `date` to Julian Day.
 
 """
-function DatetoJD(date::Date)
-    return DatetoJD(Dates.year(date), Dates.month(date), Dates.day(date),
+function date_to_jd(date::Date)
+    return date_to_jd(Dates.year(date), Dates.month(date), Dates.day(date),
                     0, 0, 0)
 end
 
 """
-    DatetoJD(dateTime::DateTime)
+    date_to_jd(dateTime::DateTime)
 
 Convert the date and time `dateTime` to Julian Day.
 
 """
-function DatetoJD(dateTime::DateTime)
-    return DatetoJD(Dates.year(dateTime),
+function date_to_jd(dateTime::DateTime)
+    return date_to_jd(Dates.year(dateTime),
                     Dates.month(dateTime),
                     Dates.day(dateTime),
                     Dates.hour(dateTime),
@@ -130,7 +130,7 @@ function DatetoJD(dateTime::DateTime)
 end
 
 """
-    JDtoDate([T,] JD::Number)
+    jd_to_date([T,] JD::Number)
 
 Convert a date represented in Julian Day `JD` to Gregorian Calendar. The
 optional parameter `T` defines the return type. If `T` is omitted, then it
@@ -168,7 +168,7 @@ the following warning:
 > In particular, the method fails if Y<400.
 
 """
-function JDtoDate(JD::Number)
+function jd_to_date(JD::Number)
     Q = JD + 0.5
     Z = floor(Int, Q)
     W = div(Z - 1867216.25,36524.25)
@@ -202,25 +202,25 @@ function JDtoDate(JD::Number)
     (year, month, day, h, m, s)
 end
 
-function JDtoDate(::Type{Int}, JD::Number)
-    (year, month, day, h, m, s) = JDtoDate(JD)
+function jd_to_date(::Type{Int}, JD::Number)
+    (year, month, day, h, m, s) = jd_to_date(JD)
 
     # If the seconds are large than 59.5, then we must take care of the
     # rounding. In this case, we should advance a minute that can trigger an
     # advance in all the other parameters. The safest way here is to just call
-    # the function `JDtoDate` again with an offset.
+    # the function `jd_to_date` again with an offset.
 
     if s >= 59.5
         Δs = 60.01 - s
-        (year, month, day, h, m, s) = JDtoDate(JD + Δs/86400)
+        (year, month, day, h, m, s) = jd_to_date(JD + Δs/86400)
     end
 
     (year, month, day, h, m, round(Integer,s))
 end
 
-function JDtoDate(::Type{Date}, JD::Number)
-    (Y, M, D, ~, ~, ~) = JDtoDate(JD)
+function jd_to_date(::Type{Date}, JD::Number)
+    (Y, M, D, ~, ~, ~) = jd_to_date(JD)
     Date(Y,M,D)
 end
 
-JDtoDate(::Type{DateTime}, JD::Number) = julian2datetime(JD)
+jd_to_date(::Type{DateTime}, JD::Number) = julian2datetime(JD)

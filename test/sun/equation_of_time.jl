@@ -38,18 +38,18 @@
 
 @testset "Function equation_of_time" begin
     # February 11.
-    eot = equation_of_time(DatetoJD(2000, 2, 11, 0, 0, 0))*12*60/pi
+    eot = equation_of_time(date_to_jd(2000, 2, 11, 0, 0, 0))*12*60/pi
     @test -15 < eot < -14
 
     # May 11.
-    eot = equation_of_time(DatetoJD(2000, 5, 11, 0, 0, 0))*12*60/pi
+    eot = equation_of_time(date_to_jd(2000, 5, 11, 0, 0, 0))*12*60/pi
     @test +3 < eot < +4
 
     # July 26.
-    eot = equation_of_time(DatetoJD(2000, 7, 26, 0, 0, 0))*12*60/pi
+    eot = equation_of_time(date_to_jd(2000, 7, 26, 0, 0, 0))*12*60/pi
     @test -7 < eot < -6
 
     # November 2.
-    eot = equation_of_time(DatetoJD(2000, 11, 2, 0, 0, 0))*12*60/pi
+    eot = equation_of_time(date_to_jd(2000, 11, 2, 0, 0, 0))*12*60/pi
     @test 16 < eot < 17
 end

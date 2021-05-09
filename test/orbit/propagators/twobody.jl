@@ -51,7 +51,7 @@
 
 @testset "Two Body orbit propagator" begin
     aux  = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
-    orb  = KeplerianElements(DatetoJD(1986, 6, 19, 18, 35, 0), aux.a, aux.e,
+    orb  = KeplerianElements(date_to_jd(1986, 6, 19, 18, 35, 0), aux.a, aux.e,
                              aux.i, aux.Ω, aux.ω, aux.f)
     orbp = init_orbit_propagator(Val(:twobody), orb)
     r, v = step!(orbp, 40*60)
@@ -85,7 +85,7 @@
     # ==========================================================================
 
     #                                        1986/6/19 18:35:00 + 40 min.
-    r, v = propagate_to_epoch!(orbp, DatetoJD(1986, 6, 19, 19, 15, 0))
+    r, v = propagate_to_epoch!(orbp, date_to_jd(1986, 6, 19, 19, 15, 0))
 
     # Testing position.
     @test r[1]/1000 ≈ -4219.7527 atol=1e-3

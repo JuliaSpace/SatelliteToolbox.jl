@@ -321,7 +321,7 @@ end
     f107   = 121
     f107A  = 80
     ap     = 7
-    JD     = DatetoJD(year, month, day, hour, minute, second)
+    JD     = date_to_jd(year, month, day, hour, minute, second)
 
     for i = 1:size(test_out,1)
         # Run the NRLMSISE-00 model wih the input parameters.
@@ -399,7 +399,7 @@ end
     second = 00
     g_lat  = -23*pi/180
     g_long = -45*pi/180
-    JD     = DatetoJD(year, month, day, hour, minute, second)
+    JD     = date_to_jd(year, month, day, hour, minute, second)
 
     # TODO: The tolerances here are much higher than in the previous test with
     # the daily AP only. This must be analyzed. However, it was observed that in

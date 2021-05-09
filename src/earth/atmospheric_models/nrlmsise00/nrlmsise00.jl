@@ -176,10 +176,10 @@ function nrlmsise00(JD::Number, alt::Number, g_lat::Number, g_long::Number,
     dgtr = 1.74533e-2 # Convert degrees to radians.
 
     # Convert the Julian Day to Date.
-    (Y, M, D, h, m, s) = JDtoDate(JD)
+    (Y, M, D, h, m, s) = jd_to_date(JD)
 
     # Get the number of days since the beginning of the year.
-    doy = round(Int,DatetoJD(Y, M, D, 0, 0, 0) - DatetoJD(Y, 1, 1, 0, 0, 0)) + 1
+    doy = round(Int,date_to_jd(Y, M, D, 0, 0, 0) - date_to_jd(Y, 1, 1, 0, 0, 0)) + 1
 
     # Get the number of seconds since the beginning of the day.
     Δds = 3600h + 60m + s

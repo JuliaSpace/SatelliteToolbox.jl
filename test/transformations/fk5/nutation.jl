@@ -83,7 +83,7 @@
     # Scenario 02
     # ===========
 
-    JD_UTC = DatetoJD(2000,1,1,0,0,0) + 182.78495062 - 1
+    JD_UTC = date_to_jd(2000,1,1,0,0,0) + 182.78495062 - 1
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT, 4)
@@ -92,7 +92,7 @@
     @test Δϵ_1980*180/pi ≈ -0.001260854 atol=1e-8
     @test Δψ_1980*180/pi ≈ -0.004250260 atol=1e-8
 
-    JD_UTC = DatetoJD(2000,1,1,0,0,0) + 179.78495062 - 1
+    JD_UTC = date_to_jd(2000,1,1,0,0,0) + 179.78495062 - 1
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT, 4)

@@ -59,7 +59,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 ################################################################################
 
 @testset "Function r_ecef_to_ecef ITRF <=> PEF" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
 
     ## ITRF => PEF
     ## ===========
@@ -168,7 +168,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_ecef ITRF <=> TIRS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
 
     ## ITRF => TIRS
     ## ===========

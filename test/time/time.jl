@@ -67,12 +67,12 @@
         end
         year  = leap_secs[i,5]
 
-        @test get_Δat(DatetoJD(year,month,day,0,0,0))         == ΔAT
+        @test get_Δat(date_to_jd(year,month,day,0,0,0))         == ΔAT
 
         # One second before the entry in `leap_secs`, we must have `ΔAT-1` leap
         # seconds. However, this is not true for the very first line.
         (i == 1) && continue
-        @test get_Δat(DatetoJD(year,month,day,0,0,0)-1/86400) == ΔAT-1
+        @test get_Δat(date_to_jd(year,month,day,0,0,0)-1/86400) == ΔAT-1
     end
 end
 
@@ -122,10 +122,10 @@ end
     ## -----------
 
     # At the mentioned date, Mountain Standard Time is 6h behind UTC.
-    JD_UTC = DatetoJD(2004, 5, 14, 10+6, 43, 0)
+    JD_UTC = date_to_jd(2004, 5, 14, 10+6, 43, 0)
     JD_UT1 = jd_utc_to_ut1(JD_UTC, ΔUT1)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UT1)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UT1)
 
     @test year   == 2004
     @test month  == 5
@@ -137,10 +137,10 @@ end
     ## jd_ut1_to_utc
     ## -------------
 
-    JD_UT1 = DatetoJD(2004, 5, 14, 16, 42, 59.5367)
+    JD_UT1 = date_to_jd(2004, 5, 14, 16, 42, 59.5367)
     JD_UTC = jd_ut1_to_utc(JD_UT1, ΔUT1)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UTC)
 
     @test year   == 2004
     @test month  == 5
@@ -157,10 +157,10 @@ end
     ## jd_utc_to_ut1
     ## -------------
 
-    JD_UTC = DatetoJD(2004, 4, 6, 07, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 07, 51, 28.386009)
     JD_UT1 = jd_utc_to_ut1(JD_UTC, ΔUT1)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UT1)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UT1)
 
     @test year   == 2004
     @test month  == 4
@@ -172,10 +172,10 @@ end
     ## jd_ut1_to_utc
     ## -------------
 
-    JD_UT1 = DatetoJD(2004, 4, 6, 07, 51, 27.946047)
+    JD_UT1 = date_to_jd(2004, 4, 6, 07, 51, 27.946047)
     JD_UTC = jd_ut1_to_utc(JD_UT1, ΔUT1)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UTC)
 
     @test year   == 2004
     @test month  == 4
@@ -229,10 +229,10 @@ end
     ## ------------
 
     # At the mentioned date, Mountain Standard Time is 6h behind UTC.
-    JD_UTC = DatetoJD(2004, 5, 14, 10+6, 43, 0)
+    JD_UTC = date_to_jd(2004, 5, 14, 10+6, 43, 0)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_TT)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_TT)
 
     @test year   == 2004
     @test month  == 5
@@ -244,10 +244,10 @@ end
     ## jd_tt_to_utc
     ## ------------
 
-    JD_TT  = DatetoJD(2004, 5, 14, 16, 44, 04.1840)
+    JD_TT  = date_to_jd(2004, 5, 14, 16, 44, 04.1840)
     JD_UTC = jd_tt_to_utc(JD_TT)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UTC)
 
     @test year   == 2004
     @test month  == 5
@@ -270,7 +270,7 @@ end
     ## ------------
 
     # At the mentioned date, Mountain Standard Time is 6h behind UTC.
-    JD_UTC = DatetoJD(2004, 4, 6, 07, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 07, 51, 28.386009)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     @test JD_TT ≈ 2453101.828154745 atol=1e-9
@@ -281,7 +281,7 @@ end
     JD_TT  = 2453101.828154745
     JD_UTC = jd_tt_to_utc(JD_TT)
 
-    (year, month, day, hour, minute, second) = JDtoDate(JD_UTC)
+    (year, month, day, hour, minute, second) = jd_to_date(JD_UTC)
 
     @test year   == 2004
     @test month  == 4
@@ -336,17 +336,17 @@ end
 ################################################################################
 
 @testset "Function JDtoGMST" begin
-    @test DatetoJD(1986,06,19,21,35,22) ≈ 2446601.399560 atol=1e-6
-    @test DatetoJD(1987,05,19,04,00,00) ≈ 2446934.666667 atol=1e-6
-    @test DatetoJD(2018,04,16,20,19,37) ≈ 2458225.346956 atol=1e-6
-    @test DatetoJD(1822,09,07,12,00,00) ≈ 2386781.000000 atol=1e-6
-    @test DatetoJD(1900,01,01,00,00,00) ≈ 2415020.500000 atol=1e-6
-    @test DatetoJD(2000,01,01,00,00,00) ≈ 2451544.500000 atol=1e-6
-    @test DatetoJD(2013,10,19,22,00,00) ≈ 2456585.416667 atol=1e-6
+    @test date_to_jd(1986,06,19,21,35,22) ≈ 2446601.399560 atol=1e-6
+    @test date_to_jd(1987,05,19,04,00,00) ≈ 2446934.666667 atol=1e-6
+    @test date_to_jd(2018,04,16,20,19,37) ≈ 2458225.346956 atol=1e-6
+    @test date_to_jd(1822,09,07,12,00,00) ≈ 2386781.000000 atol=1e-6
+    @test date_to_jd(1900,01,01,00,00,00) ≈ 2415020.500000 atol=1e-6
+    @test date_to_jd(2000,01,01,00,00,00) ≈ 2451544.500000 atol=1e-6
+    @test date_to_jd(2013,10,19,22,00,00) ≈ 2456585.416667 atol=1e-6
 end
 
-# Function JDtoDate
-# -----------------
+# Function jd_to_date
+# -------------------
 
 ################################################################################
 #                                 Test Results
@@ -385,18 +385,18 @@ end
 #
 ################################################################################
 
-@testset "Function JDtoDate" begin
-    @test JDtoDate(Int,2446601.399560) == (1986,06,19,21,35,22)
-    @test JDtoDate(Int,2446934.666667) == (1987,05,19,04,00,00)
-    @test JDtoDate(Int,2458225.346956) == (2018,04,16,20,19,37)
-    @test JDtoDate(Int,2386781.000000) == (1822,09,07,12,00,00)
-    @test JDtoDate(Int,2415020.500000) == (1900,01,01,00,00,00)
-    @test JDtoDate(Int,2451544.500000) == (2000,01,01,00,00,00)
-    @test JDtoDate(Int,2456585.416667) == (2013,10,19,22,00,00)
+@testset "Function jd_to_date" begin
+    @test jd_to_date(Int,2446601.399560) == (1986,06,19,21,35,22)
+    @test jd_to_date(Int,2446934.666667) == (1987,05,19,04,00,00)
+    @test jd_to_date(Int,2458225.346956) == (2018,04,16,20,19,37)
+    @test jd_to_date(Int,2386781.000000) == (1822,09,07,12,00,00)
+    @test jd_to_date(Int,2415020.500000) == (1900,01,01,00,00,00)
+    @test jd_to_date(Int,2451544.500000) == (2000,01,01,00,00,00)
+    @test jd_to_date(Int,2456585.416667) == (2013,10,19,22,00,00)
 end
 
-# Function DatetoJD
-# -----------------
+# Function date_to_jd
+# -------------------
 
 # Issue #19
 # ==============================================================================
@@ -404,7 +404,7 @@ end
 @testset "Issue #19" begin
     year_i = rand(1900:2100)
 
-    year, month, day, hour, min, sec = JDtoDate(DatetoJD(year_i,12, 31, 23, 59, 59))
+    year, month, day, hour, min, sec = jd_to_date(date_to_jd(year_i,12, 31, 23, 59, 59))
 
     @test year  == year_i
     @test month == 12
@@ -413,7 +413,7 @@ end
     @test min   == 59
     @test sec    ≈ 59 rtol = 1e-5
 
-    year, month, day, hour, min, sec = JDtoDate(DatetoJD(year_i, 1, 1, 0, 0, 0))
+    year, month, day, hour, min, sec = jd_to_date(date_to_jd(year_i, 1, 1, 0, 0, 0))
 
     @test year  == year_i
     @test month == 1
@@ -422,7 +422,7 @@ end
     @test min   == 0
     @test sec    ≈ 0 rtol = 1e-5
 
-    date_time_1 = JDtoDate(DateTime, DatetoJD(year_i, 12, 31, 23, 59, 59))
+    date_time_1 = jd_to_date(DateTime, date_to_jd(year_i, 12, 31, 23, 59, 59))
     date_time_2 = DateTime(year_i, 12, 31, 23, 59, 59)
 
     @test date_time_1 === date_time_2
@@ -432,7 +432,7 @@ end
 # ==============================================================================
 
 @testset "Issue #30" begin
-    year, month, day, h, m, s = JDtoDate(Int, 2.45754095833333e6)
+    year, month, day, h, m, s = jd_to_date(Int, 2.45754095833333e6)
 
     @test year  == 2016
     @test month == 6
@@ -442,11 +442,11 @@ end
     @test s     == 0
 end
 
-# Function DatetoJD(::DateTime)
+# Function date_to_jd(::DateTime)
 # ==============================================================================
 
-@testset "DatetoJD with DateTime" begin
-    JDdatetime = DatetoJD(DateTime(2020, 8, 14, 12, 4, 1))
-    JDnums     = DatetoJD(2020, 8, 14, 12, 4, 1)
+@testset "date_to_jd with DateTime" begin
+    JDdatetime = date_to_jd(DateTime(2020, 8, 14, 12, 4, 1))
+    JDnums     = date_to_jd(2020, 8, 14, 12, 4, 1)
     @test JDdatetime == JDnums
 end

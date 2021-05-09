@@ -98,7 +98,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
         # Handle the initial case.
         if state == :initial
             if gs_visible
-                access_beg = JDtoDate(DateTime, JD₀)
+                access_beg = jd_to_date(DateTime, JD₀)
                 state = :visible
             else
                 state = :not_visible
@@ -111,7 +111,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
             kc = find_crossing(f, k₀, k₁, false, true)
 
             state = :visible
-            access_beg = JDtoDate(DateTime, JD₀ + kc/86400)
+            access_beg = jd_to_date(DateTime, JD₀ + kc/86400)
 
         elseif (state == :visible) && !gs_visible
             # Refine to find the edge.
@@ -120,7 +120,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
             kc = find_crossing(f, k₀, k₁, true, false)
 
             state = :not_visible
-            access_end = JDtoDate(DateTime, JD₀ + kc/86400)
+            access_end = jd_to_date(DateTime, JD₀ + kc/86400)
 
             accesses = vcat(accesses, [access_beg access_end])
         end
@@ -129,7 +129,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
     # If the analysis finished during an access, then just add the end of the
     # interval as the end of the access.
     if state == :visible
-        access_end = JDtoDate(DateTime, JD₀ + Δt/86400)
+        access_end = jd_to_date(DateTime, JD₀ + Δt/86400)
         accesses   = vcat(accesses, [access_beg access_end])
     end
 
@@ -150,7 +150,7 @@ the instant defined by the argument `Δt`.
 function ground_station_gaps(orbp, args...; kwargs...)
     # Get the epoch of the propagator.
     JD₀ = get_epoch(orbp)
-    DT₀ = JDtoDate(DateTime, JD₀)
+    DT₀ = jd_to_date(DateTime, JD₀)
 
     # Compute the list of ground station accesses.
     accesses = ground_station_accesses(orbp, args...; kwargs...)
@@ -160,7 +160,7 @@ function ground_station_gaps(orbp, args...; kwargs...)
 
     # Compute the last propagation instant.
     JD₁ = JD₀ + Δt/86400
-    DT₁ = JDtoDate(DateTime, JD₁)
+    DT₁ = jd_to_date(DateTime, JD₁)
 
     # Compute the gaps between accesses.
     gaps = Matrix{DateTime}(undef,0,2)
@@ -168,13 +168,13 @@ function ground_station_gaps(orbp, args...; kwargs...)
     # Check if the simulation did not start under the visibility of a ground
     # station.
     if accesses[1,1] != DT₀
-        gaps = vcat(gaps, [JDtoDate(DateTime, JD₀) accesses[1,1]])
+        gaps = vcat(gaps, [jd_to_date(DateTime, JD₀) accesses[1,1]])
     end
 
     # Check if the simulation did not end under the visibility of a ground
     # station.
     if accesses[end,2] != DT₁
-        aux  = JDtoDate(DateTime, JD₁)
+        aux  = jd_to_date(DateTime, JD₁)
         gaps = vcat(gaps, [ accesses[:,2] vcat(accesses[2:end,1], aux) ])
     else
         gaps = vcat(gaps, [ accesses[1:end-1,2] accesses[2:end,1] ])

@@ -54,7 +54,7 @@ getindex(k::KeplerianElements{T}, ::Colon) where T<:Number =
 function show(io::IO, k::KeplerianElements{T}) where T
     compact = get(io, :compact, true)
     epoch_str = sprint(print, k.t, context = :compact => compact)
-    jd_str = sprint(print, JDtoDate(DateTime, k.t))
+    jd_str = sprint(print, jd_to_date(DateTime, k.t))
     print(io, "KeplerianElements{", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
@@ -74,7 +74,7 @@ function show(io::IO, mime::MIME"text/plain", k::KeplerianElements{T}) where T
     y = color ? _y : ""
 
     # Convert the data to string.
-    date_str  = sprint(print, JDtoDate(DateTime, k.t))
+    date_str  = sprint(print, jd_to_date(DateTime, k.t))
     epoch_str = sprint(print, k.t, context = :compact => compact)
     a_str     = sprint(print, k.a/1000, context = :compact => compact)
     e_str     = sprint(print, k.e, context = :compact => compact)

@@ -223,8 +223,8 @@ function rv_to_tle(args...;
     JD, x, P = rv_to_mean_elements_sgp4(args...; kwargs...)
 
     # Compute the data as required by the TLE format.
-    dt  = JDtoDate(DateTime, JD)
-    dt₀ = JDtoDate(DateTime, DatetoJD(year(dt), 1, 1, 0, 0, 0))
+    dt  = jd_to_date(DateTime, JD)
+    dt₀ = jd_to_date(DateTime, date_to_jd(year(dt), 1, 1, 0, 0, 0))
 
     dt_year    = year(dt)
     epoch_year = dt_year < 1980 ? dt_year - 1900 : dt_year - 2000

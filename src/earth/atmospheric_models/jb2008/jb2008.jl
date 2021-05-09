@@ -418,10 +418,10 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
 
     if h < 2000
         # Compute the year given the selected Julian Day.
-        year, month, day, = JDtoDate(JD)
+        year, month, day, = jd_to_date(JD)
 
         # Compute the day of the year.
-        doy = JD - DatetoJD(year, 1, 1, 0, 0, 0) + 1
+        doy = JD - date_to_jd(year, 1, 1, 0, 0, 0) + 1
 
         # Use the new semiannual model from [1].
         Fz, Gz, Δsalog₁₀ρ = _jb2008_semiannual(doy, h, F10ₐ, S10ₐ, M10ₐ)

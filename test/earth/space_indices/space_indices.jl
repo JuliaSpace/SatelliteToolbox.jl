@@ -53,7 +53,7 @@
                        wdcfiles_newest_year = 2018)
 
     # Get the indices.
-    JD       = DatetoJD(2017,10,19,6,30,0)
+    JD       = date_to_jd(2017,10,19,6,30,0)
     vF10adj  = get_space_index(F10()    , JD)
     vF10obs  = get_space_index(F10obs() , JD)
     vF10Madj = get_space_index(F10M()   , JD; window = 90)

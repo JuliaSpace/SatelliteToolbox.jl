@@ -53,7 +53,7 @@ eop = read_iers_eop("./eop_IAU1980_2.txt", :IAU1980)
     Ω = 227.336*pi/180
     ω = 90*pi/180
     f = M_to_f(e, 320*pi/180)
-    epoch = DatetoJD(2016,6,1,11,0,0)
+    epoch = date_to_jd(2016,6,1,11,0,0)
 
     oe_TEME  = KeplerianElements(0, a, e, i, Ω, ω, f)
     oe_J2000 = change_oe_frame(oe_TEME, TEME(), J2000(), epoch, eop)

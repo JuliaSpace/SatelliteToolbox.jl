@@ -64,3 +64,6 @@
 @deprecate JD_UTCtoTT(args...) jd_utc_to_tt(args...)
 @deprecate JD_TTtoUTC(args...) jd_tt_to_utc(args...)
 @deprecate get_ΔAT(args...) get_Δat(args...)
+
+@deprecate JDtoDate jd_to_date
+@deprecate DatetoJD date_to_jd

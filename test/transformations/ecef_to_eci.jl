@@ -59,7 +59,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => GCRF" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_GCRF_ITRF = r_ecef_to_eci(ITRF(), GCRF(), JD_UTC, eop_iau1980)
@@ -101,7 +101,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => J2000" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_J2000_ITRF = r_ecef_to_eci(ITRF(), J2000(), JD_UTC, eop_iau1980)
@@ -143,7 +143,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => TOD" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_TOD_ITRF = r_ecef_to_eci(ITRF(), TOD(), JD_UTC, eop_iau1980)
@@ -185,7 +185,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => MOD" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_MOD_ITRF = r_ecef_to_eci(ITRF(), MOD(), JD_UTC, eop_iau1980)
@@ -227,7 +227,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => TEME" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_TEME_ITRF = r_ecef_to_eci(ITRF(), TEME(), JD_UTC, eop_iau1980)
@@ -269,7 +269,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci PEF => GCRF" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
     D_GCRF_PEF = r_ecef_to_eci(PEF(), GCRF(), JD_UTC, eop_iau1980)
@@ -311,7 +311,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci PEF => J2000" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
     D_J2000_PEF = r_ecef_to_eci(PEF(), J2000(), JD_UTC, eop_iau1980)
@@ -359,7 +359,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci PEF => TOD" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
     D_TOD_PEF = r_ecef_to_eci(PEF(), TOD(), JD_UTC, eop_iau1980)
@@ -383,7 +383,7 @@ end
     # However, this will lead to a much smaller error than assuming that UTC =
     # UT1.
 
-    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+    JD_UT1 = date_to_jd(2004,4,6,7,51,28.386009) - 0.4399619/86400
 
     D_TOD_PEF = r_ecef_to_eci(PEF(), TOD(), JD_UT1)
     r_tod = D_TOD_PEF*r_pef
@@ -430,7 +430,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci PEF => MOD" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
     D_MOD_PEF = r_ecef_to_eci(PEF(), MOD(), JD_UTC, eop_iau1980)
@@ -454,7 +454,7 @@ end
     # However, this will lead to a much smaller error than assuming that UTC =
     # UT1.
 
-    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+    JD_UT1 = date_to_jd(2004,4,6,7,51,28.386009) - 0.4399619/86400
 
     D_MOD_PEF = r_ecef_to_eci(PEF(), MOD(), JD_UT1)
     r_mod = D_MOD_PEF*r_pef
@@ -495,7 +495,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci PEF => TEME" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
     D_TEME_PEF = r_ecef_to_eci(PEF(), TEME(), JD_UTC, eop_iau1980)
@@ -541,7 +541,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => CIRS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_CIRS_ITRF = r_ecef_to_eci(ITRF(), CIRS(), JD_UTC, eop_iau2000a)
@@ -583,7 +583,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => GCRF" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_GCRF_ITRF = r_ecef_to_eci(ITRF(), GCRF(), JD_UTC, eop_iau2000a)
@@ -625,7 +625,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => CIRS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_CIRS_TIRS = r_ecef_to_eci(TIRS(), CIRS(), JD_UTC, eop_iau2000a)
@@ -667,7 +667,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => GCRF" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_GCRF_TIRS = r_ecef_to_eci(TIRS(), GCRF(), JD_UTC, eop_iau2000a)
@@ -713,7 +713,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => ERS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_ERS_ITRF = r_ecef_to_eci(ITRF(), ERS(), JD_UTC, eop_iau2000a)
@@ -755,7 +755,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => MOD" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_MOD_ITRF = r_ecef_to_eci(ITRF(), MOD06(), JD_UTC, eop_iau2000a)
@@ -800,7 +800,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci ITRF => MJ2000" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
     D_MJ2000_ITRF = r_ecef_to_eci(ITRF(), MJ2000(), JD_UTC, eop_iau2000a)
@@ -842,7 +842,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => ERS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_ERS_TIRS = r_ecef_to_eci(TIRS(), ERS(), JD_UTC, eop_iau2000a)
@@ -884,7 +884,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => ERS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_MOD_TIRS = r_ecef_to_eci(TIRS(), MOD06(), JD_UTC, eop_iau2000a)
@@ -926,7 +926,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => ERS" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_MOD_TIRS = r_ecef_to_eci(TIRS(), MOD06(), JD_UTC, eop_iau2000a)
@@ -971,7 +971,7 @@ end
 ################################################################################
 
 @testset "Function r_ecef_to_eci TIRS => MJ2000" begin
-    JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
+    JD_UTC = date_to_jd(2004, 4, 6, 7, 51, 28.386009)
     r_tirs = [-1033.47503120; 7901.30558560; 6380.34453270]
 
     D_MJ2000_TIRS = r_ecef_to_eci(TIRS(), MJ2000(), JD_UTC, eop_iau2000a)

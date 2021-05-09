@@ -77,25 +77,25 @@ frame into alignment with the ECI reference frame.
 ```julia-repl
 julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
-julia> r_ecef_to_ecef(PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          0.0         4.35684e-7
   0.0          1.0         1.44762e-6
  -4.35684e-7  -1.44762e-6  1.0
 
-julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
 
 julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
 
-julia> r_ecef_to_ecef(TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          3.08408e-11  -4.3531e-7
  -3.14708e-11  1.0          -1.44727e-6
   4.3531e-7    1.44727e-6    1.0
 
-julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.9999999999997146 - 7.236343481345639e-7.i + 2.176551830689726e-7.j + 1.5577911634233308e-11.k
 ```

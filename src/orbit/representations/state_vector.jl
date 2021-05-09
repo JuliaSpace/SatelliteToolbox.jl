@@ -102,7 +102,7 @@ getindex(sv::OrbitStateVector{T}, ::Colon) where T<:Number =
 function show(io::IO, sv::OrbitStateVector{T}) where T
     compact = get(io, :compact, true)
     epoch_str = sprint(print, sv.t, context = :compact => compact)
-    jd_str = sprint(print, JDtoDate(DateTime, sv.t))
+    jd_str = sprint(print, jd_to_date(DateTime, sv.t))
     print(io, "OrbitStateVector{", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
@@ -117,7 +117,7 @@ function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
     d = (color) ? _d : ""
 
     t_str  = sprint(print, sv.t, context = :compact => compact)
-    JD_str = sprint(print, JDtoDate(DateTime, sv.t), context = :compact => compact)
+    JD_str = sprint(print, jd_to_date(DateTime, sv.t), context = :compact => compact)
     r_str  = sprint(print, sv.r./1000, context = :compact => compact)
     v_str  = sprint(print, sv.v./1000, context = :compact => compact)
 

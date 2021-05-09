@@ -31,8 +31,8 @@
 ################################################################################
 
 @testset "Function sun_velocity_i" begin
-    JD_start = DatetoJD(1950, 1, 1, 0, 0, 0)
-    JD_stop  = DatetoJD(2019, 1, 1, 0, 0, 0)
+    JD_start = date_to_jd(1950, 1, 1, 0, 0, 0)
+    JD_stop  = date_to_jd(2019, 1, 1, 0, 0, 0)
 
     for trial = 1:100
         JD_UT1 = rand(JD_start:JD_stop)

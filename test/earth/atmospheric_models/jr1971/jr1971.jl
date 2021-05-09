@@ -98,7 +98,7 @@
 
 @testset "Function jr1971" begin
     # Common inputs to all scenarios.
-    JD   = DatetoJD(2017,1,1,0,0,0)
+    JD   = date_to_jd(2017,1,1,0,0,0)
     glat = 45*pi/180
     glon = 0.0
     F10  = 100

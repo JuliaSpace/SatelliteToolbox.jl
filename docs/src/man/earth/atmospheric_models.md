@@ -92,7 +92,7 @@ following fields:
 * `Tz`: Temperature at the selected altitude [K].
 
 ```jldoctest
-julia> jr1971(DatetoJD(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 1.34)
+julia> jr1971(date_to_jd(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 1.34)
 JR1971_Output{Float64}
   nN2: Float64 2.8434980991303828e7
   nO2: Float64 174222.87498004676
@@ -161,7 +161,7 @@ following fields:
 * `Tz`: Temperature at the selected altitude [K].
 
 ```jldoctest
-julia> jb2008(DatetoJD(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 55.1, 53.8, 78.9, 73.3, 80.2, 71.7, 50)
+julia> jb2008(date_to_jd(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 55.1, 53.8, 78.9, 73.3, 80.2, 71.7, 50)
 JB2008_Output{Float64}
   nN2: Float64 2.6541724729332495e7
   nO2: Float64 193981.21643718384
@@ -251,7 +251,7 @@ Notice that:
 * If `flags[:output_m_kg]` is `true`, then [U] is \[m⁻³] and [T] is \[kg/m⁻³].
 
 ```jldoctest
-julia> nrlmsise00(DatetoJD(2018, 6, 19, 18, 35, 0), 700e3, deg2rad(-22), deg2rad(-45), 73.5, 79, 5.13)
+julia> nrlmsise00(date_to_jd(2018, 6, 19, 18, 35, 0), 700e3, deg2rad(-22), deg2rad(-45), 73.5, 79, 5.13)
 NRLMSISE00_Output{Float64}
   den_N: Float64 5.597834653523333e9
   den_N2: Float64 5.743312510585916e7

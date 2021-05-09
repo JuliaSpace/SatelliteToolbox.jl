@@ -156,17 +156,17 @@ reference frame into alignment with the destination ECI reference frame.
 ```julia-repl
 julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
-julia> r_eci_to_eci(DCM, GCRF(), J2000(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_eci(DCM, GCRF(), J2000(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   1.0          -2.45469e-12   4.56602e-10
   2.45466e-12   1.0          -1.84455e-9
  -4.56602e-10   1.84455e-9    1.0
 
-julia> r_eci_to_eci(Quaternion, TEME(), GCRF(), DatetoJD(1986, 6, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_eci(Quaternion, TEME(), GCRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999986335698654 + 1.8300414020900853e-5.i + 0.0006653038276169474.j - 0.0015132396749411375.k
 
-julia> r_eci_to_eci(TOD(), DatetoJD(1986,6,19,21,35,0), TOD(), DatetoJD(1987,5,19,3,0,0), eop_IAU1980)
+julia> r_eci_to_eci(TOD(), date_to_jd(1986,6,19,21,35,0), TOD(), date_to_jd(1987,5,19,3,0,0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  1.0          -0.000224087  -9.73784e-5
  0.000224086   1.0          -5.79859e-6
@@ -176,7 +176,7 @@ julia> r_eci_to_eci(Quaternion, TOD(), JD_J2000, MOD(), JD_J2000, eop_IAU1980)
 Quaternion{Float64}:
   + 0.9999999993282687 - 1.400220690336851e-5.i + 1.3473593746216003e-5.j - 3.107834312843103e-5.k
 
-julia> r_eci_to_eci(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
+julia> r_eci_to_eci(J2000(), TEME(), date_to_jd(1986,6,19,21,35,0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
   0.999995    0.0030265    0.00133055
  -0.00302645  0.999995    -3.86125e-5
@@ -184,13 +184,13 @@ julia> r_eci_to_eci(J2000(), TEME(), DatetoJD(1986,6,19,21,35,0))
 
 julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
 
-julia> r_eci_to_eci(CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_eci_to_eci(CIRS(), GCRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  0.999999     3.88379e-8  -0.00133066
  7.18735e-9   1.0          3.45882e-5
  0.00133066  -3.45882e-5   0.999999
 
-julia> r_eci_to_eci(Quaternion, CIRS(), GCRF(), DatetoJD(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_eci_to_eci(Quaternion, CIRS(), GCRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.9999997785177528 + 1.7294102099105917e-5.i + 0.0006653310148723835.j + 7.912627369563795e-9.k
 ```
