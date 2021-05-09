@@ -73,7 +73,7 @@ theory.
 
 Notice that one can provide corrections for the nutation in longitude
 (`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
-[`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This corrections are related to
+[`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This corrections are related to
 Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
@@ -136,7 +136,7 @@ Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
 
 Notice that one can provide corrections for the nutation in longitude
 (`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
-[`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This corrections are related to
+[`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This corrections are related to
 Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
@@ -186,7 +186,7 @@ This algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 
@@ -233,7 +233,7 @@ algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 
@@ -456,7 +456,7 @@ theory.
 
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 
@@ -529,7 +529,7 @@ theory.
 
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`dEps_dPsi`](@ref)). This
+from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 

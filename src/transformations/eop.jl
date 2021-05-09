@@ -25,7 +25,7 @@
 export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
 export read_iers_eop
-export dEps_dPsi
+export deps_dpsi
 
 ################################################################################
 #                       Private Structures and Variables
@@ -256,7 +256,7 @@ end
 ################################################################################
 
 """
-    dEps_dPsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
+    deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
 
 Returns the celestial pole offsets in obliquity (δϵ_2000) and longitude
 (δΨ_2000) [arcsec]. This function obtains those values by converting the
@@ -266,26 +266,26 @@ are necessary in the equinox-based IAU-2006 theory.
 The algorithm was obtained from [2, eq. 5.25] and [3, `DPSIDEPS2000_DXDY2000`].
 
 """
-function dEps_dPsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
+function deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
     # Constants.
-    d2r = π/180
-    a2d = 1/3600
-    a2r = a2d*d2r
+    d2r = π / 180
+    a2d = 1 / 3600
+    a2r = a2d * d2r
 
     # Obtain the parameters `dX` and `dY` [arcseg].
     dX = eop_iau2000a.dX(JD)
     dY = eop_iau2000a.dY(JD)
 
     # Compute the Julian century.
-    T_TT = (JD - JD_J2000)/36525
+    T_TT = (JD - JD_J2000) / 36525
 
     # Luni-solar precession [rad].
-    Ψ_a = @evalpoly(T_TT, 0, +5038.47875, -1.07259, -0.001147)*a2r
+    Ψ_a = @evalpoly(T_TT, 0, +5038.47875, -1.07259, -0.001147) * a2r
 
     # Planetary precession [rad].
-    χ_a = @evalpoly(T_TT, 0, +10.5526, -2.38064, -0.001125)*a2r
+    χ_a = @evalpoly(T_TT, 0, +10.5526, -2.38064, -0.001125) * a2r
 
-    sϵ₀, cϵ₀ = sincos(84381.406*a2r)
+    sϵ₀, cϵ₀ = sincos(84381.406 * a2r)
 
     aux = Ψ_a * cϵ₀ - χ_a
     den = aux^2 * sϵ₀ - sϵ₀

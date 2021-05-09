@@ -80,3 +80,4 @@
 @deprecate J2000toGMST j2000_to_gmst
 @deprecate JDtoGMST jd_to_gmst
 
+@deprecate dEps_dPsi deps_dpsi

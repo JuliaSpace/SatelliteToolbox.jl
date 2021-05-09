@@ -851,7 +851,7 @@ function r_eci_to_eci(
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
-    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
     δΔϵ_2000 *= arcsec2rad
     δΔΨ_2000 *= arcsec2rad
 
@@ -950,7 +950,7 @@ function r_eci_to_eci(
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
-    δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
+    δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
     δΔϵ_2000 *= arcsec2rad
     δΔΨ_2000 *= arcsec2rad
 
