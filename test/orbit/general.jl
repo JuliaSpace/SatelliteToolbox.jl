@@ -45,7 +45,7 @@ end
 # File: ./src/transformation/gmst.jl
 # ==================================
 
-# Function JDtoGMST
+# Function jd_to_gmst
 # -----------------
 
 ################################################################################
@@ -62,14 +62,14 @@ end
 #
 # Using SatelliteToolbox, the following was obtained:
 #
-#   julia> JDtoGMST(2448855.009722)*180/pi
+#   julia> jd_to_gmst(2448855.009722)*180/pi
 #   152.57870762832462
 #
 # NOTE: The difference was also found by replicating the algorithm in MATLAB.
 #
 ################################################################################
 
-@testset "Function JDtoGMST" begin
-    θ_GMST = JDtoGMST(2448855.009722)*180/pi
+@testset "Function jd_to_gmst" begin
+    θ_GMST = jd_to_gmst(2448855.009722)*180/pi
     @test θ_GMST ≈ 152.578787810 atol = 1e-4
 end

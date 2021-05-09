@@ -679,7 +679,7 @@ function dsinit(epoch::T,
     (abs(sin_i_0) < 1e-12) && (sin_i_0 = sign(sin_i_0)*1e-12)
 
     # Compute the Greenwhich Mean Sidereal Time at epoch.
-    gmst = JDtoGMST(epoch)
+    gmst = jd_to_gmst(epoch)
 
     #                      Initialize Lunar Solar Terms
     # ==========================================================================

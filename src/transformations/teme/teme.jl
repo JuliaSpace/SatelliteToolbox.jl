@@ -319,7 +319,7 @@ rTEMEtoPEF(JD_UT1::Number) = rTEMEtoPEF(DCM, JD_UT1)
 
 function rTEMEtoPEF(T::Type, JD_UT1::Number)
     # Compute the Greenwich Mean Sidereal Time.
-    θ_gmst = JDtoGMST(JD_UT1)
+    θ_gmst = jd_to_gmst(JD_UT1)
 
     # Compute the rotation.
     return angle_to_rot(T, θ_gmst, 0, 0, :ZYX)

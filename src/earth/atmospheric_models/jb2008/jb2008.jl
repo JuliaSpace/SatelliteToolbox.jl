@@ -156,7 +156,7 @@ function jb2008(JD::Number, glat::Number, glon::Number, h::Number, F10::Number,
 
     # Compute the right ascension of the selected location w.r.t. the inertial
     # reference frame.
-    Ωp = glon + JDtoGMST(JD)
+    Ωp = glon + jd_to_gmst(JD)
 
     # Compute the hour angle at the selected location, which is the angle
     # measured at the XY plane between the right ascension of the selected

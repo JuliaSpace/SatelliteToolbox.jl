@@ -157,7 +157,7 @@ can provide correction for the nutation in longitude (`δΔψ_1980`) \\[rad] tha
 is usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
@@ -222,7 +222,7 @@ function r_pef_to_tod_fk5(
         ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
 
     # Compute the Mean Greenwich Sidereal Time.
-    θ_gmst = JDtoGMST(JD_UT1)
+    θ_gmst = jd_to_gmst(JD_UT1)
 
     # Compute the Greenwich Apparent Sidereal Time (GAST).
     #
@@ -243,7 +243,7 @@ can provide correction for the nutation in longitude (`δΔψ_1980`) \\[rad] tha
 is usually obtained from IERS EOP Data (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
@@ -482,7 +482,7 @@ the polar motion displacement about Y-axis (90˚W or 270˚E meridian). `δΔϵ_1
 is the nutation in obliquity. `δΔψ_1980` is the nutation in longitude.
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
@@ -555,7 +555,7 @@ the polar motion displacement about Y-axis (90˚W or 270˚E meridian). `δΔϵ_1
 is the nutation in obliquity. `δΔψ_1980` is the nutation in longitude.
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
@@ -617,7 +617,7 @@ corrections for the nutation in obliquity (`δΔϵ_1980`) \\[rad] and in longitu
 `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.
@@ -686,7 +686,7 @@ function r_pef_to_mod_fk5(
         ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
 
     # Compute the Mean Greenwich Sidereal Time.
-    θ_gmst = JDtoGMST(JD_UT1)
+    θ_gmst = jd_to_gmst(JD_UT1)
 
     # Compute the Greenwich Apparent Sidereal Time (GAST).
     #
@@ -713,7 +713,7 @@ in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from IERS EOP Dat
 (see `get_iers_eop`).
 
 The Julian Day in UT1 is used to compute the Greenwich Mean Sidereal Time (GMST)
-(see `JDtoGMST`), whereas the Julian Day in Terrestrial Time is used to compute
+(see `jd_to_gmst`), whereas the Julian Day in Terrestrial Time is used to compute
 the nutation in the longitude. Notice that the Julian Day in UT1 and in
 Terrestrial Time must be equivalent, i.e. must be related to the same instant.
 This function **does not** check this.

@@ -67,3 +67,7 @@
 
 @deprecate JDtoDate jd_to_date
 @deprecate DatetoJD date_to_jd
+
+@deprecate J2000toGMST j2000_to_gmst
+@deprecate JDtoGMST jd_to_gmst
+
