@@ -1,17 +1,19 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Tests related to ECEF to ECI transformations using satellite state vector.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Get the current EOP Data.
 #
@@ -26,8 +28,8 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 # File: ./src/transformations/sv_ecef_to_eci.jl
 # =============================================
 
-# Functions: svECEFtoECI
-# ----------------------
+# Functions: sv_ecef_to_eci
+# -------------------------
 
 # The rotations functions were already heavily tested in `ecef_to_eci.jl`,
 # `fk5/fk5.jl`, and `iau2006/iau2006.jl`. Hence, here we will do only some minor
@@ -67,13 +69,13 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 #
 ################################################################################
 
-@testset "Function svECEFtoECI ITRF => GCRF" begin
+@testset "Function sv_ecef_to_eci ITRF => GCRF" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     r_itrf  = [-1033.4793830; 7901.2952754; 6380.3565958]
     v_itrf  = [-3.225636520; -2.872451450; +5.531924446]
     sv_itrf = orbsv(JD_UTC, r_itrf, v_itrf)
-    sv_gcrf = svECEFtoECI(sv_itrf, ITRF(), GCRF(), JD_UTC, eop_iau1980)
+    sv_gcrf = sv_ecef_to_eci(sv_itrf, ITRF(), GCRF(), JD_UTC, eop_iau1980)
 
     @test sv_gcrf.t === JD_UTC
 
@@ -112,13 +114,13 @@ end
 #
 ################################################################################
 
-@testset "Function svECEFtoECI PEF => J2000" begin
+@testset "Function sv_ecef_to_eci PEF => J2000" begin
     JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
 
     r_pef    = [-1033.47503130; 7901.30558560; 6380.34453270]
     v_pef    = [-3.2256327470; -2.8724425110; +5.5319312880]
     sv_pef   = orbsv(JD_UT1, r_pef, v_pef)
-    sv_j2000 = svECEFtoECI(sv_pef, PEF(), J2000(), JD_UT1)
+    sv_j2000 = sv_ecef_to_eci(sv_pef, PEF(), J2000(), JD_UT1)
 
     @test sv_j2000.t === JD_UT1
 
@@ -160,13 +162,13 @@ end
 #
 ################################################################################
 
-@testset "Function svECEFtoECI ITRF => GCRF" begin
+@testset "Function sv_ecef_to_eci ITRF => GCRF" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     r_itrf  = [-1033.4793830; 7901.2952754; 6380.3565958]
     v_itrf  = [-3.225636520; -2.872451450; +5.531924446]
     sv_itrf = orbsv(JD_UTC, r_itrf, v_itrf)
-    sv_gcrf = svECEFtoECI(sv_itrf, ITRF(), GCRF(), JD_UTC, eop_iau2000a)
+    sv_gcrf = sv_ecef_to_eci(sv_itrf, ITRF(), GCRF(), JD_UTC, eop_iau2000a)
 
     @test sv_gcrf.t === JD_UTC
 
@@ -205,13 +207,13 @@ end
 #
 ################################################################################
 
-@testset "Function svECEFtoECI TIRS => GCRF" begin
-    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+@testset "Function sv_ecef_to_eci TIRS => GCRF" begin
+    JD_UT1 = DatetoJD(2004, 4, 6, 7, 51, 28.386009) - 0.4399619/86400
 
     r_tirs  = [-1033.47503120; 7901.30558560; 6380.34453270]
     v_tirs  = [-3.2256327470; -2.8724425110; +5.5319312880]
     sv_tirs = orbsv(JD_UT1, r_tirs, v_tirs)
-    sv_gcrf = svECEFtoECI(sv_tirs, TIRS(), GCRF(), JD_UT1)
+    sv_gcrf = sv_ecef_to_eci(sv_tirs, TIRS(), GCRF(), JD_UT1)
 
     @test sv_gcrf.t === JD_UT1
 
