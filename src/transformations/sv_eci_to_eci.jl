@@ -22,12 +22,12 @@ export svECItoECI
     svECItoECI(sv::OrbitStateVector, args...)
 
 Convert the orbit state vector `sv` from an ECI frame to another ECI frame. The
-arguments `args...` must match those of the function `rECItoECI` **wihtout**
+arguments `args...` must match those of the function `r_eci_to_eci` **wihtout**
 the rotation representation.
 
 """
 function svECItoECI(sv::OrbitStateVector, args...)
-    D = rECItoECI(DCM, args...)
+    D = r_eci_to_eci(DCM, args...)
 
     # Since both frames does not have a significant angular velocity between
     # them, then we just need to convert the representations.

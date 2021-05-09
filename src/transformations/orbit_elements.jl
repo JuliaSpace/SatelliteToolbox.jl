@@ -35,8 +35,8 @@ specified by `a`, `e`, `i`, `Ω`, `ω`, and `f`, or the structure `oe` (see
 [`Orbit`](@ref)). In the latter, the return value type will match the type of `oe`.
 
 The conversion arguments `conv_args` are **the same** arguments that one should
-pass to the function `rECItoECI` to convert between the desired frames. For more
-information, see the documentation of the function `rECItoECI`.
+pass to the function `r_eci_to_eci` to convert between the desired frames. For more
+information, see the documentation of the function `r_eci_to_eci`.
 
 # Args
 
@@ -47,7 +47,7 @@ information, see the documentation of the function `rECItoECI`.
 * `ω`: Argument of perigee [rad].
 * `f`: True anomaly [rad].
 * `conv_args...`: Conversion arguments, which are the same arguments that one
-                  would pass to the function `rECItoECI` to convert between the
+                  would pass to the function `r_eci_to_eci` to convert between the
                   desired frames.
 
 * `oe`: An instance of the structure [`Orbit`](@ref) with the orbit elements
@@ -131,7 +131,7 @@ function change_oe_frame(oe::T, conv_args...) where T<:Orbit
 
     # NOTE: In my benchmarks, the operation with DCMs are faster than with
     # quaternions after the DCM representation was changed to SMatrix.
-    D_ECIf_ECIo = rECItoECI(DCM, conv_args...)
+    D_ECIf_ECIo = r_eci_to_eci(DCM, conv_args...)
     r_f         = D_ECIf_ECIo*r_o
     v_f         = D_ECIf_ECIo*v_o
     a_f         = D_ECIf_ECIo*a_o

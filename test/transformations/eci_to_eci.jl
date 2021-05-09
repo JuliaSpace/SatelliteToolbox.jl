@@ -32,8 +32,8 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 #                                  IAU-76/FK5
 ################################################################################
 
-# Functions: rECItoECI
-# --------------------
+# Functions: r_eci_to_eci
+# -----------------------
 
 # GCRF <=> J2000
 # ==============
@@ -58,7 +58,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> J2000" begin
+@testset "Function r_eci_to_eci GCRF <=> J2000" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## GCRF => J2000
@@ -69,7 +69,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## DCM
     ## ---
 
-    D_J2000_GCRF = rECItoECI(GCRF(), J2000(), JD_UTC, eop_iau1980)
+    D_J2000_GCRF = r_eci_to_eci(GCRF(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_GCRF*r_gcrf
 
@@ -80,7 +80,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## Quaternion
     ## ----------
 
-    q_J2000_GCRF = rECItoECI(Quaternion, GCRF(), J2000(), JD_UTC, eop_iau1980)
+    q_J2000_GCRF = r_eci_to_eci(Quaternion, GCRF(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_GCRF)*r_gcrf*q_J2000_GCRF)
 
@@ -96,7 +96,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## DCM
     ## ---
 
-    D_GCRF_J2000 = rECItoECI(J2000(), GCRF(), JD_UTC, eop_iau1980)
+    D_GCRF_J2000 = r_eci_to_eci(J2000(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_J2000*r_j2000
 
@@ -107,7 +107,7 @@ eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
     ## Quaternion
     ## ----------
 
-    q_GCRF_J2000 = rECItoECI(Quaternion, J2000(), GCRF(), JD_UTC, eop_iau1980)
+    q_GCRF_J2000 = r_eci_to_eci(Quaternion, J2000(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_J2000)*r_j2000*q_GCRF_J2000)
 
@@ -139,7 +139,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> MOD" begin
+@testset "Function r_eci_to_eci GCRF <=> MOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## GCRF => MOD
@@ -150,7 +150,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_GCRF = rECItoECI(GCRF(), MOD(), JD_UTC, eop_iau1980)
+    D_MOD_GCRF = r_eci_to_eci(GCRF(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_GCRF*r_gcrf
 
@@ -161,7 +161,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_GCRF = rECItoECI(Quaternion, GCRF(), MOD(), JD_UTC, eop_iau1980)
+    q_MOD_GCRF = r_eci_to_eci(Quaternion, GCRF(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_GCRF)*r_gcrf*q_MOD_GCRF)
 
@@ -178,7 +178,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_MOD = rECItoECI(MOD(), GCRF(), JD_UTC, eop_iau1980)
+    D_GCRF_MOD = r_eci_to_eci(MOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_MOD*r_mod
 
@@ -189,7 +189,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_MOD = rECItoECI(Quaternion, MOD(), GCRF(), JD_UTC, eop_iau1980)
+    q_GCRF_MOD = r_eci_to_eci(Quaternion, MOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_MOD)*r_mod*q_GCRF_MOD)
 
@@ -221,7 +221,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> TOD" begin
+@testset "Function r_eci_to_eci GCRF <=> TOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## GCRF => TOD
@@ -232,7 +232,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_GCRF = rECItoECI(GCRF(), TOD(), JD_UTC, eop_iau1980)
+    D_TOD_GCRF = r_eci_to_eci(GCRF(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_GCRF*r_gcrf
 
@@ -243,7 +243,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_GCRF = rECItoECI(Quaternion, GCRF(), TOD(), JD_UTC, eop_iau1980)
+    q_TOD_GCRF = r_eci_to_eci(Quaternion, GCRF(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_GCRF)*r_gcrf*q_TOD_GCRF)
 
@@ -259,7 +259,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_TOD = rECItoECI(TOD(), GCRF(), JD_UTC, eop_iau1980)
+    D_GCRF_TOD = r_eci_to_eci(TOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_TOD*r_tod
 
@@ -270,7 +270,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_TOD = rECItoECI(Quaternion, TOD(), GCRF(), JD_UTC, eop_iau1980)
+    q_GCRF_TOD = r_eci_to_eci(Quaternion, TOD(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_TOD)*r_tod*q_GCRF_TOD)
 
@@ -302,7 +302,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> TEME" begin
+@testset "Function r_eci_to_eci GCRF <=> TEME" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## GCRF => TEME
@@ -313,7 +313,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_GCRF = rECItoECI(GCRF(), TEME(), JD_UTC, eop_iau1980)
+    D_TEME_GCRF = r_eci_to_eci(GCRF(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_GCRF*r_gcrf
 
@@ -324,7 +324,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_GCRF = rECItoECI(Quaternion, GCRF(), TEME(), JD_UTC, eop_iau1980)
+    q_TEME_GCRF = r_eci_to_eci(Quaternion, GCRF(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_GCRF)*r_gcrf*q_TEME_GCRF)
 
@@ -340,7 +340,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_TEME = rECItoECI(TEME(), GCRF(), JD_UTC, eop_iau1980)
+    D_GCRF_TEME = r_eci_to_eci(TEME(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = D_GCRF_TEME*r_teme
 
@@ -351,7 +351,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_TEME = rECItoECI(Quaternion, TEME(), GCRF(), JD_UTC, eop_iau1980)
+    q_GCRF_TEME = r_eci_to_eci(Quaternion, TEME(), GCRF(), JD_UTC, eop_iau1980)
 
     r_gcrf = vect(conj(q_GCRF_TEME)*r_teme*q_GCRF_TEME)
 
@@ -387,7 +387,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI J2000 <=> MOD" begin
+@testset "Function r_eci_to_eci J2000 <=> MOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## J2000 => MOD
@@ -398,7 +398,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC, eop_iau1980)
+    D_MOD_J2000 = r_eci_to_eci(J2000(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_J2000*r_j2000
 
@@ -409,7 +409,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC, eop_iau1980)
+    q_MOD_J2000 = r_eci_to_eci(Quaternion, J2000(), MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
 
@@ -425,7 +425,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC, eop_iau1980)
+    D_J2000_MOD = r_eci_to_eci(MOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_MOD*r_mod
 
@@ -436,7 +436,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC, eop_iau1980)
+    q_J2000_MOD = r_eci_to_eci(Quaternion, MOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
 
@@ -455,7 +455,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_J2000 = rECItoECI(J2000(), MOD(), JD_UTC)
+    D_MOD_J2000 = r_eci_to_eci(J2000(), MOD(), JD_UTC)
 
     r_mod = D_MOD_J2000*r_j2000
 
@@ -466,7 +466,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_J2000 = rECItoECI(Quaternion, J2000(), MOD(), JD_UTC)
+    q_MOD_J2000 = r_eci_to_eci(Quaternion, J2000(), MOD(), JD_UTC)
 
     r_mod = vect(conj(q_MOD_J2000)*r_j2000*q_MOD_J2000)
 
@@ -482,7 +482,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_MOD = rECItoECI(MOD(), J2000(), JD_UTC)
+    D_J2000_MOD = r_eci_to_eci(MOD(), J2000(), JD_UTC)
 
     r_j2000 = D_J2000_MOD*r_mod
 
@@ -493,7 +493,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_MOD = rECItoECI(Quaternion, MOD(), J2000(), JD_UTC)
+    q_J2000_MOD = r_eci_to_eci(Quaternion, MOD(), J2000(), JD_UTC)
 
     r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
 
@@ -529,7 +529,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI J2000 <=> TOD" begin
+@testset "Function r_eci_to_eci J2000 <=> TOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## J2000 => TOD
@@ -540,7 +540,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC, eop_iau1980)
+    D_TOD_J2000 = r_eci_to_eci(J2000(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_J2000*r_j2000
 
@@ -551,7 +551,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC, eop_iau1980)
+    q_TOD_J2000 = r_eci_to_eci(Quaternion, J2000(), TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
 
@@ -567,7 +567,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC, eop_iau1980)
+    D_J2000_TOD = r_eci_to_eci(TOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_TOD*r_tod
 
@@ -578,7 +578,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC, eop_iau1980)
+    q_J2000_TOD = r_eci_to_eci(Quaternion, TOD(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
 
@@ -597,7 +597,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_J2000 = rECItoECI(J2000(), TOD(), JD_UTC)
+    D_TOD_J2000 = r_eci_to_eci(J2000(), TOD(), JD_UTC)
 
     r_tod = D_TOD_J2000*r_j2000
 
@@ -608,7 +608,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_J2000 = rECItoECI(Quaternion, J2000(), TOD(), JD_UTC)
+    q_TOD_J2000 = r_eci_to_eci(Quaternion, J2000(), TOD(), JD_UTC)
 
     r_tod = vect(conj(q_TOD_J2000)*r_j2000*q_TOD_J2000)
 
@@ -624,7 +624,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_TOD = rECItoECI(TOD(), J2000(), JD_UTC)
+    D_J2000_TOD = r_eci_to_eci(TOD(), J2000(), JD_UTC)
 
     r_j2000 = D_J2000_TOD*r_tod
 
@@ -635,7 +635,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_TOD = rECItoECI(Quaternion, TOD(), J2000(), JD_UTC)
+    q_J2000_TOD = r_eci_to_eci(Quaternion, TOD(), J2000(), JD_UTC)
 
     r_j2000 = vect(conj(q_J2000_TOD)*r_tod*q_J2000_TOD)
 
@@ -667,7 +667,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI J2000 <=> TEME" begin
+@testset "Function r_eci_to_eci J2000 <=> TEME" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## J2000 => TEME
@@ -678,7 +678,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_J2000 = rECItoECI(J2000(), TEME(), JD_UTC, eop_iau1980)
+    D_TEME_J2000 = r_eci_to_eci(J2000(), TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_J2000*r_j2000
 
@@ -689,7 +689,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_J2000 = rECItoECI(Quaternion, J2000(), TEME(), JD_UTC)
+    q_TEME_J2000 = r_eci_to_eci(Quaternion, J2000(), TEME(), JD_UTC)
 
     r_teme = vect(conj(q_TEME_J2000)*r_j2000*q_TEME_J2000)
 
@@ -705,7 +705,7 @@ end
     ## DCM
     ## ---
 
-    D_J2000_TEME = rECItoECI(TEME(), J2000(), JD_UTC, eop_iau1980)
+    D_J2000_TEME = r_eci_to_eci(TEME(), J2000(), JD_UTC, eop_iau1980)
 
     r_j2000 = D_J2000_TEME*r_teme
 
@@ -716,7 +716,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_TEME = rECItoECI(Quaternion, TEME(), J2000(), JD_UTC)
+    q_J2000_TEME = r_eci_to_eci(Quaternion, TEME(), J2000(), JD_UTC)
 
     r_j2000 = vect(conj(q_J2000_TEME)*r_teme*q_J2000_TEME)
 
@@ -754,7 +754,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI MOD <=> TOD" begin
+@testset "Function r_eci_to_eci MOD <=> TOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## MOD => TOD
@@ -765,7 +765,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
+    D_TOD_MOD = r_eci_to_eci(MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_MOD*r_mod
 
@@ -776,7 +776,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
+    q_TOD_MOD = r_eci_to_eci(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
 
@@ -792,7 +792,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
+    D_MOD_TOD = r_eci_to_eci(TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_TOD*r_tod
 
@@ -803,7 +803,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
+    q_MOD_TOD = r_eci_to_eci(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
 
@@ -822,7 +822,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_MOD = rECItoECI(MOD(), JD_UTC, TOD(), JD_UTC)
+    D_TOD_MOD = r_eci_to_eci(MOD(), JD_UTC, TOD(), JD_UTC)
 
     r_tod = D_TOD_MOD*r_mod
 
@@ -833,7 +833,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC)
+    q_TOD_MOD = r_eci_to_eci(Quaternion, MOD(), JD_UTC, TOD(), JD_UTC)
 
     r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
 
@@ -849,7 +849,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TOD = rECItoECI(TOD(), JD_UTC, MOD(), JD_UTC)
+    D_MOD_TOD = r_eci_to_eci(TOD(), JD_UTC, MOD(), JD_UTC)
 
     r_mod = D_MOD_TOD*r_tod
 
@@ -860,7 +860,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC)
+    q_MOD_TOD = r_eci_to_eci(Quaternion, TOD(), JD_UTC, MOD(), JD_UTC)
 
     r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
 
@@ -896,7 +896,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI MOD <=> TEME" begin
+@testset "Function r_eci_to_eci MOD <=> TEME" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## MOD => TEME
@@ -907,7 +907,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
+    D_TEME_MOD = r_eci_to_eci(MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_MOD*r_mod
 
@@ -918,7 +918,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
+    q_TEME_MOD = r_eci_to_eci(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
 
@@ -934,7 +934,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
+    D_MOD_TEME = r_eci_to_eci(TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = D_MOD_TEME*r_teme
 
@@ -945,7 +945,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
+    q_MOD_TEME = r_eci_to_eci(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC, eop_iau1980)
 
     r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
 
@@ -964,7 +964,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_MOD = rECItoECI(MOD(), JD_UTC, TEME(), JD_UTC)
+    D_TEME_MOD = r_eci_to_eci(MOD(), JD_UTC, TEME(), JD_UTC)
 
     r_teme = D_TEME_MOD*r_mod
 
@@ -975,7 +975,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_MOD = rECItoECI(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC)
+    q_TEME_MOD = r_eci_to_eci(Quaternion, MOD(), JD_UTC, TEME(), JD_UTC)
 
     r_teme = vect(conj(q_TEME_MOD)*r_mod*q_TEME_MOD)
 
@@ -991,7 +991,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TEME = rECItoECI(TEME(), JD_UTC, MOD(), JD_UTC)
+    D_MOD_TEME = r_eci_to_eci(TEME(), JD_UTC, MOD(), JD_UTC)
 
     r_mod = D_MOD_TEME*r_teme
 
@@ -1002,7 +1002,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC)
+    q_MOD_TEME = r_eci_to_eci(Quaternion, TEME(), JD_UTC, MOD(), JD_UTC)
 
     r_mod = vect(conj(q_MOD_TEME)*r_teme*q_MOD_TEME)
 
@@ -1034,7 +1034,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI TOD <=> TEME" begin
+@testset "Function r_eci_to_eci TOD <=> TEME" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## TOD => TEME
@@ -1045,7 +1045,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
+    D_TEME_TOD = r_eci_to_eci(TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = D_TEME_TOD*r_tod
 
@@ -1056,7 +1056,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
+    q_TEME_TOD = r_eci_to_eci(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC, eop_iau1980)
 
     r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
 
@@ -1072,7 +1072,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
+    D_TOD_TEME = r_eci_to_eci(TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = D_TOD_TEME*r_teme
 
@@ -1083,7 +1083,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
+    q_TOD_TEME = r_eci_to_eci(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC, eop_iau1980)
 
     r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
 
@@ -1102,7 +1102,7 @@ end
     ## DCM
     ## ---
 
-    D_TEME_TOD = rECItoECI(TOD(), JD_UTC, TEME(), JD_UTC)
+    D_TEME_TOD = r_eci_to_eci(TOD(), JD_UTC, TEME(), JD_UTC)
 
     r_teme = D_TEME_TOD*r_tod
 
@@ -1113,7 +1113,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TEME_TOD = rECItoECI(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC)
+    q_TEME_TOD = r_eci_to_eci(Quaternion, TOD(), JD_UTC, TEME(), JD_UTC)
 
     r_teme = vect(conj(q_TEME_TOD)*r_tod*q_TEME_TOD)
 
@@ -1129,7 +1129,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_TEME = rECItoECI(TEME(), JD_UTC, TOD(), JD_UTC)
+    D_TOD_TEME = r_eci_to_eci(TEME(), JD_UTC, TOD(), JD_UTC)
 
     r_tod = D_TOD_TEME*r_teme
 
@@ -1140,7 +1140,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_TEME = rECItoECI(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC)
+    q_TOD_TEME = r_eci_to_eci(Quaternion, TEME(), JD_UTC, TOD(), JD_UTC)
 
     r_tod = vect(conj(q_TOD_TEME)*r_teme*q_TOD_TEME)
 
@@ -1180,7 +1180,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> CIRS" begin
+@testset "Function r_eci_to_eci GCRF <=> CIRS" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## GCRF => CIRS
@@ -1191,7 +1191,7 @@ end
     ## DCM
     ## ---
 
-    D_CIRS_GCRF = rECItoECI(GCRF(), CIRS(), JD_UTC, eop_iau2000a)
+    D_CIRS_GCRF = r_eci_to_eci(GCRF(), CIRS(), JD_UTC, eop_iau2000a)
 
     r_cirs = D_CIRS_GCRF*r_gcrf
 
@@ -1202,7 +1202,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_CIRS_GCRF = rECItoECI(Quaternion, GCRF(), CIRS(), JD_UTC, eop_iau2000a)
+    q_CIRS_GCRF = r_eci_to_eci(Quaternion, GCRF(), CIRS(), JD_UTC, eop_iau2000a)
 
     r_cirs = vect(conj(q_CIRS_GCRF)*r_gcrf*q_CIRS_GCRF)
 
@@ -1218,7 +1218,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_CIRS = rECItoECI(CIRS(), GCRF(), JD_UTC, eop_iau2000a)
+    D_GCRF_CIRS = r_eci_to_eci(CIRS(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = D_GCRF_CIRS*r_cirs
 
@@ -1229,7 +1229,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_CIRS = rECItoECI(Quaternion, CIRS(), GCRF(), JD_UTC, eop_iau2000a)
+    q_GCRF_CIRS = r_eci_to_eci(Quaternion, CIRS(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = vect(conj(q_GCRF_CIRS)*r_cirs*q_GCRF_CIRS)
 
@@ -1268,7 +1268,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> MJ2000" begin
+@testset "Function r_eci_to_eci GCRF <=> MJ2000" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## MJ2000 => GCRF
@@ -1279,7 +1279,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_MJ2000 = rECItoECI(MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
+    D_GCRF_MJ2000 = r_eci_to_eci(MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = D_GCRF_MJ2000*r_mj2000
 
@@ -1290,7 +1290,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_MJ2000 = rECItoECI(Quaternion, MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
+    q_GCRF_MJ2000 = r_eci_to_eci(Quaternion, MJ2000(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = vect(conj(q_GCRF_MJ2000)*r_mj2000*q_GCRF_MJ2000)
 
@@ -1306,7 +1306,7 @@ end
     ## DCM
     ## ---
 
-    D_MJ2000_GCRF = rECItoECI(GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
+    D_MJ2000_GCRF = r_eci_to_eci(GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = D_MJ2000_GCRF*r_gcrf
 
@@ -1317,7 +1317,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MJ2000_GCRF = rECItoECI(Quaternion, GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
+    q_MJ2000_GCRF = r_eci_to_eci(Quaternion, GCRF(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = vect(conj(q_MJ2000_GCRF)*r_gcrf*q_MJ2000_GCRF)
 
@@ -1349,7 +1349,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> MOD" begin
+@testset "Function r_eci_to_eci GCRF <=> MOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## MOD => GCRF
@@ -1360,7 +1360,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_MOD = rECItoECI(MOD06(), GCRF(), JD_UTC, eop_iau2000a)
+    D_GCRF_MOD = r_eci_to_eci(MOD06(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = D_GCRF_MOD*r_mod
 
@@ -1371,7 +1371,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_MOD = rECItoECI(Quaternion, MOD06(), GCRF(), JD_UTC, eop_iau2000a)
+    q_GCRF_MOD = r_eci_to_eci(Quaternion, MOD06(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = vect(conj(q_GCRF_MOD)*r_mod*q_GCRF_MOD)
 
@@ -1387,7 +1387,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_GCRF = rECItoECI(GCRF(), MOD06(), JD_UTC, eop_iau2000a)
+    D_MOD_GCRF = r_eci_to_eci(GCRF(), MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = D_MOD_GCRF*r_gcrf
 
@@ -1398,7 +1398,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_GCRF = rECItoECI(Quaternion, GCRF(), MOD06(), JD_UTC, eop_iau2000a)
+    q_MOD_GCRF = r_eci_to_eci(Quaternion, GCRF(), MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = vect(conj(q_MOD_GCRF)*r_gcrf*q_MOD_GCRF)
 
@@ -1430,7 +1430,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI GCRF <=> ERS" begin
+@testset "Function r_eci_to_eci GCRF <=> ERS" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## ERS => GCRF
@@ -1441,7 +1441,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_ERS = rECItoECI(ERS(), GCRF(), JD_UTC, eop_iau2000a)
+    D_GCRF_ERS = r_eci_to_eci(ERS(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = D_GCRF_ERS*r_ers
 
@@ -1452,7 +1452,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_ERS = rECItoECI(Quaternion, ERS(), GCRF(), JD_UTC, eop_iau2000a)
+    q_GCRF_ERS = r_eci_to_eci(Quaternion, ERS(), GCRF(), JD_UTC, eop_iau2000a)
 
     r_gcrf = vect(conj(q_GCRF_ERS)*r_ers*q_GCRF_ERS)
 
@@ -1468,7 +1468,7 @@ end
     ## DCM
     ## ---
 
-    D_ERS_GCRF = rECItoECI(GCRF(), ERS(), JD_UTC, eop_iau2000a)
+    D_ERS_GCRF = r_eci_to_eci(GCRF(), ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = D_ERS_GCRF*r_gcrf
 
@@ -1479,7 +1479,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ERS_GCRF = rECItoECI(Quaternion, GCRF(), ERS(), JD_UTC, eop_iau2000a)
+    q_ERS_GCRF = r_eci_to_eci(Quaternion, GCRF(), ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = vect(conj(q_ERS_GCRF)*r_gcrf*q_ERS_GCRF)
 
@@ -1514,7 +1514,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI MJ2000 <=> MOD" begin
+@testset "Function r_eci_to_eci MJ2000 <=> MOD" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## MOD => MJ2000
@@ -1525,7 +1525,7 @@ end
     ## DCM
     ## ---
 
-    D_MJ2000_MOD = rECItoECI(MOD06(), MJ2000(), JD_UTC, eop_iau2000a)
+    D_MJ2000_MOD = r_eci_to_eci(MOD06(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = D_MJ2000_MOD*r_mod
 
@@ -1536,7 +1536,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MJ2000_MOD = rECItoECI(Quaternion, MOD06(), MJ2000(), JD_UTC, eop_iau2000a)
+    q_MJ2000_MOD = r_eci_to_eci(Quaternion, MOD06(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = vect(conj(q_MJ2000_MOD)*r_mod*q_MJ2000_MOD)
 
@@ -1552,7 +1552,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_MJ2000 = rECItoECI(MJ2000(), MOD06(), JD_UTC, eop_iau2000a)
+    D_MOD_MJ2000 = r_eci_to_eci(MJ2000(), MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = D_MOD_MJ2000*r_mj2000
 
@@ -1563,7 +1563,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_MJ2000 = rECItoECI(Quaternion, MJ2000(), MOD06(), JD_UTC, eop_iau2000a)
+    q_MOD_MJ2000 = r_eci_to_eci(Quaternion, MJ2000(), MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = vect(conj(q_MOD_MJ2000)*r_mj2000*q_MOD_MJ2000)
 
@@ -1598,7 +1598,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI MJ2000 <=> ERS" begin
+@testset "Function r_eci_to_eci MJ2000 <=> ERS" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## ERS => MJ2000
@@ -1609,7 +1609,7 @@ end
     ## DCM
     ## ---
 
-    D_MJ2000_ERS = rECItoECI(ERS(), MJ2000(), JD_UTC, eop_iau2000a)
+    D_MJ2000_ERS = r_eci_to_eci(ERS(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = D_MJ2000_ERS*r_ers
 
@@ -1620,7 +1620,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MJ2000_ERS = rECItoECI(Quaternion, ERS(), MJ2000(), JD_UTC, eop_iau2000a)
+    q_MJ2000_ERS = r_eci_to_eci(Quaternion, ERS(), MJ2000(), JD_UTC, eop_iau2000a)
 
     r_mj2000 = vect(conj(q_MJ2000_ERS)*r_ers*q_MJ2000_ERS)
 
@@ -1636,7 +1636,7 @@ end
     ## DCM
     ## ---
 
-    D_ERS_MJ2000 = rECItoECI(MJ2000(), ERS(), JD_UTC, eop_iau2000a)
+    D_ERS_MJ2000 = r_eci_to_eci(MJ2000(), ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = D_ERS_MJ2000*r_mj2000
 
@@ -1647,7 +1647,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ERS_MJ2000 = rECItoECI(Quaternion, MJ2000(), ERS(), JD_UTC, eop_iau2000a)
+    q_ERS_MJ2000 = r_eci_to_eci(Quaternion, MJ2000(), ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = vect(conj(q_ERS_MJ2000)*r_mj2000*q_ERS_MJ2000)
 
@@ -1682,7 +1682,7 @@ end
 #
 ################################################################################
 
-@testset "Function rECItoECI MOD <=> ERS" begin
+@testset "Function r_eci_to_eci MOD <=> ERS" begin
     JD_UTC = DatetoJD(2004, 4, 6, 7, 51, 28.386009)
 
     ## ERS => MOD
@@ -1693,7 +1693,7 @@ end
     ## DCM
     ## ---
 
-    D_MOD_ERS = rECItoECI(ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
+    D_MOD_ERS = r_eci_to_eci(ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = D_MOD_ERS*r_ers
 
@@ -1704,7 +1704,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_ERS = rECItoECI(Quaternion, ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
+    q_MOD_ERS = r_eci_to_eci(Quaternion, ERS(), JD_UTC, MOD06(), JD_UTC, eop_iau2000a)
 
     r_mod = vect(conj(q_MOD_ERS)*r_ers*q_MOD_ERS)
 
@@ -1720,7 +1720,7 @@ end
     ## DCM
     ## ---
 
-    D_ERS_MOD = rECItoECI(MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
+    D_ERS_MOD = r_eci_to_eci(MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = D_ERS_MOD*r_mod
 
@@ -1731,7 +1731,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ERS_MOD = rECItoECI(Quaternion, MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
+    q_ERS_MOD = r_eci_to_eci(Quaternion, MOD06(), JD_UTC, ERS(), JD_UTC, eop_iau2000a)
 
     r_ers = vect(conj(q_ERS_MOD)*r_mod*q_ERS_MOD)
 
