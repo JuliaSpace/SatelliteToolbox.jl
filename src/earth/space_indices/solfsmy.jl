@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   SOLFSMY.txt
 #
@@ -10,7 +11,7 @@
 #
 #   in which 81c means the 81-day averaged centered value.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ################################################################################
 #                       Private Structures and Variables
@@ -49,11 +50,14 @@ _solfsmy = @RemoteFile(
     "http://sol.spacenvironment.net/jb2008/indices/SOLFSMY.TXT",
     file="SOLFSMY.TXT",
     updates=:daily
-   )
+)
 
 # Optional variable that will store the `SOLFSMY.TXT` data.
-@OptionalData(_solfsmy_data, _SOLFSMY_Structure,
-              "Run `init_space_indices()` with `:solfsmy` in `enabled_files` array to initialize required data.")
+@OptionalData(
+    _solfsmy_data,
+    _SOLFSMY_Structure,
+    "Run `init_space_indices()` with `:solfsmy` in `enabled_files` array to initialize required data."
+)
 
 ################################################################################
 #                               Public Functions
@@ -110,13 +114,13 @@ downloaded.
 function _init_solfsmy(;force_download = false, local_path = nothing)
     # Update the remote files if no path is given.
     if local_path == nothing
-        download(_solfsmy; force = force_download)
+        download(_solfsmy; force = force_download, force_update = true)
         local_path = path(_solfsmy)
     end
 
     push!(_solfsmy_data,   _parse_solfsmy(local_path))
 
-    nothing
+    return nothing
 end
 
 """
@@ -192,8 +196,14 @@ function _parse_solfsmy(path::AbstractString)
     itp_Y10  = interpolate(knots, Y10 , Gridded(Constant()))
     itp_Y81a = interpolate(knots, Y81a, Gridded(Constant()))
 
-    _SOLFSMY_Structure(itp_F10, itp_F81a,
-                       itp_S10, itp_S81a,
-                       itp_M10, itp_M81a,
-                       itp_Y10, itp_Y81a)
+    return _SOLFSMY_Structure(
+        itp_F10,
+        itp_F81a,
+        itp_S10,
+        itp_S81a,
+        itp_M10,
+        itp_M81a,
+        itp_Y10,
+        itp_Y81a
+    )
 end
