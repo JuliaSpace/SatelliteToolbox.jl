@@ -26,7 +26,7 @@ export moon_position_i
 Compute the Moon position represented in the IAU-76/FK5 MOD (mean-equator,
 mean-equinox of date) at the Julian Day `JD_TDB` (Barycentric Dynamical Time).
 
-The `model` must be `Val(:Meeus)` or `Val(:fast)`. `Val(:Meeus)` uses the
+The `model` must be `Val(:Meeus)` or `Val(:Vallado)`. `Val(:Meeus)` uses the
 algorithm in [2, p. 337] that provides an accuracy of 10" in the longitude and
 4" in the latitude (the reference does not mention the timespan). `Val(:fast)`
 uses the algorithm in [1, p. 288] that is 10x faster than `Val(:Meeus)` but can
@@ -174,7 +174,7 @@ function moon_position_i(JD_TDB::Number, ::Val{:Meeus})
     return r_moon_i
 end
 
-function moon_position_i(JD_TDB::Number, ::Val{:fast})
+function moon_position_i(JD_TDB::Number, ::Val{:Vallado})
     # Number of Julian centuries from J2000 epoch.
     T_TDB = (JD_TDB - JD_J2000)/36525.0
 

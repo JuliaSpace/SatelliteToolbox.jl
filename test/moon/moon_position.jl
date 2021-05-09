@@ -74,13 +74,13 @@ end
 #
 ################################################################################
 
-@testset "Function moon_position_i (fast)" begin
-    JD_UTC = date_to_jd(1994,4,28,0,0,0)
+@testset "Function moon_position_i (Vallado)" begin
+    JD_UTC = date_to_jd(1994, 4, 28, 0, 0, 0)
     JD_TBD = JD_UTC
 
-    r_J2000 = moon_position_i(JD_TBD, Val(:fast))
+    r_J2000 = moon_position_i(JD_TBD, Val(:Vallado))
 
-    @test r_J2000[1]/1000 ≈ -134_240.626 atol = 1e-3
-    @test r_J2000[2]/1000 ≈ -311_571.590 atol = 1e-3
-    @test r_J2000[3]/1000 ≈ -126_693.785 atol = 1e-3
+    @test r_J2000[1] / 1000 ≈ -134_240.626 atol = 1e-3
+    @test r_J2000[2] / 1000 ≈ -311_571.590 atol = 1e-3
+    @test r_J2000[3] / 1000 ≈ -126_693.785 atol = 1e-3
 end
