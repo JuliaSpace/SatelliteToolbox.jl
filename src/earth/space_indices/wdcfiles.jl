@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   WDCFILES.txt
 #
@@ -10,7 +11,7 @@
 #
 #       https://www.gfz-potsdam.de/en/kp-index/
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ################################################################################
 #                       Private Structures and Variables
@@ -38,8 +39,11 @@ end
 _wdcfiles = RemoteFileSet(".wdc files", Dict{Symbol,RemoteFile}())
 
 # Optional variable that will store the WDC data.
-@OptionalData(_wdc_data, _WDC_Structure,
-              "Run `init_space_indices()` with `:wdcfiles` in `enabled_files` array to initialize required data.")
+@OptionalData(
+    _wdc_data,
+    _WDC_Structure,
+    "Run `init_space_indices()` with `:wdcfiles` in `enabled_files` array to initialize required data."
+)
 
 ################################################################################
 #                               Public Functions
@@ -145,20 +149,33 @@ by the keyword `wdcfiles_newest_year`. It it is `nothing`, which is the default,
 then it is set to the current year.
 
 """
-function _init_wdcfiles(;force_download = false, local_dir = nothing,
-                        wdcfiles_oldest_year = year(now())-3,
-                        wdcfiles_newest_year = nothing)
-
+function _init_wdcfiles(;
+    force_download = false,
+    local_dir = nothing,
+    wdcfiles_oldest_year = year(now())-3,
+    wdcfiles_newest_year = nothing
+)
     years     = Int[]
     filepaths = String[]
 
     if local_dir == nothing
         (wdcfiles_newest_year == nothing) && (wdcfiles_newest_year = year(now()))
         _prepare_wdc_remote_files(wdcfiles_oldest_year, wdcfiles_newest_year)
-        download(_wdcfiles; force = force_download)
+
+        # We need to fetch each file in the `RemoteFileSet` separately until
+        # helgee/RemoteFiles.jl#23 is merged.
+        @sync for file in values(_wdcfiles.files)
+            @async download(
+                file,
+                quiet = false,
+                verbose = false,
+                force = force_download,
+                force_update = true
+            )
+        end
 
         # Get the files available and sort them by the year.
-        for (sym,wdcfile) in _wdcfiles.files
+        for (sym, wdcfile) in _wdcfiles.files
             #
             # The year must not be obtained by the data inside the file,
             # because it contains only 2 digits and will break in 2032.
@@ -183,7 +200,7 @@ function _init_wdcfiles(;force_download = false, local_dir = nothing,
                     if year >= wdcfiles_oldest_year
                         @info "Found WDC file `$file` related to the year `$year`."
                         push!(filepaths, joinpath(root, file))
-                        push!(years,     year)
+                        push!(years, year)
                     end
                 end
             end
@@ -192,9 +209,9 @@ function _init_wdcfiles(;force_download = false, local_dir = nothing,
 
     p = sortperm(years)
 
-    push!(_wdc_data,       _parse_wdcfiles(filepaths[p], years[p]))
+    push!(_wdc_data, _parse_wdcfiles(filepaths[p], years[p]))
 
-    nothing
+    return nothing
 end
 
 """
@@ -249,7 +266,7 @@ function _parse_wdcfiles(filepaths::Vector{String}, years::Vector{Int})
     itp_Kp = interpolate(knots, Kp, Gridded(Constant()))
     itp_Ap = interpolate(knots, Ap, Gridded(Constant()))
 
-    _WDC_Structure(itp_Kp, itp_Ap)
+    return _WDC_Structure(itp_Kp, itp_Ap)
 end
 
 """
@@ -290,5 +307,5 @@ function _prepare_wdc_remote_files(oldest_year::Number, newest_year::Number)
         merge!(_wdcfiles.files, Dict(sym => file_y))
     end
 
-    nothing
+    return nothing
 end

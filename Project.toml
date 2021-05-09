@@ -33,7 +33,7 @@ PolynomialRoots = "1"
 PrettyTables = "0.11"
 Reexport = "1"
 ReferenceFrameRotations = "0.5"
-RemoteFiles = "0.3"
+RemoteFiles = "0.4.1"
 StaticArrays = "1"
 
 [extras]

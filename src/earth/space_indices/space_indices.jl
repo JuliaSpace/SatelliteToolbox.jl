@@ -1,15 +1,11 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Description
+# ==============================================================================
 #
 #   This file contains functions to retrieve space indices for many models.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# References
-#
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 export get_space_index, init_space_indices
 
@@ -107,85 +103,83 @@ These indices require `solfsmy` (see `init_space_indices`).
 This index requires `dtcfile` (see `init_space_indices`).
 
 """
-@inline get_space_index(::Val{:F10}, JD::Number) =
-    get_space_index(Val(:F10adj), JD)
+@inline get_space_index(::Val{:F10}, JD::Number) = get_space_index(Val(:F10adj), JD)
 
 @inline function get_space_index(::Val{:F10obs}, JD::Number)
     @_check_data(get(_fluxtable_data).F10obs, JD)
-    get(_fluxtable_data).F10obs(JD)
+    return get(_fluxtable_data).F10obs(JD)
 end
 
 @inline function get_space_index(::Val{:F10adj}, JD::Number)
     @_check_data(get(_fluxtable_data).F10adj, JD)
-    get(_fluxtable_data).F10adj(JD)
+    return get(_fluxtable_data).F10adj(JD)
 end
 
-@inline get_space_index(::Val{:F10M}, JD::Number; window::Int = 81) =
-    get_space_index(Val(:F10Madj), JD; window = window)
+@inline function get_space_index(::Val{:F10M}, JD::Number; window::Int = 81)
+    return get_space_index(Val(:F10Madj), JD; window = window)
+end
 
 @inline function get_space_index(::Val{:F10Mobs}, JD::Number; window::Int = 81)
-    Δ = floor( Int, (window-1)/2 )
-    @_check_data(get(_fluxtable_data).F10obs, JD-Δ)
-    @_check_data(get(_fluxtable_data).F10obs, JD+Δ)
-    mean( get(_fluxtable_data).F10obs( JD-Δ:1:JD+Δ ) )
+    Δ = floor(Int, (window - 1) / 2)
+    @_check_data(get(_fluxtable_data).F10obs, JD - Δ)
+    @_check_data(get(_fluxtable_data).F10obs, JD + Δ)
+    return mean(get(_fluxtable_data).F10obs(JD-Δ:1:JD+Δ))
 end
 
 @inline function get_space_index(::Val{:F10Madj}, JD::Number; window::Int = 81)
-    Δ = floor( Int, (window-1)/2 )
-    @_check_data(get(_fluxtable_data).F10adj, JD-Δ)
-    @_check_data(get(_fluxtable_data).F10adj, JD+Δ)
-    mean( get(_fluxtable_data).F10adj( JD-Δ:1:JD+Δ ) )
+    Δ = floor(Int, (window - 1) / 2)
+    @_check_data(get(_fluxtable_data).F10adj, JD - Δ)
+    @_check_data(get(_fluxtable_data).F10adj, JD + Δ)
+    return mean(get(_fluxtable_data).F10adj(JD-Δ:1:JD+Δ))
 end
 
 @inline function get_space_index(::Val{:Kp_vect}, JD::Number)
     @_check_data(get(_wdc_data).Kp, JD)
-    get(_wdc_data).Kp(JD)
+    return get(_wdc_data).Kp(JD)
 end
 
 @inline function get_space_index(::Val{:Ap_vect}, JD::Number)
     @_check_data(get(_wdc_data).Ap, JD)
-    get(_wdc_data).Ap(JD)
+    return get(_wdc_data).Ap(JD)
 end
 
-@inline get_space_index(::Val{:Kp}, JD::Number) =
-    mean(get_space_index(Val(:Kp_vect), JD))
+@inline get_space_index(::Val{:Kp}, JD::Number) = mean(get_space_index(Val(:Kp_vect), JD))
 
-@inline get_space_index(::Val{:Ap}, JD::Number) =
-    mean(get_space_index(Val(:Ap_vect), JD))
+@inline get_space_index(::Val{:Ap}, JD::Number) = mean(get_space_index(Val(:Ap_vect), JD))
 
 @inline function get_space_index(::Val{:S10}, JD::Number)
     @_check_data(get(_solfsmy_data).S10, JD)
-    get(_solfsmy_data).S10(JD)
+    return get(_solfsmy_data).S10(JD)
 end
 
 @inline function get_space_index(::Val{:S81a}, JD::Number)
     @_check_data(get(_solfsmy_data).S81a, JD)
-    get(_solfsmy_data).S81a(JD)
+    return get(_solfsmy_data).S81a(JD)
 end
 
 @inline function get_space_index(::Val{:M10}, JD::Number)
     @_check_data(get(_solfsmy_data).M10, JD)
-    get(_solfsmy_data).M10(JD)
+    return get(_solfsmy_data).M10(JD)
 end
 
 @inline function get_space_index(::Val{:M81a}, JD::Number)
     @_check_data(get(_solfsmy_data).M81a, JD)
-    get(_solfsmy_data).M81a(JD)
+    return get(_solfsmy_data).M81a(JD)
 end
 
 @inline function get_space_index(::Val{:Y10}, JD::Number)
     @_check_data(get(_solfsmy_data).Y10, JD)
-    get(_solfsmy_data).Y10(JD)
+    return get(_solfsmy_data).Y10(JD)
 end
 
 @inline function get_space_index(::Val{:Y81a}, JD::Number)
     @_check_data(get(_solfsmy_data).Y81a, JD)
-    get(_solfsmy_data).Y81a(JD)
+    return get(_solfsmy_data).Y81a(JD)
 end
 
 @inline function get_space_index(::Val{:DstΔTc}, JD::Number)
     @_check_data(get(_dtcfile_data).DstΔTc, JD)
-    get(_dtcfile_data).DstΔTc(JD)
+    return get(_dtcfile_data).DstΔTc(JD)
 end
 
 """
@@ -262,36 +256,45 @@ This set of files contain the Kp and Ap indices.
                           (**Default** = `nothing`).
 
 """
-function init_space_indices(;enabled_files = nothing,
-                             dtcfile_path = nothing,
-                             dtcfile_force_download = false,
-                             fluxtable_path = nothing,
-                             fluxtable_force_download = false,
-                             solfsmy_path = nothing,
-                             solfsmy_force_download = false,
-                             wdcfiles_dir = nothing,
-                             wdcfiles_force_download = false,
-                             wdcfiles_oldest_year = year(now())-3,
-                             wdcfiles_newest_year = nothing)
-
+function init_space_indices(;
+    enabled_files = nothing,
+    dtcfile_path = nothing,
+    dtcfile_force_download = false,
+    fluxtable_path = nothing,
+    fluxtable_force_download = false,
+    solfsmy_path = nothing,
+    solfsmy_force_download = false,
+    wdcfiles_dir = nothing,
+    wdcfiles_force_download = false,
+    wdcfiles_oldest_year = year(now()) - 3,
+    wdcfiles_newest_year = nothing
+)
     dtcfile   = (enabled_files == nothing) || (:dtcfile in enabled_files)
     fluxtable = (enabled_files == nothing) || (:fluxtable in enabled_files)
     solfsmy   = (enabled_files == nothing) || (:solfsmy in enabled_files)
     wdcfiles  = (enabled_files == nothing) || (:wdcfiles in enabled_files)
 
-    dtcfile && _init_dtcfile(local_path = dtcfile_path,
-                             force_download = dtcfile_force_download)
+    dtcfile && _init_dtcfile(
+        local_path = dtcfile_path,
+        force_download = dtcfile_force_download
+    )
 
-    fluxtable && _init_fluxtable(local_path = fluxtable_path,
-                                 force_download = fluxtable_force_download)
+    fluxtable && _init_fluxtable(
+        local_path = fluxtable_path,
+        force_download = fluxtable_force_download
+    )
 
-    solfsmy && _init_solfsmy(local_path = solfsmy_path,
-                             force_download = solfsmy_force_download)
+    solfsmy && _init_solfsmy(
+        local_path = solfsmy_path,
+        force_download = solfsmy_force_download
+    )
 
-    wdcfiles && _init_wdcfiles(local_dir = wdcfiles_dir,
-                               force_download = wdcfiles_force_download,
-                               wdcfiles_oldest_year = wdcfiles_oldest_year,
-                               wdcfiles_newest_year = wdcfiles_newest_year)
+    wdcfiles && _init_wdcfiles(
+        local_dir = wdcfiles_dir,
+        force_download = wdcfiles_force_download,
+        wdcfiles_oldest_year = wdcfiles_oldest_year,
+        wdcfiles_newest_year = wdcfiles_newest_year
+    )
 
-    nothing
+    return nothing
 end

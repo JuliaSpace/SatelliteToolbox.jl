@@ -1,12 +1,13 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   DTCFILE.txt
 #
 #   This file stores the temperature variation `ΔTc` caused by the `Dst`.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ################################################################################
 #                       Private Structures and Variables
@@ -31,11 +32,14 @@ _dtcfile = @RemoteFile(
     "http://sol.spacenvironment.net/jb2008/indices/DTCFILE.TXT",
     file="DTCFILE.TXT",
     updates=:daily
-   )
+)
 
 # Optional variable that will store the `DTCFILE.TXT` data.
-@OptionalData(_dtcfile_data, _DTCFILE_Structure,
-              "Run `init_space_indices()` with `:dtcfile` in `enabled_files` array to initialize required data.")
+@OptionalData(
+    _dtcfile_data,
+    _DTCFILE_Structure,
+    "Run `init_space_indices()` with `:dtcfile` in `enabled_files` array to initialize required data."
+)
 
 ################################################################################
 #                               Public Functions
@@ -92,13 +96,13 @@ downloaded.
 function _init_dtcfile(;force_download = false, local_path = nothing)
     # Update the remote files if no path is given.
     if local_path == nothing
-        download(_dtcfile; force = force_download)
+        download(_dtcfile; force = force_download, force_update = true)
         local_path = path(_dtcfile)
     end
 
     push!(_dtcfile_data,   _parse_dtcfile(local_path))
 
-    nothing
+    return nothing
 end
 
 """
@@ -160,5 +164,5 @@ function _parse_dtcfile(path::AbstractString)
     knots      = (JD,)
     itp_DstΔTc = interpolate(knots, DstΔTc, Gridded(Linear()))
 
-    _DTCFILE_Structure(itp_DstΔTc)
+    return _DTCFILE_Structure(itp_DstΔTc)
 end
