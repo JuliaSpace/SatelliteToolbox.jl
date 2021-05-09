@@ -684,7 +684,7 @@ function r_eci_to_eci(
     dY = eop_data.dY(JD_UTC)*arcsec2rad
 
     # Compute and return the rotation.
-    return rGCRFtoCIRS_iau2006(T, JD_TT, dX, dY)
+    return r_gcrf_to_cirs_iau2006(T, JD_TT, dX, dY)
 end
 
 @inline function r_eci_to_eci(
@@ -702,7 +702,7 @@ function r_eci_to_eci(T::T_ROT, ::Val{:GCRF}, ::Val{:CIRS}, JD_UTC::Number)
     JD_TT = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the rotation.
-    return rGCRFtoCIRS_iau2006(T, JD_TT)
+    return r_gcrf_to_cirs_iau2006(T, JD_TT)
 end
 
 @inline function r_eci_to_eci(
@@ -766,7 +766,7 @@ function r_eci_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    return rMJ2000toGCRF_iau2006(T)
+    return r_mj2000_to_gcrf_iau2006(T)
 end
 
 function r_eci_to_eci(
@@ -775,7 +775,7 @@ function r_eci_to_eci(
     ::Val{:GCRF},
     JD_UTC::Number
 )
-    return rMJ2000toGCRF_iau2006(T)
+    return r_mj2000_to_gcrf_iau2006(T)
 end
 
 function r_eci_to_eci(
@@ -785,11 +785,11 @@ function r_eci_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    return rGCRFtoMJ2000_iau2006(T)
+    return r_gcrf_to_mj2000_iau2006(T)
 end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:GCRF}, ::Val{:MJ2000}, JD_UTC::Number)
-    return rGCRFtoMJ2000_iau2006(T)
+    return r_gcrf_to_mj2000_iau2006(T)
 end
 
 #                                 GCRF <=> MOD
@@ -810,8 +810,8 @@ function r_eci_to_eci(T::T_ROT, ::Val{:MOD06}, ::Val{:GCRF}, JD_UTC::Number)
     JD_TT = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the composed rotation.
-    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
-    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = r_mj2000_to_gcrf_iau2006(T)
 
     return compose_rotation(r_MJ2000_MOD, r_GCRF_MJ2000)
 end
@@ -856,9 +856,9 @@ function r_eci_to_eci(
     δΔΨ_2000 *= arcsec2rad
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
-    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
-    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = r_mj2000_to_gcrf_iau2006(T)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD, r_GCRF_MJ2000)
 end
@@ -868,9 +868,9 @@ function r_eci_to_eci(T::T_ROT, ::Val{:ERS}, ::Val{:GCRF}, JD_UTC::Number)
     JD_TT = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, 0, 0)
-    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
-    r_GCRF_MJ2000 = rMJ2000toGCRF_iau2006(T)
+    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
+    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
+    r_GCRF_MJ2000 = r_mj2000_to_gcrf_iau2006(T)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD, r_GCRF_MJ2000)
 end
@@ -912,7 +912,7 @@ function r_eci_to_eci(T::T_ROT, ::Val{:MOD06}, ::Val{:MJ2000}, JD_UTC::Number)
     JD_TT = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    return rMODtoMJ2000_iau2006(T, JD_TT)
+    return r_mod_to_mj2000_iau2006(T, JD_TT)
 end
 
 function r_eci_to_eci(
@@ -955,8 +955,8 @@ function r_eci_to_eci(
     δΔΨ_2000 *= arcsec2rad
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
-    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
+    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD)
 end
@@ -966,8 +966,8 @@ function r_eci_to_eci(T::T_ROT, ::Val{:ERS}, ::Val{:MJ2000}, JD_UTC::Number)
     JD_TT = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = rERStoMOD_iau2006(T, JD_TT, 0, 0)
-    r_MJ2000_MOD  = rMODtoMJ2000_iau2006(T, JD_TT)
+    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
+    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD)
 end

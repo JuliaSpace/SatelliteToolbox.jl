@@ -18,8 +18,8 @@
 # File: ./src/transformations/iau2006/iau2006-cio.jl
 # ==================================================
 
-# Functions rITRFtoTIRS_iau2006 and rTIRStoITRF_iau2006
-# -----------------------------------------------------
+# Functions r_itrf_to_tirs_iau2006 and r_tirs_to_itrf_iau2006
+# -----------------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -45,12 +45,12 @@
 #
 ################################################################################
 
-@testset "Function rITRFtoTIRS_iau2006 and rTIRStoITRF_iau2006" begin
+@testset "Function r_itrf_to_tirs_iau2006 and r_tirs_to_itrf_iau2006" begin
     JD_TT = 2453101.828154745
     x_p   = -0.140682*pi/(180*3600)
     y_p   = +0.333309*pi/(180*3600)
 
-    ## rITRFtoTIRS_iau2006
+    ## r_itrf_to_tirs_iau2006
     ## ===================
 
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
@@ -59,7 +59,7 @@
     ## DCM
     ## ---
 
-    D_TIRS_ITRF = rITRFtoTIRS_iau2006(JD_TT, x_p, y_p)
+    D_TIRS_ITRF = r_itrf_to_tirs_iau2006(JD_TT, x_p, y_p)
 
     r_tirs = D_TIRS_ITRF*r_itrf
     v_tirs = D_TIRS_ITRF*v_itrf
@@ -75,10 +75,10 @@
     ## Quaternion
     ## ----------
 
-    q_TIRS_ITRF = rITRFtoTIRS_iau2006(Quaternion, JD_TT, x_p, y_p)
+    q_TIRS_ITRF = r_itrf_to_tirs_iau2006(Quaternion, JD_TT, x_p, y_p)
 
-    r_tirs = vect(q_TIRS_ITRF\r_itrf*q_TIRS_ITRF)
-    v_tirs = vect(q_TIRS_ITRF\v_itrf*q_TIRS_ITRF)
+    r_tirs = vect(q_TIRS_ITRF \ r_itrf * q_TIRS_ITRF)
+    v_tirs = vect(q_TIRS_ITRF \ v_itrf * q_TIRS_ITRF)
 
     @test r_tirs[1] ≈ -1033.47503120 atol=1e-7
     @test r_tirs[2] ≈ +7901.30558560 atol=1e-7
@@ -88,7 +88,7 @@
     @test v_tirs[2] ≈ -2.8724425110  atol=1e-9
     @test v_tirs[3] ≈ +5.5319312880  atol=1e-9
 
-    ## rTIRStoITRF_iau2006
+    ## r_tirs_to_itrf_iau2006
     ## ==============
 
     r_tirs  = [-1033.47503120; 7901.30558560; 6380.34453270]
@@ -97,7 +97,7 @@
     ## DCM
     ## ---
 
-    D_ITRF_TIRS = rTIRStoITRF_iau2006(JD_TT, x_p, y_p)
+    D_ITRF_TIRS = r_tirs_to_itrf_iau2006(JD_TT, x_p, y_p)
     r_itrf = D_ITRF_TIRS*r_tirs
     v_itrf = D_ITRF_TIRS*v_tirs
 
@@ -112,7 +112,7 @@
     ## Quaternion
     ## ----------
 
-    q_ITRF_TIRS = rTIRStoITRF_iau2006(Quaternion, JD_TT, x_p, y_p)
+    q_ITRF_TIRS = r_tirs_to_itrf_iau2006(Quaternion, JD_TT, x_p, y_p)
     r_itrf = vect(q_ITRF_TIRS\r_tirs*q_ITRF_TIRS)
     v_itrf = vect(q_ITRF_TIRS\v_tirs*q_ITRF_TIRS)
 
@@ -125,8 +125,8 @@
     @test v_itrf[3] ≈ +5.531924446  atol=1e-9
 end
 
-# Functions rTIRStoCIRS_iau2006 and rCIRStoTIRS_iau2006
-# -----------------------------------------------------
+# Functions r_tirs_to_cirs_iau2006 and r_cirs_to_tirs_iau2006
+# -----------------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -151,12 +151,12 @@ end
 #
 ################################################################################
 
-@testset "Functions rTIRStoCIRS_iau2006 and rCIRStoTIRS_iau2006" begin
+@testset "Functions r_tirs_to_cirs_iau2006 and r_cirs_to_tirs_iau2006" begin
     JD_UT1 = 2453101.827406783
     LOD    = 0.0015563
     w      = 7.292115146706979e-5*(1-LOD/86400)
 
-    # rTIRStoCIRS_iau2006
+    # r_tirs_to_cirs_iau2006
     # ===================
 
     r_tirs  = [-1033.47503120; 7901.30558560; 6380.34453270]
@@ -165,10 +165,10 @@ end
     # DCM
     # ---
 
-    D_CIRS_TIRS = rTIRStoCIRS_iau2006(JD_UT1)
+    D_CIRS_TIRS = r_tirs_to_cirs_iau2006(JD_UT1)
 
-    r_cirs = D_CIRS_TIRS*r_tirs
-    v_cirs = D_CIRS_TIRS*(v_tirs + [0;0;w] × r_tirs)
+    r_cirs = D_CIRS_TIRS * r_tirs
+    v_cirs = D_CIRS_TIRS * (v_tirs + [0, 0, w] × r_tirs)
 
     @test r_cirs[1] ≈ +5100.01840470 atol=1e-7
     @test r_cirs[2] ≈ +6122.78636480 atol=1e-7
@@ -181,10 +181,10 @@ end
     # Quaternion
     # ----------
 
-    q_CIRS_TIRS = rTIRStoCIRS_iau2006(Quaternion, JD_UT1)
+    q_CIRS_TIRS = r_tirs_to_cirs_iau2006(Quaternion, JD_UT1)
 
-    r_cirs = vect(q_CIRS_TIRS\r_tirs*q_CIRS_TIRS)
-    v_cirs = vect(q_CIRS_TIRS\(v_tirs + [0;0;w] × r_tirs)*q_CIRS_TIRS)
+    r_cirs = vect(q_CIRS_TIRS\r_tirs * q_CIRS_TIRS)
+    v_cirs = vect(q_CIRS_TIRS\(v_tirs + [0, 0, w] × r_tirs) * q_CIRS_TIRS)
 
     @test r_cirs[1] ≈ +5100.01840470 atol=1e-7
     @test r_cirs[2] ≈ +6122.78636480 atol=1e-7
@@ -194,7 +194,7 @@ end
     @test v_cirs[2] ≈ +0.7903414530  atol=1e-9
     @test v_cirs[3] ≈ +5.5319312880  atol=1e-9
 
-    # rCIRStoTIRS_iau2006
+    # r_cirs_to_tirs_iau2006
     # ===================
 
     r_cirs = [+5100.01840470; +6122.78636480; +6380.34453270]
@@ -203,10 +203,10 @@ end
     # DCM
     # ---
 
-    D_TIRS_CIRS = rCIRStoTIRS_iau2006(JD_UT1)
+    D_TIRS_CIRS = r_cirs_to_tirs_iau2006(JD_UT1)
 
-    r_tirs = D_TIRS_CIRS*r_cirs
-    v_tirs = D_TIRS_CIRS*v_cirs - [0;0;w] × r_tirs
+    r_tirs = D_TIRS_CIRS * r_cirs
+    v_tirs = D_TIRS_CIRS * v_cirs - [0, 0, w] × r_tirs
 
     @test r_tirs[1] ≈ -1033.47503120 atol=1e-7
     @test r_tirs[2] ≈ +7901.30558560 atol=1e-7
@@ -219,10 +219,10 @@ end
     # Quaternion
     # ----------
 
-    q_TIRS_CIRS = rCIRStoTIRS_iau2006(Quaternion, JD_UT1)
+    q_TIRS_CIRS = r_cirs_to_tirs_iau2006(Quaternion, JD_UT1)
 
-    r_tirs = vect(q_TIRS_CIRS\r_cirs*q_TIRS_CIRS)
-    v_tirs = vect(q_TIRS_CIRS\v_cirs*q_TIRS_CIRS) - [0;0;w] × r_tirs
+    r_tirs = vect(q_TIRS_CIRS \ r_cirs * q_TIRS_CIRS)
+    v_tirs = vect(q_TIRS_CIRS \ v_cirs * q_TIRS_CIRS) - [0, 0, w] × r_tirs
 
     @test r_tirs[1] ≈ -1033.47503120 atol=1e-7
     @test r_tirs[2] ≈ +7901.30558560 atol=1e-7
@@ -233,8 +233,8 @@ end
     @test v_tirs[3] ≈ +5.5319312880  atol=1e-9
 end
 #
-# Functions rCIRStoGCRF_iau2006 and rGCRFtoCIRS_iau2006
-# -----------------------------------------------------
+# Functions r_cirs_to_gcrf_iau2006 and r_gcrf_to_cirs_iau2006
+# -----------------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -264,12 +264,12 @@ end
 #
 ################################################################################
 
-@testset "Functions rCIRStoGCRF_iau2006 and rGCRFtoCIRS_iau2006" begin
+@testset "Functions r_cirs_to_gcrf_iau2006 and r_gcrf_to_cirs_iau2006" begin
     JD_TT = 2453101.827406783
-    dX    = -0.000205*pi/180/3600
-    dY    = -0.000136*pi/180/3600
+    dX    = -0.000205 * pi / 180 / 3600
+    dY    = -0.000136 * pi / 180 / 3600
 
-    # rCIRStoGCRF_iau2006
+    # r_cirs_to_gcrf_iau2006
     # ===================
 
     r_cirs = [+5100.01840470; +6122.78636480; +6380.34453270]
@@ -278,9 +278,9 @@ end
     # DCM
     # ---
 
-    D_GCRF_CIRS = rCIRStoGCRF_iau2006(JD_TT, dX, dY)
-    r_gcrf = D_GCRF_CIRS*r_cirs
-    v_gcrf = D_GCRF_CIRS*v_cirs
+    D_GCRF_CIRS = r_cirs_to_gcrf_iau2006(JD_TT, dX, dY)
+    r_gcrf = D_GCRF_CIRS * r_cirs
+    v_gcrf = D_GCRF_CIRS * v_cirs
 
     @test r_gcrf[1] ≈ +5102.50895290 atol=9e-7
     @test r_gcrf[2] ≈ +6123.01139910 atol=9e-7
@@ -293,10 +293,10 @@ end
     # Quaternion
     # ----------
 
-    q_GCRF_CIRS = rCIRStoGCRF_iau2006(Quaternion, JD_TT, dX, dY)
+    q_GCRF_CIRS = r_cirs_to_gcrf_iau2006(Quaternion, JD_TT, dX, dY)
 
-    r_gcrf = vect(q_GCRF_CIRS\r_cirs*q_GCRF_CIRS)
-    v_gcrf = vect(q_GCRF_CIRS\v_cirs*q_GCRF_CIRS)
+    r_gcrf = vect(q_GCRF_CIRS \ r_cirs * q_GCRF_CIRS)
+    v_gcrf = vect(q_GCRF_CIRS \ v_cirs * q_GCRF_CIRS)
 
     @test r_gcrf[1] ≈ +5102.50895290 atol=9e-7
     @test r_gcrf[2] ≈ +6123.01139910 atol=9e-7
@@ -306,7 +306,7 @@ end
     @test v_gcrf[2] ≈ +0.7905364950  atol=1e-9
     @test v_gcrf[3] ≈ +5.5337557240  atol=1e-9
 
-    # Function rGCRFtoCIRS_iau2006
+    # Function r_gcrf_to_cirs_iau2006
     # ============================
 
     r_gcrf = [5102.50895290; 6123.01139910; 6378.13693380]
@@ -315,9 +315,9 @@ end
     # DCM
     # ---
 
-    D_CIRS_GCRF = rGCRFtoCIRS_iau2006(JD_TT, dX, dY)
-    r_cirs = D_CIRS_GCRF*r_gcrf
-    v_cirs = D_CIRS_GCRF*v_gcrf
+    D_CIRS_GCRF = r_gcrf_to_cirs_iau2006(JD_TT, dX, dY)
+    r_cirs = D_CIRS_GCRF * r_gcrf
+    v_cirs = D_CIRS_GCRF * v_gcrf
 
     @test r_cirs[1] ≈ +5100.01840470 atol=9e-7
     @test r_cirs[2] ≈ +6122.78636480 atol=9e-7
@@ -330,10 +330,10 @@ end
     # Quaternion
     # ----------
 
-    q_CIRS_GCRF = rGCRFtoCIRS_iau2006(Quaternion, JD_TT, dX, dY)
+    q_CIRS_GCRF = r_gcrf_to_cirs_iau2006(Quaternion, JD_TT, dX, dY)
 
-    r_cirs = vect(q_CIRS_GCRF\r_gcrf*q_CIRS_GCRF)
-    v_cirs = vect(q_CIRS_GCRF\v_gcrf*q_CIRS_GCRF)
+    r_cirs = vect(q_CIRS_GCRF \ r_gcrf * q_CIRS_GCRF)
+    v_cirs = vect(q_CIRS_GCRF \ v_gcrf * q_CIRS_GCRF)
 
     @test r_cirs[1] ≈ +5100.01840470 atol=9e-7
     @test r_cirs[2] ≈ +6122.78636480 atol=9e-7

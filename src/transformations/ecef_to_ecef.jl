@@ -173,7 +173,7 @@ function r_ecef_to_ecef(
     y_p = eop_data.y(JD_UTC)*arcsec2rad
 
     # Return the rotation.
-    return rITRFtoTIRS_iau2006(T, JD_UTC, x_p, y_p)
+    return r_itrf_to_tirs_iau2006(T, JD_UTC, x_p, y_p)
 end
 
 @inline function r_ecef_to_ecef(
