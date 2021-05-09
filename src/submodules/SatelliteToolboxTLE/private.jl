@@ -347,34 +347,44 @@ function _show_tle(io::IO, tle::TLE, color::Bool = true)
     g = (color) ? _g : ""
     y = (color) ? _y : ""
 
+    # Auxiliary variables.
+    name            = tle.name
+    sat_num         = tle.sat_num
+    int_designator  = tle.int_designator
+    epoch_year      = tle.epoch_year
+    epoch_day       = tle.epoch_day
+    epoch           = tle.epoch
+    epoch_str       = string(julian2datetime(epoch))
+    elem_set_number = tle.elem_set_number
+    e               = tle.e
+    i               = tle.i
+    Ω               = tle.Ω
+    ω               = tle.ω
+    M               = tle.M
+    n               = tle.n
+    rev_num         = tle.rev_num
+    bstar           = tle.bstar
+    dn_o2           = tle.dn_o2
+    ddn_o6          = tle.ddn_o6
+
     # Print the TLE information.
-    print(io, "                             $(g)TLE$(d)\n")
-    print(io, "$(y)    ==========================================================$(d)\n")
-    print(io, "$(b)                            Name: $(d)"); @printf(io, "%s\n", tle.name)
-    print(io, "$(b)                Satellite number: $(d)"); @printf(io, "%d\n", tle.sat_num)
-    print(io, "$(b)        International designator: $(d)"); @printf(io, "%s\n", tle.int_designator)
-    print(io, "$(b)                    Epoch (Year): $(d)"); @printf(io, "%d\n", tle.epoch_year)
-    print(io, "$(b)                     Epoch (Day): $(d)"); @printf(io, "%12.8f\n", tle.epoch_day)
-    print(io, "$(b)              Epoch (Julian Day): $(d)"); @printf(io, "%12.5f\n", tle.epoch)
-    print(io, "$(b)              Element set number: $(d)"); @printf(io, "%d\n", tle.elem_set_number)
-    print(io, "$(b)                    Eccentricity: $(d)"); @printf(io, "%12.8f deg\n", tle.e)
-    print(io, "$(b)                     Inclination: $(d)"); @printf(io, "%12.8f deg\n", tle.i)
-    print(io, "$(b)                            RAAN: $(d)"); @printf(io, "%12.8f deg\n", tle.Ω)
-    print(io, "$(b)             Argument of perigee: $(d)"); @printf(io, "%12.8f deg\n", tle.ω)
-    print(io, "$(b)                    Mean anomaly: $(d)"); @printf(io, "%12.8f deg\n", tle.M)
-    print(io, "$(b)                 Mean motion (n): $(d)"); @printf(io, "%12.8f revs/day\n", tle.n)
-    print(io, "$(b)               Revolution number: $(d)"); @printf(io, "%d\n", tle.rev_num)
-    print(io, "\n")
-    print(io, "$(b)                              B*: $(d)"); @printf(io, "%f 1/[er]\n", tle.bstar)
-    print(io, "\n")
-    print(io, "$(b)                        1   d\n$(d)")
-    print(io, "$(b)                       ---.--- n: $(d)"); @printf(io, "%f rev/day²\n", tle.dn_o2)
-    print(io, "$(b)                        2  dt\n$(d)")
-    print(io, "\n")
-    print(io, "$(b)                        1   d²\n$(d)")
-    print(io, "$(b)                       ---.--- n: $(d)"); @printf(io, "%f rev/day³\n", tle.ddn_o6)
-    print(io, "$(b)                        6  dt²\n$(d)")
-    print(io, "$(y)    ==========================================================$(d)")
+    print(io, "TLE:\n")
+    print(io, "$(b)                     Name : $(d)"); @printf(io, "%s\n", name)
+    print(io, "$(b)         Satellite number : $(d)"); @printf(io, "%d\n", sat_num)
+    print(io, "$(b) International designator : $(d)"); @printf(io, "%s\n", int_designator)
+    print(io, "$(b)       Epoch (Year / Day) : $(d)"); @printf(io, "%d / %12.8f\n", epoch_year, epoch_day)
+    print(io, "$(b)       Epoch (Julian Day) : $(d)"); @printf(io, "%12.5f (%s)\n", epoch, epoch_str)
+    print(io, "$(b)       Element set number : $(d)"); @printf(io, "%d\n", elem_set_number)
+    print(io, "$(b)             Eccentricity : $(d)"); @printf(io, "%12.8f deg\n", e)
+    print(io, "$(b)              Inclination : $(d)"); @printf(io, "%12.8f deg\n", i)
+    print(io, "$(b)                     RAAN : $(d)"); @printf(io, "%12.8f deg\n", Ω)
+    print(io, "$(b)      Argument of perigee : $(d)"); @printf(io, "%12.8f deg\n", ω)
+    print(io, "$(b)             Mean anomaly : $(d)"); @printf(io, "%12.8f deg\n", M)
+    print(io, "$(b)          Mean motion (n) : $(d)"); @printf(io, "%12.8f revs/day\n", n)
+    print(io, "$(b)        Revolution number : $(d)"); @printf(io, "%d\n", rev_num)
+    print(io, "$(b)                       B* : $(d)"); @printf(io, "%f 1/[er]\n", bstar)
+    print(io, "$(b)                    ṅ / 2 : $(d)"); @printf(io, "%f rev/day²\n", dn_o2)
+    print(io, "$(b)                    n̈ / 6 : $(d)"); @printf(io, "%f rev/day³", ddn_o6)
 
     nothing
 end

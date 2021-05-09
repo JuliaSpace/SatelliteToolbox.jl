@@ -49,62 +49,42 @@ julia> tles = read_tle("tles")
  TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia> tles[1]
-                             TLE
-    ==========================================================
-                            Name: SCD 1
-                Satellite number: 22490
-        International designator: 93009B
-                    Epoch (Year): 18
-                     Epoch (Day): 359.76217587
-              Epoch (Julian Day): 2458478.26218
-              Element set number: 999
-                    Eccentricity:   0.00432110 deg
-                     Inclination:  24.96940000 deg
-                            RAAN: 116.17090000 deg
-             Argument of perigee:  90.39680000 deg
-                    Mean anomaly:  62.00830000 deg
-                 Mean motion (n):  14.44539396 revs/day
-               Revolution number: 36616
-
-                              B*: 0.000001 1/[er]
-
-                        1   d
-                       ---.--- n: 0.000002 rev/day²
-                        2  dt
-
-                        1   d²
-                       ---.--- n: 0.000000 rev/day³
-                        6  dt²
-    ==========================================================
+TLE:
+                     Name : SCD 1
+         Satellite number : 22490
+ International designator : 93009B
+       Epoch (Year / Day) : 18 / 359.76217587
+       Epoch (Julian Day) : 2458478.26218 (2018-12-25T18:17:31.995)
+       Element set number : 999
+             Eccentricity :   0.00432110 deg
+              Inclination :  24.96940000 deg
+                     RAAN : 116.17090000 deg
+      Argument of perigee :  90.39680000 deg
+             Mean anomaly :  62.00830000 deg
+          Mean motion (n) :  14.44539396 revs/day
+        Revolution number : 36616
+                       B* : 0.000001 1/[er]
+                    ṅ / 2 : 0.000002 rev/day²
+                    n̈ / 6 : 0.000000 rev/day³
 
 julia> tles[2]
-                             TLE
-    ==========================================================
-                            Name: SCD 2
-                Satellite number: 25504
-        International designator: 98060A
-                    Epoch (Year): 18
-                     Epoch (Day): 360.24309362
-              Epoch (Julian Day): 2458478.74309
-              Element set number: 999
-                    Eccentricity:   0.00174310 deg
-                     Inclination:  24.99670000 deg
-                            RAAN: 319.86640000 deg
-             Argument of perigee: 121.38100000 deg
-                    Mean anomaly:   9.79390000 deg
-                 Mean motion (n):  14.44057429 revs/day
-               Revolution number: 6554
-
-                              B*: 0.000011 1/[er]
-
-                        1   d
-                       ---.--- n: 0.000002 rev/day²
-                        2  dt
-
-                        1   d²
-                       ---.--- n: 0.000000 rev/day³
-                        6  dt²
-    ==========================================================
+TLE:
+                     Name : SCD 2
+         Satellite number : 25504
+ International designator : 98060A
+       Epoch (Year / Day) : 18 / 360.24309362
+       Epoch (Julian Day) : 2458478.74309 (2018-12-26T05:50:03.289)
+       Element set number : 999
+             Eccentricity :   0.00174310 deg
+              Inclination :  24.99670000 deg
+                     RAAN : 319.86640000 deg
+      Argument of perigee : 121.38100000 deg
+             Mean anomaly :   9.79390000 deg
+          Mean motion (n) :  14.44057429 revs/day
+        Revolution number : 6554
+                       B* : 0.000011 1/[er]
+                    ṅ / 2 : 0.000002 rev/day²
+                    n̈ / 6 : 0.000000 rev/day³
 ```
 
 If the TLE is stored in a string, then it can be read using the following
