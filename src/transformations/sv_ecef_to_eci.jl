@@ -38,7 +38,7 @@ function svECEFtoECI(sv::OrbitStateVector, T_ECEF::Val{:ITRF},
                      T_ECI::T_ECIs, JD_UTC::Number, eop_data::EOPData_IAU1980)
 
     # First, convert from the ITRF to PEF.
-    sv_pef = svECEFtoECEF(sv, Val(:ITRF), Val(:PEF), JD_UTC, eop_data)
+    sv_pef = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:PEF), JD_UTC, eop_data)
 
     # Now, convert from PEF to ECI.
     return svECEFtoECI(sv_pef, Val(:PEF), T_ECI, JD_UTC, eop_data)
@@ -49,7 +49,7 @@ function svECEFtoECI(sv::OrbitStateVector, T_ECEF::Val{:ITRF},
                      eop_data::EOPData_IAU2000A)
 
     # First, convert from the ITRF to TIRS.
-    sv_tirs = svECEFtoECEF(sv, Val(:ITRF), Val(:TIRS), JD_UTC, eop_data)
+    sv_tirs = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:TIRS), JD_UTC, eop_data)
 
     # Now, convert from TIRS to ECI.
     return svECEFtoECI(sv_tirs, Val(:TIRS), T_ECI, JD_UTC, eop_data)

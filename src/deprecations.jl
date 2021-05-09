@@ -22,3 +22,5 @@
 @deprecate rECEFtoECI(args...) r_ecef_to_eci(args...)
 @deprecate rECItoECEF(args...) r_eci_to_ecef(args...)
 @deprecate rECItoECI(args...) r_eci_to_eci(args...)
+
+@deprecate svECEFtoECEF(args...) sv_ecef_to_ecef(args...)
