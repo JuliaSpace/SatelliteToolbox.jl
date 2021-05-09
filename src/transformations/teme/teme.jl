@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions related with True Equator Mean Equinox (TEME) reference frame.
 #
@@ -21,18 +22,18 @@
 # This seems to be the case when comparing the values shown in Table 3-6 [1, p.
 # 232].
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export rTEMEtoTOD,  rTODtoTEME
-export rTEMEtoMOD,  rMODtoTEME
-export rTEMEtoGCRF, rGCRFtoTEME
-export rTEMEtoPEF,  rPEFtoTEME
+export r_teme_to_tod,  r_tod_to_teme
+export r_teme_to_mod,  r_mod_to_teme
+export r_teme_to_gcrf, r_gcrf_to_teme
+export r_teme_to_pef,  r_pef_to_teme
 
 #                                 TEME <=> TOD
 # ==============================================================================
 
 """
-    rTEMEtoTOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_tod([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the True of Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -52,14 +53,18 @@ The rotation that aligns the TEME frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rTEMEtoTOD(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTEMEtoTOD(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_tod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_tod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-function rTEMEtoTOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
-                    δΔψ_1980::Number = 0)
-
+function r_teme_to_tod(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -74,23 +79,27 @@ function rTEMEtoTOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
     # The parameters here were updated as stated in the errata [2].
     T_TT = (JD_TT - JD_J2000)/36525
     r    = 360
-    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
-                          0.0020708*T_TT^2 +
-                          2.2e-6*T_TT^3
-    Ω_m  = mod(Ω_m, 360)*pi/180
+    Ω_m  = @evalpoly(
+        T_TT,
+        125.04452222,
+        -5r - 134.1362608,
+        0.0020708,
+        2.2e-6
+    )
+    Ω_m = mod(Ω_m, 360) * π / 180
 
     # Compute the equation of Equinoxes.
     #
     # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
     Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
-        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
+        (0.002640sin(1Ω_m) + 0.000063sin(2Ω_m)) * π / 648000
 
     # Compute the rotation.
     return angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
 end
 
 """
-    rTODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_tod_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -110,17 +119,24 @@ The rotation that aligns the TOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rTODtoTEME(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoTEME(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_tod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_tod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-rTODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    inv_rotation(rTEMEtoTOD(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+function r_tod_to_teme(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_teme_to_tod(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+end
 
 #                                 TEME <=> MOD
 # ==============================================================================
 
 """
-    rTEMEtoMOD([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_mod([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Mean of Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -140,19 +156,23 @@ The rotation that aligns the TEME frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rTEMEtoMOD(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTEMEtoMOD(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_mod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_mod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-function rTEMEtoMOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
-                    δΔψ_1980::Number = 0)
-
-    # Notice that, in this case, we will not use `rTEMEtoTOD`, and `rTODtoMOD`
+function r_teme_to_mod(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    # Notice that, in this case, we will not use `r_teme_to_tod`, and `rTODtoMOD`
     # because this would call the function `nutation` twice, leading to a huge
     # performance drop. Hence, the code of those two functions is almost
     # entirely rewritten here.
 
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -165,18 +185,22 @@ function rTEMEtoMOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
     # [0,2π]°.
     #
     # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000)/36525
+    T_TT = (JD_TT - JD_J2000) / 36525
     r    = 360
-    Ω_m  = 125.04452222 - (5r + 134.1362608)*T_TT +
-                          0.0020708*T_TT^2 +
-                          2.2e-6*T_TT^3
-    Ω_m  = mod(Ω_m, 360)*pi/180
+    Ω_m  = @evalpoly(
+        T_TT,
+        125.04452222,
+        -5r - 134.1362608,
+        0.0020708,
+        2.2e-6
+    )
+    Ω_m = mod(Ω_m, 360) * π / 180
 
     # Compute the equation of Equinoxes.
     #
     # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
     Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
-        ( 0.002640*sin(1Ω_m) + 0.000063*sin(2Ω_m) )*pi/648000
+        (0.002640sin(1Ω_m) + 0.000063sin(2Ω_m)) * π / 648000
 
     # Compute the rotation TEME => TOD.
     r_TOD_TEME = angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
@@ -189,7 +213,7 @@ function rTEMEtoMOD(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
 end
 
 """
-    rMODtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_mod_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -209,17 +233,24 @@ The rotation that aligns the MOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rMODtoTEME(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rMODtoTEME(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_mod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_mod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-rMODtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    inv_rotation(rTEMEtoMOD(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+function r_mod_to_teme(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_teme_to_mod(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+end
 
 #                                TEME <=> GCRF
 # ==============================================================================
 
 """
-    rTEMEtoGCRF([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_gcrf([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_TT`
@@ -245,14 +276,18 @@ nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
 frame is what is usually called J2000 reference frame.
 
 """
-rTEMEtoGCRF(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTEMEtoGCRF(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_gcrf(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_gcrf(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-function rTEMEtoGCRF(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
-                     δΔψ_1980::Number = 0)
-
+function r_teme_to_gcrf(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
     # Compute the rotation TEME => MOD.
-    r_MOD_TEME  = rTEMEtoMOD(T, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_TEME  = r_teme_to_mod(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compute the rotation MOD => GCRF.
     r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
@@ -262,7 +297,7 @@ function rTEMEtoGCRF(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
 end
 
 """
-    rGCRFtoTEME([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_gcrf_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
 Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
@@ -288,17 +323,24 @@ nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
 frame is what is usually called J2000 reference frame.
 
 """
-rGCRFtoTEME(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rGCRFtoTEME(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_gcrf_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_gcrf_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-rGCRFtoTEME(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-   inv_rotation(rTEMEtoGCRF(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+function r_gcrf_to_teme(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_teme_to_gcrf(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+end
 
 #                                 TEME <=> PEF
 # ==============================================================================
 
 """
-    rTEMEtoPEF([T,] JD_TT::Number)
+    r_teme_to_pef([T,] JD_TT::Number)
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_TT` [Terrestrial Time].
@@ -315,9 +357,9 @@ The rotation that aligns the TEME frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rTEMEtoPEF(JD_UT1::Number) = rTEMEtoPEF(DCM, JD_UT1)
+r_teme_to_pef(JD_UT1::Number) = r_teme_to_pef(DCM, JD_UT1)
 
-function rTEMEtoPEF(T::Type, JD_UT1::Number)
+function r_teme_to_pef(T::Type, JD_UT1::Number)
     # Compute the Greenwich Mean Sidereal Time.
     θ_gmst = jd_to_gmst(JD_UT1)
 
@@ -326,7 +368,7 @@ function rTEMEtoPEF(T::Type, JD_UT1::Number)
 end
 
 """
-    rPEFtoTEME([T,] JD_TT::Number)
+    r_pef_to_teme([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 True Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial
@@ -344,5 +386,5 @@ The rotation that aligns the PEF frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rPEFtoTEME(JD_UT1::Number)          = rPEFtoTEME(DCM, JD_UT1)
-rPEFtoTEME(T::Type, JD_UT1::Number) = inv_rotation(rTEMEtoPEF(T, JD_UT1))
+r_pef_to_teme(JD_UT1::Number) = r_pef_to_teme(DCM, JD_UT1)
+r_pef_to_teme(T::Type, JD_UT1::Number) = inv_rotation(r_teme_to_pef(T, JD_UT1))

@@ -435,7 +435,7 @@ function r_eci_to_eci(
 
     # Return the rotation.
     r_MOD_GCRF = r_gcrf_to_mod_fk5(T, JD_TT)
-    r_TEME_MOD = rMODtoTEME(T, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_TEME_MOD = r_mod_to_teme(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
     return compose_rotation(r_MOD_GCRF, r_TEME_MOD)
@@ -610,7 +610,7 @@ function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:TEME}, JD_UTC::Number)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Return the rotation.
-    return rGCRFtoTEME(T, JD_TT, 0, 0)
+    return r_gcrf_to_teme(T, JD_TT, 0, 0)
 end
 
 @inline function r_eci_to_eci(

@@ -59,6 +59,15 @@
 @deprecate rTIRStoMOD_iau2006(args...) r_tirs_to_mod_iau2006(args...)
 @deprecate rMODtoTIRS_iau2006(args...) r_mod_to_tirs_iau2006(args...)
 
+@deprecate rTEMEtoTOD r_teme_to_tod
+@deprecate rTODtoTEME r_tod_to_teme
+@deprecate rTEMEtoMOD r_teme_to_mod
+@deprecate rMODtoTEME r_mod_to_teme
+@deprecate rTEMEtoGCRF r_teme_to_gcrf
+@deprecate rGCRFtoTEME r_gcrf_to_teme
+@deprecate rTEMEtoPEF r_teme_to_pef
+@deprecate rPEFtoTEME r_pef_to_teme
+
 @deprecate JD_UT1toUTC(args...) jd_ut1_to_utc(args...)
 @deprecate JD_UTCtoUT1(args...) jd_utc_to_ut1(args...)
 @deprecate JD_UTCtoTT(args...) jd_utc_to_tt(args...)

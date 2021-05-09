@@ -369,7 +369,7 @@ function r_ecef_to_eci(
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
-    r_TEME_PEF = rPEFtoTEME(T, JD_UT1)
+    r_TEME_PEF = r_pef_to_teme(T, JD_UT1)
 
     return compose_rotation(r_PEF_ITRF, r_TEME_PEF)
 end
@@ -526,7 +526,7 @@ function r_ecef_to_eci(
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
 
     # Compute the rotation.
-    return rPEFtoTEME(T, JD_UT1)
+    return r_pef_to_teme(T, JD_UT1)
 end
 
 function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:TEME}, JD_UTC::Number)
@@ -534,7 +534,7 @@ function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:TEME}, JD_UTC::Number)
     JD_UT1 = JD_UTC
 
     # Compute the rotation.
-    return rPEFtoTEME(T, JD_UT1)
+    return r_pef_to_teme(T, JD_UT1)
 end
 
 ################################################################################
