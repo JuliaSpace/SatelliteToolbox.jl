@@ -19,8 +19,8 @@
 export rECItoECI
 
 """
-    rECEFtoECI([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
-    rECEFtoECI([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
+    r_ecef_to_eci([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
+    r_ecef_to_eci([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 another ECI reference frame. If the origin and destination frame contain only

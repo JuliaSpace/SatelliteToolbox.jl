@@ -118,8 +118,8 @@ One ECI frame can be converted to another ECI frame by one of the following
 functions:
 
 ```julia
-function rECEFtoECI([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
-function rECEFtoECI([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
+function r_ecef_to_eci([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
+function r_ecef_to_eci([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
 ```
 
 where it will be computed compute the rotation from the ECI reference frame
@@ -214,7 +214,7 @@ Quaternion{Float64}:
 One ECEF frame can be convert to one ECI frame using the following function:
 
 ```julia
-function rECEFtoECI([T,] ECEF, ECI, JD_UTC::Number [, eop_data])
+function r_ecef_to_eci([T,] ECEF, ECI, JD_UTC::Number [, eop_data])
 ```
 
 where it will be compute the rotation from the ECEF frame `ECEF` to the ECI
@@ -257,47 +257,47 @@ to the GCRF will not be available, reducing the precision.
     Otherwise, the corrected frame will be used.
 
 ```jldoctest ECEF_ECI
-julia> rECEFtoECI(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(DCM, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
-julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33492e-5
  -0.000797313   0.00106478   0.999999
 
-julia> rECEFtoECI(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_ecef_to_eci(ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00132979
  -0.78518      -0.619267     3.33502e-5
  -0.000797312   0.00106478   0.999999
 
-julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_ecef_to_eci(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45854e-5
  -0.000796885   0.00106622   0.999999
 
-julia> rECEFtoECI(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(PEF(), J2000(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619267      0.78518     -0.00133066
  -0.78518      -0.619267     3.45854e-5
  -0.000796879   0.00106623   0.999999
 
-julia> rECEFtoECI(TIRS(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_ecef_to_eci(TIRS(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3): 
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45884e-5
  -0.000796885   0.00106623   0.999999
 
-julia> rECEFtoECI(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 - 0.0005909969666939257.i + 0.00030510511316206974.j + 0.8997962182293519.k
 
-julia> rECEFtoECI(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.4363098936309669 - 0.000590996988144556.i + 0.0003051056555230158.j + 0.8997962182365703.k
 ```
@@ -310,13 +310,13 @@ One ECI frame can be converted to one ECEF frame using the following function:
 function rECItoECEF([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
 ```
 
-which has the same characteristics of the function `rECEFtoECI` described in
+which has the same characteristics of the function `r_ecef_to_eci` described in
 Section [ECEF to ECI](@ref), but with the inputs `ECI`  and `ECEF` swapped.
 
 !!! note
 
-    This function actually calls `rECEFtoECI` first and then uses
-    `inv_rotation`. Hence, it has a slightly overhead on top of `rECEFtoECI`,
+    This function actually calls `r_ecef_to_eci` first and then uses
+    `inv_rotation`. Hence, it has a slightly overhead on top of `r_ecef_to_eci`,
     which should be negligible for both rotation representations that are
     supported.
 

@@ -195,7 +195,7 @@ Quaternion{Float64}:
                    T_ECEF::T_ECEFs,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU1980) =
-    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 @inline rECItoECEF(T_ECI::T_ECIs_IAU_2006,
                    T_ECEF::T_ECEFs_IAU_2006,
@@ -208,7 +208,7 @@ Quaternion{Float64}:
                    T_ECEF::T_ECEFs_IAU_2006,
                    JD_UTC::Number,
                    eop_data::EOPData_IAU2000A) =
-    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
 
 # Specializations for those cases that EOP Data is not needed.
 @inline rECItoECEF(T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
@@ -218,11 +218,11 @@ Quaternion{Float64}:
 @inline rECItoECEF(T::T_ROT,
                    T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
                    T_ECEF::Val{:PEF}, JD_UTC::Number) =
-    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
+    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
 
 @inline rECItoECEF(T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS}, JD_UTC::Number) =
     rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
 
 @inline rECItoECEF(T::T_ROT, T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS},
                    JD_UTC::Number) =
-    inv_rotation(rECEFtoECI(T, T_ECEF, T_ECI, JD_UTC))
+    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
