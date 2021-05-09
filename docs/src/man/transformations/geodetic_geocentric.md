@@ -86,12 +86,11 @@ in which a tuple with two values will be returned:
 
 ```jldoctest
 julia> geocentric_to_geodetic(deg2rad(-22), R0)
-(2.759935275870326, -1.2753294586178299e7)
+(-0.3863099329112617, 3013.9291869809385)
 
-julia> geodetic_to_geocentric(0,0)
-(0.0, 6.378137e6)
+julia> geocentric_to_geodetic(0, R0)
+(0.0, 0.0)
 ```
-
 
 # Geodetic to Geocentric
 
