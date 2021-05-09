@@ -58,3 +58,9 @@
 @deprecate rGCRFtoMJ2000_iau2006(args...) r_gcrf_to_mj2000_iau2006(args...)
 @deprecate rTIRStoMOD_iau2006(args...) r_tirs_to_mod_iau2006(args...)
 @deprecate rMODtoTIRS_iau2006(args...) r_mod_to_tirs_iau2006(args...)
+
+@deprecate JD_UT1toUTC(args...) jd_ut1_to_utc(args...)
+@deprecate JD_UTCtoUT1(args...) jd_utc_to_ut1(args...)
+@deprecate JD_UTCtoTT(args...) jd_utc_to_tt(args...)
+@deprecate JD_TTtoUTC(args...) jd_tt_to_utc(args...)
+@deprecate get_ΔAT(args...) get_Δat(args...)

@@ -312,8 +312,8 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in UT1 and TT.
-    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     #
@@ -357,7 +357,7 @@ function r_eci_to_eci(
     eop_data::EOPData_IAU1980
 )
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Return the rotation.
     return r_gcrf_to_mod_fk5(T, JD_TT)
@@ -386,7 +386,7 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     #
@@ -425,7 +425,7 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     #
@@ -464,8 +464,8 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in UT1 and TT.
-    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     #
@@ -489,7 +489,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:MOD}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the rotation.
     r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
@@ -529,8 +529,8 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in UT1 and TT.
-    JD_UT1 = JD_UTCtoUT1(JD_UTC, eop_data)
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     #
@@ -554,7 +554,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:TOD}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the composed rotation.
     r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
@@ -607,7 +607,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:TEME}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT  = JD_UTCtoTT(JD_UTC)
+    JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Return the rotation.
     return rGCRFtoTEME(T, JD_TT, 0, 0)
@@ -677,7 +677,7 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
     dX = eop_data.dX(JD_UTC)*arcsec2rad
@@ -699,7 +699,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:GCRF}, ::Val{:CIRS}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the rotation.
     return r_gcrf_to_cirs_iau2006(T, JD_TT)
@@ -807,7 +807,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:MOD06}, ::Val{:GCRF}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the composed rotation.
     r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
@@ -848,7 +848,7 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
@@ -865,7 +865,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:ERS}, ::Val{:GCRF}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the composed rotation.
     r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
@@ -909,7 +909,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:MOD06}, ::Val{:MJ2000}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute the rotation.
     return r_mod_to_mj2000_iau2006(T, JD_TT)
@@ -947,7 +947,7 @@ function r_eci_to_eci(
     arcsec2rad = π/648000
 
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = dEps_dPsi(eop_data, JD_UTC)
@@ -963,7 +963,7 @@ end
 
 function r_eci_to_eci(T::T_ROT, ::Val{:ERS}, ::Val{:MJ2000}, JD_UTC::Number)
     # Get the time in TT.
-    JD_TT = JD_UTCtoTT(JD_UTC)
+    JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the composed rotation.
     r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
