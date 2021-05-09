@@ -255,7 +255,7 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    return rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+    return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 end
 
 #                                ITRF => J2000
@@ -281,7 +281,7 @@ function r_ecef_to_eci(
     y_p      = eop_data.y(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    return rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
+    return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
 end
 
 #                                 ITRF => MOD
@@ -309,8 +309,8 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
-    r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
+    r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     return compose_rotation(r_PEF_ITRF, r_MOD_PEF)
 end
@@ -339,8 +339,8 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
-    r_TOD_PEF  = rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
+    r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
+    r_TOD_PEF  = r_pef_to_tod_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 
     return compose_rotation(r_PEF_ITRF, r_TOD_PEF)
 end
@@ -368,7 +368,7 @@ function r_ecef_to_eci(
     y_p      = eop_data.y(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
+    r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
     r_TEME_PEF = rPEFtoTEME(T, JD_UT1)
 
     return compose_rotation(r_PEF_ITRF, r_TEME_PEF)
@@ -399,8 +399,8 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
+    r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
 
     return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
@@ -420,8 +420,8 @@ function r_ecef_to_eci(
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
-    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
+    r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, 0, 0)
+    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
 
     return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
@@ -432,8 +432,8 @@ function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:J2000}, JD_UTC::Number)
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    r_MOD_PEF  = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
-    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
+    r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, 0, 0)
+    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
 
     return compose_rotation(r_MOD_PEF, r_GCRF_MOD)
 end
@@ -463,7 +463,7 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    return rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    return r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:MOD}, JD_UTC::Number)
@@ -472,7 +472,7 @@ function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:MOD}, JD_UTC::Number)
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    return rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
+    return r_pef_to_mod_fk5(T, JD_UT1, JD_TT, 0, 0)
 end
 
 #                                 PEF => TOD
@@ -499,7 +499,7 @@ function r_ecef_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Compute the rotation.
-    return rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
+    return r_pef_to_tod_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 end
 
 function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:TOD}, JD_UTC::Number)
@@ -509,7 +509,7 @@ function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:TOD}, JD_UTC::Number)
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute the rotation.
-    return rPEFtoTOD_fk5(T, JD_UT1, JD_TT, 0)
+    return r_pef_to_tod_fk5(T, JD_UT1, JD_TT, 0)
 end
 
 #                                 PEF => TEME

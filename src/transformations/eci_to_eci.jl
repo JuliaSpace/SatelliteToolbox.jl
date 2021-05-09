@@ -327,9 +327,9 @@ function r_eci_to_eci(
     #
     # TODO: Can I simplify the rotation from TOD with corrections to TOD without
     # corrections?
-    r_MOD_GCRF  = rGCRFtoMOD_fk5(T, JD_TT)
-    r_PEF_MOD   = rMODtoPEF_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-    r_MOD_PEF   = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, 0, 0)
+    r_MOD_GCRF  = r_gcrf_to_mod_fk5(T, JD_TT)
+    r_PEF_MOD   = r_mod_to_pef_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_PEF   = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, 0, 0)
     r_J2000_MOD = inv_rotation(r_MOD_GCRF)
 
     # Compose the full rotation.
@@ -360,7 +360,7 @@ function r_eci_to_eci(
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Return the rotation.
-    return rGCRFtoMOD_fk5(T, JD_TT)
+    return r_gcrf_to_mod_fk5(T, JD_TT)
 end
 
 @inline function r_eci_to_eci(
@@ -395,8 +395,8 @@ function r_eci_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Return the rotation.
-    r_MOD_GCRF = rGCRFtoMOD_fk5(T, JD_TT)
-    r_TOD_MOD  = rMODtoTOD_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_GCRF = r_gcrf_to_mod_fk5(T, JD_TT)
+    r_TOD_MOD  = r_mod_to_tod_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
     return compose_rotation(r_MOD_GCRF, r_TOD_MOD)
@@ -434,7 +434,7 @@ function r_eci_to_eci(
     δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
 
     # Return the rotation.
-    r_MOD_GCRF = rGCRFtoMOD_fk5(T, JD_TT)
+    r_MOD_GCRF = r_gcrf_to_mod_fk5(T, JD_TT)
     r_TEME_MOD = rMODtoTEME(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
@@ -475,13 +475,13 @@ function r_eci_to_eci(
 
     # In this case, we need to convert J2000 back to PEF and then convert to
     # MOD. This is necessary because we need to apply EOP corrections to convert
-    # to MOD and just a `rGCRFtoMOD_fk5` would yield a frame according to the
+    # to MOD and just a `r_gcrf_to_mod_fk5` would yield a frame according to the
     # original IAU-76/FK5 theory.
     #
     # TODO: Can I simplify this rotation?
-    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
-    r_PEF_MOD   = rMODtoPEF_fk5(T, JD_UT1, JD_TT, 0, 0)
-    r_MOD_PEF   = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
+    r_PEF_MOD   = r_mod_to_pef_fk5(T, JD_UT1, JD_TT, 0, 0)
+    r_MOD_PEF   = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
     return compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF)
@@ -492,7 +492,7 @@ function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:MOD}, JD_UTC::Number)
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the rotation.
-    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
+    r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
 
     return r_MOD_J2000
 end
@@ -543,10 +543,10 @@ function r_eci_to_eci(
     # to TOD.
     #
     # TODO: Can I simplify this rotation?
-    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
-    r_PEF_MOD   = rMODtoPEF_fk5(T, JD_UT1, JD_TT, 0, 0)
-    r_MOD_PEF   = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
-    r_TOD_MOD   = rMODtoTOD_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
+    r_PEF_MOD   = r_mod_to_pef_fk5(T, JD_UT1, JD_TT, 0, 0)
+    r_MOD_PEF   = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_TOD_MOD   = r_mod_to_tod_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compose the full rotation.
     return compose_rotation(r_MOD_J2000, r_PEF_MOD, r_MOD_PEF, r_TOD_MOD)
@@ -557,8 +557,8 @@ function r_eci_to_eci(T::T_ROT, ::Val{:J2000}, ::Val{:TOD}, JD_UTC::Number)
     JD_TT  = JD_UTCtoTT(JD_UTC)
 
     # Compute and return the composed rotation.
-    r_MOD_J2000 = rGCRFtoMOD_fk5(T, JD_TT)
-    r_TOD_MOD   = rMODtoTOD_fk5(T, JD_TT, 0, 0)
+    r_MOD_J2000 = r_gcrf_to_mod_fk5(T, JD_TT)
+    r_TOD_MOD   = r_mod_to_tod_fk5(T, JD_TT, 0, 0)
 
     return compose_rotation(r_MOD_J2000, r_TOD_MOD)
 end

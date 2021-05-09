@@ -139,7 +139,7 @@ function r_ecef_to_ecef(
     y_p = eop_data.y(JD_UTC)*π/648000
 
     # Return the rotation.
-    return rITRFtoPEF_fk5(T, x_p, y_p)
+    return r_itrf_to_pef_fk5(T, x_p, y_p)
 end
 
 @inline function r_ecef_to_ecef(

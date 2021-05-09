@@ -1,17 +1,19 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Tests related to IAU-76/FK5 transformations.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 include("./nutation.jl")
 include("./precession.jl")
@@ -19,8 +21,8 @@ include("./precession.jl")
 # File: ./src/transformations/fk5/fk5.jl
 # ======================================
 
-# Functions rITRFtoPEF_fk5 and rPEFtoITRF_fk5
-# -------------------------------------------
+# Functions r_itrf_to_pef_fk5 and r_pef_to_itrf_fk5
+# -------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -45,12 +47,12 @@ include("./precession.jl")
 #
 ################################################################################
 
-@testset "Functions rITRFtoPEF_fk5 and rPEFtoITRF_fk5" begin
+@testset "Functions r_itrf_to_pef_fk5 and r_pef_to_itrf_fk5" begin
     x_p = -0.140682*pi/(180*3600)
     y_p = +0.333309*pi/(180*3600)
 
-    ## rITRFtoPEF_fk5
-    ## ==============
+    ## r_itrf_to_pef_fk5
+    ## =================
 
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
     v_itrf = [-3.225636520; -2.872451450; +5.531924446]
@@ -58,7 +60,7 @@ include("./precession.jl")
     ## DCM
     ## ---
 
-    D_PEF_ITRF = rITRFtoPEF_fk5(x_p, y_p)
+    D_PEF_ITRF = r_itrf_to_pef_fk5(x_p, y_p)
 
     r_pef = D_PEF_ITRF*r_itrf
     v_pef = D_PEF_ITRF*v_itrf
@@ -74,10 +76,10 @@ include("./precession.jl")
     ## Quaternion
     ## ----------
 
-    q_PEF_ITRF = rITRFtoPEF_fk5(Quaternion, x_p, y_p)
+    q_PEF_ITRF = r_itrf_to_pef_fk5(Quaternion, x_p, y_p)
 
-    r_pef = vect(conj(q_PEF_ITRF)*r_itrf*q_PEF_ITRF)
-    v_pef = vect(conj(q_PEF_ITRF)*v_itrf*q_PEF_ITRF)
+    r_pef = vect(conj(q_PEF_ITRF) * r_itrf * q_PEF_ITRF)
+    v_pef = vect(conj(q_PEF_ITRF) * v_itrf * q_PEF_ITRF)
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -87,8 +89,8 @@ include("./precession.jl")
     @test v_pef[2] ≈ -2.8724425110  atol=1e-9
     @test v_pef[3] ≈ +5.5319312880  atol=1e-9
 
-    ## rPEFtoITRF_fk5
-    ## ==============
+    ## r_pef_to_itrf_fk5
+    ## =================
 
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
     v_pef  = [-3.2256327470; -2.8724425110; +5.5319312880]
@@ -96,9 +98,9 @@ include("./precession.jl")
     ## DCM
     ## ---
 
-    D_ITRF_PEF = rPEFtoITRF_fk5(x_p, y_p)
-    r_itrf = D_ITRF_PEF*r_pef
-    v_itrf = D_ITRF_PEF*v_pef
+    D_ITRF_PEF = r_pef_to_itrf_fk5(x_p, y_p)
+    r_itrf = D_ITRF_PEF * r_pef
+    v_itrf = D_ITRF_PEF * v_pef
 
     @test r_itrf[1] ≈ -1033.4793830 atol=1e-7
     @test r_itrf[2] ≈ +7901.2952754 atol=1e-7
@@ -111,9 +113,9 @@ include("./precession.jl")
     ## Quaternion
     ## ----------
 
-    q_ITRF_PEF = rPEFtoITRF_fk5(Quaternion, x_p, y_p)
-    r_itrf = vect(conj(q_ITRF_PEF)*r_pef*q_ITRF_PEF)
-    v_itrf = vect(conj(q_ITRF_PEF)*v_pef*q_ITRF_PEF)
+    q_ITRF_PEF = r_pef_to_itrf_fk5(Quaternion, x_p, y_p)
+    r_itrf = vect(conj(q_ITRF_PEF) * r_pef * q_ITRF_PEF)
+    v_itrf = vect(conj(q_ITRF_PEF) * v_pef * q_ITRF_PEF)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=1e-7
     @test r_itrf[2] ≈ +7901.2952754 atol=1e-7
@@ -124,8 +126,8 @@ include("./precession.jl")
     @test v_itrf[3] ≈ +5.531924446  atol=1e-9
 end
 
-# Functions rPEFtoTOD_fk5 and rTODtoPEF_fk5
-# -----------------------------------------
+# Functions r_pef_to_tod_fk5 and r_tod_to_pef_fk5
+# -----------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -164,13 +166,13 @@ end
 #
 ################################################################################
 
-@testset "Functions rPEFtoTOD_fk5 and rTODtoPEF_fk5" begin
+@testset "Functions r_pef_to_tod_fk5 and r_tod_to_pef_fk5" begin
     JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
     LOD    = 0.0015563
     w      = 7.292115146706979e-5*(1-LOD/86400)
 
-    ## rPEFtoTOD_fk5
-    ## =============
+    ## r_pef_to_tod_fk5
+    ## ================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -182,10 +184,10 @@ end
     ## DCM
     ## ---
 
-    D_TOD_PEF = rPEFtoTOD_fk5(JD_UT1, 2453101.828154745, -0.052195*pi/(180*3600))
+    D_TOD_PEF = r_pef_to_tod_fk5(JD_UT1, 2453101.828154745, -0.052195*pi/(180*3600))
 
     r_tod = D_TOD_PEF*r_pef
-    v_tod = D_TOD_PEF*(v_pef + [0;0;w] × r_pef)
+    v_tod = D_TOD_PEF*(v_pef + [0, 0, w] × r_pef)
 
     @test r_tod[1] ≈ +5094.51620300 atol=1e-7
     @test r_tod[2] ≈ +6127.36527840 atol=1e-7
@@ -198,13 +200,15 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_PEF = rPEFtoTOD_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745,
-                              -0.052195*pi/(180*3600))
+    q_TOD_PEF = r_pef_to_tod_fk5(
+        Quaternion,
+        JD_UT1,
+        2453101.828154745,
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_tod = vect(conj(q_TOD_PEF)*r_pef*q_TOD_PEF)
-    v_tod = vect(conj(q_TOD_PEF)*(v_pef + [0;0;w] × r_pef)*q_TOD_PEF)
+    r_tod = vect(conj(q_TOD_PEF) * r_pef * q_TOD_PEF)
+    v_tod = vect(conj(q_TOD_PEF) * (v_pef + [0, 0, w] × r_pef) * q_TOD_PEF)
 
     @test r_tod[1] ≈ +5094.51620300 atol=1e-7
     @test r_tod[2] ≈ +6127.36527840 atol=1e-7
@@ -221,10 +225,10 @@ end
     ## DCM
     ## ---
 
-    D_TOD_PEF = rPEFtoTOD_fk5(JD_UT1, 2453101.828154745)
+    D_TOD_PEF = r_pef_to_tod_fk5(JD_UT1, 2453101.828154745)
 
-    r_tod = D_TOD_PEF*r_pef
-    v_tod = D_TOD_PEF*(v_pef + [0;0;w] × r_pef)
+    r_tod = D_TOD_PEF * r_pef
+    v_tod = D_TOD_PEF * (v_pef + [0;0;w] × r_pef)
 
     @test r_tod[1] ≈ +5094.51478040 atol=1e-7
     @test r_tod[2] ≈ +6127.36646120 atol=1e-7
@@ -237,12 +241,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_PEF = rPEFtoTOD_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745)
+    q_TOD_PEF = r_pef_to_tod_fk5(Quaternion, JD_UT1, 2453101.828154745)
 
-    r_tod = vect(conj(q_TOD_PEF)*r_pef*q_TOD_PEF)
-    v_tod = vect(conj(q_TOD_PEF)*(v_pef + [0;0;w] × r_pef)*q_TOD_PEF)
+    r_tod = vect(conj(q_TOD_PEF) * r_pef * q_TOD_PEF)
+    v_tod = vect(conj(q_TOD_PEF) * (v_pef + [0, 0, w] × r_pef) * q_TOD_PEF)
 
     @test r_tod[1] ≈ +5094.51478040 atol=1e-7
     @test r_tod[2] ≈ +6127.36646120 atol=1e-7
@@ -252,8 +254,8 @@ end
     @test v_tod[2] ≈ +0.7860772220  atol=1e-9
     @test v_tod[3] ≈ +5.5319312880  atol=1e-9
 
-    ## rTODtoPEF_fk5
-    ## =============
+    ## r_tod_to_pef_fk5
+    ## ================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -265,10 +267,14 @@ end
     ## DCM
     ## ---
 
-    D_PEF_TOD = rTODtoPEF_fk5(JD_UT1, 2453101.828154745, -0.052195*pi/(180*3600))
+    D_PEF_TOD = r_tod_to_pef_fk5(
+        JD_UT1,
+        2453101.828154745,
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_pef = D_PEF_TOD*r_tod
-    v_pef = D_PEF_TOD*v_tod - [0;0;w] × r_pef
+    r_pef = D_PEF_TOD * r_tod
+    v_pef = D_PEF_TOD * v_tod - [0, 0, w] × r_pef
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -281,13 +287,14 @@ end
     ## Quaternion
     ## ----------
 
-    q_PEF_TOD = rTODtoPEF_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745,
-                              -0.052195*pi/(180*3600))
+    q_PEF_TOD = r_tod_to_pef_fk5( Quaternion,
+        JD_UT1,
+        2453101.828154745,
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
-    v_pef = vect(conj(q_PEF_TOD)*v_tod*q_PEF_TOD) - [0;0;w] × r_pef
+    r_pef = vect(conj(q_PEF_TOD) * r_tod * q_PEF_TOD)
+    v_pef = vect(conj(q_PEF_TOD) * v_tod * q_PEF_TOD) - [0, 0, w] × r_pef
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -307,10 +314,10 @@ end
     ## DCM
     ## ---
 
-    D_PEF_TOD = rTODtoPEF_fk5(JD_UT1, 2453101.828154745)
+    D_PEF_TOD = r_tod_to_pef_fk5(JD_UT1, 2453101.828154745)
 
-    r_pef = D_PEF_TOD*r_tod
-    v_pef = D_PEF_TOD*v_tod - [0;0;w] × r_pef
+    r_pef = D_PEF_TOD * r_tod
+    v_pef = D_PEF_TOD * v_tod - [0, 0, w] × r_pef
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -323,12 +330,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_PEF_TOD = rTODtoPEF_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745)
+    q_PEF_TOD = r_tod_to_pef_fk5(Quaternion, JD_UT1, 2453101.828154745)
 
-    r_pef = vect(conj(q_PEF_TOD)*r_tod*q_PEF_TOD)
-    v_pef = vect(conj(q_PEF_TOD)*v_tod*q_PEF_TOD) - [0;0;w] × r_pef
+    r_pef = vect(conj(q_PEF_TOD) * r_tod * q_PEF_TOD)
+    v_pef = vect(conj(q_PEF_TOD) * v_tod * q_PEF_TOD) - [0, 0, w] × r_pef
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -339,8 +344,8 @@ end
     @test v_pef[3] ≈ +5.5319312880  atol=1e-9
 end
 
-# Functions rTODtoMOD_fk5 and rMODtoTOD_fk5
-# -----------------------------------------
+# Functions r_tod_to_mod_fk5 and r_mod_to_tod_fk5
+# -----------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -379,9 +384,9 @@ end
 #
 ################################################################################
 
-@testset "Functions rTODtoMOD_fk5 and rMODtoTOD_fk5" begin
-    ## rTODtoMOD_fk5
-    ## =============
+@testset "Functions r_tod_to_mod_fk5 and r_mod_to_tod_fk5" begin
+    ## r_tod_to_mod_fk5
+    ## ================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -393,9 +398,12 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TOD = rTODtoMOD_fk5(2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    D_MOD_TOD = r_tod_to_mod_fk5(
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
+
     r_mod = D_MOD_TOD*r_tod
     v_mod = D_MOD_TOD*v_tod
 
@@ -410,13 +418,15 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TOD = rTODtoMOD_fk5(Quaternion,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    q_MOD_TOD = r_tod_to_mod_fk5(
+        Quaternion,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
-    v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
+    r_mod = vect(conj(q_MOD_TOD) * r_tod * q_MOD_TOD)
+    v_mod = vect(conj(q_MOD_TOD) * v_tod * q_MOD_TOD)
 
     @test r_mod[1] ≈ +5094.02837450 atol=1e-7
     @test r_mod[2] ≈ +6127.87081640 atol=1e-7
@@ -436,10 +446,10 @@ end
     ## DCM
     ## ---
 
-    D_MOD_TOD = rTODtoMOD_fk5(2453101.82815474)
+    D_MOD_TOD = r_tod_to_mod_fk5(2453101.82815474)
 
-    r_mod = D_MOD_TOD*r_tod
-    v_mod = D_MOD_TOD*v_tod
+    r_mod = D_MOD_TOD * r_tod
+    v_mod = D_MOD_TOD * v_tod
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
@@ -452,10 +462,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_TOD = rTODtoMOD_fk5(Quaternion, 2453101.828154745)
+    q_MOD_TOD = r_tod_to_mod_fk5(Quaternion, 2453101.828154745)
 
-    r_mod = vect(conj(q_MOD_TOD)*r_tod*q_MOD_TOD)
-    v_mod = vect(conj(q_MOD_TOD)*v_tod*q_MOD_TOD)
+    r_mod = vect(conj(q_MOD_TOD) * r_tod * q_MOD_TOD)
+    v_mod = vect(conj(q_MOD_TOD) * v_tod * q_MOD_TOD)
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
@@ -465,8 +475,8 @@ end
     @test v_mod[2] ≈ +0.7860141490  atol=1e-9
     @test v_mod[3] ≈ +5.5317910250  atol=1e-9
 
-    ## rMODtoTOD
-    ## =========
+    ## r_mod_to_tod_fk5
+    ## ================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -478,11 +488,14 @@ end
     ## DCM
     ## ---
 
-    D_TOD_MOD = rMODtoTOD_fk5(2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
-    r_tod = D_TOD_MOD*r_mod
-    v_tod = D_TOD_MOD*v_mod
+    D_TOD_MOD = r_mod_to_tod_fk5(
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
+
+    r_tod = D_TOD_MOD * r_mod
+    v_tod = D_TOD_MOD * v_mod
 
     @test r_tod[1] ≈ +5094.51620300 atol=1e-7
     @test r_tod[2] ≈ +6127.36527840 atol=1e-7
@@ -495,13 +508,15 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_MOD = rMODtoTOD_fk5(Quaternion,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    q_TOD_MOD = r_mod_to_tod_fk5(
+        Quaternion,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
-    v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
+    r_tod = vect(conj(q_TOD_MOD) * r_mod * q_TOD_MOD)
+    v_tod = vect(conj(q_TOD_MOD) * v_mod * q_TOD_MOD)
 
     @test r_tod[1] ≈ +5094.51620300 atol=1e-7
     @test r_tod[2] ≈ +6127.36527840 atol=1e-7
@@ -521,7 +536,7 @@ end
     ## DCM
     ## ---
 
-    D_TOD_MOD = rMODtoTOD_fk5(2453101.828154745)
+    D_TOD_MOD = r_mod_to_tod_fk5(2453101.828154745)
 
     r_tod = D_TOD_MOD*r_mod
     v_tod = D_TOD_MOD*v_mod
@@ -537,10 +552,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_TOD_MOD = rMODtoTOD_fk5(Quaternion, 2453101.828154745)
+    q_TOD_MOD = r_mod_to_tod_fk5(Quaternion, 2453101.828154745)
 
-    r_tod = vect(conj(q_TOD_MOD)*r_mod*q_TOD_MOD)
-    v_tod = vect(conj(q_TOD_MOD)*v_mod*q_TOD_MOD)
+    r_tod = vect(conj(q_TOD_MOD) * r_mod * q_TOD_MOD)
+    v_tod = vect(conj(q_TOD_MOD) * v_mod * q_TOD_MOD)
 
     @test r_tod[1] ≈ +5094.51478040 atol=1e-7
     @test r_tod[2] ≈ +6127.36646120 atol=1e-7
@@ -551,8 +566,8 @@ end
     @test v_tod[3] ≈ +5.5319312880  atol=1e-9
 end
 
-# Functions rMODtoGCRF_fk5 and rGCRFtoMOD_fk5
-# -------------------------------------------
+# Functions r_mod_to_gcrf_fk5 and r_gcrf_to_mod_fk5
+# -------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -587,9 +602,9 @@ end
 #
 ################################################################################
 
-@testset "Functions rMODtoGCRF_fk5 and rGCRFtoMOD_fk5" begin
-    ## rMODtoGCRF
-    ## ==========
+@testset "Functions r_mod_to_gcrf_fk5 and r_gcrf_to_mod_fk5" begin
+    ## r_mod_to_gcrf_fk5
+    ## =================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -601,10 +616,10 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_MOD = rMODtoGCRF_fk5(2453101.828154745)
+    D_GCRF_MOD = r_mod_to_gcrf_fk5(2453101.828154745)
 
-    r_gcrf = D_GCRF_MOD*r_mod
-    v_gcrf = D_GCRF_MOD*v_mod
+    r_gcrf = D_GCRF_MOD * r_mod
+    v_gcrf = D_GCRF_MOD * v_mod
 
     @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
     @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
@@ -617,10 +632,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_MOD = rMODtoGCRF_fk5(Quaternion, 2453101.828154745)
+    q_GCRF_MOD = r_mod_to_gcrf_fk5(Quaternion, 2453101.828154745)
 
-    r_gcrf = vect(conj(q_GCRF_MOD)*r_mod*q_GCRF_MOD)
-    v_gcrf = vect(conj(q_GCRF_MOD)*v_mod*q_GCRF_MOD)
+    r_gcrf = vect(conj(q_GCRF_MOD) * r_mod * q_GCRF_MOD)
+    v_gcrf = vect(conj(q_GCRF_MOD) * v_mod * q_GCRF_MOD)
 
     @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
     @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
@@ -640,10 +655,10 @@ end
     ## DCM
     ## ---
 
-    D_J2000_MOD = rMODtoGCRF_fk5(2453101.828154745)
+    D_J2000_MOD = r_mod_to_gcrf_fk5(2453101.828154745)
 
-    r_j2000 = D_J2000_MOD*r_mod
-    v_j2000 = D_J2000_MOD*v_mod
+    r_j2000 = D_J2000_MOD * r_mod
+    v_j2000 = D_J2000_MOD * v_mod
 
     @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
     @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
@@ -656,10 +671,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_MOD = rMODtoGCRF_fk5(Quaternion, 2453101.828154745)
+    q_J2000_MOD = r_mod_to_gcrf_fk5(Quaternion, 2453101.828154745)
 
-    r_j2000 = vect(conj(q_J2000_MOD)*r_mod*q_J2000_MOD)
-    v_j2000 = vect(conj(q_J2000_MOD)*v_mod*q_J2000_MOD)
+    r_j2000 = vect(conj(q_J2000_MOD) * r_mod * q_J2000_MOD)
+    v_j2000 = vect(conj(q_J2000_MOD) * v_mod * q_J2000_MOD)
 
     @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
     @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
@@ -669,8 +684,8 @@ end
     @test v_j2000[2] ≈ +0.7905366000  atol=1e-9
     @test v_j2000[3] ≈ +5.5337561900  atol=1e-9
 
-    ## rGCRFtoMOD
-    ## ==========
+    ## r_gcrf_to_mod_fk5
+    ## =================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -682,10 +697,10 @@ end
     ## DCM
     ## ---
 
-    D_MOD_GCRF = rGCRFtoMOD_fk5(2453101.828154745)
+    D_MOD_GCRF = r_gcrf_to_mod_fk5(2453101.828154745)
 
-    r_mod = D_MOD_GCRF*r_gcrf
-    v_mod = D_MOD_GCRF*v_gcrf
+    r_mod = D_MOD_GCRF * r_gcrf
+    v_mod = D_MOD_GCRF * v_gcrf
 
     @test r_mod[1] ≈ +5094.02837450 atol=1e-7
     @test r_mod[2] ≈ +6127.87081640 atol=1e-7
@@ -698,10 +713,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_GCRF = rGCRFtoMOD_fk5(Quaternion, 2453101.828154745)
+    q_MOD_GCRF = r_gcrf_to_mod_fk5(Quaternion, 2453101.828154745)
 
-    r_mod = vect(conj(q_MOD_GCRF)*r_gcrf*q_MOD_GCRF)
-    v_mod = vect(conj(q_MOD_GCRF)*v_gcrf*q_MOD_GCRF)
+    r_mod = vect(conj(q_MOD_GCRF) * r_gcrf * q_MOD_GCRF)
+    v_mod = vect(conj(q_MOD_GCRF) * v_gcrf * q_MOD_GCRF)
 
     @test r_mod[1] ≈ +5094.02837450 atol=1e-7
     @test r_mod[2] ≈ +6127.87081640 atol=1e-7
@@ -721,10 +736,10 @@ end
     ## DCM
     ## ---
 
-    D_MOD_J2000 = rGCRFtoMOD_fk5(2453101.828154745)
+    D_MOD_J2000 = r_gcrf_to_mod_fk5(2453101.828154745)
 
-    r_mod = D_MOD_J2000*r_j2000
-    v_mod = D_MOD_J2000*v_j2000
+    r_mod = D_MOD_J2000 * r_j2000
+    v_mod = D_MOD_J2000 * v_j2000
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
@@ -737,10 +752,10 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_MOD = rGCRFtoMOD_fk5(Quaternion, 2453101.828154745)
+    q_J2000_MOD = r_gcrf_to_mod_fk5(Quaternion, 2453101.828154745)
 
-    r_mod = vect(conj(q_J2000_MOD)*r_j2000*q_J2000_MOD)
-    v_mod = vect(conj(q_J2000_MOD)*v_j2000*q_J2000_MOD)
+    r_mod = vect(conj(q_J2000_MOD) * r_j2000 * q_J2000_MOD)
+    v_mod = vect(conj(q_J2000_MOD) * v_j2000 * q_J2000_MOD)
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
@@ -751,8 +766,8 @@ end
     @test v_mod[3] ≈ +5.5317910250  atol=1e-9
 end
 
-# Functions rITRFtoGCRF_fk5 and rGCRFtoITRF_fk5
-# ---------------------------------------------
+# Functions r_itrf_to_gcrf_fk5 and r_gcrf_to_itrf_fk5
+# ---------------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -791,16 +806,16 @@ end
 #
 ################################################################################
 
-@testset "Functions rITRFtoGCRF_fk5 and rGCRFtoITRF_fk5" begin
-    JD_UT1   = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+@testset "Functions r_itrf_to_gcrf_fk5 and r_gcrf_to_itrf_fk5" begin
+    JD_UT1   = DatetoJD(2004, 4, 6, 7, 51, 28.386009) - 0.4399619 / 86400
     JD_TT    = 2453101.828154745
-    δΔϵ_1980 = -0.003875*pi/(180*3600)
-    δΔψ_1980 = -0.052195*pi/(180*3600)
-    x_p      = -0.140682*pi/(180*3600)
-    y_p      = +0.333309*pi/(180*3600)
+    δΔϵ_1980 = -0.003875 * pi / (180 * 3600)
+    δΔψ_1980 = -0.052195 * pi / (180 * 3600)
+    x_p      = -0.140682 * pi / (180 * 3600)
+    y_p      = +0.333309 * pi / (180 * 3600)
 
-    ## rITRFtoGCRF_fk5
-    ## ===============
+    ## r_itrf_to_gcrf_fk5
+    ## ==================
 
     r_itrf = [-1033.4793830; 7901.2952754; 6380.3565958]
 
@@ -811,7 +826,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_ITRF = rITRFtoGCRF_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+    D_GCRF_ITRF = r_itrf_to_gcrf_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 
     r_gcrf = D_GCRF_ITRF*r_itrf
 
@@ -822,15 +837,17 @@ end
     ## Quaternion
     ## ----------
 
-    q_GCRF_ITRF = rITRFtoGCRF_fk5(Quaternion,
-                                  JD_UT1,
-                                  JD_TT,
-                                  x_p,
-                                  y_p,
-                                  δΔϵ_1980,
-                                  δΔψ_1980)
+    q_GCRF_ITRF = r_itrf_to_gcrf_fk5(
+        Quaternion,
+        JD_UT1,
+        JD_TT,
+        x_p,
+        y_p,
+        δΔϵ_1980,
+        δΔψ_1980
+    )
 
-    r_gcrf = vect(conj(q_GCRF_ITRF)*r_itrf*q_GCRF_ITRF)
+    r_gcrf = vect(conj(q_GCRF_ITRF) * r_itrf * q_GCRF_ITRF)
 
     @test r_gcrf[1] ≈ +5102.50895790 atol=1e-7
     @test r_gcrf[2] ≈ +6123.01140070 atol=1e-7
@@ -843,7 +860,7 @@ end
     ## DCM
     ## ---
 
-    D_GCRF_ITRF = rITRFtoGCRF_fk5(JD_UT1, JD_TT, x_p, y_p)
+    D_GCRF_ITRF = r_itrf_to_gcrf_fk5(JD_UT1, JD_TT, x_p, y_p)
 
     r_j2000 = D_GCRF_ITRF*r_itrf
 
@@ -854,16 +871,16 @@ end
     ## Quaternion
     ## ----------
 
-    q_J2000_ITRF = rITRFtoGCRF_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
+    q_J2000_ITRF = r_itrf_to_gcrf_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
 
-    r_j2000 = vect(conj(q_J2000_ITRF)*r_itrf*q_J2000_ITRF)
+    r_j2000 = vect(conj(q_J2000_ITRF) * r_itrf * q_J2000_ITRF)
 
     @test r_j2000[1] ≈ +5102.50960000 atol=1e-7
     @test r_j2000[2] ≈ +6123.01152000 atol=1e-7
     @test r_j2000[3] ≈ +6378.13630000 atol=1e-7
 
-    # rGCRFtoITRF_fk5
-    # ===============
+    # r_gcrf_to_itrf_fk5
+    # ==================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -874,9 +891,9 @@ end
     ## DCM
     ## ---
 
-    D_ITRF_GCRF = rGCRFtoITRF_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+    D_ITRF_GCRF = r_gcrf_to_itrf_fk5(JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
 
-    r_itrf = D_ITRF_GCRF*r_gcrf
+    r_itrf = D_ITRF_GCRF * r_gcrf
 
     @test r_itrf[1] ≈ -1033.4793830 atol=1e-7
     @test r_itrf[2] ≈ +7901.2952754 atol=1e-7
@@ -885,15 +902,17 @@ end
     ## Quaternion
     ## ----------
 
-    q_ITRF_GCRF = rGCRFtoITRF_fk5(Quaternion,
-                                  JD_UT1,
-                                  JD_TT,
-                                  x_p,
-                                  y_p,
-                                  δΔϵ_1980,
-                                  δΔψ_1980)
+    q_ITRF_GCRF = r_gcrf_to_itrf_fk5(
+        Quaternion,
+        JD_UT1,
+        JD_TT,
+        x_p,
+        y_p,
+        δΔϵ_1980,
+        δΔψ_1980
+    )
 
-    r_itrf = vect(conj(q_ITRF_GCRF)*r_gcrf*q_ITRF_GCRF)
+    r_itrf = vect(conj(q_ITRF_GCRF) * r_gcrf * q_ITRF_GCRF)
 
     @test r_itrf[1] ≈ -1033.4793830 atol=1e-7
     @test r_itrf[2] ≈ +7901.2952754 atol=1e-7
@@ -908,7 +927,7 @@ end
     ## DCM
     ## ---
 
-    D_ITRF_J2000 = rGCRFtoITRF_fk5(JD_UT1, JD_TT, x_p, y_p)
+    D_ITRF_J2000 = r_gcrf_to_itrf_fk5(JD_UT1, JD_TT, x_p, y_p)
 
     r_itrf = D_ITRF_J2000*r_j2000
 
@@ -919,7 +938,7 @@ end
     ## Quaternion
     ## ----------
 
-    q_ITRF_J2000 = rGCRFtoITRF_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
+    q_ITRF_J2000 = r_gcrf_to_itrf_fk5(Quaternion, JD_UT1, JD_TT, x_p, y_p)
 
     r_itrf = vect(conj(q_ITRF_J2000)*r_j2000*q_ITRF_J2000)
 
@@ -928,8 +947,8 @@ end
     @test r_itrf[3] ≈ +6380.3565958 atol=1e-7
 end
 
-# Functions rPEFtoMOD_fk5 and rMODtoPEF_fk5
-# -----------------------------------------
+# Functions r_pef_to_mod_fk5 and r_mod_to_pef_fk5
+# -----------------------------------------------
 
 ################################################################################
 #                                 Test Results
@@ -967,11 +986,11 @@ end
 #
 ################################################################################
 
-@testset "Functions rPEFtoMOD_fk5 and rMODtoPEF_fk5" begin
-    JD_UT1 = DatetoJD(2004,4,6,7,51,28.386009) - 0.4399619/86400
+@testset "Functions r_pef_to_mod_fk5 and r_mod_to_pef_fk5" begin
+    JD_UT1 = DatetoJD(2004, 4, 6, 7, 51, 28.386009) - 0.4399619 / 86400
 
-    ## rPEFtoMOD_fk5
-    ## =============
+    ## r_pef_to_mod_fk5
+    ## ================
 
     r_pef  = [-1033.47503130; 7901.30558560; 6380.34453270]
 
@@ -982,10 +1001,12 @@ end
     ## DCM
     ## ---
 
-    D_MOD_PEF = rPEFtoMOD_fk5(JD_UT1,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    D_MOD_PEF = r_pef_to_mod_fk5(
+        JD_UT1,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
     r_mod = D_MOD_PEF*r_pef
 
@@ -996,11 +1017,13 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_PEF = rPEFtoMOD_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    q_MOD_PEF = r_pef_to_mod_fk5(
+        Quaternion,
+        JD_UT1,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
     r_mod = vect(conj(q_MOD_PEF)*r_pef*q_MOD_PEF)
 
@@ -1015,9 +1038,9 @@ end
     ## DCM
     ## ---
 
-    D_MOD_PEF = rPEFtoMOD_fk5(JD_UT1, 2453101.828154745)
+    D_MOD_PEF = r_pef_to_mod_fk5(JD_UT1, 2453101.828154745)
 
-    r_mod = D_MOD_PEF*r_pef
+    r_mod = D_MOD_PEF * r_pef
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
@@ -1026,16 +1049,16 @@ end
     ## Quaternion
     ## ----------
 
-    q_MOD_PEF = rPEFtoMOD_fk5(Quaternion, JD_UT1, 2453101.828154745)
+    q_MOD_PEF = r_pef_to_mod_fk5(Quaternion, JD_UT1, 2453101.828154745)
 
-    r_mod = vect(conj(q_MOD_PEF)*r_pef*q_MOD_PEF)
+    r_mod = vect(conj(q_MOD_PEF) * r_pef * q_MOD_PEF)
 
     @test r_mod[1] ≈ +5094.02901670 atol=1e-7
     @test r_mod[2] ≈ +6127.87093630 atol=1e-7
     @test r_mod[3] ≈ +6380.24788850 atol=1e-7
 
-    ## rMODtoPEF_fk5
-    ## =============
+    ## r_mod_to_pef_fk5
+    ## ================
 
     ## -------------------------------------------------------------------------
     ##                                 First Test
@@ -1046,12 +1069,14 @@ end
     ## DCM
     ## ---
 
-    D_PEF_MOD = rMODtoPEF_fk5(JD_UT1,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    D_PEF_MOD = r_mod_to_pef_fk5(
+        JD_UT1,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_pef = D_PEF_MOD*r_mod
+    r_pef = D_PEF_MOD * r_mod
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -1060,13 +1085,15 @@ end
     ## Quaternion
     ## ----------
 
-    q_PEF_MOD = rMODtoPEF_fk5(Quaternion,
-                              JD_UT1,
-                              2453101.828154745,
-                              -0.003875*pi/(180*3600),
-                              -0.052195*pi/(180*3600))
+    q_PEF_MOD = r_mod_to_pef_fk5(
+        Quaternion,
+        JD_UT1,
+        2453101.828154745,
+        -0.003875 * pi / (180 * 3600),
+        -0.052195 * pi / (180 * 3600)
+    )
 
-    r_pef = vect(conj(q_PEF_MOD)*r_mod*q_PEF_MOD)
+    r_pef = vect(conj(q_PEF_MOD) * r_mod * q_PEF_MOD)
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -1081,9 +1108,9 @@ end
     ## DCM
     ## ---
 
-    D_PEF_MOD = rMODtoPEF_fk5(JD_UT1, 2453101.828154745)
+    D_PEF_MOD = r_mod_to_pef_fk5(JD_UT1, 2453101.828154745)
 
-    r_pef = D_PEF_MOD*r_mod
+    r_pef = D_PEF_MOD * r_mod
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7
@@ -1092,9 +1119,9 @@ end
     ## Quaternion
     ## ----------
 
-    q_PEF_MOD = rMODtoPEF_fk5(Quaternion, JD_UT1, 2453101.828154745)
+    q_PEF_MOD = r_mod_to_pef_fk5(Quaternion, JD_UT1, 2453101.828154745)
 
-    r_pef = vect(conj(q_PEF_MOD)*r_mod*q_PEF_MOD)
+    r_pef = vect(conj(q_PEF_MOD) * r_mod * q_PEF_MOD)
 
     @test r_pef[1] ≈ -1033.47503130 atol=1e-7
     @test r_pef[2] ≈ +7901.30558560 atol=1e-7

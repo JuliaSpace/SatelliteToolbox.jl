@@ -255,7 +255,7 @@ function rTEMEtoGCRF(T::Type, JD_TT::Number, δΔϵ_1980::Number = 0,
     r_MOD_TEME  = rTEMEtoMOD(T, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compute the rotation MOD => GCRF.
-    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
+    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
 
     # Return the full rotation.
     return compose_rotation(r_MOD_TEME, r_GCRF_MOD)

@@ -1,12 +1,14 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions related with the model IAU-76/FK5.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -15,15 +17,15 @@
 #       and VLBI Astrometric Modelling. Radio Interferometry: Theory, Techniques
 #       and Applications, IAU Coll. 131, ASP Conference Series, Vol. 19.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export rITRFtoPEF_fk5, rPEFtoITRF_fk5
-export rPEFtoTOD_fk5,  rTODtoPEF_fk5
-export rTODtoMOD_fk5,  rMODtoTOD_fk5
-export rMODtoGCRF_fk5, rGCRFtoMOD_fk5
+export r_itrf_to_pef_fk5, r_pef_to_itrf_fk5
+export r_pef_to_tod_fk5,  r_tod_to_pef_fk5
+export r_tod_to_mod_fk5,  r_mod_to_tod_fk5
+export r_mod_to_gcrf_fk5, r_gcrf_to_mod_fk5
 
-export rITRFtoGCRF_fk5, rGCRFtoITRF_fk5
-export rPEFtoMOD_fk5,   rMODtoPEF_fk5
+export r_itrf_to_gcrf_fk5, r_gcrf_to_itrf_fk5
+export r_pef_to_mod_fk5,   r_mod_to_pef_fk5
 
 ################################################################################
 #                            IAU-76/FK5 Reductions
@@ -42,7 +44,7 @@ export rPEFtoMOD_fk5,   rMODtoPEF_fk5
 # Every rotation will be coded as a function using the IAU-76/FK5 theory.
 # Additionally, composed rotations will also available. In general, the API is:
 #
-#   function r<Origin Frame>to<Destination Frame>_fk5
+#   function r_<Origin Frame>_to_<Destination Frame>_fk5
 #
 # The arguments vary depending on the origin and destination frame and should be
 # verified using the function documentation.
@@ -57,7 +59,7 @@ export rPEFtoMOD_fk5,   rMODtoPEF_fk5
 # ==============================================================================
 
 """
-    rITRFtoPEF_fk5([T,] x_p::Number, y_p::Number)
+    r_itrf_to_pef_fk5([T,] x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Pseudo-Earth Fixed (PEF) frame considering the polar motion
@@ -88,16 +90,21 @@ the True Equator. Furthermore, since the recovered latitude and longitude are
 sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
-rITRFtoPEF_fk5(x_p::Number, y_p::Number) = rITRFtoPEF_fk5(DCM, x_p, y_p)
+r_itrf_to_pef_fk5(x_p::Number, y_p::Number) = r_itrf_to_pef_fk5(DCM, x_p, y_p)
 
-rITRFtoPEF_fk5(T::Type, x_p::Number, y_p::Number) =
+function r_itrf_to_pef_fk5(
+    T::Type,
+    x_p::Number,
+    y_p::Number
+)
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    smallangle_to_rot(T, +y_p, +x_p, 0)
+    return smallangle_to_rot(T, +y_p, +x_p, 0)
+end
 
 """
-    rPEFtoITRF_fk5([T,] x_p::Number, y_p::Number)
+    r_pef_to_itrf_fk5([T,] x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) with the
 International Terrestrial Reference Frame (ITRF) considering the polar motion
@@ -128,19 +135,20 @@ the True Equator. Furthermore, since the recovered latitude and longitude are
 sensitive to the CIP, then it should be computed considering the PEF frame.
 
 """
-rPEFtoITRF_fk5(x_p::Number, y_p::Number) = rPEFtoITRF_fk5(DCM, x_p, y_p)
+r_pef_to_itrf_fk5(x_p::Number, y_p::Number) = r_pef_to_itrf_fk5(DCM, x_p, y_p)
 
-rPEFtoITRF_fk5(T::Type, x_p::Number, y_p::Number) =
+function r_pef_to_itrf_fk5(T::Type, x_p::Number, y_p::Number)
     # Notice that `x_p` and `y_p` are displacements in X and Y directions and
     # **not** rotation angles. Hence, a displacement in X is a rotation in Y and
     # a displacement in Y is a rotation in X.
-    smallangle_to_rot(T, -y_p, -x_p, 0)
+    return smallangle_to_rot(T, -y_p, -x_p, 0)
+end
 
 #                                 PEF <=> TOD
 # ==============================================================================
 
 """
-    rPEFtoTOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+    r_pef_to_tod_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 True of Date (TOD) frame at the Julian Day `JD_UT1` [UT1] and `JD_TT`
@@ -172,15 +180,22 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-rPEFtoTOD_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    rPEFtoTOD_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
+function r_pef_to_tod_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔψ_1980::Number = 0
+)
+    return r_pef_to_tod_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
+end
 
-function rPEFtoTOD_fk5(T::Type,
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔψ_1980::Number = 0)
+function r_pef_to_tod_fk5(
+    T::Type,
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔψ_1980::Number = 0
+)
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δψ_1980 += δΔψ_1980
@@ -191,11 +206,14 @@ function rPEFtoTOD_fk5(T::Type,
     # The parameters here were updated as stated in the errata [2].
     T_TT = (JD_TT - JD_J2000)/36525
     r    = 360
-    Ω_m  = @evalpoly(T_TT, + 125.04452222,
-                           - (5r + 134.1362608),
-                           + 0.0020708,
-                           + 2.2e-6)
-    Ω_m  = mod(Ω_m, 360)*pi/180
+    Ω_m  = @evalpoly(
+        T_TT,
+        + 125.04452222,
+        - (5r + 134.1362608),
+        + 0.0020708,
+        + 2.2e-6
+    )
+    Ω_m = mod(Ω_m, 360)*pi/180
 
     # Compute the equation of Equinoxes.
     #
@@ -212,11 +230,11 @@ function rPEFtoTOD_fk5(T::Type,
     θ_gast = θ_gmst + Eq_equinox1982
 
     # Compute the rotation matrix.
-    angle_to_rot(T, -θ_gast, 0, 0, :ZYX)
+    return angle_to_rot(T, -θ_gast, 0, 0, :ZYX)
 end
 
 """
-    rTODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
+    r_tod_to_pef_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔψ_1980::Number])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the
 Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` [UT1] and `JD_TT`
@@ -248,17 +266,28 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-rTODtoPEF_fk5(JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    rTODtoPEF_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
+function r_tod_to_pef_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔψ_1980::Number = 0
+)
+    return r_tod_to_pef_fk5(DCM, JD_UT1, JD_TT, δΔψ_1980)
+end
 
-rTODtoPEF_fk5(T::T_ROT, JD_UT1::Number, JD_TT::Number, δΔψ_1980::Number = 0) =
-    inv_rotation(rPEFtoTOD_fk5(T, JD_UT1, JD_TT, δΔψ_1980))
+function r_tod_to_pef_fk5(
+    T::T_ROT,
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_pef_to_tod_fk5(T, JD_UT1, JD_TT, δΔψ_1980))
+end
 
 #                                 TOD <=> MOD
 # ==============================================================================
 
 """
-    rTODtoMOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_tod_to_mod_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the Mean of
 Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This algorithm
@@ -284,16 +313,22 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-rTODtoMOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rTODtoMOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_tod_to_mod_fk5(
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_tod_to_mod_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-function rTODtoMOD_fk5(T::Type,
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-
+function r_tod_to_mod_fk5(
+    T::Type,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -303,11 +338,11 @@ function rTODtoMOD_fk5(T::Type,
     ϵ_1980 = mϵ_1980 + Δϵ_1980
 
     # Compute and return the Direction Cosine DCM.
-    angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    return angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 end
 
 """
-    rMODtoTOD_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_mod_to_tod_fk5([T,] JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True of
 Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This algorithm
@@ -333,17 +368,28 @@ added if one wants to make the rotation consistent with the Geocentric Celestial
 Reference Systems (GCRS).
 
 """
-rMODtoTOD_fk5(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    rMODtoTOD_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_mod_to_tod_fk5(
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_mod_to_tod_fk5(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-rMODtoTOD_fk5(T::T_ROT, JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0) =
-    inv_rotation(rTODtoMOD_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+function r_mod_to_tod_fk5(
+    T::T_ROT,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_tod_to_mod_fk5(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+end
 
 #                                 MOD <=> GCRF
 # ==============================================================================
 
 """
-    rMODtoGCRF_fk5([T,] JD_TT::Number)
+    r_mod_to_gcrf_fk5([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the
 Geocentric Celestial Reference Frame (GCRF) at the Julian Day [Terrestrial Time]
@@ -369,15 +415,15 @@ the EOP corrections, then the GCRF obtained by this rotation is what is usually
 called the J2000 reference frame.
 
 """
-rMODtoGCRF_fk5(JD_TT::Number) = rMODtoGCRF_fk5(DCM,JD_TT)
+r_mod_to_gcrf_fk5(JD_TT::Number) = r_mod_to_gcrf_fk5(DCM,JD_TT)
 
-function rMODtoGCRF_fk5(T::Type, JD_TT::Number)
-    (ζ,Θ,z) = precession_fk5(JD_TT)
-    angle_to_rot(T, z, -Θ, ζ, :ZYZ)
+function r_mod_to_gcrf_fk5(T::Type, JD_TT::Number)
+    ζ, Θ, z = precession_fk5(JD_TT)
+    return angle_to_rot(T, z, -Θ, ζ, :ZYZ)
 end
 
 """
-    rGCRFtoMOD_fk5([T,] JD_TT::Number)
+    r_gcrf_to_mod_fk5([T,] JD_TT::Number)
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the Mean of Date (MOD) frame at the Julian Day [Terrestrial Time] `JD_TT`.
@@ -403,9 +449,9 @@ the EOP corrections, then the GCRF in this rotation is what is usually called
 the J2000 reference frame.
 
 """
-rGCRFtoMOD_fk5(JD_TT::Number) = rGCRFtoMOD_fk5(DCM,JD_TT)
+r_gcrf_to_mod_fk5(JD_TT::Number) = r_gcrf_to_mod_fk5(DCM,JD_TT)
 
-rGCRFtoMOD_fk5(T::T_ROT,JD_TT::Number) = inv_rotation(rMODtoGCRF_fk5(T, JD_TT))
+r_gcrf_to_mod_fk5(T::T_ROT, JD_TT::Number) = inv_rotation(r_mod_to_gcrf_fk5(T, JD_TT))
 
 ################################################################################
 #                              Multiple Rotations
@@ -422,7 +468,7 @@ rGCRFtoMOD_fk5(T::T_ROT,JD_TT::Number) = inv_rotation(rMODtoGCRF_fk5(T, JD_TT))
 # ==============================================================================
 
 """
-    rITRFtoGCRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_itrf_to_gcrf_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Geocentric Celestial Reference Frame (GCRF) at the Julian Day
@@ -461,36 +507,41 @@ models are highly imprecise since the motion is still not very well understood
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 """
-rITRFtoGCRF_fk5(JD_UT1::Number,
-                JD_TT::Number,
-                x_p::Number,
-                y_p::Number,
-                δΔϵ_1980::Number = 0,
-                δΔψ_1980::Number = 0) =
-    rITRFtoGCRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+function r_itrf_to_gcrf_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    x_p::Number,
+    y_p::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_itrf_to_gcrf_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+end
 
-function rITRFtoGCRF_fk5(T::Type,
-                         JD_UT1::Number,
-                         JD_TT::Number,
-                         x_p::Number,
-                         y_p::Number,
-                         δΔϵ_1980::Number = 0,
-                         δΔψ_1980::Number = 0)
+function r_itrf_to_gcrf_fk5(
+    T::Type,
+    JD_UT1::Number,
+    JD_TT::Number,
+    x_p::Number,
+    y_p::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
     # Compute the rotation ITRF => PEF.
-    r_PEF_ITRF = rITRFtoPEF_fk5(T, x_p, y_p)
+    r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
 
     # Compute the rotation PEF => MOD.
-    r_MOD_PEF = rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_MOD_PEF = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
 
     # Compute the rotation MOD => GCRF.
-    r_GCRF_MOD = rMODtoGCRF_fk5(T, JD_TT)
+    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
 
     # Return the full rotation.
-    compose_rotation(r_PEF_ITRF, r_MOD_PEF, r_GCRF_MOD)
+    return compose_rotation(r_PEF_ITRF, r_MOD_PEF, r_GCRF_MOD)
 end
 
 """
-    rGCRFtoITRF_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_gcrf_to_itrf_fk5([T,] JD_UT1::Number, JD_TT::Number, x_p::Number, y_p::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the International Terrestrial Reference Frame (ITRF) at the Julian Day
@@ -529,28 +580,34 @@ models are highly imprecise since the motion is still not very well understood
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 """
-rGCRFtoITRF_fk5(JD_UT1::Number,
-                JD_TT::Number,
-                x_p::Number,
-                y_p::Number,
-                δΔϵ_1980::Number = 0,
-                δΔψ_1980::Number = 0) =
-    rGCRFtoITRF_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+function r_gcrf_to_itrf_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    x_p::Number,
+    y_p::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_gcrf_to_itrf_fk5(DCM, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
+end
 
-rGCRFtoITRF_fk5(T::T_ROT,
-                JD_UT1::Number,
-                JD_TT::Number,
-                x_p::Number,
-                y_p::Number,
-                δΔϵ_1980::Number = 0,
-                δΔψ_1980::Number = 0) =
-    inv_rotation(rITRFtoGCRF_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980))
+function r_gcrf_to_itrf_fk5(
+    T::T_ROT,
+    JD_UT1::Number,
+    JD_TT::Number,
+    x_p::Number,
+    y_p::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980))
+end
 
 #                                 PEF <=> MOD
 # ==============================================================================
 
 """
-    rPEFtoMOD_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_pef_to_mod_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 Mean of Date (MOD) at the Julian Day `JD_UT1` [UT1] and `JD_TT` [Terrestrial
@@ -576,25 +633,29 @@ The rotation that aligns the PEF frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rPEFtoMOD_fk5(JD_UT1::Number,
-              JD_TT::Number,
-              δΔϵ_1980::Number = 0,
-              δΔψ_1980::Number = 0) =
-    rPEFtoMOD_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_pef_to_mod_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_pef_to_mod_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-function rPEFtoMOD_fk5(T::Type,
-                       JD_UT1::Number,
-                       JD_TT::Number,
-                       δΔϵ_1980::Number = 0,
-                       δΔψ_1980::Number = 0)
-
+function r_pef_to_mod_fk5(
+    T::Type,
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
     # Notice that, in this case, we will not use `rPEFtoTOD` and `rTODtoMOD`
     # because this would call the function `nutation` twice, leading to a huge
     # performance drop. Hence, the code of those two functions is almost
     # entirely rewritten here.
 
     # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -609,11 +670,14 @@ function rPEFtoMOD_fk5(T::Type,
     # The parameters here were updated as stated in the errata [2].
     T_TT = (JD_TT - JD_J2000)/36525
     r    = 360
-    Ω_m  = @evalpoly(T_TT, + 125.04452222,
-                           - (5r + 134.1362608),
-                           + 0.0020708,
-                           + 2.2e-6)
-    Ω_m  = mod(Ω_m, 360)*pi/180
+    Ω_m  = @evalpoly(
+        T_TT,
+        + 125.04452222,
+        - (5r + 134.1362608),
+        + 0.0020708,
+        + 2.2e-6
+    )
+    Ω_m = mod(Ω_m, 360)*pi/180
 
     # Compute the equation of Equinoxes.
     #
@@ -635,11 +699,11 @@ function rPEFtoMOD_fk5(T::Type,
     # Compute the rotation TOD => MOD.
     r_MOD_TOD = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
-    compose_rotation(r_TOD_PEF, r_MOD_TOD)
+    return compose_rotation(r_TOD_PEF, r_MOD_TOD)
 end
 
 """
-    rMODtoPEF_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
+    r_mod_to_pef_fk5([T,] JD_UT1::Number, JD_TT::Number [, δΔϵ_1980::Number, δΔψ_1980::Number])
 
 Compute the rotation that aligns the Mean of Date (MOD) reference frame with the
 Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_UT1` [UT1] and `JD_TT`
@@ -665,15 +729,21 @@ The rotation that aligns the MOD frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
 """
-rMODtoPEF_fk5(JD_UT1::Number,
-              JD_TT::Number,
-              δΔϵ_1980::Number = 0,
-              δΔψ_1980::Number = 0) =
-    rMODtoPEF_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_mod_to_pef_fk5(
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return r_mod_to_pef_fk5(DCM, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
+end
 
-rMODtoPEF_fk5(T::T_ROT,
-              JD_UT1::Number,
-              JD_TT::Number,
-              δΔϵ_1980::Number = 0,
-              δΔψ_1980::Number = 0) =
-    inv_rotation(rPEFtoMOD_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
+function r_mod_to_pef_fk5(
+    T::T_ROT,
+    JD_UT1::Number,
+    JD_TT::Number,
+    δΔϵ_1980::Number = 0,
+    δΔψ_1980::Number = 0
+)
+    return inv_rotation(r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980))
+end
