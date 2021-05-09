@@ -24,7 +24,7 @@ presented as follows.
 
 * `eop_data`: EOP data that will be used to convert the ECI reference frame to
               the ECEF reference frame. If `nothing`, then it will not be used
-              (see `rECItoECEF`). (**Default** = `nothing`)
+              (see `r_eci_to_ecef`). (**Default** = `nothing`)
 * `ECI`: ECI frame in which the orbit elements in `orbp` are represented.
          (**Default** = `TEME()`)
 * `ECEF`: ECEF frame that will be used to compute the ground trace.
@@ -56,9 +56,9 @@ function ground_trace(orbp::OrbitPropagator, Δt::Number;
 
     # Convert from the ECI to the ECEF frame.
     if eop_data == nothing
-        r_e = map( (t,v_i)->rECItoECEF(ECI, ECEF, t)*v_i, JD, r_i )
+        r_e = map( (t,v_i)->r_eci_to_ecef(ECI, ECEF, t)*v_i, JD, r_i )
     else
-        r_e = map( (t,v_i)->rECItoECEF(ECI, ECEF, t, eop_data)*v_i, JD, r_i )
+        r_e = map( (t,v_i)->r_eci_to_ecef(ECI, ECEF, t, eop_data)*v_i, JD, r_i )
     end
 
     # Convert to Geodetic coordinates.

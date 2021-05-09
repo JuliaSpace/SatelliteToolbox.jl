@@ -25,7 +25,7 @@ Convert the orbit state vector `sv` from the Earth-Centered Inertial (ECI)
 reference frame `ECI` to the Earth-Centered, Earth-Fixed (ECEF) reference frame
 at the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending on
 the selection of the input and output reference system. For more information,
-see the documentation of the function `rECItoECEF`.
+see the documentation of the function `r_eci_to_ecef`.
 
 !!! info
 
@@ -64,9 +64,9 @@ function svECItoECEF(sv::OrbitStateVector,
 
     # Get the matrix that converts the ECI to the ECEF.
     if eop_data == nothing
-        D = rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
+        D = r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
     else
-        D = rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+        D = r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
     end
 
     # Since the ECI and ECEF frames have a relative velocity between them, then

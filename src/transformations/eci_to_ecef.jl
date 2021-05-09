@@ -1,6 +1,7 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Rotations from an Earth-Fixed Inertial (ECI) reference frame to an
 #   Earth-Fixed, Earth-Centered (ECEF) reference frame.
@@ -8,16 +9,17 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export rECItoECEF
+export r_eci_to_ecef
 
 """
-    rECItoECEF([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
+    r_eci_to_ecef([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 an Earth-Centered, Earth-Fixed (`ECEF`) reference frame at the Julian Day [UTC]
@@ -137,92 +139,121 @@ into alignment with the ECEF reference frame.
 ```julia-repl
 julia> eop_IAU1980 = get_iers_eop(:IAU1980);
 
-julia> rECItoECEF(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(DCM, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
-julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619267    -0.78518     -0.000797313
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33492e-5   0.999999
 
-julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_eci_to_ecef(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106622
  -0.00133066   3.45854e-5   0.999999
 
-julia> rECItoECEF(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(J2000(), PEF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619267    -0.78518     -0.000796879
   0.78518     -0.619267     0.00106623
  -0.00133066   3.45854e-5   0.999999
 
-julia> rECItoECEF(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
+julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
   + 0.4363098936462618 + 0.0005909969666939257.i - 0.00030510511316206974.j - 0.8997962182293519.k
 
 julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
 
-julia> rECItoECEF(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_eci_to_ecef(GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619267    -0.78518     -0.000797312
   0.78518     -0.619267     0.00106478
  -0.00132979   3.33502e-5   0.999999
 
-julia> rECItoECEF(GCRF(), TIRS(), DatetoJD(1986, 06, 19, 21, 35, 0))
+julia> r_eci_to_ecef(GCRF(), TIRS(), DatetoJD(1986, 06, 19, 21, 35, 0))
 3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
  -0.619271    -0.785177    -0.000796885
   0.785176    -0.619272     0.00106623
  -0.00133066   3.45884e-5   0.999999
 
-julia> rECItoECEF(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
+julia> r_eci_to_ecef(Quaternion, GCRF(), ITRF(), DatetoJD(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
   + 0.4363098936309669 + 0.000590996988144556.i - 0.0003051056555230158.j - 0.8997962182365703.k
 ```
 """
-@inline rECItoECEF(T_ECI::T_ECIs,
-                   T_ECEF::T_ECEFs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+@inline function r_eci_to_ecef(T_ECI::T_ECIs,
+    T_ECEF::T_ECEFs,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+end
 
-@inline rECItoECEF(T::T_ROT,
-                   T_ECI::T_ECIs,
-                   T_ECEF::T_ECEFs,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU1980) =
-    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+@inline function r_eci_to_ecef(
+    T::T_ROT,
+    T_ECI::T_ECIs,
+    T_ECEF::T_ECEFs,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU1980
+)
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+end
 
-@inline rECItoECEF(T_ECI::T_ECIs_IAU_2006,
-                   T_ECEF::T_ECEFs_IAU_2006,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU2000A) =
-    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+@inline function r_eci_to_ecef(
+    T_ECI::T_ECIs_IAU_2006,
+    T_ECEF::T_ECEFs_IAU_2006,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+end
 
-@inline rECItoECEF(T::T_ROT,
-                   T_ECI::T_ECIs_IAU_2006,
-                   T_ECEF::T_ECEFs_IAU_2006,
-                   JD_UTC::Number,
-                   eop_data::EOPData_IAU2000A) =
-    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+@inline function r_eci_to_ecef(
+    T::T_ROT,
+    T_ECI::T_ECIs_IAU_2006,
+    T_ECEF::T_ECEFs_IAU_2006,
+    JD_UTC::Number,
+    eop_data::EOPData_IAU2000A
+)
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+end
 
 # Specializations for those cases that EOP Data is not needed.
-@inline rECItoECEF(T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
-                   T_ECEF::Val{:PEF}, JD_UTC::Number) =
-    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
+@inline function r_eci_to_ecef(
+    T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
+    T_ECEF::Val{:PEF},
+    JD_UTC::Number
+)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
+end
 
-@inline rECItoECEF(T::T_ROT,
-                   T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
-                   T_ECEF::Val{:PEF}, JD_UTC::Number) =
-    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+@inline function r_eci_to_ecef(
+    T::T_ROT,
+    T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
+    T_ECEF::Val{:PEF},
+    JD_UTC::Number
+)
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+end
 
-@inline rECItoECEF(T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS}, JD_UTC::Number) =
-    rECItoECEF(DCM, T_ECI, T_ECEF, JD_UTC)
+@inline function r_eci_to_ecef(
+    T_ECI::T_ECIs_IAU_2006,
+    T_ECEF::Val{:TIRS},
+    JD_UTC::Number
+)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
+end
 
-@inline rECItoECEF(T::T_ROT, T_ECI::T_ECIs_IAU_2006, T_ECEF::Val{:TIRS},
-                   JD_UTC::Number) =
-    inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+@inline function r_eci_to_ecef(
+    T::T_ROT,
+    T_ECI::T_ECIs_IAU_2006,
+    T_ECEF::Val{:TIRS},
+    JD_UTC::Number
+)
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+end
