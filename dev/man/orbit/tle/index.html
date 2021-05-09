@@ -7,62 +7,42 @@
  TLE: SCD 2 (Epoch = 2018-12-26T05:50:03.289)
 
 julia&gt; tles[1]
-                             TLE
-    ==========================================================
-                            Name: SCD 1
-                Satellite number: 22490
-        International designator: 93009B
-                    Epoch (Year): 18
-                     Epoch (Day): 359.76217587
-              Epoch (Julian Day): 2458478.26218
-              Element set number: 999
-                    Eccentricity:   0.00432110 deg
-                     Inclination:  24.96940000 deg
-                            RAAN: 116.17090000 deg
-             Argument of perigee:  90.39680000 deg
-                    Mean anomaly:  62.00830000 deg
-                 Mean motion (n):  14.44539396 revs/day
-               Revolution number: 36616
-
-                              B*: 0.000001 1/[er]
-
-                        1   d
-                       ---.--- n: 0.000002 rev/day²
-                        2  dt
-
-                        1   d²
-                       ---.--- n: 0.000000 rev/day³
-                        6  dt²
-    ==========================================================
+TLE:
+                     Name : SCD 1
+         Satellite number : 22490
+ International designator : 93009B
+       Epoch (Year / Day) : 18 / 359.76217587
+       Epoch (Julian Day) : 2458478.26218 (2018-12-25T18:17:31.995)
+       Element set number : 999
+             Eccentricity :   0.00432110 deg
+              Inclination :  24.96940000 deg
+                     RAAN : 116.17090000 deg
+      Argument of perigee :  90.39680000 deg
+             Mean anomaly :  62.00830000 deg
+          Mean motion (n) :  14.44539396 revs/day
+        Revolution number : 36616
+                       B* : 0.000001 1/[er]
+                    ṅ / 2 : 0.000002 rev/day²
+                    n̈ / 6 : 0.000000 rev/day³
 
 julia&gt; tles[2]
-                             TLE
-    ==========================================================
-                            Name: SCD 2
-                Satellite number: 25504
-        International designator: 98060A
-                    Epoch (Year): 18
-                     Epoch (Day): 360.24309362
-              Epoch (Julian Day): 2458478.74309
-              Element set number: 999
-                    Eccentricity:   0.00174310 deg
-                     Inclination:  24.99670000 deg
-                            RAAN: 319.86640000 deg
-             Argument of perigee: 121.38100000 deg
-                    Mean anomaly:   9.79390000 deg
-                 Mean motion (n):  14.44057429 revs/day
-               Revolution number: 6554
-
-                              B*: 0.000011 1/[er]
-
-                        1   d
-                       ---.--- n: 0.000002 rev/day²
-                        2  dt
-
-                        1   d²
-                       ---.--- n: 0.000000 rev/day³
-                        6  dt²
-    ==========================================================</code></pre><p>If the TLE is stored in a string, then it can be read using the following functions:</p><pre><code class="language-julia">function read_tle_from_string(tles::String, verify_checksum::Bool = true)
+TLE:
+                     Name : SCD 2
+         Satellite number : 25504
+ International designator : 98060A
+       Epoch (Year / Day) : 18 / 360.24309362
+       Epoch (Julian Day) : 2458478.74309 (2018-12-26T05:50:03.289)
+       Element set number : 999
+             Eccentricity :   0.00174310 deg
+              Inclination :  24.99670000 deg
+                     RAAN : 319.86640000 deg
+      Argument of perigee : 121.38100000 deg
+             Mean anomaly :   9.79390000 deg
+          Mean motion (n) :  14.44057429 revs/day
+        Revolution number : 6554
+                       B* : 0.000011 1/[er]
+                    ṅ / 2 : 0.000002 rev/day²
+                    n̈ / 6 : 0.000000 rev/day³</code></pre><p>If the TLE is stored in a string, then it can be read using the following functions:</p><pre><code class="language-julia">function read_tle_from_string(tles::String, verify_checksum::Bool = true)
 function read_tle_from_string(tle_l1::String, tle_l2::String, verify_checksum::Bool = false)</code></pre><p>In the first case, a list of TLEs can be passed in <code>tles</code>. In the second case, the first line and second line of a TLE can be passed in <code>tle_l1</code> and <code>tle_l2</code>, respectively. In both cases an array of TLEs is returned.  The argument <code>verify_checksum</code> has the same function as described previously.</p><pre><code class="language-julia-repl">julia&gt; tles = &quot;&quot;&quot;
        SCD 1
        1 22490U 93009B   18359.76217587  .00000186  00000-0  84512-6 0  9998
@@ -111,4 +91,4 @@ julia&gt; tles = tlenc&quot;&quot;&quot;
        2 22490  24.9694 116.1709 0043211  90.3968  62.0083 14.44539396366164
        &quot;&quot;&quot;
 1-element Array{TLE,1}:
- TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../propagators/">« Orbit propagators</a><a class="docs-footer-nextpage" href="../../transformations/ecef_eci/">ECEF and ECI »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 9 May 2021 21:02">Sunday 9 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ TLE: SCD 1 (Epoch = 2018-12-25T18:17:31.995)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../propagators/">« Orbit propagators</a><a class="docs-footer-nextpage" href="../../transformations/ecef_eci/">ECEF and ECI »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 9 May 2021 23:46">Sunday 9 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
