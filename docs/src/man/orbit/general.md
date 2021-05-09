@@ -121,8 +121,8 @@ In this package, the time-derivative of the RAAN \[rad/s] can be computed by the
 following functions:
 
 ```julia
-function dRAAN(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-function dRAAN(orb::Orbit, pert::Symbol = :J2)
+function draan(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+function draan(orb::Orbit, pert::Symbol = :J2)
 ```
 
 where:
@@ -135,10 +135,10 @@ where:
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
-julia> dRAAN(7130982, 0.001111, deg2rad(98.405))
+julia> draan(7130982, 0.001111, deg2rad(98.405))
 1.9909533223838115e-7
 
-julia> dRAAN(7130982, 0.001111, deg2rad(98.405), :J0)
+julia> draan(7130982, 0.001111, deg2rad(98.405), :J0)
 0.0
 ```
 
