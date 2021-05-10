@@ -161,18 +161,7 @@ function _init_wdcfiles(;
     if local_dir == nothing
         (wdcfiles_newest_year == nothing) && (wdcfiles_newest_year = year(now()))
         _prepare_wdc_remote_files(wdcfiles_oldest_year, wdcfiles_newest_year)
-
-        # We need to fetch each file in the `RemoteFileSet` separately until
-        # helgee/RemoteFiles.jl#23 is merged.
-        @sync for file in values(_wdcfiles.files)
-            @async download(
-                file,
-                quiet = false,
-                verbose = false,
-                force = force_download,
-                force_update = true
-            )
-        end
+        download(_wdcfiles; force = force_download, force_update = true)
 
         # Get the files available and sort them by the year.
         for (sym, wdcfile) in _wdcfiles.files
@@ -187,6 +176,10 @@ function _init_wdcfiles(;
             # where `YYYY` is the year.
             push!(years, parse(Int, String(sym)[3:6]))
             push!(filepaths, path(wdcfile))
+
+            # Since we are getting those files from FTP, the timestamp is not
+            # updated. Hence, we execute `touch` here to update the timestamp.
+            touch(path(wdcfile))
         end
     else
         # If the user provided a directory, check what files are available.
