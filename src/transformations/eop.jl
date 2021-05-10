@@ -96,19 +96,22 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt";
-                               force_download = false)
-
-    _eop_iau1980 = @RemoteFile(@eval($url),
-                               file="EOP_IAU1980.TXT",
-                               updates=:daily)
-    download(_eop_iau1980; force = force_download)
+function get_iers_eop_iau_1980(
+        url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt";
+        force_download = false
+)
+    _eop_iau1980 = @RemoteFile(
+        @eval($url),
+        file="EOP_IAU1980.TXT",
+        updates=:daily
+    )
+    download(_eop_iau1980; force = force_download, force_update = true)
 
     # Parse the data removing the header.
     eop = readdlm(path(_eop_iau1980); skipblanks=true, skipstart=14)
 
     # Return the parsed EOP data.
-    parse_iers_eop_iau_1980(eop)
+    return parse_iers_eop_iau_1980(eop)
 end
 
 
@@ -134,19 +137,21 @@ grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
 
 """
-function get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt";
-                                force_download = false)
+function get_iers_eop_iau_2000A(
+        url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt";
+        force_download = false
+)
 
     _eop_iau2000A = @RemoteFile(@eval($url),
                                 file="EOP_IAU2000A.TXT",
                                 updates=:daily)
-    download(_eop_iau2000A; force = force_download)
+    download(_eop_iau2000A; force = force_download, force_update = true)
 
     # Parse the data removing the header.
     eop = readdlm(path(_eop_iau2000A); skipblanks=true, skipstart=14)
 
     # Return the parsed EOP data.
-    parse_iers_eop_iau_2000A(eop)
+    return parse_iers_eop_iau_2000A(eop)
 end
 
 """
