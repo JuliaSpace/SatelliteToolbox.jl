@@ -28,7 +28,7 @@
     r_ecef_conv = ned_to_ecef(r_ned, lat, lon, h; translate = true)
 
     @test r_ecef_conv[1] ≈ r_ecef[1]
-    @test r_ecef_conv[2] ≈ r_ecef[2]
+    @test r_ecef_conv[2] ≈ r_ecef[2] atol = 1e-9 # r_ecef[2] is 0.
     @test r_ecef_conv[3] ≈ r_ecef[3]
 
     r_ned = ecef_to_ned(r_ecef, lat, lon, h)
