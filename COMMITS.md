@@ -78,6 +78,7 @@ commit does. The following table describe some situations:
 | Deprecation            | :poop: `:poop:`                                                |
 | Work In Progress (WIP) | :construction: `:construction:`                                |
 | Warning                | :warning: `:warning:`                                          |
+| Code style             | :art: `:art:`                                                  |
 | Other                  | [See here](https://www.webpagefx.com/tools/emoji-cheat-sheet/) |
 
 **Note**: If the commit contains an important warning, such as a breaking change, then the emoji :warning: `:warning:` must be added to the commit title. In this case, two emojis can be used.
