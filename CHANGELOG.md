@@ -1,6 +1,13 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.8.1
+-------------
+
+- ![Bugfix][badge-bugfix] Avoid error when receiving duplicated information in
+  `fluxtable` file. (Issue [#53][gh-issue-53])
+- ![Info][badge-info] The compat bounds of PrettyTables.jl were updated.
+
 Version 0.8.0
 -------------
 
@@ -415,6 +422,7 @@ Version 0.1.0
 [gh-issue-34]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/34
 [gh-issue-35]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/35
 [gh-issue-38]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/38
+[gh-issue-53]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/53
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
