@@ -45,11 +45,18 @@ The files are downloaded using the `RemoteFile` package with daily updates.
 Hence, if one desires to force a download before the scheduled time, then set
 the keyword `force_download` to `true`.
 
+See also: [`get_iers_eop_iau_1980`](@ref), [`get_iers_eop_iau_2000A`](@ref)
+
 # Returns
 
 A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
 on `data_type`) with the interpolations of the EOP parameters. Notice that the
 interpolation indexing is set to the Julian Day.
+
+!!! warn
+    This function is **not** type stable. If performance is required, use the
+    specialized functions [`get_iers_eop_iau_1980`](@ref) or
+    [`get_iers_eop_iau_2000A`](@ref) depending on the desired type.
 """
 function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
     if data_type == :IAU1980
@@ -77,6 +84,8 @@ keyword `force_download` to `true`.
     The interpolation of every field in [`EOPData_IAU1980`](@ref) between two
     points in the grid is linear. If extrapolation is needed, then if will use
     the nearest value (flat extrapolation).
+
+See also: [`get_iers_eop`](@ref), [`get_iers_eop_iau_2000A`](@ref)
 
 # Returns
 
@@ -119,6 +128,8 @@ keyword `force_download` to `true`.
     The interpolation of every field in [`EOPData_IAU2000`](@ref) between two
     points in the grid is linear. If extrapolation is needed, then if will use
     the nearest value (flat extrapolation).
+
+See also: [`get_iers_eop`](@ref), [`get_iers_eop_iau_1980`](@ref)
 
 # Returns
 
