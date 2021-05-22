@@ -157,7 +157,7 @@ function get_iers_eop_iau_2000A(
 end
 
 """
-    read_iers_eop(filename::String, data_type = Val(:IAU1980))
+    read_iers_eop(filename::String[, data_type])
 
 Read IERS EOP Data from the file `filename`. The user must specify if the data
 is related to the model IAU 1980 (`data_type = Val(:IAU1980)`), which is the
@@ -183,6 +183,8 @@ A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
 on `data_type`) with the interpolations of the EOP parameters. Notice that the
 interpolation indexing is set to the Julian Day.
 """
+read_iers_eop(filename::String) = read_iers_eop(filename, Val(:IAU1980))
+
 function read_iers_eop(filename::String, ::Val{:IAU1980})
     eop, ~ = readdlm(filename, ';'; header = true)
     return _parse_iers_eop_iau_1980(eop)
