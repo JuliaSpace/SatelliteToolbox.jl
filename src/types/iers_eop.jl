@@ -18,8 +18,8 @@ EOP Data for IAU 1980.
 
 * `x, y`: Polar motion with respect to the crust [arcsec].
 * `UT1_UTC`: Irregularities of the rotation angle [s].
-* `LOD`: Length of day offset [s].
-* `dPsi, dEps`: Celestial pole offsets referred to the model IAU1980 [arcsec].
+* `LOD`: Length of day offset [ms].
+* `dPsi, dEps`: Celestial pole offsets referred to the model IAU1980 [milliarcsec].
 * `*_err`: Errors in the components [same unit as the component].
 
 # Remarks

@@ -241,6 +241,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -249,10 +250,10 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
@@ -277,8 +278,8 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec2rad
+    y_p = eop_data.y(JD_UTC) * arcsec2rad
 
     # Compute the rotation.
     return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
@@ -295,6 +296,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -303,10 +305,10 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -326,6 +328,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -334,9 +337,9 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -364,8 +367,8 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec2rad
+    y_p = eop_data.y(JD_UTC) * arcsec2rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -385,6 +388,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -393,10 +397,10 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -449,6 +453,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -457,10 +462,10 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     return r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -486,6 +491,7 @@ function r_ecef_to_eci(
     eop_data::EOPData_IAU1980
 )
     arcsec2rad = π/648000
+    milliarcsec2rad = arcsec2rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -494,9 +500,9 @@ function r_ecef_to_eci(
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC)*arcsec2rad
-    y_p      = eop_data.y(JD_UTC)*arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC)*arcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec2rad
+    y_p      = eop_data.y(JD_UTC) * arcsec2rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
 
     # Compute the rotation.
     return r_pef_to_tod_fk5(T, JD_UT1, JD_TT, δΔψ_1980)

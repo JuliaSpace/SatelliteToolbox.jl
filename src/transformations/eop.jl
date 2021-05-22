@@ -62,7 +62,6 @@ the keyword `force_download` to `true`.
 A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
 with the interpolations of the EOP parameters. Notice that the interpolation
 indexing is set to the Julian Day.
-
 """
 function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
     if data_type == :IAU1980
@@ -75,29 +74,29 @@ function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
 end
 
 """
-    get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt")
+    get_iers_eop_iau_1980(url::String = "https://datacenter.iers.org/data/csv/finals.all.csv"; force_download = false)
 
-Get the IERS EOP C04 IAU1980 data from the URL `url`. If `url` is omitted, then
-it defaults to https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
+Get the IERS EOP C04 IAU1980 data from the URL `url`.
+
+If `url` is omitted, then it defaults to
+https://datacenter.iers.org/data/csv/finals.all.csv
 
 The file is downloaded using the `RemoteFile` package with daily updates. Hence,
 if one desires to force a download before the scheduled time, then set the
 keyword `force_download` to `true`.
 
+!!! note
+    The interpolation of every field in [`EOPData_IAU1980`](@ref) between two
+    points in the grid is linear. If extrapolation is needed, then if will use
+    the nearest value (flat extrapolation).
+
 # Returns
 
-The structure `EOPData_IAU1980` with the interpolations of the EOP parameters.
-Notice that the interpolation indexing is set to the Julian Day.
-
-# Remarks
-
-For every field in `EOPData_IAU1980` to interpolation between two points in the
-grid is linear. If extrapolation is needed, then if will use the nearest value
-(flat extrapolation).
-
+The structure [`EOPData_IAU1980`](@ref) with the interpolations of the EOP
+parameters. Notice that the interpolation indexing is set to the Julian Day.
 """
 function get_iers_eop_iau_1980(
-        url::String = "https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt";
+        url::String = "https://datacenter.iers.org/data/csv/finals.all.csv";
         force_download = false
 )
     _eop_iau1980 = @RemoteFile(
@@ -105,13 +104,14 @@ function get_iers_eop_iau_1980(
         file="EOP_IAU1980.TXT",
         updates=:daily
     )
+
     download(_eop_iau1980; force = force_download, force_update = true)
 
     # Parse the data removing the header.
-    eop = readdlm(path(_eop_iau1980); skipblanks=true, skipstart=14)
+    eop, ~ = readdlm(path(_eop_iau1980), ';'; header = true)
 
     # Return the parsed EOP data.
-    return parse_iers_eop_iau_1980(eop)
+    return _parse_iers_eop_iau_1980(eop)
 end
 
 
@@ -135,7 +135,6 @@ Notice that the interpolation indexing is set to the Julian Day.
 For every field in `EOPData_IAU2000A` to interpolation between two points in the
 grid is linear. If extrapolation is needed, then if will use the nearest value
 (flat extrapolation).
-
 """
 function get_iers_eop_iau_2000A(
         url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt";
@@ -163,9 +162,9 @@ or to the model IAU 2000A (`data_type = :IAU2000A`).
 
 # Returns
 
-A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
-with the interpolations of the EOP parameters. Notice that the interpolation
-indexing is set to the Julian Day.
+A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
+on `data_type`) with the interpolations of the EOP parameters. Notice that the
+interpolation indexing is set to the Julian Day.
 
 # Remarks
 
@@ -174,14 +173,13 @@ download it using the following commands:
 
 * IAU 1980
 
-        curl -O https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
-        wget https://datacenter.iers.org/data/latestVersion/223_EOP_C04_14.62-NOW.IAU1980223.txt
+    curl -O https://datacenter.iers.org/data/csv/finals.all.csv
+    wget https://datacenter.iers.org/data/csv/finals.all.csv
 
 * IAU 2000A
 
         curl -O https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
         wget https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
-
 """
 function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
     # Parse the data removing the header.
@@ -200,31 +198,27 @@ end
 #                              Private Functions
 ################################################################################
 
-function parse_iers_eop_iau_1980(eop::Matrix)
-    # Check if the dimension seems correct.
-    if size(eop,2) != 16
-        error("The input data does not have the correct dimension.")
-    end
-
+# Parse the IERS EOP (IAU 1980) data.
+function _parse_iers_eop_iau_1980(eop::Matrix)
     # Create the EOP Data structure by creating the interpolations.
     #
     # The interpolation will be linear between two points in the grid. The
     # extrapolation will be flat, considering the nearest point.
-    knots = (eop[:,4] .+ 2400000.5,)
+    knots::Vector{Float64} = Vector{Float64}(eop[:, 1] .+ 2400000.5)
 
-    EOPData_IAU1980{_eop_etp_linear{Float64}}(
-        extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 8], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 9], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,10], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,11], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,12], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,13], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,14], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,15], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
+    return EOPData_IAU1980(
+        _create_iers_eop_interpolation(knots, eop[:, 6]),
+        _create_iers_eop_interpolation(knots, eop[:, 8]),
+        _create_iers_eop_interpolation(knots, eop[:, 11]),
+        _create_iers_eop_interpolation(knots, eop[:, 13]),
+        _create_iers_eop_interpolation(knots, eop[:, 16]),
+        _create_iers_eop_interpolation(knots, eop[:, 18]),
+        _create_iers_eop_interpolation(knots, eop[:, 7]),
+        _create_iers_eop_interpolation(knots, eop[:, 9]),
+        _create_iers_eop_interpolation(knots, eop[:, 12]),
+        _create_iers_eop_interpolation(knots, eop[:, 14]),
+        _create_iers_eop_interpolation(knots, eop[:, 17]),
+        _create_iers_eop_interpolation(knots, eop[:, 19]),
     )
 end
 
@@ -256,6 +250,29 @@ function parse_iers_eop_iau_2000A(eop::Matrix)
     )
 end
 
+# Create the interpolation object for the `knots` and `field` from IERS.
+function _create_iers_eop_interpolation(
+    knots::AbstractVector,
+    field::AbstractVector
+)
+    # Obtain the last available index of the field.
+    last_id = findlast(!isempty, field)
+    last_id === nothing && (last_id = length(field))
+
+    # Convert the field to a `Vector{Float64}`.
+    field_float::Vector{Float64} = Vector{Float64}(field[1:last_id])
+
+    # Create the interpolation object.
+    interp = extrapolate(interpolate(
+        (knots[1:last_id],),
+        field_float,
+        Gridded(Linear())),
+        Flat()
+    )
+
+    return interp
+end
+
 ################################################################################
 #                                   Helpers
 ################################################################################
@@ -269,7 +286,6 @@ celestial pole offsets with respect to the GCRS (`dX` and `dY`). These values
 are necessary in the equinox-based IAU-2006 theory.
 
 The algorithm was obtained from [2, eq. 5.25] and [3, `DPSIDEPS2000_DXDY2000`].
-
 """
 function deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
     # Constants.
