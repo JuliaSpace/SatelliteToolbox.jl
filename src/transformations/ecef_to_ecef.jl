@@ -28,7 +28,7 @@ rotation description that will be used is given by `T`, which can be `DCM` or
 destination ECEF frame is selected by the input `ECEFf`. The model used to
 compute the rotation is specified by the selection of the origin and destination
 frames. Currently, there are two models supported: IAU-76/FK5 and IAU-2006 with
-2010 conventions (CIO approach only).
+2010 conventions.
 
 # Rotation description
 
@@ -38,8 +38,8 @@ by the parameter `T`.
 
 The possible values are:
 
-* `DCM`: The rotation will be described by a Direction Cosine Matrix.
-* `Quaternion`: The rotation will be described by a Quaternion.
+- `DCM`: The rotation will be described by a Direction Cosine Matrix.
+- `Quaternion`: The rotation will be described by a Quaternion.
 
 If no value is specified, then it falls back to `DCM`.
 
@@ -47,25 +47,26 @@ If no value is specified, then it falls back to `DCM`.
 
 The model that will be used to compute the rotation is automatically inferred
 given the selection of the origin and destination frames. **Notice that mixing
-IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
+IAU-76/FK5 and IAU-2006/2010 frames is not supported.**
 
 # ECEF Frame
 
 The supported ECEF frames for both origin `ECEFo` and destination `ECEFf` are:
 
-* `ITRF()`: ECEF will be selected as the International Terrestrial Reference
-            Frame (ITRF).
-* `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
-           frame.
-* `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
-            System (TIRS).
+- `ITRF()`: ECEF will be selected as the International Terrestrial Reference
+    Frame (ITRF).
+- `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
+    frame.
+- `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
+    System (TIRS).
 
 # EOP Data
 
 The conversion between the supported ECEF frames **always** depends on EOP Data
-(see `get_iers_eop` and `read_iers_eop`). If IAU-76/FK5 model is used, then the
-type of `eop_data` must be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model
-is used, then the type of `eop_data` must be `EOPData_IAU2000A`.
+(see [`get_iers_eop`](@ref) and [`read_iers_eop`](@ref)). If IAU-76/FK5 model is
+used, then the type of `eop_data` must be [`EOPData_IAU1980`](@ref). Otherwise,
+if IAU-2006/2010 model is used, then the type of `eop_data` must be
+[`EOPData_IAU2000A`](@ref).
 
 # Returns
 
@@ -75,29 +76,29 @@ frame into alignment with the ECI reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980);
+julia> eop_IAU1980 = get_iers_eop();
 
-julia> r_ecef_to_ecef(PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
-  1.0          0.0         4.35684e-7
-  0.0          1.0         1.44762e-6
- -4.35684e-7  -1.44762e-6  1.0
+julia> r_ecef_to_ecef(PEF(), ITRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
+  1.0          0.0         -4.34677e-7
+ -6.29476e-13  1.0         -1.44815e-6
+  4.34677e-7   1.44815e-6   1.0
 
-julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU1980)
+julia> r_ecef_to_ecef(Quaternion, PEF(), ITRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
-  + 0.9999999999997147 - 7.236343481310813e-7.i + 2.1765518308012794e-7.j + 0.0.k
+  + 1.0 - 7.24073e-7⋅i + 2.17339e-7⋅j + 2.17339e-7⋅k
 
-julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
+julia> eop_IAU2000A = get_iers_eop(Val(:IAU2000A));
 
-julia> r_ecef_to_ecef(TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
-  1.0          3.08408e-11  -4.3531e-7
- -3.14708e-11  1.0          -1.44727e-6
-  4.3531e-7    1.44727e-6    1.0
+julia> r_ecef_to_ecef(TIRS(), ITRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU2000A)
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
+  1.0          3.08408e-11  -4.34677e-7
+ -3.14703e-11  1.0          -1.44815e-6
+  4.34677e-7   1.44815e-6    1.0
 
-julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), date_to_jd(1986,6,19,21,35,0), eop_IAU2000A)
+julia> r_ecef_to_ecef(Quaternion, TIRS(), ITRF(), date_to_jd(1986, 6, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
-  + 0.9999999999997146 - 7.236343481345639e-7.i + 2.176551830689726e-7.j + 1.5577911634233308e-11.k
+  + 1.0 - 7.24073e-7⋅i + 2.17339e-7⋅j + 2.17339e-7⋅k
 ```
 """
 @inline function r_ecef_to_ecef(
@@ -132,11 +133,13 @@ function r_ecef_to_ecef(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
+    arcsec_to_rad = π / 648000
+
     # Get the EOP data related to the desired epoch.
     #
     # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p = eop_data.x(JD_UTC)*π/648000
-    y_p = eop_data.y(JD_UTC)*π/648000
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Return the rotation.
     return r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -166,11 +169,11 @@ function r_ecef_to_ecef(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
+    arcsec_to_rad = π / 648000
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Return the rotation.
     return r_itrf_to_tirs_iau2006(T, JD_UTC, x_p, y_p)
