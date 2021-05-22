@@ -81,3 +81,5 @@
 @deprecate JDtoGMST jd_to_gmst
 
 @deprecate dEps_dPsi deps_dpsi
+
+@deprecate read_iers_eop(f::String, T::Symbol) read_iers_eop(f, Val(T))
