@@ -11,14 +11,11 @@
 # References
 # ==============================================================================
 #
-#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
-#       Microcosm Press, Hawthorn, CA, USA.
-#
-#   [2] IERS (2010). Transformation between the International Terrestrial
+#   [1] IERS (2010). Transformation between the International Terrestrial
 #       Reference System and the Geocentric Celestial Reference System. IERS
 #       Technical Note No. 36, Chapter 5.
 #
-#   [3] ftp://hpiers.obspm.fr/eop-pc/models/uai2000.package
+#   [2] ftp://hpiers.obspm.fr/eop-pc/models/uai2000.package
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -409,12 +406,22 @@ end
 """
     deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
 
-Returns the celestial pole offsets in obliquity (δϵ_2000) and longitude
-(δΨ_2000) [arcsec]. This function obtains those values by converting the
+Returns the celestial pole offsets in obliquity (`δϵ_2000`) and longitude
+(`δΨ_2000`) [arcsec]. This function obtains those values by converting the
 celestial pole offsets with respect to the GCRS (`dX` and `dY`). These values
 are necessary in the equinox-based IAU-2006 theory.
 
-The algorithm was obtained from [2, eq. 5.25] and [3, `DPSIDEPS2000_DXDY2000`].
+The algorithm was obtained from [^1](eq. 5.25) and
+[^2](`DPSIDEPS2000_DXDY2000`).
+
+# References
+
+[^1]: IERS (2010). Transformation between the International Terrestrial
+    Reference System and the Geocentric Celestial Reference System. IERS
+    Technical Note No. 36, Chapter 5.
+
+[^2]: ftp://hpiers.obspm.fr/eop-pc/models/uai2000.package
+
 """
 function deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
     # Constants.
