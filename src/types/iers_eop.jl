@@ -14,22 +14,21 @@ export EOPData_IAU1980, EOPData_IAU2000A
 
 EOP Data for IAU 1980.
 
+!!! note
+    Each field will be an `AbstractInterpolation` indexed by the Julian Day.
+    Hence, if one wants to obtain, for example, the X component of the polar
+    motion with respect to the crust at 19 June 2018, the following can be used:
+
+        x[date_to_jd(2018, 19, 06, 0, 0, 0)]
+
 # Fields
 
-* `x, y`: Polar motion with respect to the crust [arcsec].
-* `UT1_UTC`: Irregularities of the rotation angle [s].
-* `LOD`: Length of day offset [ms].
-* `dPsi, dEps`: Celestial pole offsets referred to the model IAU1980 [milliarcsec].
-* `*_err`: Errors in the components [same unit as the component].
-
-# Remarks
-
-Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
-if one want to obtain, for example, the X component of the polar motion with
-respect to the crust at 19 June 2018, the following can be used:
-
-    x[DatestoJD(2018,19,06,0,0,0)]
-
+- `x, y`: Polar motion with respect to the crust [arcsec].
+- `UT1_UTC`: Irregularities of the rotation angle [s].
+- `LOD`: Length of day offset [ms].
+- `dPsi, dEps`: Celestial pole offsets referred to the model IAU1980
+    [milliarcsec].
+- `*_err`: Errors in the components [same unit as the component].
 """
 struct EOPData_IAU1980{T}
     x::T
@@ -53,22 +52,20 @@ end
 
 EOP Data for IAU 2000A.
 
+!!! note
+    Each field will be an `AbstractInterpolation` indexed by the Julian Day.
+    Hence, if one want to obtain, for example, the X component of the polar
+    motion with respect to the crust at 19 June 2018, the following can be used:
+
+        x[date_to_jd(2018, 19, 06, 0, 0, 0)]
+
 # Fields
 
-* `x, y`: Polar motion with respect to the crust [arcsec].
-* `UT1_UTC`: Irregularities of the rotation angle [s].
-* `LOD`: Length of day offset [ms].
-* `dX, dY`: Celestial pole offsets referred to the model IAU2000A [milliarcsec].
-* `*_err`: Errors in the components [same unit as the component].
-
-# Remarks
-
-Each field will be an `AbstractInterpolation` indexed by the Julian Day. Hence,
-if one want to obtain, for example, the X component of the polar motion with
-respect to the crust at 19 June 2018, the following can be used:
-
-    x[DatestoJD(2018,19,06,0,0,0)]
-
+- `x, y`: Polar motion with respect to the crust [arcsec].
+- `UT1_UTC`: Irregularities of the rotation angle [s].
+- `LOD`: Length of day offset [ms].
+- `dX, dY`: Celestial pole offsets referred to the model IAU2000A [milliarcsec].
+- `*_err`: Errors in the components [same unit as the component].
 """
 struct EOPData_IAU2000A{T}
     x::T
