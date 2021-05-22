@@ -31,19 +31,24 @@ export deps_dpsi
 ################################################################################
 
 """
-    get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
+    get_iers_eop([data_type]; force_download = false)
 
 Download and parse the IERS EOP C04 data. The data type is specified by
-`data_type` symbol. Supported values are:
+`data_type`. Supported values are:
 
-* `IAU1980`: Get IERS EOP C04 IAU1980 data.
-* `IAU2000A`: Get IERS EOP C04 IAU2000A data.
+- `Val(:IAU1980)`: Get IERS EOP C04 IAU1980 data.
+- `Val(:IAU2000A)`: Get IERS EOP C04 IAU2000A data.
 
-If `data_type` is omitted, then it defaults to `IAU1980`.
+If `data_type` is omitted, then it defaults to `Val(:IAU1980)`.
 
 The files are downloaded using the `RemoteFile` package with daily updates.
 Hence, if one desires to force a download before the scheduled time, then set
 the keyword `force_download` to `true`.
+
+!!! note
+    The files will be downloaded from the default URL. If the user want to use
+    another one, then use the specialized functions
+    [`get_iers_eop_iau_1980`](@ref), [`get_iers_eop_iau_2000A`](@ref)
 
 See also: [`get_iers_eop_iau_1980`](@ref), [`get_iers_eop_iau_2000A`](@ref)
 
@@ -53,19 +58,15 @@ A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
 on `data_type`) with the interpolations of the EOP parameters. Notice that the
 interpolation indexing is set to the Julian Day.
 
-!!! warn
-    This function is **not** type stable. If performance is required, use the
-    specialized functions [`get_iers_eop_iau_1980`](@ref) or
-    [`get_iers_eop_iau_2000A`](@ref) depending on the desired type.
 """
-function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
-    if data_type == :IAU1980
-        return get_iers_eop_iau_1980(force_download = force_download)
-    elseif data_type == :IAU2000A
-        return get_iers_eop_iau_2000A(force_download = force_download)
-    else
-        throw(ArgumentError("Unknow EOP type. It must be :IAU1980 or :IAU2000A."))
-    end
+get_iers_eop(;kwargs...) = get_iers_eop(Val(:IAU1980); kwargs...)
+
+function get_iers_eop(::Val{:IAU1980}; force_download = false)
+    return get_iers_eop_iau_1980(force_download = force_download)
+end
+
+function get_iers_eop(::Val{:IAU2000A}; force_download = false)
+    return get_iers_eop_iau_2000A(force_download = force_download)
 end
 
 """
@@ -93,8 +94,8 @@ The structure [`EOPData_IAU1980`](@ref) with the interpolations of the EOP
 parameters. Notice that the interpolation indexing is set to the Julian Day.
 """
 function get_iers_eop_iau_1980(
-        url::String = "https://datacenter.iers.org/data/csv/finals.all.csv";
-        force_download = false
+    url::String = "https://datacenter.iers.org/data/csv/finals.all.csv";
+    force_download = false
 )
     _eop_iau1980 = @RemoteFile(
         @eval($url),
@@ -110,7 +111,6 @@ function get_iers_eop_iau_1980(
     # Return the parsed EOP data.
     return _parse_iers_eop_iau_1980(eop)
 end
-
 
 """
     get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt"; force_download = false)
@@ -137,10 +137,9 @@ The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
 """
 function get_iers_eop_iau_2000A(
-    url::String = "https://datacenter.iers.org/data/csv/finals2000A.all.csv",
+    url::String = "https://datacenter.iers.org/data/csv/finals2000A.all.csv";
     force_download = false
 )
-
     _eop_iau2000A = @RemoteFile(
         @eval($url),
         file="EOP_IAU2000A.TXT",
