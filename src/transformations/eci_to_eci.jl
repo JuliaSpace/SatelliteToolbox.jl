@@ -674,14 +674,14 @@ function r_eci_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
+    milliarcsec2rad = π/648000000
 
     # Get the time in TT.
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    dX = eop_data.dX(JD_UTC)*arcsec2rad
-    dY = eop_data.dY(JD_UTC)*arcsec2rad
+    dX = eop_data.dX(JD_UTC) * milliarcsec2rad
+    dY = eop_data.dY(JD_UTC) * milliarcsec2rad
 
     # Compute and return the rotation.
     return r_gcrf_to_cirs_iau2006(T, JD_TT, dX, dY)
@@ -845,15 +845,15 @@ function r_eci_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
+    milliarcsec2rad = π/648000000
 
     # Get the time in TT.
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= arcsec2rad
-    δΔΨ_2000 *= arcsec2rad
+    δΔϵ_2000 *= milliarcsec2rad
+    δΔΨ_2000 *= milliarcsec2rad
 
     # Compute and return the composed rotation.
     r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
@@ -944,19 +944,19 @@ function r_eci_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
+    milliarcsec2rad = π/648000000
 
     # Get the time in TT.
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= arcsec2rad
-    δΔΨ_2000 *= arcsec2rad
+    δΔϵ_2000 *= milliarcsec2rad
+    δΔΨ_2000 *= milliarcsec2rad
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
-    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
+    r_MOD_ERS    = r_ers_to_mod_iau2006(T, JD_TT, δΔϵ_2000, δΔΨ_2000)
+    r_MJ2000_MOD = r_mod_to_mj2000_iau2006(T, JD_TT)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD)
 end
@@ -966,8 +966,8 @@ function r_eci_to_eci(T::T_ROT, ::Val{:ERS}, ::Val{:MJ2000}, JD_UTC::Number)
     JD_TT = jd_utc_to_tt(JD_UTC)
 
     # Compute and return the composed rotation.
-    r_MOD_ERS     = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
-    r_MJ2000_MOD  = r_mod_to_mj2000_iau2006(T, JD_TT)
+    r_MOD_ERS    = r_ers_to_mod_iau2006(T, JD_TT, 0, 0)
+    r_MJ2000_MOD = r_mod_to_mj2000_iau2006(T, JD_TT)
 
     return compose_rotation(r_MOD_ERS, r_MJ2000_MOD)
 end

@@ -57,8 +57,8 @@ EOP Data for IAU 2000A.
 
 * `x, y`: Polar motion with respect to the crust [arcsec].
 * `UT1_UTC`: Irregularities of the rotation angle [s].
-* `LOD`: Length of day offset [s].
-* `dX, dY`: Celestial pole offsets referred to the model IAU2000A [arcsec].
+* `LOD`: Length of day offset [ms].
+* `dX, dY`: Celestial pole offsets referred to the model IAU2000A [milliarcsec].
 * `*_err`: Errors in the components [same unit as the component].
 
 # Remarks

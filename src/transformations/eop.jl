@@ -59,9 +59,9 @@ the keyword `force_download` to `true`.
 
 # Returns
 
-A structure (`EOPData_IAU1980` or `EOPData_IAU2000A`, depending on `data_type`)
-with the interpolations of the EOP parameters. Notice that the interpolation
-indexing is set to the Julian Day.
+A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
+on `data_type`) with the interpolations of the EOP parameters. Notice that the
+interpolation indexing is set to the Julian Day.
 """
 function get_iers_eop(data_type::Symbol = :IAU1980; force_download = false)
     if data_type == :IAU1980
@@ -118,39 +118,43 @@ end
 """
     get_iers_eop_iau_2000A(url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt"; force_download = false)
 
-Get the IERS EOP C04 IAU2000A data from the URL `url`. If `url` is omitted, then
-it defaults to https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
+Get the IERS EOP C04 IAU2000A data from the URL `url`.
+
+If `url` is omitted, then it defaults to
+https://datacenter.iers.org/data/csv/finals2000A.all.csv.
 
 The file is downloaded using the `RemoteFile` package with daily updates. Hence,
 if one desires to force a download before the scheduled time, then set the
 keyword `force_download` to `true`.
 
+!!! note
+    The interpolation of every field in [`EOPData_IAU2000`](@ref) between two
+    points in the grid is linear. If extrapolation is needed, then if will use
+    the nearest value (flat extrapolation).
+
 # Returns
 
 The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
-
-# Remarks
-
-For every field in `EOPData_IAU2000A` to interpolation between two points in the
-grid is linear. If extrapolation is needed, then if will use the nearest value
-(flat extrapolation).
 """
 function get_iers_eop_iau_2000A(
-        url::String = "https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt";
-        force_download = false
+    url::String = "https://datacenter.iers.org/data/csv/finals2000A.all.csv",
+    force_download = false
 )
 
-    _eop_iau2000A = @RemoteFile(@eval($url),
-                                file="EOP_IAU2000A.TXT",
-                                updates=:daily)
+    _eop_iau2000A = @RemoteFile(
+        @eval($url),
+        file="EOP_IAU2000A.TXT",
+        updates=:daily
+    )
+
     download(_eop_iau2000A; force = force_download, force_update = true)
 
     # Parse the data removing the header.
-    eop = readdlm(path(_eop_iau2000A); skipblanks=true, skipstart=14)
+    eop, ~ = readdlm(path(_eop_iau2000A), ';'; header = true)
 
     # Return the parsed EOP data.
-    return parse_iers_eop_iau_2000A(eop)
+    return _parse_iers_eop_iau_2000A(eop)
 end
 
 """
@@ -178,17 +182,17 @@ download it using the following commands:
 
 * IAU 2000A
 
-        curl -O https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
-        wget https://datacenter.iers.org/data/latestVersion/224_EOP_C04_14.62-NOW.IAU2000A224.txt
+    curl -O https://datacenter.iers.org/data/csv/finals2000A.all.csv
+    wget https://datacenter.iers.org/data/csv/finals2000A.all.csv
 """
 function read_iers_eop(filename::String, data_type::Symbol = :IAU1980)
     # Parse the data removing the header.
-    eop = readdlm(filename; skipblanks=true, skipstart=14)
+    eop, ~ = readdlm(filename, ';'; header = true)
 
     if data_type == :IAU1980
-        parse_iers_eop_iau_1980(eop)
+        return _parse_iers_eop_iau_1980(eop)
     elseif data_type == :IAU2000A
-        parse_iers_eop_iau_2000A(eop)
+        return _parse_iers_eop_iau_2000A(eop)
     else
         throw(ArgumentError("Unknow EOP type. It must be :IAU1980 or :IAU2000A."))
     end
@@ -222,31 +226,27 @@ function _parse_iers_eop_iau_1980(eop::Matrix)
     )
 end
 
-function parse_iers_eop_iau_2000A(eop::Matrix)
-    # Check if the dimension seems correct.
-    if size(eop,2) != 16
-        error("The input data does not have the correct dimension.")
-    end
-
+# Parse the IERS EOP (IAU 2000A) data.
+function _parse_iers_eop_iau_2000A(eop::Matrix)
     # Create the EOP Data structure by creating the interpolations.
     #
     # The interpolation will be linear between two points in the grid. The
     # extrapolation will be flat, considering the nearest point.
-	knots = (eop[:,4] .+ 2400000.5,)
+    knots::Vector{Float64} = Vector{Float64}(eop[:, 1] .+ 2400000.5)
 
-    EOPData_IAU2000A{_eop_etp_linear{Float64}}(
-        extrapolate(interpolate(knots, eop[:, 5], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 6], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 7], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 8], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:, 9], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,10], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,11], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,12], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,13], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,14], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,15], Gridded(Linear())), Flat()),
-        extrapolate(interpolate(knots, eop[:,16], Gridded(Linear())), Flat())
+    EOPData_IAU2000A(
+        _create_iers_eop_interpolation(knots, eop[:, 6]),
+        _create_iers_eop_interpolation(knots, eop[:, 8]),
+        _create_iers_eop_interpolation(knots, eop[:, 11]),
+        _create_iers_eop_interpolation(knots, eop[:, 13]),
+        _create_iers_eop_interpolation(knots, eop[:, 20]),
+        _create_iers_eop_interpolation(knots, eop[:, 22]),
+        _create_iers_eop_interpolation(knots, eop[:, 7]),
+        _create_iers_eop_interpolation(knots, eop[:, 9]),
+        _create_iers_eop_interpolation(knots, eop[:, 12]),
+        _create_iers_eop_interpolation(knots, eop[:, 14]),
+        _create_iers_eop_interpolation(knots, eop[:, 21]),
+        _create_iers_eop_interpolation(knots, eop[:, 23]),
     )
 end
 
