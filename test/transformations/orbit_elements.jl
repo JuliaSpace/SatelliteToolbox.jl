@@ -14,7 +14,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
 
 # Get the current EOP Data.
-eop = read_iers_eop("./eop_IAU1980_2.txt", :IAU1980)
+eop = read_iers_eop("./eop_IAU1980_2.txt", Val(:IAU1980))
 
 # File: ./src/transformations/orbit_elements.jl
 # =============================================
