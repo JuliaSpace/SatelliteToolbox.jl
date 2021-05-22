@@ -22,21 +22,9 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export EOPData_IAU1980, EOPData_IAU2000A
 export get_iers_eop, get_iers_eop_iau_1980, get_iers_eop_iau_2000A
 export read_iers_eop
 export deps_dpsi
-
-################################################################################
-#                       Private Structures and Variables
-################################################################################
-
-# Interpolation types used in EOP data.
-const _eop_itp_linear{T} =
-    Interpolations.GriddedInterpolation{T,1,T, Gridded{Linear}, Tuple{Array{T,1}}}
-
-const _eop_etp_linear{T} =
-    Interpolations.Extrapolation{T, 1, _eop_itp_linear{T}, Gridded{Linear}, Flat{Nothing}}
 
 ################################################################################
 #                                  Functions
