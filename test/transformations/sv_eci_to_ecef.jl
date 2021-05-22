@@ -20,8 +20,8 @@
 # functions at the low level are tested using the same values of [1], and 2) the
 # difference is smaller than 30 cm.
 
-eop_iau1980  = read_iers_eop("./eop_IAU1980.txt",  :IAU1980)
-eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", :IAU2000A)
+eop_iau1980  = read_iers_eop("./eop_IAU1980.txt",  Val(:IAU1980))
+eop_iau2000a = read_iers_eop("./eop_IAU2000A.txt", Val(:IAU2000A))
 
 # File: ./src/transformations/sv_eci_to_ecef.jl
 # =============================================
