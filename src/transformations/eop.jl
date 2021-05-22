@@ -261,7 +261,7 @@ end
 
 function show(io::IO, mime::MIME"text/plain", eop::EOPData_IAU1980)
     # Check if IO has support for colors.
-    color = get(io, :color, true)::Bool
+    color = get(io, :color, false)::Bool
 
     if color
         _b = string(Crayon(bold = true))
@@ -293,7 +293,7 @@ end
 
 function show(io::IO, mime::MIME"text/plain", eop::EOPData_IAU2000A)
     # Check if IO has support for colors.
-    color = get(io, :color, true)::Bool
+    color = get(io, :color, false)::Bool
 
     if color
         _b = string(Crayon(bold = true))
