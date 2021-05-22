@@ -58,6 +58,33 @@ A structure ([`EOPData_IAU1980`](@ref) or [`EOPData_IAU2000A`](@ref), depending
 on `data_type`) with the interpolations of the EOP parameters. Notice that the
 interpolation indexing is set to the Julian Day.
 
+# Examples
+
+```julia-repl
+julia> eop = get_iers_eop()
+[ Info: Downloading file 'EOP_IAU1980.TXT' from 'https://datacenter.iers.org/data/csv/finals.all.csv' with cURL.
+EOPData_IAU1980:
+     Data │ Timespan
+ ─────────┼──────────────────────────────────────────────
+        x │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+        y │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+  UT1-UTC │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+      LOD │ 1973-01-02T00:00:00 -- 2021-05-19T00:00:00
+       dψ │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+       dϵ │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+
+julia> eop = get_iers_eop(Val(:IAU2000A))
+[ Info: Downloading file 'EOP_IAU2000A.TXT' from 'https://datacenter.iers.org/data/csv/finals2000A.all.csv' with cURL.
+EOPData_IAU2000A:
+     Data │ Timespan
+ ─────────┼──────────────────────────────────────────────
+        x │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+        y │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+  UT1-UTC │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+      LOD │ 1973-01-02T00:00:00 -- 2021-05-19T00:00:00
+       dX │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+       dY │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+```
 """
 get_iers_eop(;kwargs...) = get_iers_eop(Val(:IAU1980); kwargs...)
 
@@ -92,6 +119,22 @@ See also: [`get_iers_eop`](@ref), [`get_iers_eop_iau_2000A`](@ref)
 
 The structure [`EOPData_IAU1980`](@ref) with the interpolations of the EOP
 parameters. Notice that the interpolation indexing is set to the Julian Day.
+
+# Examples
+
+```julia-repl
+julia> eop = get_iers_eop_iau1980()
+[ Info: Downloading file 'EOP_IAU1980.TXT' from 'https://datacenter.iers.org/data/csv/finals.all.csv' with cURL.
+EOPData_IAU1980:
+     Data │ Timespan
+ ─────────┼──────────────────────────────────────────────
+        x │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+        y │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+  UT1-UTC │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+      LOD │ 1973-01-02T00:00:00 -- 2021-05-19T00:00:00
+       dψ │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+       dϵ │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+```
 """
 function get_iers_eop_iau_1980(
     url::String = "https://datacenter.iers.org/data/csv/finals.all.csv";
@@ -135,6 +178,22 @@ See also: [`get_iers_eop`](@ref), [`get_iers_eop_iau_1980`](@ref)
 
 The structure `EOPData_IAU2000A` with the interpolations of the EOP parameters.
 Notice that the interpolation indexing is set to the Julian Day.
+
+# Examples
+
+```julia-repl
+julia> eop = get_iers_eop(Val(:IAU2000A))
+[ Info: Downloading file 'EOP_IAU2000A.TXT' from 'https://datacenter.iers.org/data/csv/finals2000A.all.csv' with cURL.
+EOPData_IAU2000A:
+     Data │ Timespan
+ ─────────┼──────────────────────────────────────────────
+        x │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+        y │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+  UT1-UTC │ 1973-01-02T00:00:00 -- 2022-05-28T00:00:00
+      LOD │ 1973-01-02T00:00:00 -- 2021-05-19T00:00:00
+       dX │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+       dY │ 1973-01-02T00:00:00 -- 2021-08-05T00:00:00
+```
 """
 function get_iers_eop_iau_2000A(
     url::String = "https://datacenter.iers.org/data/csv/finals2000A.all.csv";
