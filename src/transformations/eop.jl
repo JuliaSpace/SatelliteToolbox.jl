@@ -195,6 +195,74 @@ function read_iers_eop(filename::String, ::Val{:IAU2000A})
 end
 
 ################################################################################
+#                                      IO
+################################################################################
+
+function show(io::IO, eop::EOPData_IAU1980)
+    print(io, "EOPData_IAU1980")
+    return nothing
+end
+
+function show(io::IO, mime::MIME"text/plain", eop::EOPData_IAU1980)
+    # Check if IO has support for colors.
+    color = get(io, :color, true)::Bool
+
+    if color
+        _b = string(Crayon(bold = true))
+        _g = string(crayon"dark_gray")
+        _r = string(Crayon(reset = true))
+    else
+        _b = ""
+        _g = ""
+        _r = ""
+    end
+
+    println(io, "EOPData_IAU1980:")
+    println(io, _b, "     Data ", _g, "│ ", _r, _b, "Timespan", _r)
+    println(io, _g, " ─────────┼──────────────────────────────────────────────", _r)
+    println(io, _b, "        x ", _g, "│ ", _r, _get_iers_eop_timespan(eop.x))
+    println(io, _b, "        y ", _g, "│ ", _r, _get_iers_eop_timespan(eop.y))
+    println(io, _b, "  UT1-UTC ", _g, "│ ", _r, _get_iers_eop_timespan(eop.UT1_UTC))
+    println(io, _b, "      LOD ", _g, "│ ", _r, _get_iers_eop_timespan(eop.LOD))
+    println(io, _b, "       dψ ", _g, "│ ", _r, _get_iers_eop_timespan(eop.dPsi))
+    print(io,   _b, "       dϵ ", _g, "│ ", _r, _get_iers_eop_timespan(eop.dEps))
+
+    return nothing
+end
+
+function show(io::IO, eop::EOPData_IAU2000A)
+    print(io, "EOPData_IAU2000A")
+    return nothing
+end
+
+function show(io::IO, mime::MIME"text/plain", eop::EOPData_IAU2000A)
+    # Check if IO has support for colors.
+    color = get(io, :color, true)::Bool
+
+    if color
+        _b = string(Crayon(bold = true))
+        _g = string(crayon"dark_gray")
+        _r = string(Crayon(reset = true))
+    else
+        _b = ""
+        _g = ""
+        _r = ""
+    end
+
+    println(io, "EOPData_IAU2000A:")
+    println(io, _b, "     Data ", _g, "│ ", _r, _b, "Timespan", _r)
+    println(io, _g, " ─────────┼──────────────────────────────────────────────", _r)
+    println(io, _b, "        x ", _g, "│ ", _r, _get_iers_eop_timespan(eop.x))
+    println(io, _b, "        y ", _g, "│ ", _r, _get_iers_eop_timespan(eop.y))
+    println(io, _b, "  UT1-UTC ", _g, "│ ", _r, _get_iers_eop_timespan(eop.UT1_UTC))
+    println(io, _b, "      LOD ", _g, "│ ", _r, _get_iers_eop_timespan(eop.LOD))
+    println(io, _b, "       dX ", _g, "│ ", _r, _get_iers_eop_timespan(eop.dX))
+    print(io,   _b, "       dY ", _g, "│ ", _r, _get_iers_eop_timespan(eop.dY))
+
+    return nothing
+end
+
+################################################################################
 #                              Private Functions
 ################################################################################
 
@@ -269,6 +337,12 @@ function _create_iers_eop_interpolation(
     return interp
 end
 
+function _get_iers_eop_timespan(itp::AbstractInterpolation)
+    str = string(jd_to_date(DateTime, first(first(itp.itp.knots)))) * " -- " *
+          string(jd_to_date(DateTime, last(first(itp.itp.knots))))
+    return str
+end
+
 ################################################################################
 #                                   Helpers
 ################################################################################
@@ -306,8 +380,8 @@ function deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
 
     aux = Ψ_a * cϵ₀ - χ_a
     den = aux^2 * sϵ₀ - sϵ₀
-    δϵ  = (aux * sϵ₀ * dX - sϵ₀ * dY)/den
-    δΨ  = (dX - aux * dY)/den
+    δϵ  = (aux * sϵ₀ * dX - sϵ₀ * dY) / den
+    δΨ  = (dX - aux * dY) / den
 
     return δϵ, δΨ
 end
