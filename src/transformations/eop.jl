@@ -191,7 +191,7 @@ end
 
 function read_iers_eop(filename::String, ::Val{:IAU2000A})
     eop, ~ = readdlm(filename, ';'; header = true)
-    return _parse_iers_eop_iau_1980(eop)
+    return _parse_iers_eop_iau_2000A(eop)
 end
 
 ################################################################################
