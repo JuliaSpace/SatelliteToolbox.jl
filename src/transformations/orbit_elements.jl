@@ -32,26 +32,28 @@ export change_oe_frame
 
 Change the reference frame of orbit elements. The orbit elements can be
 specified by `a`, `e`, `i`, `Ω`, `ω`, and `f`, or the structure `oe` (see
-[`Orbit`](@ref)). In the latter, the return value type will match the type of `oe`.
+[`Orbit`](@ref)). In the latter, the return value type will match the type of
+`oe`.
 
 The conversion arguments `conv_args` are **the same** arguments that one should
-pass to the function `r_eci_to_eci` to convert between the desired frames. For more
-information, see the documentation of the function `r_eci_to_eci`.
+pass to the function [`r_eci_to_eci`](@ref) to convert between the desired
+frames. For more information, see the documentation of the function
+[`r_eci_to_eci`](@ref).
 
 # Args
 
-* `a`: Semi-major axis [m].
-* `e`: Excentricity.
-* `i`: Inclination [rad].
-* `Ω`: Right-ascension of the ascending node [rad].
-* `ω`: Argument of perigee [rad].
-* `f`: True anomaly [rad].
-* `conv_args...`: Conversion arguments, which are the same arguments that one
-                  would pass to the function `r_eci_to_eci` to convert between the
-                  desired frames.
+- `a`: Semi-major axis [m].
+- `e`: Excentricity.
+- `i`: Inclination [rad].
+- `Ω`: Right-ascension of the ascending node [rad].
+- `ω`: Argument of perigee [rad].
+- `f`: True anomaly [rad].
+- `conv_args...`: Conversion arguments, which are the same arguments that one
+    would pass to the function `r_eci_to_eci` to convert between the desired
+    frames.
 
-* `oe`: An instance of the structure [`Orbit`](@ref) with the orbit elements
-        that will be converted [SI units].
+- `oe`: An instance of the structure [`Orbit`](@ref) with the orbit elements
+    that will be converted [SI units].
 
 # Returns
 
@@ -66,15 +68,15 @@ julia> eop = get_iers_eop(:IAU1980);
 
 julia> teme_epoch = date_to_jd(2016,6,1,11,0,0);
 
-julia> tod_epoch  = date_to_jd(2016,1,1,0,0,0);
+julia> tod_epoch = date_to_jd(2016,1,1,0,0,0);
 
-julia> k_teme     = KeplerianElements(teme_epoch,
-                                      7130.982e3,
-                                      0.001111,
-                                      98.405*pi/180,
-                                      227.336*pi/180,
-                                      90*pi/180,
-                                      320*pi/180)
+julia> k_teme = KeplerianElements(teme_epoch,
+                                  7130.982e3,
+                                  0.001111,
+                                  98.405*pi/180,
+                                  227.336*pi/180,
+                                  90*pi/180,
+                                  320*pi/180)
 KeplerianElements{Float64}:
            Epoch :    2.45754e6 (2016-06-01T11:00:00)
  Semi-major axis : 7130.98     km
@@ -105,14 +107,15 @@ KeplerianElements{Float64}:
     True Anomaly :  320.0      °
 ```
 """
-function change_oe_frame(a::Number,
-                         e::Number,
-                         i::Number,
-                         Ω::Number,
-                         ω::Number,
-                         f::Number,
-                         conv_args...)
-
+function change_oe_frame(
+        a::Number,
+        e::Number,
+        i::Number,
+        Ω::Number,
+        ω::Number,
+        f::Number,
+        conv_args...
+)
     # The approach is to transform the orbit elements to Cartesian
     # representation, convert the frame, and then convert back to orbit
     # elements.
@@ -132,9 +135,9 @@ function change_oe_frame(oe::T, conv_args...) where T<:Orbit
     # NOTE: In my benchmarks, the operation with DCMs are faster than with
     # quaternions after the DCM representation was changed to SMatrix.
     D_ECIf_ECIo = r_eci_to_eci(DCM, conv_args...)
-    r_f         = D_ECIf_ECIo*r_o
-    v_f         = D_ECIf_ECIo*v_o
-    a_f         = D_ECIf_ECIo*a_o
+    r_f         = D_ECIf_ECIo * r_o
+    v_f         = D_ECIf_ECIo * v_o
+    a_f         = D_ECIf_ECIo * a_o
 
     # Create the new state vector that will be converted to an entity with the
     # type `T`.
