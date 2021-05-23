@@ -9,6 +9,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -35,16 +36,19 @@ export geocentric_to_geodetic, geodetic_to_geocentric
 Convert the vector `r_e` [m] represented in the Earth-Centered, Earth-Fixed
 (ECEF) reference frame into Geodetic coordinates (WGS-84).
 
+!!! info
+    The algorithm is based in **[3]**.
+
 # Returns
 
 * Latitude [rad].
 * Longitude [rad].
 * Altitude [m].
 
-# Remarks
+# Reference
 
-Based on algorithm in [3].
-
+- **[3]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
+    Application Note.
 """
 function ecef_to_geodetic(r_e::AbstractVector)
     # Auxiliary variables.
@@ -60,8 +64,10 @@ function ecef_to_geodetic(r_e::AbstractVector)
 
     # Compute Geodetic.
     lon = atan(Y, X)
-    lat = atan(Z + el_wgs84^2 * b_wgs84 * sin_θ^3,
-               p -   e_wgs84² * a_wgs84 * cos_θ^3)
+    lat = atan(
+        Z + el_wgs84^2 * b_wgs84 * sin_θ^3,
+        p -   e_wgs84² * a_wgs84 * cos_θ^3
+    )
 
     sin_lat, cos_lat = sincos(lat)
 
@@ -85,10 +91,13 @@ Convert the latitude `lat` [rad], longitude `lon` [rad], and altitude `h` \\[m]
 (WGS-84) into a vector represented on the Earth-Centered, Earth-Fixed (ECEF)
 reference frame.
 
-# Remarks
+!!! info
+    The algorithm is based in **[3]**.
 
-Based on algorithm in [3].
+# Reference
 
+- **[3]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
+    Application Note.
 """
 function geodetic_to_ecef(lat::Number, lon::Number, h::Number)
     # Auxiliary variables.
@@ -113,15 +122,19 @@ Compute the geodetic latitude and altitude (WGS-84) from the geocentric latitude
 `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m]. Notice that the longitude is the
 same in both geocentric and geodetic coordinates.
 
+!!! info
+    The algorithm is based in **[5]**.
+
 # Returns
 
 * Geodetic latitude [rad].
 * Altitude above the reference ellipsoid (WGS-84) [m].
 
-# Remarks
+# References
 
-Based on algorithm in [5].
-
+- **[5]** Borkowski, K. M (1987). Transformation of geocentric to geodetic
+    coordinates without approximations. Astrophysics and Space Science, vol.
+    139, pp. 1-4.
 """
 function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
     # Obtain the `z` component and the equatorial component `re`.
@@ -178,15 +191,17 @@ Compute the geocentric latitude and radius from the geodetic latitude `ϕ_gd`
 Notice that the longitude is the same in both geocentric and geodetic
 coordinates.
 
+!!! info
+    The algorithm is based in **[4]**(p. 3).
+
 # Returns
 
 * Geocentric latitude [rad].
 * Radius from the center of the Earth [m].
 
-# Remarks
+# References
 
-Based on algorithm in [4, p. 3].
-
+- **[4]** ISO TC 20/SC 14 N (2011). Geomagnetic Reference Models.
 """
 function geodetic_to_geocentric(ϕ_gd::Number, h::Number)
     # Auxiliary variables to decrease computational burden.
