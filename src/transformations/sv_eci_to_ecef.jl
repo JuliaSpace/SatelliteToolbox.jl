@@ -25,14 +25,12 @@ Convert the orbit state vector `sv` from the Earth-Centered Inertial (ECI)
 reference frame `ECI` to the Earth-Centered, Earth-Fixed (ECEF) reference frame
 at the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending on
 the selection of the input and output reference system. For more information,
-see the documentation of the function `r_eci_to_ecef`.
+see the documentation of the function [`r_eci_to_ecef`](@ref).
 
 !!! info
-
     It is assumed that the input velocity and acceleration in `sv` are obtained
     by an observer on the ECI frame. Thus, the output will contain the velocity
     and acceleration as measured by an observer on the ECEF frame.
-
 """
 function sv_eci_to_ecef(
     sv::OrbitStateVector,
@@ -80,7 +78,7 @@ function sv_eci_to_ecef(
     # we must account from it when converting the velocity and acceleration. The
     # angular velocity between those frames is computed using `we` and corrected
     # by the length of day (LOD) parameter of the EOP data, if available.
-    ω  = we * (1 - (eop_data != nothing ? eop_data.LOD(JD_UTC)/86400000 : 0))
+    ω  = we * (1 - (eop_data != nothing ? eop_data.LOD(JD_UTC) / 86400000 : 0))
     vω = SVector{3}(0, 0, ω)
 
     # Compute the position in the ECEF frame.
@@ -88,7 +86,7 @@ function sv_eci_to_ecef(
 
     # Compute the velocity in the ECEF frame.
     vω_x_r = vω × r_ecef
-    v_ecef = D*sv.v - vω_x_r
+    v_ecef = D * sv.v - vω_x_r
 
     # Compute the acceleration in the ECI frame.
     a_ecef = D * sv.a - vω × vω_x_r - 2vω × v_ecef
