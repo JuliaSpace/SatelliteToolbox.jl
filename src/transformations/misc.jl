@@ -7,11 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export FK5, ITRF, PEF, TOD, MOD, GCRF, J2000, TEME, CIRS, TIRS, ERS, MOD06,
-       MJ2000
-
-# Auxiliary functions to define the conversion models.
-@inline FK5()   = Val(:FK5)
+export ITRF, PEF, TOD, MOD, GCRF, J2000, TEME, CIRS, TIRS, ERS, MOD06, MJ2000
 
 # Auxiliary functions to define the reference frames.
 @inline ITRF()   = Val(:ITRF)
