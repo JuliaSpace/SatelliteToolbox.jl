@@ -1,17 +1,19 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Tests related to IAU-76/FK5 nutation algorithm.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # File: ./src/transformations/fk5/nutation.jl
 # ===========================================
@@ -74,30 +76,51 @@
     # Scenario 01
     # ===========
 
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(2453101.828154745)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(2453101.828154745)
 
-    @test mϵ_1980*180/pi ≈ 23.4387368 atol=1e-7
-    @test Δϵ_1980*180/pi ≈  0.0020316 atol=1e-7
-    @test Δψ_1980*180/pi ≈ -0.0034108 atol=1e-7
+    @test mϵ_1980 * 180 / π ≈ 23.4387368 atol=1e-7
+    @test Δϵ_1980 * 180 / π ≈  0.0020316 atol=1e-7
+    @test Δψ_1980 * 180 / π ≈ -0.0034108 atol=1e-7
 
     # Scenario 02
     # ===========
 
-    JD_UTC = date_to_jd(2000,1,1,0,0,0) + 182.78495062 - 1
+    JD_UTC = date_to_jd(2000, 1, 1, 0, 0, 0) + 182.78495062 - 1
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT, 4)
 
-    @test mϵ_1980*180/pi ≈ 23.43922657  atol=1e-6
-    @test Δϵ_1980*180/pi ≈ -0.001260854 atol=1e-8
-    @test Δψ_1980*180/pi ≈ -0.004250260 atol=1e-8
+    @test mϵ_1980 * 180 / π ≈ 23.43922657  atol=1e-6
+    @test Δϵ_1980 * 180 / π ≈ -0.001260854 atol=1e-8
+    @test Δψ_1980 * 180 / π ≈ -0.004250260 atol=1e-8
 
-    JD_UTC = date_to_jd(2000,1,1,0,0,0) + 179.78495062 - 1
+    JD_UTC = date_to_jd(2000, 1, 1, 0, 0, 0) + 179.78495062 - 1
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
-    (mϵ_1980, Δϵ_1980, Δψ_1980) = nutation_fk5(JD_TT, 4)
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT, 4)
 
-    @test mϵ_1980*180/pi ≈ 23.43922657  atol=1e-6
-    @test Δϵ_1980*180/pi ≈ -0.001247061 atol=1e-8
-    @test Δψ_1980*180/pi ≈ -0.004337544 atol=1e-8
+    @test mϵ_1980 * 180 / π ≈ 23.43922657  atol=1e-6
+    @test Δϵ_1980 * 180 / π ≈ -0.001247061 atol=1e-8
+    @test Δψ_1980 * 180 / π ≈ -0.004337544 atol=1e-8
+
+    # Warnings
+    # ========
+    JD_TT = 2453101.828154745
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
+
+    @test (@test_logs(
+        (
+            :warn,
+            "The maximum number of coefficients to compute nutation using IAU-76/FK5 theory is 106."
+        ),
+        nutation_fk5(JD_TT, 107)
+    )) == (mϵ_1980, Δϵ_1980, Δψ_1980)
+
+    @test (@test_logs(
+        (
+            :warn,
+            "n_max must greater than 0. The default value will be used (106)."
+        ),
+        nutation_fk5(JD_TT, 0)
+    )) == (mϵ_1980, Δϵ_1980, Δψ_1980)
 end
