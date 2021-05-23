@@ -31,15 +31,15 @@ function f_to_M(orb::Orbit)
 
 where:
 
-* `M` is the mean anomaly \[rad];
-* `E` is the eccentric anomaly \[rad];
-* `f` is the true anomaly \[rad];
+* `M` is the mean anomaly [rad];
+* `E` is the eccentric anomaly [rad];
+* `f` is the true anomaly [rad];
 * `e` is the eccentricity;
 * `orb` is an instance of the structure [`Orbit`](@ref);
 * `tol` is used to select the tolerance for the cases in which the conversion is
   performed by a numerical method, such as the Newton-Raphson algorithm.
 
-All the returned values are in \[rad].
+All the returned values are in [rad].
 
 ```jldoctest
 julia> M_to_E(0.04, pi/4)

@@ -42,9 +42,9 @@ function angvel(orb::Orbit, pert::Symbol = :J2)
 
 where:
 
-* `a` is the semi-major axis \[m];
+* `a` is the semi-major axis [m];
 * `e` is the eccentricity;
-* `i` is the inclination \[rad];
+* `i` is the inclination [rad];
 * `pert` selects the perturbation terms it should be used, it can be `:J0`,
   `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
@@ -83,9 +83,9 @@ function dargp(orb::Orbit, pert::Symbol = :J2)
 
 where:
 
-* `a` is the semi-major axis \[m];
+* `a` is the semi-major axis [m];
 * `e` is the eccentricity;
-* `i` is the inclination \[rad];
+* `i` is the inclination [rad];
 * `pert` selects the perturbation terms it should be used, it can be `:J0`,
   `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
@@ -127,9 +127,9 @@ function draan(orb::Orbit, pert::Symbol = :J2)
 
 where:
 
-* `a` is the semi-major axis \[m];
+* `a` is the semi-major axis [m];
 * `e` is the eccentricity;
-* `i` is the inclination \[rad];
+* `i` is the inclination [rad];
 * `pert` selects the perturbation terms it should be used, it can be `:J0`,
   `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
@@ -152,7 +152,7 @@ T = \frac{2\pi}{n}
 
 where ``n`` is the angular velocity as described in [Angular velocity](@ref).
 
-In this package, the orbital period \[s] can be computed by the following
+In this package, the orbital period [s] can be computed by the following
 functions:
 
 ```julia
@@ -162,9 +162,9 @@ function period(orb::Orbit, pert::Symbol = :J2)
 
 where:
 
-* `a` is the semi-major axis \[m];
+* `a` is the semi-major axis [m];
 * `e` is the eccentricity;
-* `i` is the inclination \[rad];
+* `i` is the inclination [rad];
 * `pert` selects the perturbation terms it should be used, it can be `:J0`,
   `:J2`, or `:J4`[^1]; and
 * `orb` is an instance of [`Orbit`](@ref).
@@ -179,5 +179,10 @@ julia> period(7130982, 0.001111, deg2rad(98.405), :J0)/60
 
 ---
 
-[^1]: If `pert` is `:J0`, then it will be considered a Keplerian, unperturbed orbit to compute the values. If `pert` is `:J2`, then it will be considered the perturbation terms up to ``J_2`` to compute the values. Otherwise, if `pert` is `:J4`, then it will be considered the perturbation terms ``J_2``, ``J_4``, and ``J_2^2`` to compute the values. If `pert` is omitted, then it defaults to `:J2`.
+[^1]: If `pert` is `:J0`, then it will be considered a Keplerian, unperturbed
+  orbit to compute the values. If `pert` is `:J2`, then it will be considered
+  the perturbation terms up to ``J_2`` to compute the values. Otherwise, if
+  `pert` is `:J4`, then it will be considered the perturbation terms ``J_2``,
+  ``J_4``, and ``J_2^2`` to compute the values. If `pert` is omitted, then it
+  defaults to `:J2`.
 

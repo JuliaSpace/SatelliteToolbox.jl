@@ -165,7 +165,7 @@ if one desires to force a download before the scheduled time, then set the
 keyword `force_download` to `true`.
 
 !!! note
-    The interpolation of every field in [`EOPData_IAU2000`](@ref) between two
+    The interpolation of every field in [`EOPData_IAU2000A`](@ref) between two
     points in the grid is linear. If extrapolation is needed, then if will use
     the nearest value (flat extrapolation).
 
