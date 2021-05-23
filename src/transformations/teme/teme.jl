@@ -8,6 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -15,12 +16,13 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Remarks
+# ==============================================================================
 #
-# As mentioned in [1, p. 233], there is not an official definition of the TEME
+# As mentioned in [1](p. 233), there is not an official definition of the TEME
 # frame. Hence, in this package, it is considered the definition presented in
-# [1, p. 233] in which the complete form of the Equation of Equinoxes is used.
-# This seems to be the case when comparing the values shown in Table 3-6 [1, p.
-# 232].
+# [1](p. 233) in which the complete form of the Equation of Equinoxes is used.
+# This seems to be the case when comparing the values shown in Table 3-6 [1](p.
+# 232).
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -37,10 +39,10 @@ export r_teme_to_pef,  r_pef_to_teme
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the True of Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
-algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
-\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
-IERS EOP Data (see `get_iers_eop`).
+algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref)).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -52,6 +54,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TEME frame with the TOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_teme_to_tod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_teme_to_tod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -77,7 +83,7 @@ function r_teme_to_tod(
     # [0,2π]°.
     #
     # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000)/36525
+    T_TT = (JD_TT - JD_J2000) / 36525
     r    = 360
     Ω_m  = @evalpoly(
         T_TT,
@@ -103,10 +109,10 @@ end
 
 Compute the rotation that aligns the True of Date (TOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
-This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
-Notice that one can provide corrections for the nutation in obliquity
-(`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually
-obtained from IERS EOP Data (see `get_iers_eop`).
+This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
+233). Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref)).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -118,6 +124,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_tod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_tod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -140,10 +150,10 @@ end
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Mean of Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
-algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
-\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
-IERS EOP Data (see `get_iers_eop`).
+algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref)).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -155,6 +165,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TEME frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_teme_to_mod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_teme_to_mod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -217,10 +231,10 @@ end
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True
 Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
-This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
-Notice that one can provide corrections for the nutation in obliquity
-(`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually
-obtained from IERS EOP Data (see `get_iers_eop`).  .
+This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
+233). Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually
+obtained from IERS EOP Data (see [`get_iers_eop`](@ref)).  .
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -232,6 +246,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the MOD frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_mod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_mod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -255,26 +273,29 @@ end
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_TT`
 [Terrestrial Time]. This algorithm uses the IAU-76/FK5 theory and TEME
-definition in [1, p. 233]. Notice that one can provide corrections for the
-nutation in obliquity (`δΔϵ_1980`) \\[rad] and in longitude (`δΔψ_1980`) \\[rad]
-that are usually obtained from IERS EOP Data (see `get_iers_eop`).
+definition in **[1]**(p. 233). Notice that one can provide corrections for the
+nutation in obliquity (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad]
+that are usually obtained from IERS EOP Data (see [`get_iers_eop`](@ref)).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
+    nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the
+    GCRF frame is what is usually called J2000 reference frame.
+
 # Returns
 
 The rotation that aligns the TEME frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 
-# Remarks
+# References
 
-The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
-nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
-frame is what is usually called J2000 reference frame.
-
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_teme_to_gcrf(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_teme_to_gcrf(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -301,27 +322,30 @@ end
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
 Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
-algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233]. Notice
-that one can provide corrections for the nutation in obliquity (`δΔϵ_1980`)
-\\[rad] and in longitude (`δΔψ_1980`) \\[rad] that are usually obtained from
-IERS EOP Data (see `get_iers_eop`).
+algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
+Notice that one can provide corrections for the nutation in obliquity
+(`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
+from IERS EOP Data (see [`get_iers_eop`](@ref)).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
+    nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the
+    GCRF frame is what is usually called J2000 reference frame.
+
 # Returns
 
 The rotation that aligns the GCRF frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
-# Remarks
+# References
 
-The EOP data related to the nutation of the obliquity (`δΔϵ_1980`) and the
-nutation of the longitude (`δΔψ_1980`) can be omitted. In this case, the GCRF
-frame is what is usually called J2000 reference frame.
-
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function r_gcrf_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
     return r_gcrf_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -344,7 +368,8 @@ end
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
 the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_TT` [Terrestrial Time].
-This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p. 233].
+This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
+233).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -356,6 +381,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the TEME frame with the PEF frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 r_teme_to_pef(JD_UT1::Number) = r_teme_to_pef(DCM, JD_UT1)
 
@@ -372,8 +401,8 @@ end
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
 True Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial
-Time]. This algorithm uses the IAU-76/FK5 theory and TEME definition in [1, p.
-233].
+Time]. This algorithm uses the IAU-76/FK5 theory and TEME definition in
+**[1]**(p. 233).
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -385,6 +414,10 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the PEF frame with the TEME frame. The rotation
 representation is selected by the optional parameter `T`.
 
+# References
+
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 r_pef_to_teme(JD_UT1::Number) = r_pef_to_teme(DCM, JD_UT1)
 r_pef_to_teme(T::Type, JD_UT1::Number) = inv_rotation(r_teme_to_pef(T, JD_UT1))
