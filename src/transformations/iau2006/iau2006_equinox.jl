@@ -67,12 +67,11 @@ export r_tirs_to_ers_iau2006, r_ers_to_tirs_iau2006,
     r_tirs_to_ers_iau2006([T::Type,] JD_UT1::Number, JD_TT::Number, δΔΨ_2000::Number = 0)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
-(TIRS) with the Earth Reference System (ERS) at the Julian Day
-`JD_UT1` [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006
-theory.
+(TIRS) with the Earth Reference System (ERS) at the Julian Day `JD_UT1` [UT1]
+and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in longitude
-(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
+(`δΔψ_2000`) [rad] that are usually obtained from IERS EOP Data (see
 [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This corrections are related to
 Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
@@ -92,7 +91,6 @@ The reference frames TIRS and ERS are separated by a rotation about the Z-axis
 of the Greenwhich apparent sidereal angle (GAST). This angle is computed using
 the IAU-2006 theory, which consist of obtaining the Earth Rotation Angle (ERA)
 and subtracting the result of the Equation of Origins (EO).
-
 """
 function r_tirs_to_ers_iau2006(
     JD_UT1::Number,
@@ -135,7 +133,7 @@ Terrestrial Intermediate Reference System (TIRS) at the Julian Day `JD_UT1`
 [UT1] and `JD_TT` [Terrestrial Time]. This algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in longitude
-(`δΔψ_2000`) \\[rad] that are usually obtained from IERS EOP Data (see
+(`δΔψ_2000`) [rad] that are usually obtained from IERS EOP Data (see
 [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This corrections are related to
 Free Core Nutation (FCN) that models the effect of a liquid Earth core.
 
@@ -155,7 +153,6 @@ The reference frames TIRS and ERS are separated by a rotation about the Z-axis
 of the Greenwhich apparent sidereal angle (GAST). This angle is computed using
 the IAU-2006 theory, which consist of obtaining the Earth Rotation Angle (ERA)
 and subtracting the result of the Equation of Origins (EO).
-
 """
 function r_ers_to_tirs_iau2006(
     JD_UT1::Number,
@@ -185,8 +182,8 @@ Mean of Date (MOD) reference frame at Julian day `JD_TT` [Terrestrial Time].
 This algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in obliquity
-(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) [rad] that are usually obtained from
+IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 
@@ -195,15 +192,13 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    The reference systems ERS and MOD are separated by the nutation of the pole.
+
 # Returns
 
 The rotation that aligns the ERS frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
-
-# Remarks
-
-The reference systems ERS and MOD are separated by the nutation of the pole.
-
 """
 function r_ers_to_mod_iau2006(
     JD_TT::Number,
@@ -232,8 +227,8 @@ Earth Reference System (ERS) at Julian day `JD_TT` [Terrestrial Time]. This
 algorithm uses the IAU-2006 theory.
 
 Notice that one can provide corrections for the nutation in obliquity
-(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
-from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) [rad] that are usually obtained from
+IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
 
@@ -246,7 +241,6 @@ will be returned. In case this parameter is omitted, then it falls back to
 
 The rotation that aligns the MOD frame with the ERS frame. The rotation
 representation is selected by the optional parameter `T`.
-
 """
 function r_mod_to_ers_iau2006(
     JD_TT::Number,
@@ -288,7 +282,8 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The J2000 reference frame here is not equal to the previous definition in FK5
-theory. It is the reason why it is internally called `MJ2000`. According to [3]:
+theory. It is the reason why it is internally called `MJ2000`. According to
+[^3]:
 
 > The mean equinox of J2000.0 to be considered is not the “rotational dynamical
 > mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
@@ -303,6 +298,11 @@ theory. It is the reason why it is internally called `MJ2000`. According to [3]:
 > the two angular momenta is the angular momentum associated with the rotation
 > of the orbital plane.)
 
+# References
+
+[^3]: IERS (2010). Transformation between the International Terrestrial
+    Reference System and the Geocentric Celestial Reference System. IERS
+    Technical Note No. 36, Chapter 5.
 """
 r_mod_to_mj2000_iau2006(JD_TT::Number) = r_mod_to_mj2000_iau2006(DCM, JD_TT)
 
@@ -311,10 +311,10 @@ function r_mod_to_mj2000_iau2006(T::Type, JD_TT::Number)
     Ψ_a, ω_a, χ_a = precession_iau2006(JD_TT)
     ϵ_0 = 84381.406 * π / 648_000
 
-    # NOTE: According to [2], the matrix as written in [1, p. 218] rotates the
+    # NOTE: According to [2], the matrix as written in [1](p. 218) rotates the
     # MJ2000 to the MOD. Hence, we need the inverse matrix. Furthermore, the
-    # equation in [1, p. 218, eq. 3-73] uses mϵ_2000 instead of ϵ_0 as in
-    # [2, eq. 12].
+    # equation in [1](p. 218, eq. 3-73) uses mϵ_2000 instead of ϵ_0 as in
+    # [2](eq. 12).
     return compose_rotation(
         angle_to_rot(T, -χ_a, ω_a, Ψ_a, :ZXZ),
         angle_to_rot(T, -ϵ_0, 0, 0, :XYZ)
@@ -341,7 +341,8 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The J2000 reference frame here is not equal to the previous definition in FK5
-theory. It is the reason why it is internally called `MJ2000`. According to [3]:
+theory. It is the reason why it is internally called `MJ2000`. According to
+[^3]:
 
 > The mean equinox of J2000.0 to be considered is not the “rotational dynamical
 > mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
@@ -356,6 +357,11 @@ theory. It is the reason why it is internally called `MJ2000`. According to [3]:
 > the two angular momenta is the angular momentum associated with the rotation
 > of the orbital plane.)
 
+# References
+
+[^3]: IERS (2010). Transformation between the International Terrestrial
+    Reference System and the Geocentric Celestial Reference System. IERS
+    Technical Note No. 36, Chapter 5.
 """
 r_mj2000_to_mod_iau2006(JD_TT::Number) = r_mj2000_to_mod_iau2006(DCM, JD_TT)
 
@@ -381,16 +387,19 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    According to [^1], the frame bias that converts MJ2000 <=> GCRF is not a
+    precise transformation for all the times.
+
 # Returns
 
 The rotation that aligns the MJ2000 frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-# Remarks
+# References
 
-According to [1], the frame bias that converts MJ2000 <=> GCRF is not a precise
-transformation for all the times.
-
+[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 r_mj2000_to_gcrf_iau2006(JD_TT::Number = 0) = r_mj2000_to_gcrf_iau2006(DCM, JD_TT)
 
@@ -421,16 +430,19 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    According to [^1], the frame bias that converts MJ2000 <=> GCRF is not a
+    precise transformation for all the times.
+
 # Returns
 
 The rotation that aligns the MJ2000 frame with the MOD frame. The rotation
 representation is selected by the optional parameter `T`.
 
-# Remarks
+# References
 
-According to [1], the frame bias that converts MJ2000 <=> GCRF is not a precise
-transformation for all the times.
-
+[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 r_gcrf_to_mj2000_iau2006(JD_TT::Number = 0) = r_gcrf_to_mj2000_iau2006(DCM, JD_TT)
 
@@ -455,7 +467,7 @@ Compute the rotation that aligns the Terrestrial Intermediate Reference System
 theory.
 
 Notice that one can provide corrections for the nutation in obliquity
-(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) \\[rad] that are usually obtained
+(`δΔϵ_2000`) and in longitude (`δΔψ_2000`) [rad] that are usually obtained
 from IERS EOP Data (see [`get_iers_eop`](@ref) and [`deps_dpsi`](@ref)). This
 corrections are related to Free Core Nutation (FCN) that models the effect of a
 liquid Earth core.
@@ -465,18 +477,17 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
+    because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
+    `nutation_eo`, which has a high computational burden. In this case, the
+    composed algorithm is about 2x faster than calling those function
+    separately.
+
 # Returns
 
 The rotation that aligns the TIRS frame with the ERS frame. The rotation
 representation is selected by the optional parameter `T`.
-
-# Remarks
-
-This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
-because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
-`nutation_eo`, which has a high computational burden. In this case, the composed
-algorithm is about 2x faster than calling those function separately.
-
 """
 function r_tirs_to_mod_iau2006(
     JD_UT1::Number,
@@ -538,18 +549,17 @@ then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
 will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
+!!! info
+    This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
+    because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
+    `nutation_eo`, which has a high computational burden. In this case, the
+    composed algorithm is about 2x faster than calling those function
+    separately.
+
 # Returns
 
 The rotation that aligns the TIRS frame with the ERS frame. The rotation
 representation is selected by the optional parameter `T`.
-
-# Remarks
-
-This composed rotation TIRS <=> ERS <=> MOD is implemented as a new function
-because the single rotations TIRS <=> ERS and ERS <=> MOD call the function
-`nutation_eo`, which has a high computational burden. In this case, the composed
-algorithm is about 2x faster than calling those function separately.
-
 """
 function r_mod_to_tirs_iau2006(
     JD_UT1::Number,
