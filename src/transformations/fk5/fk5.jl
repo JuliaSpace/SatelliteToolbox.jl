@@ -83,7 +83,7 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
-the location of the terrestrial pole agreed by international committees [^1].
+the location of the terrestrial pole agreed by international committees **[1]**.
 The Pseudo-Earth Fixed, on the other hand, is defined based on the Earth axis of
 rotation, or the Celestial Intermediate Pole (CIP). Hence, PEF XY-plane contains
 the True Equator. Furthermore, since the recovered latitude and longitude are
@@ -91,7 +91,7 @@ sensitive to the CIP, then it should be computed considering the PEF frame.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_itrf_to_pef_fk5(x_p::Number, y_p::Number) = r_itrf_to_pef_fk5(DCM, x_p, y_p)
@@ -132,7 +132,7 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
-the location of the terrestrial pole agreed by international committees [^1].
+the location of the terrestrial pole agreed by international committees **[1]**.
 The Pseudo-Earth Fixed, on the other hand, is defined based on the Earth axis of
 rotation, or the Celestial Intermediate Pole (CIP). Hence, PEF XY-plane contains
 the True Equator. Furthermore, since the recovered latitude and longitude are
@@ -140,7 +140,7 @@ sensitive to the CIP, then it should be computed considering the PEF frame.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_pef_to_itrf_fk5(x_p::Number, y_p::Number) = r_pef_to_itrf_fk5(DCM, x_p, y_p)
@@ -504,13 +504,13 @@ representation is selected by the optional parameter `T`.
 The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
 this is the only way available to compute the conversion ITRF <=> PEF (the
 models are highly imprecise since the motion is still not very well understood
-[^1]). However, the EOP data related to the nutation of the obliquity
+- **[1]**). However, the EOP data related to the nutation of the obliquity
 (`δΔϵ_1980`) and the nutation of the longitude (`δΔψ_1980`) can be omitted. In
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_itrf_to_gcrf_fk5(
@@ -581,13 +581,13 @@ representation is selected by the optional parameter `T`.
 The EOP data related to the polar motion (`x_p` and `y_p`) is required, since
 this is the only way available to compute the conversion ITRF <=> PEF (the
 models are highly imprecise since the motion is still not very well understood
-[^1]). However, the EOP data related to the nutation of the obliquity
+- **[1]**). However, the EOP data related to the nutation of the obliquity
 (`δΔϵ_1980`) and the nutation of the longitude (`δΔψ_1980`) can be omitted. In
 this case, the GCRF frame is what is usually called J2000 reference frame.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_gcrf_to_itrf_fk5(

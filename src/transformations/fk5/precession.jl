@@ -29,11 +29,11 @@ Compute the angles related to the precession movement in the Julian Day `JD_TT`
 
 # Returns
 
-The angles (ζ, Θ, z) as described in [^1](p. 226-228).
+The angles (ζ, Θ, z) as described in **[1]**(p. 226-228).
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function precession_fk5(JD_TT::Number)

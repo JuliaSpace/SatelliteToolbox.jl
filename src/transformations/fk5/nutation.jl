@@ -166,7 +166,8 @@ const nut_coefs_1980 = [
 
 Compute the nutation parameters at the Julian Day `JD_TT` [Terrestrial Time]
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
-that must be a matrix in which each line has the following syntax [^1](p. 1043):
+that must be a matrix in which each line has the following syntax **[1]**(p.
+1043):
 
     an1  an2  an3  an4  an5  Ai  Bi  Ci  Di
 
@@ -183,7 +184,7 @@ defaults to 106.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)

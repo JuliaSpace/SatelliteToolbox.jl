@@ -30,7 +30,7 @@ locator `s`. The algorithm is based on the IAU-2006 theory.
 The CIO locator `s` provides the position of the CIO on the Equator of the CIP
 corresponding to the kinematical definition of the non-rotation origin in the
 GCRS when the CIP is moving with respect to the GCRS between the reference epoch
-and the epoch due to precession and nutation [^1](p. 214).
+and the epoch due to precession and nutation **[1]**(p. 214).
 
 # Returns
 
@@ -40,7 +40,7 @@ and the epoch due to precession and nutation [^1](p. 214).
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function cio_iau2006(JD_TT::Number)

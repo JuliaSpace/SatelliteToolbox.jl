@@ -75,7 +75,7 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
-the location of the terrestrial pole agreed by international committees [^1].
+the location of the terrestrial pole agreed by international committees **[1]**.
 The Terrestrial Intermediate Reference Frame (TIRS), on the other hand, is
 defined based on the Earth axis of rotation, or the Celestial Intermediate Pole
 (CIP). Hence, TIRS XY-plane contains the True Equator. Furthermore, since the
@@ -83,12 +83,12 @@ recovered latitude and longitude are sensitive to the CIP, then it should be
 computed considering the TIRS frame.
 
 The TIRS and PEF (IAU-76/FK5) are virtually the same reference frame, but
-according to [^1] it is convenient to separate the names as the exact formulae
+according to **[1]** it is convenient to separate the names as the exact formulae
 differ.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_itrf_to_tirs_iau2006(
@@ -136,7 +136,7 @@ representation is selected by the optional parameter `T`.
 # Remarks
 
 The ITRF is defined based on the International Reference Pole (IRP), which is
-the location of the terrestrial pole agreed by international committees [^1].
+the location of the terrestrial pole agreed by international committees **[1]**.
 The Terrestrial Intermediate Reference Frame (TIRS), on the other hand, is
 defined based on the Earth axis of rotation, or the Celestial Intermediate Pole
 (CIP). Hence, TIRS XY-plane contains the True Equator. Furthermore, since the
@@ -144,12 +144,12 @@ recovered latitude and longitude are sensitive to the CIP, then it should be
 computed considering the TIRS frame.
 
 The TIRS and PEF (IAU-76/FK5) are virtually the same reference frame, but
-according to [^1] it is convenient to separate the names as the exact formulae
+according to **[1]** it is convenient to separate the names as the exact formulae
 differ.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_tirs_to_itrf_iau2006(
@@ -196,14 +196,14 @@ representation is selected by the optional parameter `T`.
 
 The reference frames TIRS and CIRS are separated by a rotation about the Z-axis
 of the Earth Rotation Angle, which is the angle between the Conventional
-International Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [^1].
+International Origin (CIO) and the Terrestrial Intermediate Origin (TIO) **[1]**.
 The latter is a reference meridian on Earth that is located about 100m away from
 Greenwich meridian along the equator of the Celestial Intermediate Pole (CIP)
-[^1].
+- **[1]**.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_tirs_to_cirs_iau2006(JD_UT1::Number) = r_tirs_to_cirs_iau2006(DCM, JD_UT1)
@@ -241,14 +241,14 @@ representation is selected by the optional parameter `T`.
 
 The reference frames TIRS and CIRS are separated by a rotation about the Z-axis
 of the Earth Rotation Angle, which is the angle between the Conventional
-International Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [^1].
-The latter is a reference meridian on Earth that is located about 100m away from
-Greenwich meridian along the equator of the Celestial Intermediate Pole (CIP)
-[^1].
+International Origin (CIO) and the Terrestrial Intermediate Origin (TIO)
+**[1]**. The latter is a reference meridian on Earth that is located about 100m
+away from Greenwich meridian along the equator of the Celestial Intermediate
+Pole (CIP) **[1]**.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_cirs_to_tirs_iau2006(JD_UT1::Number) = r_cirs_to_tirs_iau2006(DCM, JD_UT1)

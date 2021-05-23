@@ -283,7 +283,7 @@ representation is selected by the optional parameter `T`.
 
 The J2000 reference frame here is not equal to the previous definition in FK5
 theory. It is the reason why it is internally called `MJ2000`. According to
-[^3]:
+- **[3]**:
 
 > The mean equinox of J2000.0 to be considered is not the “rotational dynamical
 > mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
@@ -300,7 +300,7 @@ theory. It is the reason why it is internally called `MJ2000`. According to
 
 # References
 
-[^3]: IERS (2010). Transformation between the International Terrestrial
+- **[3]**: IERS (2010). Transformation between the International Terrestrial
     Reference System and the Geocentric Celestial Reference System. IERS
     Technical Note No. 36, Chapter 5.
 """
@@ -342,7 +342,7 @@ representation is selected by the optional parameter `T`.
 
 The J2000 reference frame here is not equal to the previous definition in FK5
 theory. It is the reason why it is internally called `MJ2000`. According to
-[^3]:
+**[3]**:
 
 > The mean equinox of J2000.0 to be considered is not the “rotational dynamical
 > mean equinox of J2000.0” as used in the past, but the “inertial dynamical mean
@@ -359,7 +359,7 @@ theory. It is the reason why it is internally called `MJ2000`. According to
 
 # References
 
-[^3]: IERS (2010). Transformation between the International Terrestrial
+- **[3]**: IERS (2010). Transformation between the International Terrestrial
     Reference System and the Geocentric Celestial Reference System. IERS
     Technical Note No. 36, Chapter 5.
 """
@@ -388,7 +388,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
 !!! info
-    According to [^1], the frame bias that converts MJ2000 <=> GCRF is not a
+    According to **[1]**, the frame bias that converts MJ2000 <=> GCRF is not a
     precise transformation for all the times.
 
 # Returns
@@ -398,7 +398,7 @@ representation is selected by the optional parameter `T`.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_mj2000_to_gcrf_iau2006(JD_TT::Number = 0) = r_mj2000_to_gcrf_iau2006(DCM, JD_TT)
@@ -431,7 +431,7 @@ will be returned. In case this parameter is omitted, then it falls back to
 `DCM`.
 
 !!! info
-    According to [^1], the frame bias that converts MJ2000 <=> GCRF is not a
+    According to **[1]**, the frame bias that converts MJ2000 <=> GCRF is not a
     precise transformation for all the times.
 
 # Returns
@@ -441,7 +441,7 @@ representation is selected by the optional parameter `T`.
 
 # References
 
-[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+- **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
 r_gcrf_to_mj2000_iau2006(JD_TT::Number = 0) = r_gcrf_to_mj2000_iau2006(DCM, JD_TT)

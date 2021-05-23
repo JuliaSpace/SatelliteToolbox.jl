@@ -29,12 +29,12 @@ distance between the Earth's center and NED origin.
 
 # Remarks
 
-This algorithm was based on the information in [^1].
+This algorithm was based on the information in **[1]**.
 
 # References
 
-[^1] [Transformations between ECEF and ENU
-      coordinates](https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates)
+- **[1]**: [Transformations between ECEF and ENU
+    coordinates](https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates)
 
 """
 function ecef_to_ned(
@@ -76,12 +76,12 @@ distance between the Earth's center and NED origin.
 
 # Remarks
 
-This algorithm was based on the information in [^1].
+This algorithm was based on the information in **[1]**.
 
 # References
 
-[^1] [Transformations between ECEF and ENU
-      coordinates](https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates)
+- **[1]** [Transformations between ECEF and ENU
+    coordinates](https://gssc.esa.int/navipedia/index.php/Transformations_between_ECEF_and_ENU_coordinates)
 
 """
 function ned_to_ecef(
