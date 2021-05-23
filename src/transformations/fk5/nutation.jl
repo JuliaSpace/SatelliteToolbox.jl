@@ -1,12 +1,14 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions to compute the nutation according to IAU-76/FK5.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -14,7 +16,7 @@
 #   [2] Vallado, D. A (06-Feb-2018). Consolidated Errata of Fundamentals of
 #       Astrodynamics and Applications 4th Ed.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export nutation_fk5
 
@@ -164,7 +166,7 @@ const nut_coefs_1980 = [
 
 Compute the nutation parameters at the Julian Day `JD_TT` [Terrestrial Time]
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
-that must be a matrix in which each line has the following syntax [1, p. 1043]:
+that must be a matrix in which each line has the following syntax [^1](p. 1043):
 
     an1  an2  an3  an4  an5  Ai  Bi  Ci  Di
 
@@ -179,6 +181,10 @@ defaults to 106.
 * The nutation in obliquity of the ecliptic [rad].
 * The nutation in longitude [rad].
 
+# References
+
+[^1]: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
 function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
     # Check inputs.
@@ -191,12 +197,12 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     end
 
     # Compute the Julian Centuries from `JD_TT`.
-    T_TT = (JD_TT - JD_J2000)/36525
+    T_TT = (JD_TT - JD_J2000) / 36525
 
     # Auxiliary variables
     # ===================
 
-    d2r   = pi/180
+    d2r = π / 180
 
     # Mean obliquity of the ecliptic
     # ==============================
@@ -205,7 +211,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     mϵ_1980 = @evalpoly(T_TT, 23.439291, -0.0130042, -1.64e-7, +5.04e-7)
 
     # Reduce to the interval [0, 2π]°.
-    mϵ_1980 = mod(mϵ_1980, 360)*d2r
+    mϵ_1980 = mod(mϵ_1980, 360) * d2r
 
     # Delaunay parameters of the Sun and Moon
     # =======================================
@@ -216,35 +222,50 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     # The parameters here were updated as stated in the errata [2].
     r = 360
 
-    M_m = @evalpoly(T_TT, + 134.96298139,
-                          + (1325r + 198.8673981),
-                          + 0.0086972,
-                          + 1.78e-5)
-    M_m = mod(M_m, 360)*d2r
+    M_m = @evalpoly(
+        T_TT,
+        +134.96298139,
+        +(1325r + 198.8673981),
+        +0.0086972,
+        +1.78e-5
+    )
+    M_m = mod(M_m, 360) * d2r
 
-    M_s = @evalpoly(T_TT, + 357.52772333,
-                          + (99r + 359.0503400),
-                          - 0.0001603,
-                          - 3.3e-6)
-    M_s = mod(M_s, 360)*d2r
+    M_s = @evalpoly(
+        T_TT,
+        +357.52772333,
+        +(99r + 359.0503400),
+        -0.0001603,
+        -3.3e-6
+    )
+    M_s = mod(M_s, 360) * d2r
 
-    u_Mm = @evalpoly(T_TT, + 93.27191028,
-                           + (1342r + 82.0175381),
-                           - 0.0036825,
-                           + 3.1e-6)
-    u_Mm = mod(u_Mm, 360)*d2r
+    u_Mm = @evalpoly(
+        T_TT,
+        +93.27191028,
+        +(1342r + 82.0175381),
+        -0.0036825,
+        +3.1e-6
+    )
+    u_Mm = mod(u_Mm, 360) * d2r
 
-    D_s = @evalpoly(T_TT, + 297.85036306,
-                          + (1236r + 307.1114800),
-                          - 0.0019142,
-                          + 5.3e-6)
-    D_s = mod(D_s, 360)*d2r
+    D_s = @evalpoly(
+        T_TT,
+        +297.85036306,
+        +(1236r + 307.1114800),
+        -0.0019142,
+        +5.3e-6
+    )
+    D_s = mod(D_s, 360) * d2r
 
-    Ω_m = @evalpoly(T_TT, + 125.04452222,
-                          - (5r + 134.1362608),
-                          + 0.0020708,
-                          + 2.2e-6)
-    Ω_m = mod(Ω_m, 360)*d2r
+    Ω_m = @evalpoly(
+        T_TT,
+        +125.04452222,
+        -(5r + 134.1362608),
+        +0.0020708,
+        +2.2e-6
+    )
+    Ω_m = mod(Ω_m, 360) * d2r
 
     # Nutation in longitude and obliquity
     # ===================================
@@ -265,19 +286,19 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
         Ci  = nut_coefs_1980[i,8]
         Di  = nut_coefs_1980[i,9]
 
-        a_pi = an1*M_m + an2*M_s + an3*u_Mm + an4*D_s + an5*Ω_m
+        a_pi = an1 * M_m + an2 * M_s + an3 * u_Mm + an4 * D_s + an5 * Ω_m
 
         sin_a_pi, cos_a_pi = sincos(a_pi)
 
-        ΔΨ_1980 += (Ai + Bi*T_TT)*sin_a_pi
-        Δϵ_1980 += (Ci + Di*T_TT)*cos_a_pi
+        ΔΨ_1980 += (Ai + Bi * T_TT) * sin_a_pi
+        Δϵ_1980 += (Ci + Di * T_TT) * cos_a_pi
     end
 
     # The nutation coefficients in `nut_coefs_1980` lead to angles with unit
     # 0.0001". Hence, we must convert to [rad].
-    ΔΨ_1980 *= 0.0001/3600*d2r
-    Δϵ_1980 *= 0.0001/3600*d2r
+    ΔΨ_1980 *= 0.0001 / 3600 * d2r
+    Δϵ_1980 *= 0.0001 / 3600 * d2r
 
     # Return the values.
-    (mϵ_1980, Δϵ_1980, ΔΨ_1980)
+    return mϵ_1980, Δϵ_1980, ΔΨ_1980
 end
