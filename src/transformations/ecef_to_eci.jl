@@ -37,8 +37,8 @@ The rotations that aligns the ECEF with ECI can be described by Direction Cosine
 Matrices or Quaternions. This is selected by the parameter `T`. The possible
 values are:
 
-* `DCM`: The rotation will be described by a Direction Cosine Matrix.
-* `Quaternion`: The rotation will be described by a Quaternion.
+- `DCM`: The rotation will be described by a Direction Cosine Matrix.
+- `Quaternion`: The rotation will be described by a Quaternion.
 
 If no value is specified, then it falls back to `DCM`.
 
@@ -46,39 +46,38 @@ If no value is specified, then it falls back to `DCM`.
 
 The model that will be used to compute the rotation is automatically inferred
 given the selection of the origin and destination frames. **Notice that mixing
-IAU-76/FK5 and IAU-2006/2010 frames is not supported yet.**
+IAU-76/FK5 and IAU-2006/2010 frames is not supported.**
 
 # ECEF Frame
 
 The ECEF frame is selected by the parameter `ECEF`. The possible values are:
 
-* `ITRF()`: ECEF will be selected as the International Terrestrial Reference
-            Frame (ITRF).
-* `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
-           frame.
-* `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
-            System (TIRS).
+- `ITRF()`: ECEF will be selected as the International Terrestrial Reference
+    Frame (ITRF).
+- `PEF()`: ECEF will be selected as the Pseudo-Earth Fixed (PEF) reference
+    frame.
+- `TIRS()`: ECEF will be selected as the Terrestrial Intermediate Reference
+    System (TIRS).
 
 # ECI Frame
 
 The ECI frame is selected by the parameter `ECI`. The possible values are:
 
-* `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
-            reference frame.
-* `TOD()`: ECI will be selected as the True of Date (TOD).
-* `MOD()`: ECI will be selected as the Mean of Date (MOD).
-* `J2000()`: ECI will be selected as the J2000 reference frame.
-* `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
-            (GCRF).
-* `CIRS()`: ECI will be selected as the Celestial Intermediate Reference System
-            (CIRS).
-* `ERS()`: ECI will be selected as the Earth Reference System (ERS).
-* `MOD06()`: ECI will be selected as the Mean of Date (MOD) according to the
-             definition in IAU-2006/2010 theory.
-* `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
+- `TEME()`: ECI will be selected as the True Equator Mean Equinox (TEME)
+    reference frame.
+- `TOD()`: ECI will be selected as the True of Date (TOD).
+- `MOD()`: ECI will be selected as the Mean of Date (MOD).
+- `J2000()`: ECI will be selected as the J2000 reference frame.
+- `GCRF()`: ECI will be selected as the Geocentric Celestial Reference Frame
+    (GCRF).
+- `CIRS()`: ECI will be selected as the Celestial Intermediate Reference System
+    (CIRS).
+- `ERS()`: ECI will be selected as the Earth Reference System (ERS).
+- `MOD06()`: ECI will be selected as the Mean of Date (MOD) according to the
+    definition in IAU-2006/2010 theory.
+- `MJ2000()`: ECI will be selected as the J2000 mean equatorial frame (MJ2000).
 
 !!! note
-
     The frames `MOD()` and `MOD06()` are virtually the same. However, we
     selected different names to make clear which theory are being used since
     mixing transformation between frames from IAU-76/FK5 and IAU-2006/2010 must
@@ -86,11 +85,12 @@ The ECI frame is selected by the parameter `ECI`. The possible values are:
 
 # EOP Data
 
-The conversion between the frames depends on EOP Data (see `get_iers_eop` and
-`read_iers_eop`). If IAU-76/FK5 model is used, then the type of `eop_data` must
-be `EOPData_IAU1980`. Otherwise, if IAU-2006/2010 model is used, then the type
-of `eop_data` must be `EOPData_IAU2000A`. The following table shows the
-requirements for EOP data given the selected frames.
+The conversion between the frames depends on EOP Data (see
+[`get_iers_eop`](@ref) and [`read_iers_eop`](@ref)). If IAU-76/FK5 model is
+used, then the type of `eop_data` must be [`EOPData_IAU1980`](@ref). Otherwise,
+if IAU-2006/2010 model is used, then the type of `eop_data` must be
+[`EOPData_IAU2000A`](@ref). The following table shows the requirements for EOP
+data given the selected frames.
 
 |   Model                     |  ECEF  |   ECI    |    EOP Data     |
 |:----------------------------|:-------|:---------|:----------------|
@@ -115,10 +115,10 @@ requirements for EOP data given the selected frames.
 | IAU-2006/2010 Equinox-based | `TIRS` | `MOD06`  | Not required¹ ³ |
 | IAU-2006/2010 Equinox-based | `TIRS` | `MJ2000` | Not required¹ ³ |
 
-`¹`: In this case, the Julian Time UTC will be assumed equal to Julian Time UT1
-to compute the Greenwich Mean Sidereal Time. This is an approximation, but
-should be sufficiently accurate for some applications. Notice that, if EOP Data
-is provided, the Julian Day UT1 will be accurately computed.
+`¹`: In this case, UTC will be assumed equal to UT1 to compute the Greenwich
+Mean Sidereal Time. This is an approximation, but should be sufficiently
+accurate for some applications. Notice that, if EOP Data is provided, UT1 will
+be accurately computed.
 
 `²`: In this case, the terms that account for the free core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
@@ -142,53 +142,53 @@ frame into alignment with the ECI reference frame.
 # Examples
 
 ```julia-repl
-julia> eop_IAU1980 = get_iers_eop(:IAU1980);
+julia> eop_IAU1980 = get_iers_eop(Val(:IAU1980));
 
 julia> r_ecef_to_eci(DCM, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619267      0.78518     -0.00132979
- -0.78518      -0.619267     3.33492e-5
- -0.000797313   0.00106478   0.999999
+ -0.78518      -0.619267     3.33509e-5
+ -0.000797312   0.00106478   0.999999
 
 julia> r_ecef_to_eci(ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619267      0.78518     -0.00132979
- -0.78518      -0.619267     3.33492e-5
- -0.000797313   0.00106478   0.999999
+ -0.78518      -0.619267     3.33509e-5
+ -0.000797312   0.00106478   0.999999
 
 julia> r_ecef_to_eci(PEF(), J2000(), date_to_jd(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45854e-5
  -0.000796885   0.00106622   0.999999
 
 julia> r_ecef_to_eci(PEF(), J2000(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619267      0.78518     -0.00133066
  -0.78518      -0.619267     3.45854e-5
  -0.000796879   0.00106623   0.999999
 
 julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU1980)
 Quaternion{Float64}:
-  + 0.4363098936462618 - 0.0005909969666939257.i + 0.00030510511316206974.j + 0.8997962182293519.k
+  + 0.43631 - 0.000590997⋅i + 0.000305106⋅j + 0.000305106⋅k
 
-julia> eop_IAU2000A = get_iers_eop(:IAU2000A);
+julia> eop_IAU2000A = get_iers_eop(Val(:IAU2000A));
 
 julia> r_ecef_to_eci(ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619267      0.78518     -0.00132979
- -0.78518      -0.619267     3.33502e-5
- -0.000797312   0.00106478   0.999999
+ -0.78518      -0.619267     3.33516e-5
+ -0.000797311   0.00106478   0.999999
 
 julia> r_ecef_to_eci(TIRS(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0))
-3×3 StaticArrays.SArray{Tuple{3,3},Float64,2,9}:
+3×3 StaticArrays.SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
  -0.619271      0.785176    -0.00133066
  -0.785177     -0.619272     3.45884e-5
  -0.000796885   0.00106623   0.999999
 
 julia> r_ecef_to_eci(Quaternion, ITRF(), GCRF(), date_to_jd(1986, 06, 19, 21, 35, 0), eop_IAU2000A)
 Quaternion{Float64}:
-  + 0.4363098936309669 - 0.000590996988144556.i + 0.0003051056555230158.j + 0.8997962182365703.k
+  + 0.43631 - 0.000590997⋅i + 0.000305106⋅j + 0.000305106⋅k
 ```
 """
 @inline function r_ecef_to_eci(
@@ -240,20 +240,18 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, δΔϵ_1980, δΔψ_1980)
@@ -269,17 +267,15 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
+    arcsec_to_rad = π / 648000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p = eop_data.x(JD_UTC) * arcsec2rad
-    y_p = eop_data.y(JD_UTC) * arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Compute the rotation.
     return r_itrf_to_gcrf_fk5(T, JD_UT1, JD_TT, x_p, y_p, 0, 0)
@@ -295,20 +291,18 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -327,19 +321,17 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -358,17 +350,15 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
+    arcsec_to_rad = π / 648000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p = eop_data.x(JD_UTC) * arcsec2rad
-    y_p = eop_data.y(JD_UTC) * arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Compute the rotation.
     r_PEF_ITRF = r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -387,20 +377,18 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     r_MOD_PEF  = r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -452,20 +440,18 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔϵ_1980 = eop_data.dEps(JD_UTC) * milliarcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     return r_pef_to_mod_fk5(T, JD_UT1, JD_TT, δΔϵ_1980, δΔψ_1980)
@@ -490,26 +476,23 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU1980
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p      = eop_data.x(JD_UTC) * arcsec2rad
-    y_p      = eop_data.y(JD_UTC) * arcsec2rad
-    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec2rad
+    x_p      = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p      = eop_data.y(JD_UTC) * arcsec_to_rad
+    δΔψ_1980 = eop_data.dPsi(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     return r_pef_to_tod_fk5(T, JD_UT1, JD_TT, δΔψ_1980)
 end
 
 function r_ecef_to_eci(T::T_ROT, ::Val{:PEF}, ::Val{:TOD}, JD_UTC::Number)
-
     # Since we do not have EOP Data, assume that JD_UTC is equal to JD_UT1.
     JD_UT1 = JD_UTC
     JD_TT  = jd_utc_to_tt(JD_UTC)
@@ -557,15 +540,15 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
+    arcsec_to_rad = π / 648000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Compute the rotation.
     r_TIRS_ITRF = r_itrf_to_tirs_iau2006(T, JD_TT, x_p, y_p)
@@ -584,18 +567,18 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
-    dX  = eop_data.dX(JD_UTC) * milliarcsec2rad
-    dY  = eop_data.dY(JD_UTC) * milliarcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
+    dX  = eop_data.dX(JD_UTC) * milliarcsec_to_rad
+    dY  = eop_data.dY(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     r_TIRS_ITRF = r_itrf_to_tirs_iau2006(T, JD_TT, x_p, y_p)
@@ -640,15 +623,15 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    milliarcsec2rad = π/648000000
+    milliarcsec_to_rad = π / 648000000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    dX = eop_data.dX(JD_UTC) * milliarcsec2rad
-    dY = eop_data.dY(JD_UTC) * milliarcsec2rad
+    dX = eop_data.dX(JD_UTC) * milliarcsec_to_rad
+    dY = eop_data.dY(JD_UTC) * milliarcsec_to_rad
 
     # Compute the rotation.
     r_CIRS_TIRS = r_tirs_to_cirs_iau2006(T, JD_UT1)
@@ -685,20 +668,20 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Obtain the correction of the nutation in longitude.
     ~, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     r_TIRS_ITRF = r_itrf_to_tirs_iau2006(T, JD_TT, x_p, y_p)
@@ -717,21 +700,21 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= milliarcsec2rad
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔϵ_2000 *= milliarcsec_to_rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     r_TIRS_ITRF = r_itrf_to_tirs_iau2006(T, JD_TT, x_p, y_p)
@@ -750,21 +733,21 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    arcsec2rad = π/648000
-    milliarcsec2rad = arcsec2rad / 1000
+    arcsec_to_rad = π / 648000
+    milliarcsec_to_rad = arcsec_to_rad / 1000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
     JD_TT  = jd_utc_to_tt(JD_UTC)
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC)*arcsec2rad
-    y_p = eop_data.y(JD_UTC)*arcsec2rad
+    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
+    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= milliarcsec2rad
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔϵ_2000 *= milliarcsec_to_rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     r_TIRS_ITRF  = r_itrf_to_tirs_iau2006(T, JD_TT, x_p, y_p)
@@ -788,7 +771,7 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    milliarcsec2rad = π/648000000
+    milliarcsec_to_rad = π / 648000000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -796,7 +779,7 @@ function r_ecef_to_eci(
 
     # Obtain the correction of the nutation in longitude.
     ~, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     return r_tirs_to_ers_iau2006(T, JD_UT1, JD_TT, δΔΨ_2000)
@@ -821,7 +804,7 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    milliarcsec2rad = π/648000000
+    milliarcsec_to_rad = π / 648000000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -829,8 +812,8 @@ function r_ecef_to_eci(
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= milliarcsec2rad
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔϵ_2000 *= milliarcsec_to_rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     return r_tirs_to_mod_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
@@ -855,7 +838,7 @@ function r_ecef_to_eci(
     JD_UTC::Number,
     eop_data::EOPData_IAU2000A
 )
-    milliarcsec2rad = π/648000000
+    milliarcsec_to_rad = π / 648000000
 
     # Get the time in UT1 and TT.
     JD_UT1 = jd_utc_to_ut1(JD_UTC, eop_data)
@@ -863,8 +846,8 @@ function r_ecef_to_eci(
 
     # Obtain the correction of the nutation in obliquity and longitude.
     δΔϵ_2000, δΔΨ_2000 = deps_dpsi(eop_data, JD_UTC)
-    δΔϵ_2000 *= milliarcsec2rad
-    δΔΨ_2000 *= milliarcsec2rad
+    δΔϵ_2000 *= milliarcsec_to_rad
+    δΔΨ_2000 *= milliarcsec_to_rad
 
     # Compute the rotation.
     r_MOD_TIRS   = r_tirs_to_mod_iau2006(T, JD_UT1, JD_TT, δΔϵ_2000, δΔΨ_2000)
