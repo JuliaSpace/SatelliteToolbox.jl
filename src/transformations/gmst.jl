@@ -13,6 +13,8 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
+#   [2] http://www.navipedia.net/index.php/CEP_to_ITRF, accessed 2015-12-01.
+#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export j2000_to_gmst, jd_to_gmst
@@ -23,11 +25,12 @@ export j2000_to_gmst, jd_to_gmst
 Compute the Greenwich Mean Sideral Time (GMST) \\[rad] given the instant
 `J2000_UT1` in J2000.0 reference [UT1].
 
-# Remarks
+!!! info
+    The algorithm is based in **[2]**.
 
-Based on algorithm in [2] (http://www.navipedia.net/index.php/CEP_to_ITRF),
-accessed at 2015-12-01.
+# References
 
+- **[2]** http://www.navipedia.net/index.php/CEP_to_ITRF, accessed 2015-12-01.
 """
 function j2000_to_gmst(J2000_UT1::Number)
 	# Julian centuries elapsed from the epoch J2000.0.
@@ -55,11 +58,12 @@ end
 Compute the Greenwich Mean Sideral Time (GMST) \\[rad] for the Julian Day
 `JD_UT1` [UT1].
 
-# Remarks
+!!! info
+    The algorithm is based in **[1]**(p. 188).
 
-Based on algorithm in [1, pp. 188].
+# References
 
+- **[1]** Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
+    Microcosm Press, Hawthorn, CA, USA.
 """
-function jd_to_gmst(JD_UT1::Number)
-	j2000_to_gmst(JD_UT1 - JD_J2000)
-end
+jd_to_gmst(JD_UT1::Number) = j2000_to_gmst(JD_UT1 - JD_J2000)
