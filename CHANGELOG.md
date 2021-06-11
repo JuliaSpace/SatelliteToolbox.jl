@@ -1,6 +1,16 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.0
+-------------
+
+- ![BREAKING][badge-breaking] Update the files from which the IERS data is
+  parsed. We now use the CSV. Old code that relies on local copies of IERS data
+  needs to be updated.
+- ![Deprecation][badge-deprecation] ![Enhancement][badge-enhancement] A type
+  instability in IERS parsing has been removed. However, this modification
+  required a new function API. The old API is now deprecated.
+
 Version 0.8.1
 -------------
 
