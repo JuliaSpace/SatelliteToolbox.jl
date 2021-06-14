@@ -85,7 +85,7 @@ function eclipse_time_summary(JD₀::Number, a::Number, e::Number, i::Number,
     # Function to compute the lightning condition given an instant of the day
     # `t`, the day from orbit epoch `d`, and the Sun vector `s_i`.
     f(t,d,s_i)::Int = begin
-        r_i, ~ = propagate!(orbp, 86400d + t)
+        ~, r_i, ~ = propagate!(orbp, 86400d + t)
         return satellite_lighting_condition(r_i, s_i)
     end
 

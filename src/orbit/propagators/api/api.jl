@@ -71,9 +71,10 @@ function propagate!(orbp::OrbitPropagator{T}, t::AbstractVector) where T
         r_i_k, v_i_k = propagate!(orbp, t[k])
         result_r[k]  = r_i_k
         result_v[k]  = v_i_k
+        result_orb[k] = get_mean_elements(orbp)
     end
 
-    return result_r, result_v
+    return result_orb, result_r, result_v
 end
 
 """

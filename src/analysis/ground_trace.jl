@@ -49,7 +49,7 @@ function ground_trace(orbp::OrbitPropagator, Δt::Number;
     t = 0:dt:Δt
 
     # Compute the points represented in the inertial reference frame.
-    r_i, ~ = propagate!(orbp_c, t)
+    ~, r_i, ~ = propagate!(orbp_c, t)
 
     # Get the epochs in Julian Day of each instant.
     JD = get_epoch(orbp) .+ t./86400

@@ -81,7 +81,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
 
     # Lambda function to check if the ground station is visible.
     f(t)::Bool = begin
-        r_i, v_i   = propagate!(orbp, t)
+        ~, r_i, v_i   = propagate!(orbp, t)
         r_e        = r_eci_to_ecef(DCM, ECI, ECEF, JD₀ + t/86400, vargs...)*r_i
         visibility = [ground_station_visible(r_e, rs_e, θ) for rs_e in vrs_e]
 
