@@ -50,7 +50,7 @@ function init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::
 where:
 
 * `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
-  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
+  `Val(:J2)` for **J2**, and `Val(:J4)` for **J4**).
 * `epoch`: Initial orbit epoch \[Julian Day].
 * `a_0`: Initial semi-major axis \[m].
 * `e_0`: Initial eccentricity.
@@ -70,7 +70,7 @@ function init_orbit_propagator(T, orb_0::Orbit)
 where:
 
 * `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
-  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
+  `Val(:J2)` for **J2**, and `Val(:J4)` for **J4**).
 * `orb_0`: Initial orbital elements (see `Orbit`).
 
 ```julia
@@ -80,7 +80,7 @@ function init_orbit_propagator(T, tle::TLE)
 where:
 
 * `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
-  `Val(:J2}` for **J2**, and `Val{:J4)` for **J4**).
+  `Val(:J2)` for **J2**, and `Val(:J4)` for **J4**).
 * `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
 
 There are some optional parameters that depend on the orbit propagator type that
