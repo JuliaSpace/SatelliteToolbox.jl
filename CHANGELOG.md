@@ -1,6 +1,14 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.1
+-------------
+
+- ![Bugfix][badge-bugfix] The interpolation type returned by Interpolations.jl
+  0.13.3 changed. The code inside SatelliteToolbox.jl was updated to be
+  compatible with the new API. (Issue [#58][gh-issue-58])
+- ![Info][badge-info] The compat bounds were updated.
+
 Version 0.9.0
 -------------
 
@@ -433,6 +441,7 @@ Version 0.1.0
 [gh-issue-35]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/35
 [gh-issue-38]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/38
 [gh-issue-53]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/53
+[gh-issue-58]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/58
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
