@@ -10,13 +10,21 @@
 export get_space_index, init_space_indices
 
 # Interpolation types used in space indices.
-const _space_indices_itp_constant{T} =
-    Interpolations.GriddedInterpolation{T,1,T, Gridded{Constant{Nearest}},
-                                        Tuple{Array{Float64,1}}}
+const _space_indices_itp_constant{T} = Interpolations.GriddedInterpolation{
+    T,
+    1,
+    T,
+    Gridded{Constant{Nearest, Throw{OnGrid}}},
+    Tuple{Array{Float64,1}}
+}
 
-const _space_indices_itp_linear{T} =
-    Interpolations.GriddedInterpolation{T,1,T, Gridded{Linear},
-                                        Tuple{Array{Float64,1}}}
+const _space_indices_itp_linear{T} = Interpolations.GriddedInterpolation{
+    T,
+    1,
+    T,
+    Gridded{Linear{Throw{OnGrid}}},
+    Tuple{Array{Float64,1}}
+}
 
 include("./dtcfile.jl")
 include("./fluxtable.jl")
