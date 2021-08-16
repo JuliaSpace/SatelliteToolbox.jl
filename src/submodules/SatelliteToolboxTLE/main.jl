@@ -115,9 +115,9 @@ omitted, then it defaults to `true`.
 """
 @inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
     # Open the file in read mode.
-    file = open(tle_filename, "r")
-
-    _parse_tle(file, verify_checksum)
+    open(tle_filename, "r") do file
+       _parse_tle(file, verify_checksum)
+    end
 end
 
 """
