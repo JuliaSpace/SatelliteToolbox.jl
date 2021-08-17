@@ -1,6 +1,13 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.2
+-------------
+
+- ![Bugfix][badge-bugfix] The TLE file is now closed after parsing in `read_tle`
+  function, avoiding possible errors when opening many files. (PR
+  [#60][gh-pr-60])
+
 Version 0.9.1
 -------------
 
@@ -448,3 +455,5 @@ Version 0.1.0
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
 [gh-pr-36]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/36
 [gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
+[gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
+[gh-pr-60]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/60
