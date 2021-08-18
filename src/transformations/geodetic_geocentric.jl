@@ -34,7 +34,7 @@ export geocentric_to_geodetic, geodetic_to_geocentric
     ecef_to_geodetic(r_e::AbstractVector; ellipsoid=wgs84_ellipsoid)
 
 Convert the vector `r_e` [m] represented in the Earth-Centered, Earth-Fixed
-(ECEF) reference frame into Geodetic coordinates for a custom target ellipsoid 
+(ECEF) reference frame into Geodetic coordinates for a custom target ellipsoid
 (defaults to WGS-84).
 
 !!! info
@@ -125,8 +125,8 @@ end
 """
     geocentric_to_geodetic(ϕ_gc::Number, r::Number; ellipsoid = wgs84_ellipsoid)
 
-Compute the geodetic latitude and altitude above the reference ellipsoid (defaults to 
-WGS-84) from the geocentric latitude `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m]. 
+Compute the geodetic latitude and altitude above the reference ellipsoid (defaults to
+WGS-84) from the geocentric latitude `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m].
 Notice that the longitude is the same in both geocentric and geodetic coordinates.
 
 !!! info

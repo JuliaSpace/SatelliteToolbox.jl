@@ -21,7 +21,7 @@ export Ellipsoid
 Ellipsoid of rotation to be used for geocentric, geodetic and ecef transformations.
 
 !!! note
-    The constructor only accepts the fields `a` and `f`, with the other fields pre-computed 
+    The constructor only accepts the fields `a` and `f`, with the other fields pre-computed
     automatically from those two
 
 # Fields
@@ -39,7 +39,7 @@ struct Ellipsoid{T}
     b::T # Semi-minor axis in [m]
     e²::T # Eccentricity squared
     el²::T # Second eccentricity squared
-    
+
     ## Constructor
     function Ellipsoid(a,f)
         @assert f < 1 "The flattening should be lower than 1"
@@ -49,7 +49,7 @@ struct Ellipsoid{T}
         new{typeof(el²)}(a,f,b,e²,el²)
     end
 end
- 
+
 """
     Ellipsoid(a,f)
     Ellipsoid{T}(a,f)
