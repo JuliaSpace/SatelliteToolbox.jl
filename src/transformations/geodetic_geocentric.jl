@@ -34,7 +34,8 @@ export geocentric_to_geodetic, geodetic_to_geocentric
     ecef_to_geodetic(r_e::AbstractVector; ellipsoid=wgs84_ellipsoid)
 
 Convert the vector `r_e` [m] represented in the Earth-Centered, Earth-Fixed
-(ECEF) reference frame into Geodetic coordinates for a custom target ellipsoid (defaults to WGS-84).
+(ECEF) reference frame into Geodetic coordinates for a custom target ellipsoid 
+(defaults to WGS-84).
 
 !!! info
     The algorithm is based in **[3]**.
@@ -57,10 +58,10 @@ function ecef_to_geodetic(r_e::AbstractVector; ellipsoid = wgs84_ellipsoid)
     Z = r_e[3]
 
     # Auxiliary variables.
-	a = ellipsoid.a
-	b = ellipsoid.b
-	e² = ellipsoid.e²
-	el² = ellipsoid.el²
+    a = ellipsoid.a
+    b = ellipsoid.b
+    e² = ellipsoid.e²
+    el² = ellipsoid.el²
     p = √(X^2 + Y^2)
     θ = atan(Z * a, p * b)
     sin_θ, cos_θ = sincos(θ)
@@ -88,10 +89,10 @@ function ecef_to_geodetic(r_e::AbstractVector; ellipsoid = wgs84_ellipsoid)
 end
 
 """
-    geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid=wgs84_ellipsoid)
+    geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid = wgs84_ellipsoid)
 
-Convert the latitude `lat` [rad], longitude `lon` [rad], and altitude `h` \\[m] above the 
-reference ellipsoid (defaults to WGS-84) into a vector represented on the Earth-Centered, 
+Convert the latitude `lat` [rad], longitude `lon` [rad], and altitude `h` \\[m] above the
+reference ellipsoid (defaults to WGS-84) into a vector represented on the Earth-Centered,
 Earth-Fixed (ECEF) reference frame.
 
 !!! info
@@ -106,9 +107,9 @@ function geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid = wgs84
     # Auxiliary variables.
     sin_lat, cos_lat = sincos(lat)
     sin_lon, cos_lon = sincos(lon)
-	a = ellipsoid.a
-	b = ellipsoid.b
-	e² = ellipsoid.e²
+    a = ellipsoid.a
+    b = ellipsoid.b
+    e² = ellipsoid.e²
 
     # Radius of curvature [m].
     N = a/√(1 - e² * sin_lat^2)
@@ -117,15 +118,15 @@ function geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid = wgs84
     return SVector(
         (                        N + h) * cos_lat * cos_lon,
         (                        N + h) * cos_lat * sin_lon,
-        (						(b / a)^2 * N + h) * sin_lat
+        (                        (b / a)^2 * N + h) * sin_lat
     )
 end
 
 """
     geocentric_to_geodetic(ϕ_gc::Number, r::Number; ellipsoid = wgs84_ellipsoid)
 
-Compute the geodetic latitude and altitude above the reference ellipsoid (defaults to WGS-84)
-from the geocentric latitude `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m]. 
+Compute the geodetic latitude and altitude above the reference ellipsoid (defaults to 
+WGS-84) from the geocentric latitude `ϕ_gc` (-π/2, π/2) [rad] and radius `r` [m]. 
 Notice that the longitude is the same in both geocentric and geodetic coordinates.
 
 !!! info
