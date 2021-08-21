@@ -214,7 +214,8 @@ Legendre function can be seen in **[2, p. 546]**. The conversion is obtained by:
     Microcosm Press, Hawthorn, CA, USA.
 """
 function legendre_fully_normalized!(
-    P::AbstractMatrix, ϕ::Number,
+    P::AbstractMatrix,
+    ϕ::Number,
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
