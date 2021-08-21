@@ -232,6 +232,20 @@ end
     @test_throws ErrorException igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₀, dP₁)
     @test_throws ErrorException igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₁, dP₀)
     @test_nowarn                igrf(2020, R0+140e3, pi/4, pi/2, Val(:geocentric), P₁, dP₁)
+
+    # Issues
+    # --------------------------------------------------------------------------
+
+    # Calculation close to the geographic pole.
+    B = igrf(2019, 7150e3, π / 2 - 1e-15, 0.55)
+    @test B[1] ≈ 907.752507827486
+    @test B[2] ≈ 173.19657970935657
+    @test B[3] ≈ 41139.95114358637
+
+    B = igrf(2019, 7150e3, π / 2, 0.55)
+    @test B[1] ≈ 907.7525078274671
+    @test B[2] ≈ 173.1965797093516
+    @test B[3] ≈ 41139.95114358636
 end
 
 # Function igrfd

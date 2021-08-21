@@ -224,8 +224,14 @@ function legendre_fully_normalized!(
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    c = cos(ϕ)
-    s = sqrt(1 - c^2)
+    s, c = sincos(ϕ)
+
+    # The sine must be always positive. In fact, `s` was previously computed
+    # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
+    # angles that lead to `cos(ϕ) = 1`.
+    if (s < 0)
+        s = -s
+    end
 
     s_fact = !ph_term ? +s : -s
 
@@ -388,8 +394,14 @@ function legendre_schmidt_quasi_normalized!(
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    c = cos(ϕ)
-    s = sqrt(1 - c^2)
+    s, c = sincos(ϕ)
+
+    # The sine must be always positive. In fact, `s` was previously computed
+    # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
+    # angles that lead to `cos(ϕ) = 1`.
+    if (s < 0)
+        s = -s
+    end
 
     s_fact = !ph_term ? +s : -s
 
@@ -526,8 +538,14 @@ function legendre_conventional!(
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    c = cos(ϕ)
-    s = sqrt(1 - c^2)
+    s, c = sincos(ϕ)
+
+    # The sine must be always positive. In fact, `s` was previously computed
+    # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
+    # angles that lead to `cos(ϕ) = 1`.
+    if (s < 0)
+        s = -s
+    end
 
     s_fact = !ph_term ? +s : -s
 
