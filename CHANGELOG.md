@@ -1,6 +1,16 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.3
+-------------
+
+- ![Enhancement][badge-enhancement] The conversion between ECEF or geocentric
+  variables to geodetic variables can now support different ellipsoids. (PR
+  [#61][gh-pr-61])
+- ![Bugfix][badge-bugfix] The computation of Legendre associated functions were
+  having accuracy problems for angles very close to 0. This problem caused
+  incorrect geomagnetic field calculations at regions close the geographic poles.
+
 Version 0.9.2
 -------------
 
@@ -457,3 +467,4 @@ Version 0.1.0
 [gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
 [gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
 [gh-pr-60]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/60
+[gh-pr-61]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/61
