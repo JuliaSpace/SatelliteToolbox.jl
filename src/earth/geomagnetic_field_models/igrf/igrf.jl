@@ -23,7 +23,7 @@ export igrf, igrfd
 ################################################################################
 
 """
-    igrfd(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; show_warns = true)
+    igrfd(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; max_degree = 13, show_warns = true)
 
 **IGRF Model**
 
@@ -63,11 +63,11 @@ are not present, then 2 allocations will happen to create them.
 
 # Keywords
 
-* `max_degree::Int`: Maximum degree used in the spherical harmonics when
+- `max_degree::Int`: Maximum degree used in the spherical harmonics when
     computing the geomagnetic field. If it is higher than the available number
-    of coefficients in the IGRF matrices, then it will be clamped.
-    (**Default** = 13)
-* `show_warns::Bool`: Show warnings about the data (**Default** = `true`).
+    of coefficients in the IGRF matrices, then it will be clamped. If it is
+    equal of lower than 0, then it will be set to 1. (**Default** = 13)
+- `show_warns::Bool`: Show warnings about the data (**Default** = `true`).
 
 # Remarks
 
@@ -86,9 +86,18 @@ available in Julia language.
     r::Number,
     λ::Number,
     Ω::Number;
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 )
-    return igrfd(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
+    return igrfd(
+        date,
+        r,
+        λ,
+        Ω,
+        Val(:geocentric);
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 @inline function igrfd(
@@ -98,9 +107,20 @@ end
     Ω::Number,
     P::AbstractMatrix{T},
     dP::AbstractMatrix{T};
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 ) where T<:Real
-    return igrfd(date, r, λ, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
+    return igrfd(
+        date,
+        r,
+        λ,
+        Ω,
+        Val(:geocentric),
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 @inline function igrfd(
@@ -109,12 +129,26 @@ end
     λ::Number,
     Ω::Number,
     R::T;
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 ) where {T<:Union{Val{:geocentric}, Val{:geodetic}}}
-    P  = Matrix{Float64}(undef, 14, 14)
-    dP = Matrix{Float64}(undef, 14, 14)
+    # Currently, the maximum degree allowed for IGRF is 13.
+    max_degree = clamp(max_degree, 1, 13)
 
-    return igrfd(date, rh, λ, Ω, R, P, dP; show_warns = show_warns)
+    P  = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+    dP = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+
+    return igrfd(
+        date,
+        rh,
+        λ,
+        Ω,
+        R,
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 @inline function igrfd(
@@ -125,20 +159,33 @@ end
     R::T,
     P::AbstractMatrix{S},
     dP::AbstractMatrix{S};
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 ) where {T<:Union{Val{:geocentric}, Val{:geodetic}}, S<:Real}
     # Check if the latitude and longitude are valid.
-    ( (λ < -90) || (λ > 90) ) &&
-    error("The latitude must be between -90° and +90° rad.")
+    if ((λ < -90) || (λ > 90))
+        error("The latitude must be between -90° and +90° rad.")
+    end
 
-    ( (Ω < -180) || (Ω > 180) ) &&
-    error("The longitude must be between -180° and +180° rad.")
+    if ((Ω < -180) || (Ω > 180))
+        error("The longitude must be between -180° and +180° rad.")
+    end
 
-    return igrf(date, rh, deg2rad(λ), deg2rad(Ω), R, P, dP; show_warns = show_warns)
+    return igrf(
+        date,
+        rh,
+        deg2rad(λ),
+        deg2rad(Ω),
+        R,
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 """
-    igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; show_warns = true)
+    igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; max_degree = 13, show_warns = true)
 
 **IGRF Model**
 
@@ -170,15 +217,19 @@ coordinate system. In case of **geodetic coordinates**, the X-axis is tangent to
 the ellipsoid at the selected location and points toward North, whereas the
 Z-axis completes a right-hand coordinate system.
 
-The optional arguments `P` and `dP` must be two matrices with at least 14x14
-real numbers. If they are present, then they will be used to store the Legendre
-coefficients and their derivatives. In this case, no allocation will be
-performed when computing the magnetic field. If they are not present, then 2
-allocations will happen to create them.
+The optional arguments `P` and `dP` must be two matrices with at least
+`max_degree + 1 × max_degree + 1` real numbers. If they are present, then they
+will be used to store the Legendre coefficients and their derivatives. In this
+case, no allocation will be performed when computing the magnetic field. If they
+are not present, then 2 allocations will happen to create them.
 
 # Keywords
 
-* `show_warns`: Show warnings about the data (**Default** = `true`).
+- `max_degree::Int`: Maximum degree used in the spherical harmonics when
+    computing the geomagnetic field. If it is higher than the available number
+    of coefficients in the IGRF matrices, then it will be clamped. If it is
+    equal of lower than 0, then it will be set to 1. (**Default** = 13)
+- `show_warns::Bool`: Show warnings about the data (**Default** = `true`).
 
 # Remarks
 
@@ -192,8 +243,22 @@ more readable code than the original one in FORTRAN, because it uses features
 available in Julia language.
 
 """
-function igrf(date::Number, r::Number, λ::Number, Ω::Number; show_warns = true)
-    return igrf(date, r, λ, Ω, Val(:geocentric); show_warns = show_warns)
+function igrf(
+    date::Number,
+    r::Number,
+    λ::Number,
+    Ω::Number;
+    max_degree::Int = 13,
+    show_warns::Bool = true
+)
+    return igrf(date,
+        r,
+        λ,
+        Ω,
+        Val(:geocentric);
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 function igrf(
@@ -203,9 +268,20 @@ function igrf(
     Ω::Number,
     P::AbstractMatrix{T},
     dP::AbstractMatrix{T};
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 ) where T<:Real
-    return igrf(date, r, λ, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
+    return igrf(
+        date,
+        r,
+        λ,
+        Ω,
+        Val(:geocentric),
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
 function igrf(
@@ -214,17 +290,38 @@ function igrf(
     λ::Number,
     Ω::Number,
     R::T;
+    max_degree::Int = 13,
     show_warns::Bool = true
 ) where {T<:Union{Val{:geocentric}, Val{:geodetic}}}
-    P  = Matrix{Float64}(undef, 14, 14)
-    dP = Matrix{Float64}(undef, 14, 14)
+    # Currently, the maximum degree allowed for IGRF is 13.
+    max_degree = clamp(max_degree, 1, 13)
 
-    return igrf(date, r, λ, Ω, R, P, dP; show_warns = show_warns)
+    P  = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+    dP = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+
+    return igrf(date,
+        r,
+        λ,
+        Ω,
+        R,
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 end
 
-function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric},
-              P::AbstractMatrix{T}, dP::AbstractMatrix{T};
-              show_warns::Bool = true) where T<:Real
+function igrf(
+    date::Number,
+    r::Number,
+    λ::Number,
+    Ω::Number,
+    ::Val{:geocentric},
+    P::AbstractMatrix{T},
+    dP::AbstractMatrix{T};
+    max_degree::Int = 13,
+    show_warns::Bool = true
+) where T<:Real
 
     # Model data
     # ==========
@@ -257,6 +354,9 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
         @warn("The magnetic field computed with this IGRF version may be of reduced accuracy for years greater than $rel_year.")
     end
 
+    # If the `max_degree` is equal or lower than 0, we must clamp it to 1.
+    max_degree = max(max_degree, 1)
+
     # Input variables conversion
     # ==========================
 
@@ -284,8 +384,11 @@ function igrf(date::Number, r::Number, λ::Number, Ω::Number, ::Val{:geocentric
     # Compute the maximum spherical harmonic degree for the selected date.
     n_max = (epoch < 1995) ? 10 : 13
 
+    # Check if the user wants a lower degree.
+    n_max = min(max_degree, n_max)
+
     # Make sure we have the required amount of space in the matrices.
-    (rows, cols) = size(P)
+    rows, cols = size(P)
 
     if (rows < n_max + 1) || (cols < n_max + 1)
         error("Matrix `P` must have at least $(n_max + 1) rows and columns.")
@@ -473,7 +576,8 @@ function igrf(
     ::Val{:geodetic},
     P::AbstractMatrix{T},
     dP::AbstractMatrix{T};
-    show_warns = true
+    max_degree::Int = 13,
+    show_warns::Bool = true
 ) where T<:Real
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
@@ -486,7 +590,17 @@ function igrf(
     λ_gc, r = geodetic_to_geocentric(λ, h)
 
     # Compute the geomagnetic field in geocentric coordinates.
-    B_gc = igrf(date, r, λ_gc, Ω, Val(:geocentric), P, dP; show_warns = show_warns)
+    B_gc = igrf(
+        date,
+        r,
+        λ_gc,
+        Ω,
+        Val(:geocentric),
+        P,
+        dP;
+        max_degree = max_degree,
+        show_warns = show_warns
+    )
 
     # Convert to geodetic coordinates.
     D_gd_gc = create_rotation_matrix(λ_gc - λ, :Y)
