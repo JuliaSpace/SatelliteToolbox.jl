@@ -76,9 +76,6 @@ function r_teme_to_tod(
     Δϵ_1980 += δΔϵ_1980
     Δψ_1980 += δΔψ_1980
 
-    # Compute the obliquity.
-    ϵ_1980 = mϵ_1980 + Δϵ_1980
-
     # Evaluate the Delaunay parameters associated with the Moon in the interval
     # [0,2π]°.
     #
