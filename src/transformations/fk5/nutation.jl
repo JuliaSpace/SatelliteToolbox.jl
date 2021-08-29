@@ -41,7 +41,7 @@ export nutation_fk5
 #
 # Notice that the order of them is not equal to that presented in the original
 # paper, but this have no impact when computing the nutation. Moreover, this is
-# the same order that is presented in [1, p. 1043].
+# the same order that is presented in [1](p. 1043).
 #
 ################################################################################
 
