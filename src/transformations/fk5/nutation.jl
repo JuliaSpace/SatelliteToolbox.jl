@@ -208,7 +208,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     # Mean obliquity of the ecliptic
     # ==============================
 
-    # Compute the mean obliquity of the ecliptic [s].
+    # Compute the mean obliquity of the ecliptic [°].
     mϵ_1980 = @evalpoly(T_TT, 23.439291, -0.0130042, -1.64e-7, +5.04e-7)
 
     # Reduce to the interval [0, 2π]°.
