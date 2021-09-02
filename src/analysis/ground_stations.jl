@@ -17,7 +17,8 @@ export ground_station_accesses, ground_station_gaps,
 
 Compute the accesses of a satellite with orbit propagator `orbp` (see
 `init_orbit_propagator`) to the ground stations defined in the vector `vrs_e`.
-The analysis interval begins in the propagator epoch and lasts `Δt` [s].
+The analysis interval begins in the propagator epoch plus `t_0` and lasts `Δt`
+[s].
 
 The ground stations can be specified by an array of 3×1 vectors describing the
 ground stations position in an ECEF frame `vrs_e` or by an array of tuples
@@ -45,7 +46,7 @@ containing the WGS84 position of each ground station `[(WGS84)]`:
                This is useful to merge access time between two or more stations.
                (**Default** = `v->|(v...)` *i.e.* compute the access if at least
                one ground station is visible)
-
+* `t_0`: Initial time of the analysis after the propagator epoch [s].
 """
 ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
     ground_station_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
@@ -65,13 +66,14 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
                                  ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006}, vargs...;
                                  θ::Number = 10*pi/180,
                                  reduction::Function = v->|(v...),
-                                 step::Number = 60) where T<:AbstractVector
+                                 step::Number = 60,
+                                 t_0::Number = 0) where T<:AbstractVector
 
     # Time vector of the analysis.
     t = 0:step:Δt
 
     # Get the epoch of the propagator.
-    JD₀ = get_epoch(orbp)
+    JD₀ = get_epoch(orbp) + t_0 / 86400
 
     # Matrix that will contain the accesses.
     accesses = Matrix{DateTime}(undef,0,2)
@@ -81,7 +83,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
 
     # Lambda function to check if the ground station is visible.
     f(t)::Bool = begin
-        r_i, v_i   = propagate!(orbp, t)
+        r_i, v_i   = propagate!(orbp, t + t_0)
         r_e        = r_eci_to_ecef(DCM, ECI, ECEF, JD₀ + t/86400, vargs...)*r_i
         visibility = [ground_station_visible(r_e, rs_e, θ) for rs_e in vrs_e]
 
