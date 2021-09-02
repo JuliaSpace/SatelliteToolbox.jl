@@ -1,15 +1,16 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions to verify if the satellite is within the station visibility
 #   circle.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export ground_station_accesses, ground_station_gaps,
-       list_ground_station_accesses, list_ground_station_gaps,
-       ground_station_visible
+export ground_station_accesses, ground_station_gaps
+export list_ground_station_accesses, list_ground_station_gaps
+export ground_station_visible
 
 """
     ground_station_accesses(orbp, vrs_e,     Δt, ECI, ECEF, vargs...; kwargs...)
@@ -28,47 +29,60 @@ containing the WGS84 position of each ground station `[(WGS84)]`:
 
 # Args
 
-* `ECI`: Earth-Centered Inertial frame in which the state vector of the
-         propagator is represented.
-* `ECEF`: Earth-Centered, Earth-fixed frame to be used for the analysis. It
-          must be the same frame used to compute the ground station position
-          vector.
-* `vargs...`: list of additional arguments to be passed to the function
-              `r_eci_to_ecef` when converting the ECI frame to the ECEF.
+- `ECI`: Earth-Centered Inertial frame in which the state vector of the
+    propagator is represented.
+- `ECEF`: Earth-Centered, Earth-fixed frame to be used for the analysis. It
+    must be the same frame used to compute the ground station position vector.
+- `vargs...`: List of additional arguments to be passed to the function
+    `r_eci_to_ecef` when converting the ECI frame to the ECEF.
 
 # Keywords
 
-* `θ`: Minimum elevation angle for communication between the satellite and the
-       ground stations [rad]. (**Default** = 10ᵒ)
-* `reduction`: A function that receives a boolean vector with the visibility
-               between the satellite and each ground station. It must return a
-               boolean value indicating if the access must be computed or not.
-               This is useful to merge access time between two or more stations.
-               (**Default** = `v->|(v...)` *i.e.* compute the access if at least
-               one ground station is visible)
-* `t_0`: Initial time of the analysis after the propagator epoch [s].
+- `θ::Number`: Minimum elevation angle for communication between the satellite
+    and the ground stations [rad]. (**Default** = 10ᵒ)
+- `reduction::Function`: A function that receives a boolean vector with the
+    visibility between the satellite and each ground station. It must return a
+    boolean value indicating if the access must be computed or not. This is
+    useful to merge access time between two or more stations.
+    (**Default** = `v->|(v...)` *i.e.* compute the access if at least one ground
+    station is visible)
+- `t_0::Number`: Initial time of the analysis after the propagator epoch [s].
 """
-ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...) =
-    ground_station_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
+function ground_station_accesses(orbp, gs_wgs84::Tuple, vargs...; kwargs...)
+    return ground_station_accesses(orbp, [gs_wgs84], vargs...; kwargs...)
+end
 
-function ground_station_accesses(orbp, vgs_wgs84::AbstractVector{T}, vargs...;
-                                 kwargs...) where T<:Tuple
-
+function ground_station_accesses(
+    orbp,
+    vgs_wgs84::AbstractVector{T},
+    vargs...;
+    kwargs...
+) where T<:Tuple
     vrs_e = [geodetic_to_ecef(gs_wgs84...) for gs_wgs84 in vgs_wgs84]
     return ground_station_accesses(orbp, vrs_e, vargs...; kwargs...)
 end
 
-ground_station_accesses(orbp, rs_e::AbstractVector{T}, vargs...; kwargs...) where
-    T<:Number = ground_station_accesses(orbp, [rs_e], vargs...; kwargs...)
+function ground_station_accesses(
+    orbp,
+    rs_e::AbstractVector{T},
+    vargs...;
+    kwargs...
+) where T<:Number
+    return ground_station_accesses(orbp, [rs_e], vargs...; kwargs...)
+end
 
-function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
-                                 ECI::Union{T_ECIs, T_ECIs_IAU_2006},
-                                 ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006}, vargs...;
-                                 θ::Number = 10*pi/180,
-                                 reduction::Function = v->|(v...),
-                                 step::Number = 60,
-                                 t_0::Number = 0) where T<:AbstractVector
-
+function ground_station_accesses(
+    orbp,
+    vrs_e::AbstractVector{T},
+    Δt::Number,
+    ECI::Union{T_ECIs, T_ECIs_IAU_2006},
+    ECEF::Union{T_ECEFs, T_ECEFs_IAU_2006},
+    vargs...;
+    θ::Number = 10*pi/180,
+    reduction::Function = v->|(v...),
+    step::Number = 60,
+    t_0::Number = 0
+) where T<:AbstractVector
     # Time vector of the analysis.
     t = 0:step:Δt
 
@@ -76,7 +90,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
     JD₀ = get_epoch(orbp) + t_0 / 86400
 
     # Matrix that will contain the accesses.
-    accesses = Matrix{DateTime}(undef,0,2)
+    accesses = Matrix{DateTime}(undef, 0, 2)
 
     # State to help the computation.
     state = :initial
@@ -84,9 +98,8 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
     # Lambda function to check if the ground station is visible.
     f(t)::Bool = begin
         r_i, v_i   = propagate!(orbp, t + t_0)
-        r_e        = r_eci_to_ecef(DCM, ECI, ECEF, JD₀ + t/86400, vargs...)*r_i
+        r_e        = r_eci_to_ecef(DCM, ECI, ECEF, JD₀ + t / 86400, vargs...) * r_i
         visibility = [ground_station_visible(r_e, rs_e, θ) for rs_e in vrs_e]
-
         return reduction(visibility)
     end
 
@@ -113,7 +126,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
             kc = find_crossing(f, k₀, k₁, false, true)
 
             state = :visible
-            access_beg = jd_to_date(DateTime, JD₀ + kc/86400)
+            access_beg = jd_to_date(DateTime, JD₀ + kc / 86400)
 
         elseif (state == :visible) && !gs_visible
             # Refine to find the edge.
@@ -122,7 +135,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
             kc = find_crossing(f, k₀, k₁, true, false)
 
             state = :not_visible
-            access_end = jd_to_date(DateTime, JD₀ + kc/86400)
+            access_end = jd_to_date(DateTime, JD₀ + kc / 86400)
 
             accesses = vcat(accesses, [access_beg access_end])
         end
@@ -131,7 +144,7 @@ function ground_station_accesses(orbp, vrs_e::AbstractVector{T}, Δt::Number,
     # If the analysis finished during an access, then just add the end of the
     # interval as the end of the access.
     if state == :visible
-        access_end = jd_to_date(DateTime, JD₀ + Δt/86400)
+        access_end = jd_to_date(DateTime, JD₀ + Δt / 86400)
         accesses   = vcat(accesses, [access_beg access_end])
     end
 
@@ -147,7 +160,6 @@ keywords are the same as the ones used in the function
 
 Notice that the gap analysis starts in the orbit propagator epoch and ends in
 the instant defined by the argument `Δt`.
-
 """
 function ground_station_gaps(orbp, args...; kwargs...)
     # Get the epoch of the propagator.
@@ -161,11 +173,11 @@ function ground_station_gaps(orbp, args...; kwargs...)
     Δt = args[2]
 
     # Compute the last propagation instant.
-    JD₁ = JD₀ + Δt/86400
+    JD₁ = JD₀ + Δt / 86400
     DT₁ = jd_to_date(DateTime, JD₁)
 
     # Compute the gaps between accesses.
-    gaps = Matrix{DateTime}(undef,0,2)
+    gaps = Matrix{DateTime}(undef, 0, 2)
 
     # Check if the simulation did not start under the visibility of a ground
     # station.
@@ -177,9 +189,9 @@ function ground_station_gaps(orbp, args...; kwargs...)
     # station.
     if accesses[end,2] != DT₁
         aux  = jd_to_date(DateTime, JD₁)
-        gaps = vcat(gaps, [ accesses[:,2] vcat(accesses[2:end,1], aux) ])
+        gaps = vcat(gaps, [accesses[:,2] vcat(accesses[2:end,1], aux)])
     else
-        gaps = vcat(gaps, [ accesses[1:end-1,2] accesses[2:end,1] ])
+        gaps = vcat(gaps, [accesses[1:end-1,2] accesses[2:end,1]])
     end
 
     return gaps
@@ -194,19 +206,23 @@ keywords `kwargs...` are those of the function `ground_station_accesses`.
 Additionally, the following keywords can be used to modify the behavior of this
 function:
 
-* `format`: If `:pretty`, then a formatted table will be printed. If `:csv`,
-            then the access data will be printed using the CSV format.
-            (**Default** = `:pretty`)
-* `time_scale`: Select the time scale of the access duration (`:s` for seconds,
-                `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
-
+- `format::Symbol`: If `:pretty`, then a formatted table will be printed. If
+    `:csv`, then the access data will be printed using the CSV format.
+    (**Default** = `:pretty`)
+- `time_scale::Symbol`: Select the time scale of the access duration (`:s` for
+    seconds, `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
 """
-list_ground_station_accesses(vargs...; kwargs...) =
-    list_ground_station_accesses(stdout, vargs...; kwargs...)
+function list_ground_station_accesses(vargs...; kwargs...)
+    return list_ground_station_accesses(stdout, vargs...; kwargs...)
+end
 
-function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
-                                      time_scale::Symbol = :m, kwargs...)
-
+function list_ground_station_accesses(
+    io::IO,
+    vargs...;
+    format::Symbol = :pretty,
+    time_scale::Symbol = :m,
+    kwargs...
+)
     # Compute the accesses.
     accesses = ground_station_accesses(vargs...; kwargs...)
 
@@ -229,18 +245,20 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
     end
 
     # Compute the accesses duration.
-    access_time = map((b,e)->(e-b).value/1000/ts,
-                       @view(accesses[:,1]), @view(accesses[:,2]))
-    num         = length(access_time)
+    access_time = map(
+        (b, e)->(e - b).value / 1000 / ts,
+        @view(accesses[:,1]),
+        @view(accesses[:,2])
+    )
+    num = length(access_time)
 
     # Assemble the information to be printed.
     header = ["Access #", "Beginning (UTC)", "End (UTC)", "Duration [$label]"]
     mp     = hcat(string.(collect(1:1:num)), accesses, access_time)
 
     # Print the information depending on the format.
-
     if format == :csv
-        writedlm(io, vcat(header,mp), ",")
+        writedlm(io, vcat(header, mp), ",")
     else
         # Statistics.
         min_access, id_min = findmin(access_time)
@@ -259,21 +277,26 @@ function list_ground_station_accesses(io::IO, vargs...; format = :pretty,
                        "" "" "           Total access"  total_access;])
 
         # Highlighters for the minimum and maximum accesses.
-        hl_min = Highlighter((data,i,j)->i == id_min, crayon"bold red")
-        hl_max = Highlighter((data,i,j)->i == id_max, crayon"bold blue")
+        hl_min = Highlighter((data, i, j) -> i == id_min, crayon"bold red")
+        hl_max = Highlighter((data, i, j) -> i == id_max, crayon"bold blue")
 
         # Highlighter for statistics labels.
-        hl = Highlighter((data,i,j)->(j == 3) && (i-num ∈ (1,2,3,4)),
-                         crayon"bold")
+        hl = Highlighter(
+            (data, i, j) -> (j == 3) && (i - num ∈ (1, 2, 3, 4)),
+            crayon"bold"
+        )
 
         # Print.
-        pretty_table(io, mp;
-                     alignment    = [:r, :l, :l, :r],
-                     body_hlines  = [num,num+3],
-                     crop         = :horizontal,
-                     header       = header,
-                     formatters   = ft_printf("%.3f",[4]),
-                     highlighters = (hl,hl_min,hl_max))
+        pretty_table(
+            io,
+            mp;
+            alignment    = [:r, :l, :l, :r],
+            body_hlines  = [num, num + 3],
+            crop         = :horizontal,
+            header       = header,
+            formatters   = ft_printf("%.3f", [4]),
+            highlighters = (hl, hl_min, hl_max)
+        )
     end
 
     return nothing
@@ -288,19 +311,23 @@ keywords `kwargs...` are those of the function `ground_station_gaps`.
 Additionally, the following keywords can be used to modify the behavior of this
 function:
 
-* `format`: If `:pretty`, then a formatted table will be printed. If `:csv`,
-            then the access data will be printed using the CSV format.
-            (**Default** = `:pretty`)
-* `time_scale`: Select the time scale of the access duration (`:s` for seconds,
-                `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
-
+- `format::Symbol`: If `:pretty`, then a formatted table will be printed. If
+    `:csv`, then the access data will be printed using the CSV format.
+    (**Default** = `:pretty`)
+- `time_scale::Symbol`: Select the time scale of the access duration (`:s` for
+    seconds, `:m` for minutes, and `:h` for hours). (**Default** = `:m`)
 """
-list_ground_station_gaps(vargs...; kwargs...) =
-    list_ground_station_gaps(stdout, vargs...; kwargs...)
+function list_ground_station_gaps(vargs...; kwargs...)
+    return list_ground_station_gaps(stdout, vargs...; kwargs...)
+end
 
-function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
-                                  time_scale::Symbol = :m, kwargs...)
-
+function list_ground_station_gaps(
+    io::IO,
+    vargs...;
+    format::Symbol = :pretty,
+    time_scale::Symbol = :m,
+    kwargs...
+)
     # Compute the gaps.
     gaps = ground_station_gaps(vargs...; kwargs...)
 
@@ -323,15 +350,18 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
     end
 
     # Compute the gaps duration.
-    gap_time = map((b,e)->(e-b).value/1000/ts, @view(gaps[:,1]), @view(gaps[:,2]))
-    num         = length(gap_time)
+    gap_time = map(
+        (b, e)->(e - b).value / 1000 / ts,
+        @view(gaps[:,1]),
+        @view(gaps[:,2])
+    )
+    num = length(gap_time)
 
     # Assemble the information to be printed.
     header = ["   Gap #", "Beginning (UTC)", "End (UTC)", "Duration [$label]"]
     mp     = hcat(string.(collect(1:1:num)), gaps, gap_time)
 
     # Print the information depending on the format.
-
     if format == :csv
         writedlm(io, vcat(header,mp), ",")
     else
@@ -342,8 +372,8 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
         total_gap       = sum(gap_time)
 
         # Mark the minimum and maximum gaps.
-        mp[id_min, 1] = "MIN " * mp[id_min,1]
-        mp[id_max, 1] = "MAX " * mp[id_max,1]
+        mp[id_min,1] = "MIN " * mp[id_min,1]
+        mp[id_max,1] = "MAX " * mp[id_max,1]
 
         # Add the statistics to the end of the table.
         mp = vcat(mp, ["" "" "            Minimum gap"  min_gap;
@@ -352,21 +382,26 @@ function list_ground_station_gaps(io::IO, vargs...; format = :pretty,
                        "" "" "              Total gap"  total_gap;])
 
         # Highlighters for the minimum and maximum gaps.
-        hl_min = Highlighter((data,i,j)->i == id_min, crayon"bold red")
-        hl_max = Highlighter((data,i,j)->i == id_max, crayon"bold blue")
+        hl_min = Highlighter((data, i, j) -> i == id_min, crayon"bold red")
+        hl_max = Highlighter((data, i, j) -> i == id_max, crayon"bold blue")
 
         # Highlighter for statistics labels.
-        hl = Highlighter((data,i,j)->(j == 3) && (i-num ∈ (1,2,3,4)),
-                         crayon"bold")
+        hl = Highlighter(
+            (data, i, j) -> (j == 3) && (i - num ∈ (1, 2, 3, 4)),
+            crayon"bold"
+        )
 
         # Print.
-        pretty_table(io, mp;
-                     alignment    = [:r, :l, :l, :r],
-                     body_hlines  = [num,num+3],
-                     crop         = :horizontal,
-                     header       = header,
-                     formatters   = ft_printf("%.3f",[4]),
-                     highlighters = (hl,hl_min,hl_max))
+        pretty_table(
+            io,
+            mp;
+            alignment    = [:r, :l, :l, :r],
+            body_hlines  = [num, num + 3],
+            crop         = :horizontal,
+            header       = header,
+            formatters   = ft_printf("%.3f", [4]),
+            highlighters = (hl, hl_min, hl_max)
+        )
     end
 
     return nothing
@@ -384,15 +419,17 @@ must have the same unit.
 
 Returns `true` if the satellite is inside the visibility circle, or `false`
 otherwise.
-
 """
-function ground_station_visible(r_e::AbstractVector, rs_e::AbstractVector,
-                                θ::Number)
+function ground_station_visible(
+    r_e::AbstractVector,
+    rs_e::AbstractVector,
+    θ::Number
+)
     # Check if the satellite is within the visibility circle of the station.
     dr_e = r_e - rs_e
-    cos_beta = dot( dr_e/norm(dr_e), rs_e/norm(rs_e) )
+    cos_beta = dot(dr_e / norm(dr_e), rs_e / norm(rs_e))
 
-    return cos_beta > cos(π/2-θ)
+    return cos_beta > cos(π / 2 - θ)
 end
 
 
@@ -406,12 +443,16 @@ visibility circle of a ground station with latitude `lat_s` [rad], longitude
 
 Notice that the units of `r_e` and `h_s` must be the same.
 
-Returns `true` if the satellite is inside the visibility circle, or `false`
+Return `true` if the satellite is inside the visibility circle, or `false`
 otherwise.
-
 """
-function ground_station_visible(r_e::AbstractVector, lat_s::Number,
-                                lon_s::Number, h_s::Number, θ::Number)
+function ground_station_visible(
+    r_e::AbstractVector,
+    lat_s::Number,
+    lon_s::Number,
+    h_s::Number,
+    θ::Number
+)
     # Convert the ground station LLA to the ECEF frame.
     rs_e = geodetic_to_ecef(lat_s, lon_s, h_s)
 
