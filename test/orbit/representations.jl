@@ -53,44 +53,99 @@
 
 @testset "Function kepler_to_rv and rv_to_kepler" begin
 
-    ## kepler_to_rv
-    ## ============
+    # Float64
+    # ==========================================================================
 
-    p    = 11067.790*1000
-    e    = 0.83285
-    i    = 87.87*pi/180
-    RAAN = 227.89*pi/180
-    w    = 53.38*pi/180
-    f    = 92.335*pi/180
-    a    = p/(1-e^2)
+    let
+        ## kepler_to_rv
+        ## ============
 
-    (r_i, v_i) = kepler_to_rv(a, e, i, RAAN, w, f)
+        p    = 11067.790 * 1000
+        e    = 0.83285
+        i    = 87.87  * π / 180
+        RAAN = 227.89 * π / 180
+        w    = 53.38  * π / 180
+        f    = 92.335 * π / 180
+        a    = p / (1 - e^2)
 
-    @test r_i[1]/1000 ≈ +6525.344 atol=5e-2
-    @test r_i[2]/1000 ≈ +6861.535 atol=5e-2
-    @test r_i[3]/1000 ≈ +6449.125 atol=5e-2
+        r_i, v_i = kepler_to_rv(a, e, i, RAAN, w, f)
 
-    @test v_i[1]/1000 ≈ +4.902276 atol=1e-4
-    @test v_i[2]/1000 ≈ +5.533124 atol=1e-4
-    @test v_i[3]/1000 ≈ -1.975709 atol=1e-4
+        @test r_i[1] / 1000 ≈ +6525.344 atol=5e-2
+        @test r_i[2] / 1000 ≈ +6861.535 atol=5e-2
+        @test r_i[3] / 1000 ≈ +6449.125 atol=5e-2
+        @test eltype(r_i) == Float64
 
-    ## rv_to_kepler
-    ## ============
+        @test v_i[1] / 1000 ≈ +4.902276 atol=1e-4
+        @test v_i[2] / 1000 ≈ +5.533124 atol=1e-4
+        @test v_i[3] / 1000 ≈ -1.975709 atol=1e-4
+        @test eltype(v_i) == Float64
 
-    r_i = [6525.344; 6861.535; 6449.125]*1000
-    v_i = [4.902276; 5.533124; -1.975709]*1000
+        ## rv_to_kepler
+        ## ============
 
-    oe = rv_to_kepler(r_i..., v_i...)
+        r_i = [6525.344; 6861.535; 6449.125] * 1000
+        v_i = [4.902276; 5.533124; -1.975709] * 1000
 
-    a, e, i, RAAN, w, f = oe.a, oe.e, oe.i, oe.Ω, oe.ω, oe.f
-    p = a*(1-e^2)
+        oe = rv_to_kepler(r_i..., v_i...)
 
-    @test p/1000      ≈ 11067.790 atol=5e-2
-    @test e           ≈ 0.83285   atol=1e-5
-    @test i*180/pi    ≈ 87.87     atol=1e-2
-    @test RAAN*180/pi ≈ 227.89    atol=1e-2
-    @test w*180/pi    ≈ 53.38     atol=1e-2
-    @test f*180/pi    ≈ 92.335    atol=1e-3
+        a, e, i, RAAN, w, f = oe.a, oe.e, oe.i, oe.Ω, oe.ω, oe.f
+        p = a * (1 - e^2)
+
+        @test p / 1000       ≈ 11067.790 atol=5e-2
+        @test e              ≈ 0.83285   atol=1e-5
+        @test i    * 180 / π ≈ 87.87     atol=1e-2
+        @test RAAN * 180 / π ≈ 227.89    atol=1e-2
+        @test w    * 180 / π ≈ 53.38     atol=1e-2
+        @test f    * 180 / π ≈ 92.335    atol=1e-3
+        @test oe.a isa Float64
+    end
+
+    # Float32
+    # ==========================================================================
+
+    let
+        ## kepler_to_rv
+        ## ============
+
+        p    = 11067.790f0 * 1000
+        e    = 0.83285f0
+        i    = 87.87f0  * Float32(π / 180)
+        RAAN = 227.89f0 * Float32(π / 180)
+        w    = 53.38f0  * Float32(π / 180)
+        f    = 92.335f0 * Float32(π / 180)
+        a    = p / (1 - e^2)
+
+        r_i, v_i = kepler_to_rv(a, e, i, RAAN, w, f)
+
+        @test r_i[1] / 1000 ≈ +6525.344 atol=5e-2
+        @test r_i[2] / 1000 ≈ +6861.535 atol=5e-2
+        @test r_i[3] / 1000 ≈ +6449.125 atol=5e-2
+        @test eltype(r_i) == Float32
+
+        @test v_i[1] / 1000 ≈ +4.902276 atol=1e-4
+        @test v_i[2] / 1000 ≈ +5.533124 atol=1e-4
+        @test v_i[3] / 1000 ≈ -1.975709 atol=1e-4
+        @test eltype(v_i) == Float32
+
+        ## rv_to_kepler
+        ## ============
+
+        r_i = [6525.344f0; 6861.535f0; 6449.125f0]  * 1000
+        v_i = [4.902276f0; 5.533124f0; -1.975709f0] * 1000
+
+        oe = rv_to_kepler(r_i..., v_i...)
+
+        a, e, i, RAAN, w, f = oe.a, oe.e, oe.i, oe.Ω, oe.ω, oe.f
+        p = a * (1 - e^2)
+
+        @test p / 1000       ≈ 11067.790 atol=5e-2
+        @test e              ≈ 0.83285   atol=1e-5
+        @test i * 180 / π    ≈ 87.87     atol=1e-2
+        @test RAAN * 180 / π ≈ 227.89    atol=1e-2
+        @test w * 180 / π    ≈ 53.38     atol=1e-2
+        @test f * 180 / π    ≈ 92.335    atol=1e-3
+        @test oe.a isa Float32
+    end
 end
 
 @testset "Issue #25 - Special cases in kepler_to_rv" begin

@@ -29,7 +29,7 @@
 export kepler_to_rv, rv_to_kepler
 
 """
-    kepler_to_rv(a::Number, e::Number, i::Number, Ω::Number, ω::Number, f::Number)
+    kepler_to_rv(a::T1, e::T2, i::T3, Ω::T4, ω::T5, f::T6) where {T1, T2, T3, T4, T5, T6}
     kepler_to_rv(k::KeplerianElements)
 
 Convert the Keplerian elements (`a`, `e`, `i`, `Ω`, `ω`, and `f`) to a Cartesian
@@ -39,57 +39,65 @@ structure.
 
 # Args
 
-* `a`: Semi-major axis [m].
-* `e`: Eccentricity.
-* `i`: Inclination [rad].
-* `Ω`: Right ascension of the ascending node [rad].
-* `ω`: Argument of perigee [rad].
-* `f`: True anomaly [rad].
+- `a`: Semi-major axis [m].
+- `e`: Eccentricity.
+- `i`: Inclination [rad].
+- `Ω`: Right ascension of the ascending node [rad].
+- `ω`: Argument of perigee [rad].
+- `f`: True anomaly [rad].
 
 # Returns
 
-* The position vector represented in the inertial reference frame [m].
-* The velocity vector represented in the inertial reference frame [m].
+- The position vector represented in the inertial reference frame [m].
+- The velocity vector represented in the inertial reference frame [m].
+
+# Remarks
+
+This algorithm was adapted from **[1]** and **[2]**(p. 37-38).
 
 # References
 
-This algorithm was adapted from [1] and [3, p. 37-38].
-
+- **[1]**: Schwarz, R (2014). Memorandum No. 2: Cartesian State Vectors to
+    Keplerian Orbit Elements. Available at www.rene-schwarz.com
+- **[2]**: Kuga, H. K., Carrara, V., Rao, K. R (2005). Introdução à Mecânica
+    Orbital. 2ª ed. Instituto Nacional de Pesquisas Espaciais.
 """
-function kepler_to_rv(a::Number,
-                      e::Number,
-                      i::Number,
-                      Ω::Number,
-                      ω::Number,
-                      f::Number)
+function kepler_to_rv(
+    a::T1,
+    e::T2,
+    i::T3,
+    Ω::T4,
+    ω::T5,
+    f::T6
+) where {T1, T2, T3, T4, T5, T6}
+    T = promote_type(T1, T2, T3, T4, T5, T6)
+
     # Check eccentricity.
-    if !(0 <= e < 1)
-        throw(ArgumentError("Eccentricity must be in the interval [0,1)."))
-    end
+    !(0 <= e < 1) && throw(ArgumentError("Eccentricity must be in the interval [0,1)."))
 
     # Auxiliary variables.
     sin_f, cos_f = sincos(f)
 
     # Compute the geocentric distance.
-    r = a*(1-e^2)/(1+e*cos_f)
+    r = a * (1 - e^2) / (1 + e * cos_f)
 
     # Compute the position vector in the orbit plane, defined as:
     #   - The X axis points towards the perigee;
     #   - The Z axis is perpendicular to the orbital plane (right-hand);
     #   - The Y axis completes a right-hand coordinate system.
-    r_o = SVector{3}(r*cos_f, r*sin_f, 0)
+    r_o = SVector{3, T}(r * cos_f, r * sin_f, 0)
 
     # Compute the velocity vector in the orbit plane without perturbations.
     n = angvel(a, e, i, :J0)
-    v_o = n*a/sqrt(1-e^2)*SVector{3}(-sin_f, e+cos_f, 0)
+    v_o = n * a / sqrt(1 - e^2) * SVector{3, T}(-sin_f, e + cos_f, 0)
 
     # Compute the matrix that rotates the orbit reference frame into the
     # inertial reference frame.
     Dio = angle_to_dcm(-ω, -i, -Ω, :ZXZ)
 
     # Compute the position and velocity represented in the inertial frame.
-    r_i = Dio*r_o
-    v_i = Dio*v_o
+    r_i = Dio * r_o
+    v_i = Dio * v_o
 
     return r_i, v_i
 end
