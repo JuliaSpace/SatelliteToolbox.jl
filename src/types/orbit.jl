@@ -15,26 +15,25 @@ export Orbit, KeplerianElements, OrbitStateVector
 Abstract type of an orbit representation.
 
 """
-abstract type Orbit{T} end
+abstract type Orbit{Tepoch, T} end
 
 """
-    KeplerianElements{T1,T2}
+    KeplerianElements{Tepoch, T}
 
 This structure defines the orbit in terms of the Keplerian elements.
 
 # Fields
 
-* `t`: Epoch.
-* `a`: Semi-major axis [m].
-* `e`: Eccentricity [ ].
-* `i`: Inclination [rad].
-* `Ω`: Right ascension of the ascending node [rad].
-* `ω`: Argument of perigee [rad].
-* `f`: True anomaly [rad].
-
+- `t::Tepoch`: Epoch.
+- `a::T`: Semi-major axis [m].
+- `e::T`: Eccentricity [ ].
+- `i::T`: Inclination [rad].
+- `Ω::T`: Right ascension of the ascending node [rad].
+- `ω::T`: Argument of perigee [rad].
+- `f::T`: True anomaly [rad].
 """
-@with_kw_noshow struct KeplerianElements{T} <: Orbit{T}
-    t::T
+@with_kw_noshow struct KeplerianElements{Tepoch, T} <: Orbit{Tepoch, T}
+    t::Tepoch
     a::T
     e::T
     i::T
@@ -43,28 +42,34 @@ This structure defines the orbit in terms of the Keplerian elements.
     f::T
 end
 
-function KeplerianElements(t::T1, a::T2, e::T3, i::T4, Ω::T5, ω::T6, f::T7) where
-    {T1<:Number, T2<:Number, T3<:Number, T4<:Number, T5<:Number, T6<:Number, T7<:Number}
-    T = promote_type(T1, T2, T3, T4, T5, T6, T7)
-    return KeplerianElements{T}(t,a,e,i,Ω,ω,f)
+function KeplerianElements(
+    t::Number,
+    a::T1,
+    e::T2,
+    i::T3,
+    Ω::T4,
+    ω::T5,
+    f::T6
+) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number, T5<:Number, T6<:Number}
+    T = promote_type(T1, T2, T3, T4, T5, T6)
+    return KeplerianElements{typeof(t), T}(t, a, e, i, Ω, ω, f)
 end
 
 """
-    OrbitStateVector{T}
+    OrbitStateVector{Tepoch, T}
 
 Store the state vector representation of an orbit.
 
 # Fields
 
-* `t`: Epoch [Julian Day].
-* `r`: Position vector [m].
-* `v`: Velocity vector [m/s].
-* `a`: Acceleration vector [m/s²].
-
+- `t::Tepoch`: Epoch [Julian Day].
+- `r::SVector{3, T}`: Position vector [m].
+- `v::SVector{3, T}`: Velocity vector [m/s].
+- `a::SVector{3, T}`: Acceleration vector [m/s²].
 """
-@with_kw_noshow struct OrbitStateVector{T} <: Orbit{T}
-    t::T            = 0
-    r::SVector{3,T} = SVector{3,T}(0,0,0)
-    v::SVector{3,T} = SVector{3,T}(0,0,0)
-    a::SVector{3,T} = SVector{3,T}(0,0,0)
+@with_kw_noshow struct OrbitStateVector{Tepoch, T} <: Orbit{Tepoch, T}
+    t::Tepoch        = 0
+    r::SVector{3, T} = SVector{3, T}(0, 0, 0)
+    v::SVector{3, T} = SVector{3, T}(0, 0, 0)
+    a::SVector{3, T} = SVector{3, T}(0, 0, 0)
 end

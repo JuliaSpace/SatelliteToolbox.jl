@@ -30,35 +30,39 @@ export kepler_to_sv
 
 # Conversions.
 """
-    kepler_to_sv(k::KeplerianElements)
+    kepler_to_sv(k::KeplerianElements{Tepoch, T}) where {Tepoch, T}
 
 Convert the Keplerian elements `k` to a state vector.
-
 """
-function kepler_to_sv(k::KeplerianElements{T}) where T
+function kepler_to_sv(k::KeplerianElements{Tepoch, T}) where {Tepoch, T}
     r_i, v_i = kepler_to_rv(k)
-    return OrbitStateVector{T}(t = k.t, r = r_i, v = v_i)
+    return OrbitStateVector{Tepoch, T}(t = k.t, r = r_i, v = v_i)
 end
 
 ################################################################################
 #                                  Overloads
 ################################################################################
 
-getindex(k::KeplerianElements{T}, ::Colon) where T<:Number =
-    SVector{7,T}(k.t, k.a, k.e, k.i, k.Ω, k.ω, k.f)
+function getindex(k::KeplerianElements{Tepoch, T}, ::Colon) where {Tepoch, T}
+    return SVector{7, T}(k.t, k.a, k.e, k.i, k.Ω, k.ω, k.f)
+end
 
 ################################################################################
 #                                      IO
 ################################################################################
 
-function show(io::IO, k::KeplerianElements{T}) where T
+function show(io::IO, k::KeplerianElements{Tepoch, T}) where {Tepoch, T}
     compact = get(io, :compact, true)
     epoch_str = sprint(print, k.t, context = :compact => compact)
     jd_str = sprint(print, jd_to_date(DateTime, k.t))
-    print(io, "KeplerianElements{", T, "}: Epoch = $epoch_str ($jd_str)")
+    print(io, "KeplerianElements{", Tepoch, ", ", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
-function show(io::IO, mime::MIME"text/plain", k::KeplerianElements{T}) where T
+function show(
+    io::IO,
+    mime::MIME"text/plain",
+    k::KeplerianElements{Tepoch, T}
+) where {Tepoch, T}
     d2r = 180/π
 
     # Check if the IO supports color.
@@ -130,7 +134,7 @@ function show(io::IO, mime::MIME"text/plain", k::KeplerianElements{T}) where T
     f_str *= " "^(max_length - length(f_str)) * " °"
 
     # Print the Keplerian elements.
-    println(io, "KeplerianElements{", T, "}:")
+    println(io, "KeplerianElements{", Tepoch, ", ", T, "}:")
     println(io, "$(b)           Epoch : $(d)" * epoch_str * " (" * date_str * ")");
     println(io, "$(b) Semi-major axis : $(d)" * a_str)
     println(io, "$(b)    Eccentricity : $(d)" * e_str)

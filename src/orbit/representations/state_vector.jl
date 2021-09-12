@@ -43,23 +43,24 @@ of the structure `KeplerianElements`.
 ################################################################################
 
 """
-    orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3} = [0,0,0], a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number, T3<:Number, T4<:Number}
-    orbsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
+    orbsv(t::Tepoch, r::AbstractVector{T1}, v::AbstractVector{T2}, a::AbstractVector{T3} = [0,0,0]) where {Tepoch<:Number, T1<:Number, T2<:Number, T3<:Number}
+    orbsv(t::Number, vec::AbstractVector)
 
-Create a new satellite state vector (see `OrbitStateVector`) using the position
-`r`, velocity `v`, and acceleration `a`. It is also possible to pass a vector
-`vec` with the information concatenated.
+Create a new satellite state vector (see [`OrbitStateVector`](@ref)) using the
+position `r`, velocity `v`, and acceleration `a`. It is also possible to pass a
+vector `vec` with the information concatenated.
 
 !!! info
-
     The vectors `r`, `v`, and `a` must have at least 3 elements. In the case
     more elements are available, they will be neglected. On the other hand, the
-    vector `v` must have 6 or 9 dimensions, indicating `[r;v]`, or `[r;v;a]`.
-
+    vector `v` must have 6 or 9 dimensions, indicating `[r; v]`, or `[r; v; a]`.
 """
-function orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3},
-               a::AbstractVector{T4} = [0,0,0]) where {T1<:Number, T2<:Number,
-                                                       T3<:Number, T4<:Number}
+function orbsv(
+    t::Tepoch,
+    r::AbstractVector{T1},
+    v::AbstractVector{T2},
+    a::AbstractVector{T3} = [0,0,0]
+) where {Tepoch<:Number, T1<:Number, T2<:Number, T3<:Number}
 
     len_r = length(r)
     len_v = length(v)
@@ -72,11 +73,11 @@ function orbsv(t::T1, r::AbstractVector{T2}, v::AbstractVector{T3},
     len_v != 3 && @warn("Only the first 3 elements of the vector `v` will be used!")
     len_a != 3 && @warn("Only the first 3 elements of the vector `a` will be used!")
 
-    T = promote_type(T1, T2, T3, T4)
-    return OrbitStateVector{T}(t = t, r = r[1:3], v = v[1:3], a = a[1:3])
+    T = promote_type(T1, T2, T3)
+    return OrbitStateVector{Tepoch, T}(t = t, r = r[1:3], v = v[1:3], a = a[1:3])
 end
 
-function orbsv(t::T1, vec::AbstractVector{T2}) where {T1<:Number, T2<:Number}
+function orbsv(t::Number, vec::AbstractVector)
     len_vec = length(vec)
 
     len_vec ∉ [6,9] && error("The length of input vector must be 6, or 9.")
@@ -92,21 +93,26 @@ end
 #                                  Overloads
 ################################################################################
 
-getindex(sv::OrbitStateVector{T}, ::Colon) where T<:Number =
-    SVector{9,T}(sv.r..., sv.v..., sv.a...)
+function getindex(sv::OrbitStateVector{Tepoch, T}, ::Colon) where {Tepoch, T}
+    return SVector{9, T}(sv.r..., sv.v..., sv.a...)
+end
 
 ################################################################################
 #                                      IO
 ################################################################################
 
-function show(io::IO, sv::OrbitStateVector{T}) where T
+function show(io::IO, sv::OrbitStateVector{Tepoch, T}) where {Tepoch, T}
     compact = get(io, :compact, true)
     epoch_str = sprint(print, sv.t, context = :compact => compact)
     jd_str = sprint(print, jd_to_date(DateTime, sv.t))
-    print(io, "OrbitStateVector{", T, "}: Epoch = $epoch_str ($jd_str)")
+    print(io, "OrbitStateVector{", Tepoch, ", ", T, "}: Epoch = $epoch_str ($jd_str)")
 end
 
-function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
+function show(
+    io::IO,
+    mime::MIME"text/plain",
+    sv::OrbitStateVector{Tepoch, T}
+) where {Tepoch, T}
     # Check if the `io` supports colors.
     color = get(io, :color, false)
 
@@ -126,7 +132,7 @@ function show(io::IO, mime::MIME"text/plain", sv::OrbitStateVector{T}) where T
     r_str *= " "^(max_length - length(r_str) + 1) * " km"
     v_str *= " "^(max_length - length(v_str) + 1) * " km/s"
 
-    println(io, "OrbitStateVector{", string(T), "}: ")
+    println(io, "OrbitStateVector{", Tepoch, ", ", T, "}: ")
     println(io, "$b  epoch :$d ", t_str, " (", JD_str, ")")
     println(io, "$b      r :$d ", r_str)
     print(io,   "$b      v :$d ", v_str)
