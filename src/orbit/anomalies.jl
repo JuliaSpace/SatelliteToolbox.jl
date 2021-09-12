@@ -129,13 +129,15 @@ eccentric anomaly `E` [rad].
 end
 
 """
-    E_to_M(e::Number, E::Number)
+    E_to_M(e::T1, E::T2) where {T1, T2}
 
 Compute the mean anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 eccentric anomaly `E` [rad].
-
 """
-@inline E_to_M(e::Number, E::Number) = mod(E - e*sin(E), 2π)
+@inline function E_to_M(e::T1, E::T2) where {T1, T2}
+    T = float(promote_type(T1, T2))
+    return mod(E - e * sin(E), T(2π))
+end
 
 ################################################################################
 #                              From True Anomaly
