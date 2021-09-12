@@ -114,17 +114,18 @@ end
 ################################################################################
 
 """
-    E_to_f(e::Number, E::Number)
+    E_to_f(e::T1, E::T2) where {T1, T2}
 
 Compute the true anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 eccentric anomaly `E` [rad].
-
 """
-@inline function E_to_f(e::Number, E::Number)
-    sin_Eo2, cos_Eo2 = sincos(E/2)
+@inline function E_to_f(e::T1, E::T2) where {T1, T2}
+    T = float(promote_type(T1, T2))
+
+    sin_Eo2, cos_Eo2 = sincos(E / 2)
 
     # Compute the true anomaly in the interval [0, 2*π].
-    return mod( 2atan(sqrt(1+e)*sin_Eo2, sqrt(1-e)*cos_Eo2) , 2π )
+    return mod(2atan(sqrt(1 + e) * sin_Eo2, sqrt(1 - e) * cos_Eo2), T(2π))
 end
 
 """
