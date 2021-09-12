@@ -84,3 +84,6 @@
 
 @deprecate read_iers_eop(f::String, T::Symbol) read_iers_eop(f, Val(T))
 @deprecate get_iers_eop(T::Symbol; kwargs...) get_iers_eop(Val(T); kwargs...)
+
+@deprecate M_to_E(e, M, tol) M_to_E(e, M; tol = tol)
+@deprecate M_to_f(e, M, tol) M_to_f(e, M; tol = tol)

@@ -19,14 +19,12 @@ This package contains the following functions that can be used to convert one to
 another:
 
 ```julia
-function M_to_E(e::Number, M::Number, tol::Number = 1e-10)
-function M_to_f(e::Number, M::Number, tol::Number = 1e-10)
+function M_to_E(e::Number, M::Number; kwargs...)
+function M_to_f(e::Number, M::Number; kwargs...)
 function E_to_f(e::Number, E::Number)
 function E_to_M(e::Number, E::Number)
 function f_to_E(e::Number,f::Number)
-function f_to_E(orb::Orbit)
 function f_to_M(e::Number, f::Number)
-function f_to_M(orb::Orbit)
 ```
 
 where:
@@ -34,12 +32,21 @@ where:
 * `M` is the mean anomaly [rad];
 * `E` is the eccentric anomaly [rad];
 * `f` is the true anomaly [rad];
-* `e` is the eccentricity;
-* `orb` is an instance of the structure [`Orbit`](@ref);
-* `tol` is used to select the tolerance for the cases in which the conversion is
-  performed by a numerical method, such as the Newton-Raphson algorithm.
+* `e` is the eccentricity.
 
 All the returned values are in [rad].
+
+The functions `M_to_E` and `M_to_f` uses the Newton-Raphson algorithm to solve
+the Kepler's equation. In this case, the following keywords are available to
+configure it:
+
+- `tol::Union{Nothing, Number}`: Tolerance to accept the solution from
+    Newton-Raphson algorithm. If `tol` is `nothing`, then it will be
+    `eps(T)`, where `T` is a floating-point type obtained from the promotion of
+    `T1` and `T2`. (**Default** = `nothing`)
+- `max_iterations::Number`: Maximum number of iterations allowed for the
+    Newton-Raphson algorithm. If it is lower than 1, then it is set to 10.
+    (**Default** = 10)
 
 ```jldoctest
 julia> M_to_E(0.04, pi/4)
