@@ -24,6 +24,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export j2_gc_egm08, j2_gc_egm96, j2_gc_jgm02, j2_gc_jgm03
+export j2_gc_egm08_f32, j2_gc_egm96_f32, j2_gc_jgm02_f32, j2_gc_jgm03_f32
 export j2_init, j2!
 
 ################################################################################
@@ -64,11 +65,23 @@ const j2_gc_egm08 = J2_GravCte(
     0.0010826261738522227
 )
 
+const j2_gc_egm08_f32 = J2_GravCte{Float32}(
+    6378137.0f0,
+    sqrt(3.986004415f14 / 6378137.0f0^3),
+    0.0010826261738522227f0
+)
+
 # EGM-96 Gravitational constants.
 const j2_gc_egm96 = J2_GravCte(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826266835531513
+)
+
+const j2_gc_egm96_f32 = J2_GravCte{Float32}(
+    6378136.3f0,
+    sqrt(3.986004415f14 / 6378136.3f0^3),
+    0.0010826266835531513f0
 )
 
 # JGM-02 Gravitational constants.
@@ -78,11 +91,23 @@ const j2_gc_jgm02 = J2_GravCte(
     0.0010826269256388149
 )
 
+const j2_gc_jgm02_f32 = J2_GravCte{Float32}(
+    6378136.3f0,
+    sqrt(3.986004415f14 / 6378136.3f0^3),
+    0.0010826269256388149f0
+)
+
 # JGM-03 Gravitational constants.
 const j2_gc_jgm03 = J2_GravCte(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826360229829945
+)
+
+const j2_gc_jgm03_f32 = J2_GravCte{Float32}(
+    6378136.3f0,
+    sqrt(3.986004415f14 / 6378136.3f0^3),
+    0.0010826360229829945f0
 )
 
 ################################################################################
@@ -124,10 +149,10 @@ function j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
     @unpack_J2_GravCte j2_gc
 
     # Initial values.
-    al_0 = a_0/R0            # ................. Normalized semi-major axis [er]
-    n_0  = μm/al_0^(3/2)     # ................. Unperturbed mean motion [rad/s]
-    p_0  = al_0*(1-e_0^2)    # .......................... Semi-latus rectum [er]
-    M_0  = f_to_M(e_0, f_0)  # ...................... Initial mean anomaly [rad]
+    al_0 = a_0 / R0            # ............... Normalized semi-major axis [er]
+    n_0  = μm / al_0^(T(3/2))  # ............... Unperturbed mean motion [rad/s]
+    p_0  = al_0 * (1 - e_0^2)  # ........................ Semi-latus rectum [er]
+    M_0  = f_to_M(e_0, f_0)    # .................... Initial mean anomaly [rad]
 
     # Auxiliary variables.
     dn   = 2dn_o2            # ..... Time-derivative of the mean motion [rad/s²]
@@ -141,11 +166,11 @@ function j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
     #
     # See [1, p 692].
 
-    δa   = +2/3*al_0*dn/n_0
-    δe   = +2/3*(1-e_0)*dn/n_0
-    δΩ   = -3/2*n_0*J2/p_0²*cos_i_0
-    δω   = +3/4*n_0*J2/p_0²*(4 - 5sin_i_0²)
-    δM_0 = +3/4*n_0*J2/p_0²*sqrt(1-e_0²)*(2 - 3sin_i_0²)
+    δa   = +T(2/3) * al_0 * dn / n_0
+    δe   = +T(2/3) * (1 - e_0) * dn / n_0
+    δΩ   = -T(3/2) * n_0 * J2 / p_0² * cos_i_0
+    δω   = +T(3/4) * n_0 * J2 / p_0² * (4 - 5sin_i_0²)
+    δM_0 = +T(3/4) * n_0 * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²)
 
     # Create the output structure with the data.
     J2_Structure{T}(
@@ -202,14 +227,14 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     @unpack R0, μm, J2, = j2_gc
 
     # Time elapsed since epoch.
-    Δt = t
+    Δt = T(t)
 
     # Propagate the orbital elements.
-    al_k = al_0 - δa*Δt
-    e_k  = e_0 - δe*Δt
+    al_k = al_0 - δa * Δt
+    e_k  = e_0 - δe * Δt
     i_k  = i_0
-    Ω_k  = mod(Ω_0 + δΩ*Δt, 2π)
-    ω_k  = mod(ω_0 + δω*Δt, 2π)
+    Ω_k  = mod(Ω_0 + δΩ * Δt, T(2π))
+    ω_k  = mod(ω_0 + δω * Δt, T(2π))
 
     # In [1, p. 692], it is mentioned that the mean anomaly must be updated
     # considering the equation:
@@ -228,14 +253,14 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     #                                      2            6
     #
 
-    M_k = mod(@evalpoly(Δt, M_0, (n_0 + δM_0), dn_o2, ddn_o6), 2π)
+    M_k = mod(@evalpoly(Δt, M_0, (n_0 + δM_0), dn_o2, ddn_o6), T(2π))
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
     (e_k < 0) && (e_k = T(0))
 
     # Compute the position and velocity vectors given the orbital elements.
-    r_i_k, v_i_k = kepler_to_rv(al_k*R0, e_k, i_k, Ω_k, ω_k, f_k)
+    r_i_k, v_i_k = kepler_to_rv(al_k * T(R0), e_k, i_k, Ω_k, ω_k, f_k)
 
     # Update the J2 orbit propagator structure.
     @pack! j2d = Δt, al_k, e_k, i_k, Ω_k, ω_k, M_k, f_k
