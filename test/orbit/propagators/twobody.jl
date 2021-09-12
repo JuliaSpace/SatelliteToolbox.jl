@@ -50,50 +50,151 @@
 ################################################################################
 
 @testset "Two Body orbit propagator" begin
-    aux  = rv_to_kepler(1131340., -2282343., 6672423., -5643.05, 4303.33, 2428.79)
-    orb  = KeplerianElements(date_to_jd(1986, 6, 19, 18, 35, 0), aux.a, aux.e,
-                             aux.i, aux.Ω, aux.ω, aux.f)
-    orbp = init_orbit_propagator(Val(:twobody), orb)
-    r, v = step!(orbp, 40*60)
-
-    # Testing position.
-    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
-    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
-    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
-
-    # Testing velocity.
-    @test v[1]/1000 ≈ +3.689866 atol=1e-6
-    @test v[2]/1000 ≈ -1.916735 atol=1e-6
-    @test v[3]/1000 ≈ -6.112511 atol=1e-6
-
-    # Test using the function `propagate!`
+    # Float64
     # ==========================================================================
 
-    r, v = propagate!(orbp, 40*60)
+    let
+        aux  = rv_to_kepler(
+             1131340.0,
+            -2282343.0,
+             6672423.0,
+               -5643.05,
+                4303.33,
+                2428.79
+        )
 
-    # Testing position.
-    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
-    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
-    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
+        orb  = KeplerianElements(
+            date_to_jd(1986, 6, 19, 18, 35, 0),
+            aux.a,
+            aux.e,
+            aux.i,
+            aux.Ω,
+            aux.ω,
+            aux.f
+        )
 
-    # Testing velocity.
-    @test v[1]/1000 ≈ +3.689866 atol=1e-6
-    @test v[2]/1000 ≈ -1.916735 atol=1e-6
-    @test v[3]/1000 ≈ -6.112511 atol=1e-6
+        orbp = init_orbit_propagator(Val(:twobody), orb)
+        r, v = step!(orbp, 40 * 60)
 
-    # Test using the function `propagate_to_epoch!`
+        # Testing position.
+        @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+        @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+        @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+        @test eltype(r) == Float64
+
+        # Testing velocity.
+        @test v[1] / 1000 ≈ +3.689866 atol=1e-6
+        @test v[2] / 1000 ≈ -1.916735 atol=1e-6
+        @test v[3] / 1000 ≈ -6.112511 atol=1e-6
+        @test eltype(v) == Float64
+
+        # Test using the function `propagate!`
+        # ==========================================================================
+
+        r, v = propagate!(orbp, 40*60)
+
+        # Testing position.
+        @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+        @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+        @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+        @test eltype(r) == Float64
+
+        # Testing velocity.
+        @test v[1] / 1000 ≈ +3.689866 atol=1e-6
+        @test v[2] / 1000 ≈ -1.916735 atol=1e-6
+        @test v[3] / 1000 ≈ -6.112511 atol=1e-6
+        @test eltype(v) == Float64
+
+        # Test using the function `propagate_to_epoch!`
+        # ==========================================================================
+
+        #                                        1986/6/19 18:35:00 + 40 min.
+        r, v = propagate_to_epoch!(orbp, date_to_jd(1986, 6, 19, 19, 15, 0))
+
+        # Testing position.
+        @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+        @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+        @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+        @test eltype(r) == Float64
+
+        # Testing velocity.
+        @test v[1] / 1000 ≈ +3.689866 atol=1e-6
+        @test v[2] / 1000 ≈ -1.916735 atol=1e-6
+        @test v[3] / 1000 ≈ -6.112511 atol=1e-6
+        @test eltype(v) == Float64
+    end
+
+    # Float32
     # ==========================================================================
 
-    #                                        1986/6/19 18:35:00 + 40 min.
-    r, v = propagate_to_epoch!(orbp, date_to_jd(1986, 6, 19, 19, 15, 0))
+    # let
+    #     aux  = rv_to_kepler(
+    #          1131340.0f0,
+    #         -2282343.0f0,
+    #          6672423.0f0,
+    #            -5643.05f0,
+    #             4303.33f0,
+    #             2428.79f0
+    #     )
 
-    # Testing position.
-    @test r[1]/1000 ≈ -4219.7527 atol=1e-3
-    @test r[2]/1000 ≈ +4363.0292 atol=1e-3
-    @test r[3]/1000 ≈ -3958.7666 atol=1e-3
+    #     orb  = KeplerianElements(
+    #         date_to_jd(1986, 6, 19, 18, 35, 0),
+    #         aux.a,
+    #         aux.e,
+    #         aux.i,
+    #         aux.Ω,
+    #         aux.ω,
+    #         aux.f
+    #     )
 
-    # Testing velocity.
-    @test v[1]/1000 ≈ +3.689866 atol=1e-6
-    @test v[2]/1000 ≈ -1.916735 atol=1e-6
-    @test v[3]/1000 ≈ -6.112511 atol=1e-6
+    #     orbp = init_orbit_propagator(Val(:twobody), orb; μ = Float32(m0))
+    #     r, v = step!(orbp, 40 * 60)
+
+    #     # Testing position.
+    #     @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+    #     @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+    #     @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+    #     @test eltype(r) == Float32
+
+    #     # Testing velocity.
+    #     @test v[1] / 1000 ≈ +3.689866 atol=1e-6
+    #     @test v[2] / 1000 ≈ -1.916735 atol=1e-6
+    #     @test v[3] / 1000 ≈ -6.112511 atol=1e-6
+    #     @test eltype(v) == Float32
+
+    #     # Test using the function `propagate!`
+    #     # ==========================================================================
+
+    #     r, v = propagate!(orbp, 40*60)
+
+    #     # Testing position.
+    #     @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+    #     @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+    #     @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+    #     @test eltype(r) == Float32
+
+    #     # Testing velocity.
+    #     @test v[1] / 1000 ≈ +3.689866 atol=1e-2
+    #     @test v[2] / 1000 ≈ -1.916735 atol=1e-2
+    #     @test v[3] / 1000 ≈ -6.112511 atol=1e-2
+    #     @test eltype(v) == Float32
+
+    #     # Test using the function `propagate_to_epoch!`
+    #     # ==========================================================================
+
+    #     # #                                        1986/6/19 18:35:00 + 40 min.
+    #     # r, v = propagate_to_epoch!(orbp, date_to_jd(1986, 6, 19, 19, 15, 0))
+
+    #     # # Testing position.
+    #     # @test r[1] / 1000 ≈ -4219.7527 atol=1e-3
+    #     # @test r[2] / 1000 ≈ +4363.0292 atol=1e-3
+    #     # @test r[3] / 1000 ≈ -3958.7666 atol=1e-3
+    #     # @test eltype(r) == Float32
+
+    #     # # Testing velocity.
+    #     # @test v[1] / 1000 ≈ +3.689866 atol=1e-6
+    #     # @test v[2] / 1000 ≈ -1.916735 atol=1e-6
+    #     # @test v[3] / 1000 ≈ -6.112511 atol=1e-6
+    #     # @test eltype(v) == Float32
+    # end
 end
