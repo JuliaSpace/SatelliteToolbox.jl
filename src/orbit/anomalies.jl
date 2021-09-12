@@ -156,16 +156,15 @@ the true anomaly `f` [rad].
 end
 
 """
-    f_to_M(e::Number, f::Number)
+    f_to_M(e::T1, f::T2) where {T1, T2}
 
 Compute the mean anomaly (0,2π) \\[rad] given the eccentricity `e` and the
 true anomaly `f` [rad].
-
 """
-@inline function f_to_M(e::Number, f::Number)
+@inline function f_to_M(e::T1, f::T2) where {T1, T2}
     # Compute the eccentric anomaly.
     E = f_to_E(e, f)
 
     # Compute the true anomaly in the interval [0, 2π].
-    return E_to_M(e,E)
+    return E_to_M(e, E)
 end
