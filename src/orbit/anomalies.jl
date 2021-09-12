@@ -144,16 +144,15 @@ end
 ################################################################################
 
 """
-    f_to_E(e::Number,f::Number)
+    f_to_E(e::T1, f::T2) where {T1, T2}
 
 Compute the eccentric anomaly (0,2π) \\[rad] given the eccentricity `e` and
 the true anomaly `f` [rad].
-
 """
-@inline function f_to_E(e::Number, f::Number)
-    sin_fo2, cos_fo2 = sincos(f/2)
-
-    return mod( 2atan(sqrt(1-e)*sin_fo2, sqrt(1+e)*cos_fo2), 2π )
+@inline function f_to_E(e::T1, f::T2) where {T1, T2}
+    T = float(promote_type(T1, T2))
+    sin_fo2, cos_fo2 = sincos(f / 2)
+    return mod(2atan(sqrt(1 - e) * sin_fo2, sqrt(1 + e) * cos_fo2), T(2π) )
 end
 
 """
