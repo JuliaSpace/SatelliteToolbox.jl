@@ -115,44 +115,57 @@ const j2_gc_jgm03_f32 = J2_GravCte{Float32}(
 ################################################################################
 
 """
-    j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08 ) where T
+    j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
+!!! note
+    The type used in the propagation will be the same as used to define the
+    gravitational constants in the structure `j2_gc`.
+
 # Args
 
-* `epoch`: Epoch of the initial mean orbital elements [Julian Day].
-* `a_0`: Initial mean semi-major axis [m].
-* `e_0`: Initial mean eccentricity.
-* `i_0`: Initial mean inclination [rad].
-* `Ω_0`: Initial mean right ascension of the ascending node [rad].
-* `ω_0`: Initial mean argument of perigee [rad].
-* `f_0`: Initial mean true anomaly [rad].
-* `dn_o2`: First time derivative of the mean motion divided by two [rad/s^2].
-* `ddn_o6`: Second time derivative of the mean motion divided by six [rad/s^3].
+- `epoch::Number`: Epoch of the initial mean orbital elements [Julian Day].
+- `a_0::Number`: Initial mean semi-major axis [m].
+- `e_0::Number`: Initial mean eccentricity.
+- `i_0::Number`: Initial mean inclination [rad].
+- `Ω_0::Number`: Initial mean right ascension of the ascending node [rad].
+- `ω_0::Number`: Initial mean argument of perigee [rad].
+- `f_0::Number`: Initial mean true anomaly [rad].
+- `dn_o2::Number`: First time derivative of the mean motion divided by two
+    [rad/s^2].
+- `ddn_o6::Number`: Second time derivative of the mean motion divided by six
+    [rad/s^3].
 
 # Keywords
 
-* `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`).
-           (**Default** = `j2_gc_egm08`)
+- `j2_gc::J2_GravCte`: J2 orbit propagator gravitational constants (see
+    [`J2_GravCte`](@ref)). (**Default** = `j2_gc_egm08`)
 
 # Returns
 
-The structure `J2_Structure` with the initialized parameters.
-
+The structure [`J2_Structure`](@ref) with the initialized parameters.
 """
-function j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
-                 Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0,
-                 ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
-
+function j2_init(
+    epoch::Number,
+    a_0::Number,
+    e_0::Number,
+    i_0::Number,
+    Ω_0::Number,
+    ω_0::Number,
+    f_0::Number,
+    dn_o2::Number = 0,
+    ddn_o6::Number = 0;
+    j2_gc::J2_GravCte{T} = j2_gc_egm08
+) where T
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
 
     # Initial values.
-    al_0 = a_0 / R0            # ............... Normalized semi-major axis [er]
-    n_0  = μm / al_0^(T(3/2))  # ............... Unperturbed mean motion [rad/s]
-    p_0  = al_0 * (1 - e_0^2)  # ........................ Semi-latus rectum [er]
-    M_0  = f_to_M(e_0, f_0)    # .................... Initial mean anomaly [rad]
+    al_0 = a_0 / R0              # ............. Normalized semi-major axis [er]
+    n_0  = μm / al_0^(T(3 / 2))  # ............. Unperturbed mean motion [rad/s]
+    p_0  = al_0 * (1 - e_0^2)    # ...................... Semi-latus rectum [er]
+    M_0  = f_to_M(e_0, f_0)      # .................. Initial mean anomaly [rad]
 
     # Auxiliary variables.
     dn   = 2dn_o2            # ..... Time-derivative of the mean motion [rad/s²]
@@ -166,14 +179,14 @@ function j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
     #
     # See [1, p 692].
 
-    δa   = +T(2/3) * al_0 * dn / n_0
-    δe   = +T(2/3) * (1 - e_0) * dn / n_0
-    δΩ   = -T(3/2) * n_0 * J2 / p_0² * cos_i_0
-    δω   = +T(3/4) * n_0 * J2 / p_0² * (4 - 5sin_i_0²)
-    δM_0 = +T(3/4) * n_0 * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²)
+    δa   = +T(2 / 3) * al_0 * dn / n_0
+    δe   = +T(2 / 3) * (1 - e_0) * dn / n_0
+    δΩ   = -T(3 / 2) * n_0 * J2 / p_0² * cos_i_0
+    δω   = +T(3 / 4) * n_0 * J2 / p_0² * (4 - 5sin_i_0²)
+    δM_0 = +T(3 / 4) * n_0 * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²)
 
     # Create the output structure with the data.
-    J2_Structure{T}(
+    return J2_Structure{T}(
         epoch  = epoch,
         al_0   = al_0,
         n_0    = n_0,
@@ -205,26 +218,28 @@ end
 """
     j2!(j2d::J2_Structure{T}, t::Number) where T
 
-Propagate the orbit defined in `j2d` (see `J2_Structure`) until the time `t`
-[s]. Notice that the values in `j2d` will be modified.
+Propagate the orbit defined in `j2d` (see [`J2_Structure`](@ref)) until the time
+`t` [s].
+
+!!! note
+    The internal values in `j2d` will be modified.
 
 # Returns
 
-* The position vector represented in the inertial frame at time `t` [m].
-* The velocity vector represented in the inertial frame at time `t` [m/s]
+- The position vector represented in the inertial frame at time `t` [m].
+- The velocity vector represented in the inertial frame at time `t` [m/s]
 
 # Remarks
 
 The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. Notice that the perturbation theory
 requires an inertial frame with true equator.
-
 """
 function j2!(j2d::J2_Structure{T}, t::Number) where T
     # Unpack the variables.
-    @unpack al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, dn_o2, ddn_o6, δa, δe, δΩ,
-            δω, δM_0, j2_gc = j2d
-    @unpack R0, μm, J2, = j2_gc
+    @unpack al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, dn_o2, ddn_o6 = j2d
+    @unpack δa, δe, δΩ, δω, δM_0, j2_gc = j2d
+    @unpack R0, μm, J2 = j2_gc
 
     # Time elapsed since epoch.
     Δt = T(t)
@@ -257,7 +272,7 @@ function j2!(j2d::J2_Structure{T}, t::Number) where T
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
-    (e_k < 0) && (e_k = T(0))
+    e_k < 0 && (e_k = T(0))
 
     # Compute the position and velocity vectors given the orbital elements.
     r_i_k, v_i_k = kepler_to_rv(al_k * T(R0), e_k, i_k, Ω_k, ω_k, f_k)
