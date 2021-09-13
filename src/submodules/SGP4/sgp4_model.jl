@@ -160,9 +160,10 @@ function sgp4_init(
     # Distance units / Earth radii.
     AE = T(1)
 
-    k_2  = +1 / 2 * J2 * AE^2
-    k_4  = -3 / 8 * J4 * AE^4
-    A_30 = -J3 * AE^3
+    k_2  = +1 / 2 * J2 * AE * AE
+    k_2² = k_2 * k_2
+    k_4  = -3 / 8 * J4 * AE * AE * AE * AE
+    A_30 = -J3 * AE * AE * AE
 
     # Kilometers / Earth radii.
     XKMPER = R0
@@ -172,19 +173,19 @@ function sgp4_init(
     q_0 = 120 / XKMPER + 1
 
     # (q_0-s)^4 [er]^4
-    QOMS2T = (q_0 - s)^4
+    QOMS2T = (q_0 - s) * (q_0 - s) * (q_0 - s) * (q_0 - s)
 
     # ==========================================================================
 
     # Auxiliary variables to improve the performance.
     # ===============================================
 
-    e_0² = e_0^2
+    e_0² = e_0 * e_0
 
     sin_i_0, θ = sincos(i_0)
-    θ²         = θ^2
-    θ³         = θ^3
-    θ⁴         = θ^4
+    θ²         = θ  * θ
+    θ³         = θ² * θ
+    θ⁴         = θ² * θ²
 
     # ==========================================================================
 
@@ -194,9 +195,9 @@ function sgp4_init(
     aux = (3θ² - 1) / (1 - e_0²)^(3 / 2)
 
     a_1 = (XKE / n_0)^(2 / 3)
-    δ_1 = 3 / 2 * k_2 / a_1^2 * aux
-    a_0 = a_1 * (1 - 1 / 3 * δ_1 - δ_1^2 - 134 / 81 * δ_1^3)
-    δ_0 = 3 / 2 * k_2 / a_0^2 * aux
+    δ_1 = 3 / 2 * k_2 / (a_1 * a_1)* aux
+    a_0 = a_1 * @evalpoly(δ_1, 1, -1 / 3, -1, -134 / 81)
+    δ_0 = 3 / 2 * k_2 / (a_0 * a_0) * aux
 
     nll_0 = n_0 / (1 + δ_0)
 
@@ -207,7 +208,10 @@ function sgp4_init(
     #
     #   all_0 = a_0/(1 - δ_0)
     #
-    all_0 = (XKE / nll_0)^(2 / 3)
+    all_0  = (XKE / nll_0)^(2 / 3)
+    all_0² = all_0  * all_0
+    all_0⁴ = all_0² * all_0²
+    all_0⁸ = all_0⁴ * all_0⁴
 
     # Initialization
     # ==============
@@ -228,66 +232,82 @@ function sgp4_init(
     end
 
     # Compute SGP4 constants.
-    ξ    = 1 / (all_0 - s)
-    β_0  = sqrt(1 - e_0^2)
-    η    = all_0 * e_0 * ξ
+    ξ  = 1 / (all_0 - s)
+    ξ² = ξ  * ξ
+    ξ³ = ξ² * ξ
+    ξ⁴ = ξ² * ξ²
+    ξ⁵ = ξ⁴ * ξ
+
+    β_0  = sqrt(1 - e_0²)
+    β_0² = β_0  * β_0
+    β_0³ = β_0² * β_0
+    β_0⁴ = β_0² * β_0²
+    β_0⁷ = β_0⁴ * β_0³
+    β_0⁸ = β_0⁴ * β_0⁴
+
+    η  = all_0 * e_0 * ξ
+    η² = η  * η
+    η³ = η² * η
+    η⁴ = η² * η²
 
     # Vallado's implementation of SGP4 [2] considers the absolute value of
     # (1-η^2) here and in the C2 and C4 computation. Notice that, if (1-η^2) <
     # 0, then aux1 cannot be computed. The original SGP4 technical report [1]
     # does not mention anything about this.
 
-    aux0 = abs(1 - η^2)
+    aux0 = abs(1 - η²)
     aux1 = aux0^(-7 / 2)
-    aux2 = ξ^4 * all_0 * β_0^2 * aux1
+    aux2 = ξ⁴ * all_0 * β_0² * aux1
 
-    C2 = QOMS2T * ξ^4 * nll_0 * aux1 * (
-        all_0 * (1 + (3 / 2) * η^2 + 4e_0 * η + e_0 * η^3) +
-        3 / 2 * (k_2 * ξ) / aux0 * (-1 / 2 + (3 / 2) * θ²) * (8 + 24η^2 + 3η^4)
+    C2 = QOMS2T * ξ⁴ * nll_0 * aux1 * (
+        all_0 * (1 + (3 / 2) * η² + 4e_0 * η + e_0 * η³) +
+        3 / 2 * (k_2 * ξ) / aux0 * (-1 / 2 + (3 / 2) * θ²) * (8 + 24η² + 3η⁴)
     )
 
-    C1 = bstar * C2
+    C1  = bstar * C2
+    C1² = C1  * C1
+    C1³ = C1² * C1
+    C1⁴ = C1² * C1²
 
     C3 = (e_0 > 1e-4) ?
-        QOMS2T * ξ^5 * A_30 * nll_0 * AE * sin_i_0 / (k_2 * e_0) :
+        QOMS2T * ξ⁵ * A_30 * nll_0 * AE * sin_i_0 / (k_2 * e_0) :
         T(0)
 
     C4 = 2nll_0 * QOMS2T * aux2 * (
-        2η * (1 + e_0 * η) + (1 / 2) * e_0 + (1 / 2) * η^3 -
+        2η * (1 + e_0 * η) + (1 / 2) * e_0 + (1 / 2) * η³ -
         2k_2 * ξ / (all_0 * aux0) * (
-            3 * (1 - 3θ²) * (1 + (3 / 2) * η^2 - 2e_0 * η - (1 / 2) * e_0 * η^3) +
-            3 / 4 * (1 - θ²) * (2η^2 - e_0 * η - e_0 * η^3) * cos(2ω_0)
+            3 * (1 - 3θ²) * (1 + (3 / 2) * η² - 2e_0 * η - (1 / 2) * e_0 * η³) +
+            3 / 4 * (1 - θ²) * (2η² - e_0 * η - e_0 * η³) * cos(2ω_0)
         )
     )
 
-    C5 = 2QOMS2T * aux2 * (1 + (11 / 4) * η * (η + e_0) + e_0 * η^3)
+    C5 = 2QOMS2T * aux2 * (1 + (11 / 4) * η * (η + e_0) + e_0 * η³)
 
-    D2 = 4all_0 * ξ * C1^2
+    D2 = 4all_0 * ξ * C1²
 
-    D3 = 4 / 3 * all_0 * ξ^2 * (17all_0 + s) * C1^3
+    D3 = 4 / 3 * all_0 * ξ² * (17all_0 + s) * C1³
 
     # Vallado's implementation of SGP4 [2] uses all_0^2, instead of only all_0
     # that is seen in the original SGP4 Technical Report [1].
-    D4 = 2 / 3 * all_0^2 * ξ^3 * (221all_0 + 31s) * C1^4
+    D4 = 2 / 3 * all_0² * ξ³ * (221all_0 + 31s) * C1⁴
 
     # Compute the time-derivative of some orbital elements.
     dotM = (
-        1 + 3k_2 * (-1 + 3θ²) / (2all_0^2 * β_0^3) +
-        3k_2^2 * (13 - 78θ² + 137θ⁴) / (16all_0^4 * β_0^7)
+        1 + 3k_2 * (-1 + 3θ²) / (2all_0² * β_0³) +
+        3k_2² * (13 - 78θ² + 137θ⁴) / (16all_0⁴ * β_0⁷)
     ) * nll_0
 
     dotω = (
-        -3k_2   *           (1 - 5θ²) / ( 2all_0^2 * β_0^4) +
-         3k_2^2 * (7 - 114θ² + 395θ⁴) / (16all_0^4 * β_0^8) +
-         5k_4   * (3 -  36θ² +  49θ⁴) / ( 4all_0^4 * β_0^8)
+        -3k_2  *           (1 - 5θ²) / ( 2all_0² * β_0⁴) +
+         3k_2² * (7 - 114θ² + 395θ⁴) / (16all_0⁴ * β_0⁸) +
+         5k_4  * (3 -  36θ² +  49θ⁴) / ( 4all_0⁴ * β_0⁸)
     ) * nll_0
 
-    dotΩ1 = -3k_2 * θ / (all_0^2 * β_0^4) * nll_0
+    dotΩ1 = -3k_2 * θ / (all_0² * β_0⁴) * nll_0
 
-    # TODO: SIMPLIFY
     dotΩ  = dotΩ1 + (
-        3k_2^2 * (4θ - 19θ³) / (2all_0^4 * β_0^8) +
-        5k_4 * θ * (3 - 7θ²) / (2all_0^4 * β_0^8)
+        3k_2² * (4θ - 19θ³) / (2all_0⁴ * β_0⁸) +
+        5k_4  * (3θ -  7θ³) / (2all_0⁴ * β_0⁸)
     ) * nll_0
 
     # The current orbital parameters are obtained from the TLE.
