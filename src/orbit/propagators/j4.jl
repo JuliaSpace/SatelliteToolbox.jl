@@ -149,7 +149,7 @@ function j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number,
            45/128*n_0*J4 /p_0⁴*saux*e_0²*(-8 + 40sin_i_0 - 35sin_i_0²)
 
     # Create the output structure with the data.
-    J4_Structure{T}(
+    J4_Structure{T, T}(
         epoch  = epoch,
         al_0   = al_0,
         n_0    = n_0,
@@ -196,7 +196,7 @@ was used to generate the orbit parameters. Notice that the perturbation theory
 requires an inertial frame with true equator.
 
 """
-function j4!(j4d::J4_Structure{T}, t::Number) where T
+function j4!(j4d::J4_Structure{T, T}, t::Number) where T
     # Unpack the variables.
     @unpack epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, dn_o2, ddn_o6,
             j4_gc, δa, δe, δΩ, δω, δM_0 = j4d

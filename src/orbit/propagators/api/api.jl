@@ -15,7 +15,6 @@ export get_epoch, get_mean_elements, init_orbit_propagator, propagate!,
 
 Initialize the orbit propagator of type `T`. The arguments `args` and keywords
 `kwargs` depends of the propagator type.
-
 """
 init_orbit_propagator
 
@@ -23,7 +22,6 @@ init_orbit_propagator
     get_epoch(orbp)
 
 Return the epoch of the propagator `orbp` [JD].
-
 """
 get_epoch
 
@@ -33,13 +31,12 @@ get_epoch
 Return the mean elements of the latest propagation performed by `orbp`. This is
 an optinal function in the API. It will return `nothing` if the propagator does
 not support it.
-
 """
 get_mean_elements(orbp::OrbitPropagator) = nothing
 
 """
-    propagate!(orbp::OrbitPropagator{T}, t::Number) where T
-    propagate!(orbp::OrbitPropagator{T}, t::AbstractVector) where T
+    propagate!(orbp::OrbitPropagator{Tepoch, T}, t::Number) where {Tepoch, T}
+    propagate!(orbp::OrbitPropagator{Tepoch, T}, t::AbstractVector) where {Tepoch, T}
 
 If `t` is a number, then propagate `orbp` by `t` [s] from the orbit epoch.
 Otherwise, if `t` is an array, then propagate the orbit in `orbp` using the time
@@ -50,21 +47,22 @@ structure `orbp`.
 
 # Returns
 
-* The position vector represented in inertial frame in each time instant [m].
-* The velocity vector represented in inertial frame in each time instant [m].
+- The position vector represented in inertial frame in each time instant [m].
+- The velocity vector represented in inertial frame in each time instant [m].
 
 If `t` is an array, then those values will be an array containing the
 information related to each epoch in `t`.
-
 """
 propagate!
 
-function propagate!(orbp::OrbitPropagator{T}, t::AbstractVector) where T
+function propagate!(
+    orbp::OrbitPropagator{Tepoch, T},
+    t::AbstractVector
+) where {Tepoch, T}
     # Output.
     num_elems  = length(t)
-    result_orb = Vector{KeplerianElements{T}}(undef, num_elems)
-    result_r   = Vector{SVector{3,T}}(undef, num_elems)
-    result_v   = Vector{SVector{3,T}}(undef, num_elems)
+    result_r   = Vector{SVector{3, T}}(undef, num_elems)
+    result_v   = Vector{SVector{3, T}}(undef, num_elems)
 
     @inbounds for k = 1:num_elems
         # Propagate the orbit.
@@ -77,8 +75,8 @@ function propagate!(orbp::OrbitPropagator{T}, t::AbstractVector) where T
 end
 
 """
-    propagate_to_epoch!(orbp::OrbitPropagator{T}, JD::Number) where T
-    propagate_to_epoch!(orbp::OrbitPropagator{T}, JD::AbstractVector) where T
+    propagate_to_epoch!(orbp::OrbitPropagator, JD::Number)
+    propagate_to_epoch!(orbp::OrbitPropagator, JD::AbstractVector)
 
 If `t` is a number, then propagate `orbp` until the epoch `JD` [Julian Day].
 Otherwise, if `JD` is an array, then propagate the orbit in `orbp` using the
@@ -89,16 +87,18 @@ structure `orbp`.
 
 # Returns
 
-* The position vector represented in inertial frame in each time instant [m].
-* The velocity vector represented in inertial frame in each time instant [m].
+- The position vector represented in inertial frame in each time instant [m].
+- The velocity vector represented in inertial frame in each time instant [m].
 
 If `JD` is an array, then those values will be an array containing the
 information related to each epoch in `JD`.
-
 """
-propagate_to_epoch!(orbp::OrbitPropagator,
-                    JD::Union{Number, AbstractVector}) where T =
-    propagate!(orbp, (JD .- get_epoch(orbp))*86400)
+function propagate_to_epoch!(
+    orbp::OrbitPropagator,
+    JD::Union{Number, AbstractVector}
+)
+    return propagate!(orbp, (JD .- get_epoch(orbp)) * 86400)
+end
 
 """
     step!(orbp::OrbitPropagator{T}, Δt::Number)

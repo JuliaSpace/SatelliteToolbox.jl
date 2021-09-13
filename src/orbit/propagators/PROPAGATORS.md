@@ -58,10 +58,13 @@ Every propagator must have a structure derived from `OrbitPropagator` with the
 following requirement:
 
 ```julia
-struct OrbitPropagator<Propagator name>{T} <: OrbitPropagator{T}
+struct OrbitPropagator<Propagator name>{Tepoch, T} <: OrbitPropagator{Tepoch, T}
   <Any field required by the propagator>
 end
 ```
+
+where `Tepoch` is the type used to represent the epoch of the input elements,
+whereas `T` is the type used for the internal variables.
 
 ### Initialization
 

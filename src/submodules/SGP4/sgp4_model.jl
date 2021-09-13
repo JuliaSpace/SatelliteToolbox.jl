@@ -298,7 +298,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
     end
 
     # Create the output structure with the data.
-    SGP4_Structure{T}(
+    SGP4_Structure{T, T}(
 
         epoch, n_0, e_0, i_0, Ω_0, ω_0, M_0, bstar, 0, a_k, e_k, i_k, Ω_k, ω_k,
         M_k, n_k, all_0, nll_0, AE, QOMS2T, β_0, ξ, η, sin_i_0, θ, θ², A_30,
@@ -309,7 +309,7 @@ function sgp4_init(sgp4_gc::SGP4_GravCte{T},
 end
 
 """
-    sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
+    sgp4!(sgp4d::SGP4_Structure{T, T}, t::Number) where T
 
 Propagate the orbit defined in `sgp4d` (see `SGP4_Structure`) until the time `t`
 [min]. Notice that the values in `sgp4d` will be modified.
@@ -320,7 +320,7 @@ Propagate the orbit defined in `sgp4d` (see `SGP4_Structure`) until the time `t`
 * The velocity vector represented in TEME frame at time `t` [km/s].
 
 """
-function sgp4!(sgp4d::SGP4_Structure{T}, t::Number) where T
+function sgp4!(sgp4d::SGP4_Structure{T, T}, t::Number) where T
     # Unpack variables.
     @unpack_SGP4_Structure sgp4d
     @unpack_SGP4_GravCte   sgp4_gc

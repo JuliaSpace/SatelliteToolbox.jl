@@ -26,7 +26,7 @@ export j2osc_init, j2osc!
 ################################################################################
 
 """
-    j2osc_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
+    j2osc_init(epoch::Tepoch, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08) where {Tepoch, T}
 
 Initialize the data structure of J2 osculating orbit propagator algorithm.
 
@@ -62,7 +62,7 @@ The structure [`J2osc_Structure`](@ref) with the initialized parameters.
 The inputs are the mean orbital elements.
 """
 function j2osc_init(
-    epoch::Number,
+    epoch::Tepoch,
     a_0::Number,
     e_0::Number,
     i_0::Number,
@@ -72,11 +72,11 @@ function j2osc_init(
     dn_o2::Number,
     ddn_o6::Number;
     j2_gc::J2_GravCte{T} = j2_gc_egm08
-) where T
+) where {Tepoch, T}
     j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6; j2_gc = j2_gc)
 
     # Initialize the structure.
-    j2oscd = J2osc_Structure{T}(j2d, epoch, 0, 0, 0, 0, 0, 0, 0)
+    j2oscd = J2osc_Structure{Tepoch, T}(j2d, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # Call the propagation one first time to update the osculating elements.
     j2osc!(j2oscd, 0)
@@ -85,7 +85,7 @@ function j2osc_init(
 end
 
 """
-    j2osc!(j2d::J2osc_Structure{T}, t::Number) where T
+    j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
 
 Propagate the orbit defined in `j2oscd` (see [`J2osc_Structure`](@ref)) until
 the time `t` [s].
@@ -104,7 +104,7 @@ The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 """
-function j2osc!(j2oscd::J2osc_Structure{T}, t::Number) where T
+function j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # First, we need to propagate the mean elements since they are necessary to
     # compute the short-periodic perturbations.
     j2d = j2oscd.j2d

@@ -107,14 +107,13 @@ end
 end
 
 """
-    SGP4_Structure{T<:Real}
+    SGP4_Structure{Tepoch, T<:Real}
 
 Low level SGP4 structure.
-
 """
-@with_kw mutable struct SGP4_Structure{T<:Real}
+@with_kw mutable struct SGP4_Structure{Tepoch, T<:Real}
     # TLE parameters.
-    epoch::T
+    epoch::Tepoch
     n_0::T
     e_0::T
     i_0::T

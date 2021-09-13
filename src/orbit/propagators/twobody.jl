@@ -27,7 +27,7 @@ export twobody_init, twobody!
 ################################################################################
 
 """
-    twobody_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number; μ::T = m0) where T
+    twobody_init(epoch::Tepoch, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number; μ::T = m0) where {Tepoch, T}
 
 Initialize the data structure of two body orbit propagator algorithm.
 
@@ -55,7 +55,7 @@ Initialize the data structure of two body orbit propagator algorithm.
 The structure [`TwoBody_Structure`](@ref) with the initialized parameters.
 """
 function twobody_init(
-    epoch::Number,
+    epoch::Tepoch,
     a_0::Number,
     e_0::Number,
     i_0::Number,
@@ -63,7 +63,7 @@ function twobody_init(
     ω_0::Number,
     f_0::Number;
     μ::T = m0
-) where T
+) where {Tepoch, T}
     # The propagator is only defined for 0 <= e < 1.
     if !(0 <= e_0 < 1)
         throw(ArgumentError("The two body propagator only supports eccentricities in the interval [0,1)"))
@@ -76,7 +76,7 @@ function twobody_init(
     M_0 = f_to_M(T(e_0), T(f_0))
 
     # Create and return the Two Body orbit propagator structure.
-    TwoBody_Structure{T}(
+    TwoBody_Structure{Tepoch, T}(
         epoch = epoch,
         a_0   = a_0,
         n_0   = n_0,
@@ -94,7 +94,7 @@ function twobody_init(
 end
 
 """
-    twobody!(tbd::TwoBody_Structure, t::Number)
+    twobody!(tbd::TwoBody_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
 
 Propagate the orbit defined in `tbd` (see [`TwoBody_Structure`](@ref)) until the
 time `t` [s].
@@ -112,7 +112,7 @@ time `t` [s].
 The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters.
 """
-function twobody!(tbd::TwoBody_Structure{T}, t::Number) where T
+function twobody!(tbd::TwoBody_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # Time elapsed since epoch.
     Δt     = T(t)
     tbd.Δt = Δt

@@ -115,7 +115,7 @@ const j2_gc_jgm03_f32 = J2_GravCte{Float32}(
 ################################################################################
 
 """
-    j2_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
+    j2_init(epoch::Tepoch, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where {Tepoch, T}
 
 Initialize the data structure of J2 orbit propagator algorithm.
 
@@ -147,7 +147,7 @@ Initialize the data structure of J2 orbit propagator algorithm.
 The structure [`J2_Structure`](@ref) with the initialized parameters.
 """
 function j2_init(
-    epoch::Number,
+    epoch::Tepoch,
     a_0::Number,
     e_0::Number,
     i_0::Number,
@@ -157,7 +157,7 @@ function j2_init(
     dn_o2::Number = 0,
     ddn_o6::Number = 0;
     j2_gc::J2_GravCte{T} = j2_gc_egm08
-) where T
+) where {Tepoch, T}
     # Unpack the gravitational constants to improve code readability.
     @unpack_J2_GravCte j2_gc
 
@@ -186,7 +186,7 @@ function j2_init(
     δM_0 = +T(3 / 4) * n_0 * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²)
 
     # Create the output structure with the data.
-    return J2_Structure{T}(
+    return J2_Structure{Tepoch, T}(
         epoch  = epoch,
         al_0   = al_0,
         n_0    = n_0,
@@ -216,7 +216,7 @@ function j2_init(
 end
 
 """
-    j2!(j2d::J2_Structure{T}, t::Number) where T
+    j2!(j2d::J2_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
 
 Propagate the orbit defined in `j2d` (see [`J2_Structure`](@ref)) until the time
 `t` [s].
@@ -235,7 +235,7 @@ The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. Notice that the perturbation theory
 requires an inertial frame with true equator.
 """
-function j2!(j2d::J2_Structure{T}, t::Number) where T
+function j2!(j2d::J2_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # Unpack the variables.
     @unpack al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, dn_o2, ddn_o6 = j2d
     @unpack δa, δe, δΩ, δω, δM_0, j2_gc = j2d
