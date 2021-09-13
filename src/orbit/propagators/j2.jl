@@ -162,15 +162,15 @@ function j2_init(
     @unpack_J2_GravCte j2_gc
 
     # Initial values.
-    al_0 = a_0 / R0              # ............. Normalized semi-major axis [er]
-    n_0  = μm / al_0^(T(3 / 2))  # ............. Unperturbed mean motion [rad/s]
-    p_0  = al_0 * (1 - e_0^2)    # ...................... Semi-latus rectum [er]
-    M_0  = f_to_M(e_0, f_0)      # .................. Initial mean anomaly [rad]
+    al_0 = T(a_0) / R0            # ............ Normalized semi-major axis [er]
+    n_0  = μm / al_0^(T(3 / 2))   # ............ Unperturbed mean motion [rad/s]
+    p_0  = al_0 * (1 - T(e_0)^2)  # ..................... Semi-latus rectum [er]
+    M_0  = f_to_M(T(e_0), T(f_0)) # ................. Initial mean anomaly [rad]
 
     # Auxiliary variables.
-    dn   = 2dn_o2            # ..... Time-derivative of the mean motion [rad/s²]
-    p_0² = p_0^2
-    e_0² = e_0^2
+    dn   = 2 * T(dn_o2)           #  Time-derivative of the mean motion [rad/s²]
+    p_0² = T(p_0)^2
+    e_0² = T(e_0)^2
 
     sin_i_0, cos_i_0 = sincos(i_0)
     sin_i_0² = sin_i_0^2
