@@ -120,11 +120,11 @@ function j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     ω_k  = j2d.ω_k
     M_k  = j2d.M_k
     f_k  = j2d.f_k
-    p_k  = al_k * T(R0) * (1 - e_k^2)
+    p_k  = al_k * R0 * (1 - e_k^2)
     u_k  = ω_k + f_k
 
     # Auxiliary variables to reduce the computational burden.
-    KJ2 = J2 * T(R0) * T(R0)
+    KJ2 = J2 * R0 * R0
     sin_i_k, cos_i_k = sincos(i_k)
     sin_f_k, cos_f_k = sincos(f_k)
     sin_2u_k, cos_2u_k = sincos(2u_k)
@@ -192,7 +192,7 @@ function j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     r_i_k, v_i_k = kepler_to_rv(a_osc_k, e_osc_k, i_osc_k, Ω_osc_k, ω_osc_k, f_osc_k)
 
     # Update the J2 orbit propagator structure.
-    j2oscd.Δt  = t
+    j2oscd.Δt  = T(t)
     j2oscd.a_k = a_osc_k
     j2oscd.e_k = e_osc_k
     j2oscd.i_k = i_osc_k
