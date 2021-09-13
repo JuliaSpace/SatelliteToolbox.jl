@@ -34,24 +34,24 @@ Based on algorithm in [2] (http://www.navipedia.net/index.php/CEP_to_ITRF),
 accessed at 2015-12-01.
 
 """
-function j2000_to_gmst(J2000_UT1::Number)
+function j2000_to_gmst(J2000_UT1::T) where T
 	# Julian centuries elapsed from the epoch J2000.0.
 	T_UT1 = J2000_UT1 / 36525
 
 	# Greenwich Mean Sideral Time at T_UT1 [s].
     θ_GMST = @evalpoly(
         T_UT1,
-        + 67310.54841,
-        + (876600.0*3600 + 8640184.812866),
-        + 0.093104,
-        - 6.2e-6
+        + T(67310.54841),
+        + T(876600.0 * 3600 + 8640184.812866),
+        + T(0.093104),
+        - T(6.2e-6)
     )
 
     # Reduce to the interval [0, 86400]s.
     θ_GMST = mod(θ_GMST, 86400)
 
     # Convert to radian and return.
-    return θ_GMST * π / 43200
+    return θ_GMST * T(π / 43200)
 end
 
 """
