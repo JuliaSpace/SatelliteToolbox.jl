@@ -285,7 +285,7 @@ function j2!(j2d::J2_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     e_k < 0 && (e_k = T(0))
 
     # Compute the position and velocity vectors given the orbital elements.
-    r_i_k, v_i_k = kepler_to_rv(al_k * T(R0), e_k, i_k, Ω_k, ω_k, f_k)
+    r_i_k, v_i_k = kepler_to_rv(al_k * R0, e_k, i_k, Ω_k, ω_k, f_k)
 
     # Update the J2 orbit propagator structure.
     @pack! j2d = Δt, al_k, e_k, i_k, Ω_k, ω_k, M_k, f_k
