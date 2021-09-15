@@ -1,21 +1,23 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Dipole model for the Earth geomagnetic field.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] http://helios.fmi.fi/~juusolal/geomagnetism/Lectures/Chapter3_dipole.pdf
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export geomag_dipole
 
 """
-    geomag_dipole(r_e::AbstractVector, pole_lat::Number, pole_lon::Number, m::Number)
+    geomag_dipole(r_e::AbstractVector{T}, year::Number = 2019) where T
 
 Compute the geomagnetic field [nT] using the simplified dipole model at position
 `r_e` (ECEF reference frame). This function considers that the latitude of the
@@ -32,38 +34,41 @@ dipole moment. If `year` is omitted, then it will be considered as 2019.
 
 # Remarks
 
-In both functions, the output vector will be represented in the ECEF reference
-frame.
-
+1. In both functions, the output vector will be represented in the ECEF
+    reference frame.
+2. The returned vector will have the same type `T` of the input vector.
 """
-function geomag_dipole(r_e::AbstractVector, year::Number = 2019)
-    d2r = π/180
+function geomag_dipole(r_e::AbstractVector{T}, year::Number = 2019) where T
+    d2r = T(π / 180)
 
     # Obtain the pole location and the dipole moment.
-    pole_lat = _itp_dipole_lat(year)*d2r
-    pole_lon = _itp_dipole_lon(year)*d2r
-    m        = _itp_dipole_mag(year)*1e22
+    pole_lat = T(_itp_dipole_lat(year)) * d2r
+    pole_lon = T(_itp_dipole_lon(year)) * d2r
+    m        = T(_itp_dipole_mag(year)) * T(1e22)
 
     return geomag_dipole(r_e, pole_lat, pole_lon, m)
 end
 
-function geomag_dipole(r_e::AbstractVector, pole_lat::Number, pole_lon::Number,
-                       m::Number)
-
-    # DCM that convertes the ECEF into the geomagnetic coordinates.
-    Dge = angle_to_dcm(pole_lon, π/2-pole_lat, 0, :ZYX)
+function geomag_dipole(
+    r_e::AbstractVector{T},
+    pole_lat::Number,
+    pole_lon::Number,
+    m::Number
+) where T
+    # DCM that converts the ECEF into the geomagnetic coordinates.
+    Dge = angle_to_dcm(pole_lon, T(π / 2) - pole_lat, 0, :ZYX)
 
     # Compute the dipole momentum represented in the ECEF reference frame.
-    k₀_e = 1e-7m*(Dge'*SVector{3}(0,0,-1))
+    k₀_e = T(1e-7) * m * (Dge' * SVector{3, T}(0, 0, -1))
 
     # Compute the distance from the Earth center of the desired point.
     r = norm(r_e)
 
     # Compute the unitary vector that points to the desired direction.
-    eᵣ_e = SVector{3}(r_e/r)
+    eᵣ_e = SVector{3, T}(r_e) / r
 
     # Compute the geomagnetic field vector [nT].
-    B_e = 1/r^3*( 3eᵣ_e*eᵣ_e' - I )*k₀_e*1e9
+    B_e = 1 / r^3 * (3 * eᵣ_e*eᵣ_e' - I) * k₀_e * T(1e9)
 
     return B_e
 end
