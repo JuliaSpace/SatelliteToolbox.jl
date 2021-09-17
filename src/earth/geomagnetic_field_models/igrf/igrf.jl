@@ -109,7 +109,7 @@ end
     dP::AbstractMatrix{T};
     max_degree::Int = 13,
     show_warns::Bool = true
-) where T<:Real
+) where T<:AbstractFloat
     return igrfd(
         date,
         r,
@@ -125,18 +125,24 @@ end
 
 @inline function igrfd(
     date::Number,
-    rh::Number,
-    λ::Number,
-    Ω::Number,
+    rh::S1,
+    λ::S2,
+    Ω::S3,
     R::T;
     max_degree::Int = 13,
     show_warns::Bool = true
-) where {T<:Union{Val{:geocentric}, Val{:geodetic}}}
+) where {
+    S1<:Number,
+    S2<:Number,
+    S3<:Number,
+    T<:Union{Val{:geocentric}, Val{:geodetic}}
+}
+    S = promote_type(float(S1), float(S2), float(S3))
     # Currently, the maximum degree allowed for IGRF is 13.
     max_degree = clamp(max_degree, 1, 13)
 
-    P  = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
-    dP = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+    P  = Matrix{S}(undef, max_degree + 1, max_degree + 1)
+    dP = Matrix{S}(undef, max_degree + 1, max_degree + 1)
 
     return igrfd(
         date,
@@ -161,7 +167,7 @@ end
     dP::AbstractMatrix{S};
     max_degree::Int = 13,
     show_warns::Bool = true
-) where {T<:Union{Val{:geocentric}, Val{:geodetic}}, S<:Real}
+) where {T<:Union{Val{:geocentric}, Val{:geodetic}}, S<:AbstractFloat}
     # Check if the latitude and longitude are valid.
     if ((λ < -90) || (λ > 90))
         error("The latitude must be between -90° and +90° rad.")
@@ -270,7 +276,7 @@ function igrf(
     dP::AbstractMatrix{T};
     max_degree::Int = 13,
     show_warns::Bool = true
-) where T<:Real
+) where T<:AbstractFloat
     return igrf(
         date,
         r,
@@ -286,18 +292,25 @@ end
 
 function igrf(
     date::Number,
-    r::Number,
-    λ::Number,
-    Ω::Number,
+    r::S1,
+    λ::S2,
+    Ω::S3,
     R::T;
     max_degree::Int = 13,
     show_warns::Bool = true
-) where {T<:Union{Val{:geocentric}, Val{:geodetic}}}
+) where {
+    S1<:Number,
+    S2<:Number,
+    S3<:Number,
+    T<:Union{Val{:geocentric}, Val{:geodetic}}
+}
+    S = promote_type(float(S1), float(S2), float(S3))
+
     # Currently, the maximum degree allowed for IGRF is 13.
     max_degree = clamp(max_degree, 1, 13)
 
-    P  = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
-    dP = Matrix{Float64}(undef, max_degree + 1, max_degree + 1)
+    P  = Matrix{S}(undef, max_degree + 1, max_degree + 1)
+    dP = Matrix{S}(undef, max_degree + 1, max_degree + 1)
 
     return igrf(date,
         r,
@@ -321,7 +334,7 @@ function igrf(
     dP::AbstractMatrix{T};
     max_degree::Int = 13,
     show_warns::Bool = true
-) where T<:Real
+) where T<:AbstractFloat
 
     # Model data
     # ==========
@@ -361,8 +374,8 @@ function igrf(
     # ==========================
 
     # Convert latitude / longitude to colatitude and east-longitude.
-    θ = π / 2 - λ
-    ϕ = (Ω >= 0) ? Ω : 2pi + Ω
+    θ = T(π / 2) - λ
+    ϕ = (Ω >= 0) ? Ω : T(2π) + Ω
 
     # The input variable `r` is in [m], but all the algorithm requires it to be
     # in [km].
@@ -419,7 +432,7 @@ function igrf(
     error("Internal error: the matrices G and H must have the same number of columns.")
 
     # Reference radius [km].
-    a = 6371.2
+    a = T(6371.2)
 
     # Auxiliary variables to decrease the computational burden.
     sin_ϕ,  cos_ϕ  = sincos(1ϕ)
@@ -431,11 +444,11 @@ function igrf(
     # Initialization of variables
     # ===========================
 
-    dVr = 0.0   # Derivative of the Geomagnetic potential w.r.t. r.
-    dVθ = 0.0   # Derivative of the Geomagnetic potential w.r.t. θ.
-    dVϕ = 0.0   # Derivative of the Geomagnetic potential w.r.t. ϕ.
-    ΔG  = 0.0   # Auxiliary variable to interpolate the G coefficients.
-    ΔH  = 0.0   # Auxiliary variable to interpolate the H coefficients.
+    dVr = T(0)  # Derivative of the Geomagnetic potential w.r.t. r.
+    dVθ = T(0)  # Derivative of the Geomagnetic potential w.r.t. θ.
+    dVϕ = T(0)  # Derivative of the Geomagnetic potential w.r.t. ϕ.
+    ΔG  = T(0)  # Auxiliary variable to interpolate the G coefficients.
+    ΔH  = T(0)  # Auxiliary variable to interpolate the H coefficients.
     kg  = 1     # Index to obtain the values of the matrix `G`.
     kh  = 1     # Index to obtain the values of the matrix `H`.
 
@@ -443,22 +456,22 @@ function igrf(
     # =====================
 
     @inbounds for n in 1:n_max
-        aux_dVr = 0.0
-        aux_dVθ = 0.0
-        aux_dVϕ = 0.0
+        aux_dVr = T(0)
+        aux_dVθ = T(0)
+        aux_dVϕ = T(0)
 
         # Compute the contributions when `m = 0`
         # ======================================
 
         # Get the coefficients in the epoch and interpolate to the desired
         # time.
-        Gnm_e0 = G[kg,idx+2]
+        Gnm_e0 = T(G[kg,idx+2])
 
         if date < dat_year
-            Gnm_e1 = G[kg,idx+3]
+            Gnm_e1 = T(G[kg,idx+3])
             ΔG     = (Gnm_e1 - Gnm_e0) / 5
         else
-            ΔG     = G[kg,gend]
+            ΔG     = T(G[kg,gend])
         end
 
         Gnm  = Gnm_e0 + ΔG * Δt
@@ -473,16 +486,16 @@ function igrf(
         # This values will be used to update recursively `sin(m*ϕ)` and
         # `cos(m*ϕ)`, reducing the computational burden.
         sin_mϕ   = +sin_ϕ    # sin( 1*λ_gc)
-        sin_m_1ϕ = 0.0       # sin( 0*λ_gc)
+        sin_m_1ϕ = T(0)      # sin( 0*λ_gc)
         sin_m_2ϕ = -sin_ϕ    # sin(-1*λ_gc)
         cos_mϕ   = +cos_ϕ    # cos( 1*λ_gc)
-        cos_m_1ϕ = 1.0       # cos( 0*λ_gc)
+        cos_m_1ϕ = T(1)      # cos( 0*λ_gc)
         cos_m_2ϕ = +cos_ϕ    # cos(-2*λ_gc)
 
         # Other auxiliary variables that depend only on `n`
         # =================================================
 
-        fact_dVr = (n+1)/r
+        fact_dVr = T(n + 1) / T(r)
 
         # Compute the contributions when `m ∈ [1,n]`
         # ==========================================
@@ -497,17 +510,17 @@ function igrf(
 
             # Get the coefficients in the epoch and interpolate to the
             # desired time.
-            Gnm_e0 = G[kg,idx+2]
-            Hnm_e0 = H[kh,idx+2]
+            Gnm_e0 = T(G[kg,idx+2])
+            Hnm_e0 = T(H[kh,idx+2])
 
             if date < dat_year
-                Gnm_e1 = G[kg,idx+3]
-                Hnm_e1 = H[kh,idx+3]
+                Gnm_e1 = T(G[kg,idx+3])
+                Hnm_e1 = T(H[kh,idx+3])
                 ΔG     = (Gnm_e1 - Gnm_e0) / 5
                 ΔH     = (Hnm_e1 - Hnm_e0) / 5
             else
-                ΔG = G[kg,gend]
-                ΔH = H[kh,hend]
+                ΔG = T(G[kg,gend])
+                ΔH = T(H[kh,hend])
             end
 
             Gnm  = Gnm_e0 + ΔG * Δt
@@ -563,7 +576,7 @@ function igrf(
     y = (θ == 0) ? -dVϕ / r : -dVϕ / (r * sin(θ))
     z = dVr
 
-    B_gc = SVector{3,Float64}(x, y, z)
+    B_gc = SVector{3, T}(x, y, z)
 
     return B_gc
 end
@@ -578,7 +591,7 @@ function igrf(
     dP::AbstractMatrix{T};
     max_degree::Int = 13,
     show_warns::Bool = true
-) where T<:Real
+) where T<:AbstractFloat
 
     # TODO: This method has a small error (≈ 0.01 nT) compared with the
     # `igrf12syn`. However, the result is exactly the same as the MATLAB
