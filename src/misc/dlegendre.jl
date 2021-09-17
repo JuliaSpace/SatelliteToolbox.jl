@@ -213,13 +213,15 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 """
 function dlegendre_fully_normalized!(
-    dP::AbstractMatrix,
+    dP::AbstractMatrix{T1},
     ϕ::Number,
-    P::AbstractMatrix,
+    P::AbstractMatrix{T2},
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
-)
+) where {T1<:AbstractFloat, T2<:AbstractFloat}
+    T = promote_type(T1, T2)
+
     # Obtain the maximum degree and order that must be computed.
     n_max, m_max = _get_degree_and_order(dP, P, n_max, m_max)
 
@@ -255,7 +257,7 @@ function dlegendre_fully_normalized!(
     # In fact, in [2, p. 119], it is mentioned that `0 <= ϕ <= π`.  However,
     # further clarification is required.
 
-    ϕ    = mod(ϕ, 2π)
+    ϕ    = mod(ϕ, T(2π))
     fact = (ϕ > π) ? -1 : 1
 
     if ph_term
@@ -269,7 +271,7 @@ function dlegendre_fully_normalized!(
     @inbounds for n in 1:n_max
         for m in 0:n
             if m == 0
-                aux  = sqrt(n * (n + 1) / 2)
+                aux  = sqrt(T(n * (n + 1)) / 2)
                 a_nm = aux / 2
                 b_nm = -a_nm
 
@@ -283,23 +285,23 @@ function dlegendre_fully_normalized!(
             # We should consider the case `m == 1` separately from `n == m`
             # because of the coefficient `C_{m}`.
             elseif m == 1
-                a_nm = sqrt(2n * (n + 1)) / 2
+                a_nm = sqrt(T(2n * (n + 1))) / 2
                 dP[n+1,1+1] = a_nm * P[n+1,1-1+1]
 
                 # Only compute `b_nm` if `n > 1`. Otherwise, we could access an
                 # invalid memory region if `P` is 2x2.
                 if n > 1
-                    b_nm = -sqrt((n + 2) * (n - 1)) / 2
+                    b_nm = -sqrt(T((n + 2) * (n - 1))) / 2
                     dP[n+1,1+1] += b_nm * P[n+1,1+1+1]
                 end
 
             elseif n != m
-                a_nm = +sqrt((n + m) * (n - m + 1)) / 2
-                b_nm = -sqrt((n + m + 1) * (n - m)) / 2
+                a_nm = +sqrt(T((n + m) * (n - m + 1))) / 2
+                b_nm = -sqrt(T((n + m + 1) * (n - m))) / 2
 
                 dP[n+1,m+1] = a_nm * P[n+1,m-1+1] + b_nm * P[n+1,m+1+1]
             else
-                a_nm = +sqrt((n + m) * (n - m + 1)) / 2
+                a_nm = +sqrt(T((n + m) * (n - m + 1))) / 2
 
                 dP[n+1,m+1] = a_nm * P[n+1,m-1+1]
             end
@@ -495,13 +497,15 @@ example, if `ph_term` is `true`, then `P` must also be computed with `ph_term`
 set to `true`.
 """
 function dlegendre_conventional!(
-    dP::AbstractMatrix,
+    dP::AbstractMatrix{T1},
     ϕ::Number,
-    P::AbstractMatrix,
+    P::AbstractMatrix{T2},
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
-)
+) where {T1<:AbstractFloat, T2<:AbstractFloat}
+    T = promote_type(T1, T2)
+
     # Obtain the maximum degree and order that must be computed.
     n_max, m_max = _get_degree_and_order(dP, P, n_max, m_max)
 
@@ -521,7 +525,7 @@ function dlegendre_conventional!(
     # In fact, in [2, p. 119], it is mentioned that `0 <= ϕ <= π`.  However,
     # further clarification is required.
 
-    ϕ    = mod(ϕ, 2π)
+    ϕ    = mod(ϕ, T(2π))
     fact = (ϕ > π) ? -1 : 1
 
     ph_term && (fact *= -1)
@@ -535,9 +539,9 @@ function dlegendre_conventional!(
             if m == 0
                 dP[n+1,m+1] = -P[n+1,1+1]
             elseif n != m
-                dP[n+1,m+1] = ( (n+m)*(n-m+1)*P[n+1,m-1+1] - P[n+1,m+1+1] )/2
+                dP[n+1,m+1] = ((n + m) * (n - m + 1) * P[n+1,m-1+1] - P[n+1,m+1+1]) / 2
             else
-                dP[n+1,m+1] = ( (n+m)*(n-m+1)*P[n+1,m-1+1] )/2
+                dP[n+1,m+1] = ((n + m) * (n - m + 1) * P[n+1,m-1+1]) / 2
             end
 
             dP[n+1,m+1] *= fact
