@@ -214,17 +214,18 @@ Legendre function can be seen in **[2, p. 546]**. The conversion is obtained by:
     Microcosm Press, Hawthorn, CA, USA.
 """
 function legendre_fully_normalized!(
-    P::AbstractMatrix,
+    P::AbstractMatrix{T},
     ϕ::Number,
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
-)
+) where T<:AbstractFloat
+
     # Obtain the maximum degree and order that must be computed.
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    s, c = sincos(ϕ)
+    s, c = sincos(T(ϕ))
 
     # The sine must be always positive. In fact, `s` was previously computed
     # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
@@ -241,25 +242,28 @@ function legendre_fully_normalized!(
             P[0+1,0+1] = 1
             continue
         elseif n == 1
-            P[1+1,0+1] = +sqrt(3) * c
+            P[1+1,0+1] = +sqrt(T(3)) * c
 
             if m_max > 0
-                P[1+1,1+1] = +sqrt(3) * s_fact
+                P[1+1,1+1] = +sqrt(T(3)) * s_fact
             end
 
             continue
         end
 
-        aux_n = (2n - 1) * (2n + 1)
+        aux_n = T((2n - 1) * (2n + 1))
 
         for m in 0:n
 
             if n == m
-                P[n+1,n+1] = s_fact * sqrt((2n + 1) / (2n)) * P[n-1+1,n-1+1]
+                P[n+1,n+1] = s_fact * sqrt(T(2n + 1) / T(2n)) * P[n-1+1,n-1+1]
             else
-                aux_nm = (n - m) * (n + m)
+                aux_nm = T(n - m) * T(n + m)
                 a_nm   = sqrt(aux_n / aux_nm)
-                b_nm   = sqrt(((2n + 1) * (n + m - 1)*(n - m - 1)) / (aux_nm * (2n - 3)))
+                b_nm   = sqrt(
+                    T((2n + 1) * (n + m - 1) * (n - m - 1)) /
+                    T(aux_nm * (2n - 3))
+                )
 
                 # We assume that the matrix is not initialized. Hence, we must
                 # not access elements on the upper triangle.
@@ -384,17 +388,18 @@ This algorithm was based on **[1, 2]**. The conversion is obtained by:
     International, 160(2), pp. 487-504.
 """
 function legendre_schmidt_quasi_normalized!(
-    P::AbstractMatrix,
+    P::AbstractMatrix{T},
     ϕ::Number,
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
-)
+) where T<:AbstractFloat
+
     # Obtain the maximum degree and order that must be computed.
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    s, c = sincos(ϕ)
+    s, c = sincos(T(ϕ))
 
     # The sine must be always positive. In fact, `s` was previously computed
     # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
@@ -421,16 +426,16 @@ function legendre_schmidt_quasi_normalized!(
             continue
         end
 
-        aux_n = 2n - 1 # -> sqrt( (2n-1)*(2n-1) )
+        aux_n = T(2n - 1) # -> sqrt( (2n-1)*(2n-1) )
 
         for m in 0:n
 
             if m == n
-                P[n+1,n+1] = s_fact * sqrt(aux_n / (2n))*P[n-1+1,n-1+1]
+                P[n+1,n+1] = s_fact * sqrt(aux_n / T(2n)) * P[n-1+1,n-1+1]
             else
-                aux_nm = sqrt((n - m) * (n + m))
+                aux_nm = sqrt(T((n - m) * (n + m)))
                 a_nm   = aux_n / aux_nm
-                b_nm   = sqrt((n + m - 1) * (n - m - 1)) / aux_nm
+                b_nm   = sqrt(T((n + m - 1) * (n - m - 1))) / aux_nm
 
                 # We assume that the matrix is not initialized. Hence, we must not
                 # access elements on the upper triangle.
@@ -528,17 +533,17 @@ If `ph_term` is set to `true`, then the Condon-Shortley phase term `(-1)ᵐ` wil
 be included. If `ph_term` is not present, then it defaults to `false`.
 """
 function legendre_conventional!(
-    P::AbstractMatrix,
+    P::AbstractMatrix{T},
     ϕ::Number,
     ph_term::Bool = false,
     n_max::Integer = -1,
     m_max::Integer = -1
-)
+) where T<:AbstractFloat
     # Obtain the maximum degree and order that must be computed.
     n_max, m_max = _get_degree_and_order(P, n_max, m_max)
 
     # Auxiliary variables to improve code performance.
-    s, c = sincos(ϕ)
+    s, c = sincos(T(ϕ))
 
     # The sine must be always positive. In fact, `s` was previously computed
     # using `sqrt(1 - c^2)`. However, we had numerical problems for very small
@@ -564,16 +569,16 @@ function legendre_conventional!(
             continue
         end
 
-        aux_n = 2n - 1 # -> sqrt( (2n-1)*(2n-1) )
+        aux_n = T(2n - 1) # -> sqrt( (2n-1)*(2n-1) )
 
         for m in 0:n
 
             if n == m
                 P[n+1,n+1] = s_fact * aux_n * P[n-1+1,n-1+1]
             else
-                aux_nm = n-m # -> sqrt( (n-m)*(n-m) )
+                aux_nm = T(n - m) # -> sqrt( (n-m)*(n-m) )
                 a_nm   = aux_n / aux_nm
-                b_nm   = (n + m - 1) / aux_nm  # -> sqrt( (n+m-1)*(n+m-1) ) / aux_nm
+                b_nm   = T(n + m - 1) / aux_nm  # -> sqrt( (n+m-1)*(n+m-1) ) / aux_nm
 
                 # We assume that the matrix is not initialized. Hence, we must
                 # not access elements on the upper triangle.
