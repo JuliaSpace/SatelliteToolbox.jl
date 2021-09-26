@@ -116,8 +116,8 @@ One ECI frame can be converted to another ECI frame by one of the following
 functions:
 
 ```julia
-function r_ecef_to_eci([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
-function r_ecef_to_eci([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
+function r_eci_to_eci([T,] ECIo, ECIf, JD_UTC::Number [, eop_data])
+function r_eci_to_eci([T,] ECIo, JD_UTCo::Number, ECIf, JD_UTCf::Number [, eop_data])
 ```
 
 where it will be computed compute the rotation from the ECI reference frame
