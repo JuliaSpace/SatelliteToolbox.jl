@@ -56,7 +56,7 @@ function geomag_dipole(
     m::Number
 ) where T
     # DCM that converts the ECEF into the geomagnetic coordinates.
-    Dge = angle_to_dcm(pole_lon, T(π / 2) - pole_lat, 0, :ZYX)
+    Dge = angle_to_dcm(T(pole_lon), T(π / 2) - T(pole_lat), 0, :ZYX)
 
     # Compute the dipole momentum represented in the ECEF reference frame.
     k₀_e = T(1e-7) * m * (Dge' * SVector{3, T}(0, 0, -1))
