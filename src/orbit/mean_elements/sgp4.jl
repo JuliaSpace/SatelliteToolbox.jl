@@ -18,67 +18,65 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T,Tv<:AbstractVector}
+    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
 
-Compute the mean elements for SGP4 based on the position `vr` and velocity
-vectors `vr` represented in TEME reference frame. The epoch of those
-measurements [Julian Day] must be in `vJD`.
+Compute the mean elements for SGP4 based on the position vectors `vr` and
+velocity vectors `vr`, both represented in TEME reference frame. The epoch of
+those measurements, represented as Julian days, must be in `vJD`.
 
 The matrix `W` defined the weights for the least-square algorithm.
 
 # Keywords
 
-* `estimate_bstar`: If `true`, then the BSTAR parameters of the TLE will be
-                    estimated.
-* `mean_elements_epoch`: If it is  `:end`, the epoch of the mean elements will
-                         be equal to the last value in `vJD`. Otherwise, if it
-                         is `:begin`, the epoch will be selected as the first
-                         value in `vJD`.
-* `max_it`: The maximum allowed number of iterations.
-* `sgp4_gc`: SPG4 constants (see `SGP4_GravCte`).
-* `atol`: The tolerance for the absolute value of the residue. If, at any
-          iteration, the residue is lower than `atol`, then the iterations stop.
-* `rtol`: The tolerance for the relative difference between the residues. If, at
-          any iteration, the relative difference between the residues in two
-          consecutive iterations is lower than `rtol`, then the iterations stop.
+- `estimate_bstar::Bool`: If `true`, then the BSTAR parameters of the TLE will
+    be estimated.
+- `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
+    elements will be equal to the last value in `vJD`. Otherwise, if it is
+    `:begin`, the epoch will be selected as the first value in `vJD`.
+- `max_it::Int`: The maximum allowed number of iterations.
+- `sgp4_gc::SGP4_GravCte`: SPG4 gravitational constants (see `SGP4_GravCte`).
+- `atol::Number`: The tolerance for the absolute value of the residue. If, at
+    any iteration, the residue is lower than `atol`, then the iterations stop.
+- `rtol::Number`: The tolerance for the relative difference between the
+    residues. If, at any iteration, the relative difference between the residues
+    in two consecutive iterations is lower than `rtol`, then the iterations stop.
 
 # Returns
 
-* The epoch of the elements [Julian Day].
-* The mean elements for SGP4 algorithm:
-    * Semi-major axis [m];
-    * Eccentricity [ ];
-    * Inclination [rad];
-    * Right ascension of the ascending node [rad];
-    * Argument of perigee [rad];
-    * True anomaly [rad];
-    * BSTAR (0 if `estimate_bstar` is `false`).
-* The covariance matrix of the mean elements estimation.
-
+- The epoch of the elements [Julian Day].
+- The mean elements for SGP4 algorithm:
+    - Semi-major axis [m];
+    - Eccentricity [ ];
+    - Inclination [rad];
+    - Right ascension of the ascending node [rad];
+    - Argument of perigee [rad];
+    - True anomaly [rad];
+    - BSTAR (0 if `estimate_bstar` is `false`).
+- The covariance matrix of the mean elements estimation.
 """
-function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
-                                  vr::AbstractVector{Tv},
-                                  vv::AbstractVector{Tv},
-                                  W = I;
-                                  estimate_bstar::Bool = true,
-                                  mean_elements_epoch::Symbol = :end,
-                                  max_it::Int = 50,
-                                  sgp4_gc = sgp4_gc_wgs84,
-                                  atol::Number = 2e-4,
-                                  rtol::Number = 2e-4) where
-    {T,Tv<:AbstractVector}
-
+function rv_to_mean_elements_sgp4(
+    vJD::AbstractVector{T},
+    vr::AbstractVector{Tv},
+    vv::AbstractVector{Tv},
+    W = I;
+    estimate_bstar::Bool = true,
+    mean_elements_epoch::Symbol = :end,
+    max_it::Int = 50,
+    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
+    atol::Number = 2e-4,
+    rtol::Number = 2e-4
+) where {T, Tv<:AbstractVector}
     # Number of measurements.
     num_meas = length(vr)
 
     # Check if the orbit epoch must be the first or the last element.
     if mean_elements_epoch == :end
-        r₁ = last(vr)
-        v₁ = last(vv)
+        r₁    = last(vr)
+        v₁    = last(vv)
         epoch = last(vJD)
     else
-        r₁ = first(vr)
-        v₁ = first(vv)
+        r₁    = first(vr)
+        v₁    = first(vv)
         epoch = first(vJD)
     end
 
@@ -107,7 +105,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
     @printf("          %10s %20s %20s\n", "Iter.", "Residue", "Res. variation")
 
     # Loop until the maximum allowed iteration.
-    @inbounds for it = 1:max_it
+    @inbounds for it in 1:max_it
         x₁ = x₂
 
         # Variables to store the summations to compute the least square fitting
@@ -118,17 +116,38 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
         # Variable to store the residue in this iteration.
         σ_i = T(0)
 
-        @views for k = 1:num_meas
+        @views for k in 1:num_meas
             # Obtain the measured ephemerides.
             y = vcat(vr[k], vv[k])
 
             # Obtain the computed ephemerides considering the current estimate
             # of the mean elements.
-            Δt = (vJD[k] - epoch)*86400
+            Δt = (vJD[k] - epoch) * 86400
 
-            r̂, v̂, ~ = estimate_bstar ?
-                _sgp4_sv(Δt, sgp4_gc, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6], x₁[7]) :
-                _sgp4_sv(Δt, sgp4_gc, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6])
+            r̂, v̂ = estimate_bstar ?
+                _sgp4_sv(
+                    Δt,
+                    sgp4_gc,
+                    epoch,
+                    x₁[1],
+                    x₁[2],
+                    x₁[3],
+                    x₁[4],
+                    x₁[5],
+                    x₁[6],
+                    x₁[7]
+                ) :
+                _sgp4_sv(
+                    Δt,
+                    sgp4_gc,
+                    epoch,
+                    x₁[1],
+                    x₁[2],
+                    x₁[3],
+                    x₁[4],
+                    x₁[5],
+                    x₁[6]
+                )
 
             ŷ = vcat(r̂, v̂)
 
@@ -139,9 +158,9 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
             A = _sgp4_jacobian(Δt, epoch, x₁, ŷ; estimate_bstar = estimate_bstar)
 
             # Accumulation.
-            ΣAᵀWA += A'*W*A
-            ΣAᵀWb += A'*W*b
-            σ_i   += sum(W*(b.^2))
+            ΣAᵀWA += A' * W * A
+            ΣAᵀWb += A' * W * b
+            σ_i   += sum(W * (b.^2))
         end
 
         # Normalize the residue.
@@ -149,18 +168,19 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
 
         # Update the estimate.
         P  = SMatrix{num_states, num_states, T}(pinv(ΣAᵀWA))
-        δx = P*ΣAᵀWb
+        δx = P * ΣAᵀWb
 
         # Limit the correction to avoid divergence.
-        for i = 1:num_states
-            abs(δx[i] / x₁[i]) > 0.01 &&
-                (δx = setindex(δx, 0.01 * abs(x₁[i]) * sign(δx[i]), i))
+        for i in 1:num_states
+            if abs(δx[i] / x₁[i]) > 0.01
+                δx = setindex(δx, 0.01 * abs(x₁[i]) * sign(δx[i]), i)
+            end
         end
 
         x₂ = x₁ + δx
 
         # Compute the residue variation.
-        σ_p = (σ_i - σ_i₋₁)/σ_i₋₁
+        σ_p = (σ_i - σ_i₋₁) / σ_i₋₁
 
         if it != 1
             @printf("PROGRESS: %10d %20g %20g %%\n", it, σ_i, 100σ_p)
@@ -177,7 +197,7 @@ function rv_to_mean_elements_sgp4(vJD::AbstractVector{T},
 
         # If the residue increased by three iterations and the residue is higher
         # than 5e8, then we abort because the iterations are diverging.
-        ( (Δd ≥ 3) && (σ_i > 5e11) ) && error("The iterations diverged!")
+        ((Δd ≥ 3) && (σ_i > 5e11)) && error("The iterations diverged!")
 
         # Check if the condition to stop has been reached.
         ((abs(σ_p) < rtol) || (σ_i < atol) || (it ≥ max_it)) && break
@@ -207,18 +227,18 @@ Additionally, the user can specify some parameters of the generated TLE.
 
 This function returns the TLE and the covariance of the estimated elements
 (state vector).
-
 """
-function rv_to_tle(args...;
-                   name::String = "UNDEFINED",
-                   sat_num::Int = 9999,
-                   classification::Char = 'U',
-                   int_designator = "999999",
-                   elem_set_number::Int = 0,
-                   rev_num::Int = 0,
-                   sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
-                   kwargs...)
-
+function rv_to_tle(
+    args...;
+    name::String = "UNDEFINED",
+    sat_num::Int = 9999,
+    classification::Char = 'U',
+    int_designator = "999999",
+    elem_set_number::Int = 0,
+    rev_num::Int = 0,
+    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
+    kwargs...
+)
     # Convert the position and velocity vectors to mean elements.
     JD, x, P = rv_to_mean_elements_sgp4(args...; kwargs...)
 
@@ -228,10 +248,10 @@ function rv_to_tle(args...;
 
     dt_year    = year(dt)
     epoch_year = dt_year < 1980 ? dt_year - 1900 : dt_year - 2000
-    epoch_day  = (dt - dt₀).value/1000/86400 + 1
+    epoch_day  = (dt - dt₀).value / 1000 / 86400 + 1
 
     # Obtain the Keplerian elements with the right units.
-    a₀ = x[1]/(1000sgp4_gc.R0)
+    a₀ = x[1] / (1000sgp4_gc.R0)
     e₀ = x[2]
     i₀ = rad2deg(x[3])
     Ω₀ = rad2deg(x[4])
@@ -242,26 +262,28 @@ function rv_to_tle(args...;
     n₀ = sgp4_gc.XKE / sqrt(a₀ * a₀ * a₀)
 
     # Construct the TLE.
-    tle = TLE(name,
-              sat_num,
-              classification,
-              int_designator,
-              epoch_year,
-              epoch_day,
-              JD,
-              0.0,
-              0.0,
-              x[7],
-              elem_set_number,
-              0,
-              i₀,
-              Ω₀,
-              e₀,
-              ω₀,
-              M₀,
-              720n₀/π,
-              rev_num,
-              0)
+    tle = TLE(
+        name,
+        sat_num,
+        classification,
+        int_designator,
+        epoch_year,
+        epoch_day,
+        JD,
+        0.0,
+        0.0,
+        x[7],
+        elem_set_number,
+        0,
+        i₀,
+        Ω₀,
+        e₀,
+        ω₀,
+        M₀,
+        720n₀ / π,
+        rev_num,
+        0
+    )
 
     # Return the TLE string.
     return tle, P
@@ -273,48 +295,50 @@ end
 ################################################################################
 
 # Compute the SGP4 algorithm considering all variables in a state vector.
-function _sgp4_sv(Δt::Number,
-                  sgp4_gc::SGP4_GravCte,
-                  epoch::Number,
-                  rx_TEME::Number,
-                  ry_TEME::Number,
-                  rz_TEME::Number,
-                  vx_TEME::Number,
-                  vy_TEME::Number,
-                  vz_TEME::Number,
-                  bstar::Number = 0)
-
+function _sgp4_sv(
+    Δt::Number,
+    sgp4_gc::SGP4_GravCte,
+    epoch::Number,
+    rx_TEME::Number,
+    ry_TEME::Number,
+    rz_TEME::Number,
+    vx_TEME::Number,
+    vy_TEME::Number,
+    vz_TEME::Number,
+    bstar::Number = 0
+)
     r_TEME = @SVector [rx_TEME, ry_TEME, rz_TEME]
     v_TEME = @SVector [vx_TEME, vy_TEME, vz_TEME]
 
     orb_TEME = rv_to_kepler(r_TEME, v_TEME, epoch)
 
     # Obtain the required mean elements to initialize the SGP4.
-    a₀ = orb_TEME.a/(1000sgp4_gc.R0) # .................... Semi-major axis [ER]
-    e₀ = orb_TEME.e                  # ........................ Eccentricity [ ]
-    i₀ = orb_TEME.i                  # ....................... Inclination [rad]
-    Ω₀ = orb_TEME.Ω                  # .............................. RAAN [rad]
-    ω₀ = orb_TEME.ω                  # ................... Arg. of perigee [rad]
-    M₀ = f_to_M(e₀, orb_TEME.f)      # ...................... Mean anomaly [rad]
+    a₀ = orb_TEME.a / (1000sgp4_gc.R0) # .................. Semi-major axis [ER]
+    e₀ = orb_TEME.e                    # ...................... Eccentricity [ ]
+    i₀ = orb_TEME.i                    # ..................... Inclination [rad]
+    Ω₀ = orb_TEME.Ω                    # ............................ RAAN [rad]
+    ω₀ = orb_TEME.ω                    # ................. Arg. of perigee [rad]
+    M₀ = f_to_M(e₀, orb_TEME.f)        # .................... Mean anomaly [rad]
 
     # Obtain the mean motion [rad/min].
     n₀ = sgp4_gc.XKE / sqrt(a₀ * a₀ * a₀)
 
-    r, v, sgp4d = sgp4(Δt/60, sgp4_gc, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar)
+    r, v, ~ = sgp4(Δt / 60, sgp4_gc, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar)
 
     # Return the elements using SI units.
-    return 1000r, 1000v, sgp4d
+    return 1000r, 1000v
 end
 
-function _sgp4_jacobian(Δt::T,
-                        epoch::T,
-                        x₁::SVector{NS, T},
-                        y₁::SVector{NO, T};
-                        estimate_bstar::Bool = true,
-                        pert::T = 1e-3,
-                        perttol::T = 1e-5,
-                        sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84) where {NS, NO, T}
-
+function _sgp4_jacobian(
+    Δt::T,
+    epoch::T,
+    x₁::SVector{NS, T},
+    y₁::SVector{NO, T};
+    estimate_bstar::Bool = true,
+    pert::T = 1e-3,
+    perttol::T = 1e-5,
+    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84
+) where {NS, NO, T}
     num_states = NS
     dim_obs    = NO
     M          = zeros(T, dim_obs, num_states)
@@ -326,7 +350,7 @@ function _sgp4_jacobian(Δt::T,
     # column.
     J = num_states - !estimate_bstar
 
-    @inbounds for j = 1:J
+    @inbounds for j in 1:J
         # State that will be perturbed.
         α = x₂[j]
 
@@ -334,7 +358,7 @@ function _sgp4_jacobian(Δt::T,
         ϵ = T(0)
         pert_i = pert
 
-        for _ = 1:5
+        for _ in 1:5
             ϵ = α * pert_i
             abs(ϵ) > perttol && break
             pert_i *= 1.4
@@ -344,16 +368,18 @@ function _sgp4_jacobian(Δt::T,
 
         # Avoid division by zero in cases that α is very small. In this
         # situation, we force |α| = perttol.
-        abs(α) < perttol && (α = sign(α) * perttol)
+        if abs(α) < perttol
+            α = sign(α) * perttol
+        end
 
         # Modify the perturbed state.
         x₂ = setindex(x₂, α, j)
 
         # Obtain the Jacobian by finite differentiation.
-        r, v, ~ = _sgp4_sv(Δt, sgp4_gc, epoch, x₂...)
-        y₂      = vcat(r,v)
+        r, v = _sgp4_sv(Δt, sgp4_gc, epoch, x₂...)
+        y₂   = vcat(r,v)
 
-        M[:,j] .= (y₂ .- y₁)./ϵ
+        M[:, j] .= (y₂ .- y₁) ./ ϵ
 
         # Restore the value of the perturbed state for the next iteration.
         x₂ = setindex(x₂, x₁[j], j)
