@@ -18,11 +18,11 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vJD::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
+    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
 
 Compute the mean elements for SGP4 based on the position vectors `vr` and
 velocity vectors `vr`, both represented in TEME reference frame. The epoch of
-those measurements, represented as Julian days, must be in `vJD`.
+those measurements, represented as Julian days, must be in `vjd`.
 
 The matrix `W` defined the weights for the least-square algorithm.
 
@@ -31,8 +31,8 @@ The matrix `W` defined the weights for the least-square algorithm.
 - `estimate_bstar::Bool`: If `true`, then the BSTAR parameters of the TLE will
     be estimated.
 - `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
-    elements will be equal to the last value in `vJD`. Otherwise, if it is
-    `:begin`, the epoch will be selected as the first value in `vJD`.
+    elements will be equal to the last value in `vjd`. Otherwise, if it is
+    `:begin`, the epoch will be selected as the first value in `vjd`.
 - `max_it::Int`: The maximum allowed number of iterations.
 - `sgp4_gc::SGP4_GravCte`: SPG4 gravitational constants (see `SGP4_GravCte`).
 - `atol::Number`: The tolerance for the absolute value of the residue. If, at
@@ -55,7 +55,7 @@ The matrix `W` defined the weights for the least-square algorithm.
 - The covariance matrix of the mean elements estimation.
 """
 function rv_to_mean_elements_sgp4(
-    vJD::AbstractVector{T},
+    vjd::AbstractVector{T},
     vr::AbstractVector{Tv},
     vv::AbstractVector{Tv},
     W = I;
@@ -73,11 +73,11 @@ function rv_to_mean_elements_sgp4(
     if mean_elements_epoch == :end
         r₁    = last(vr)
         v₁    = last(vv)
-        epoch = last(vJD)
+        epoch = last(vjd)
     else
         r₁    = first(vr)
         v₁    = first(vv)
-        epoch = first(vJD)
+        epoch = first(vjd)
     end
 
     # Initial guess of the mean elements.
@@ -122,7 +122,7 @@ function rv_to_mean_elements_sgp4(
 
             # Obtain the computed ephemerides considering the current estimate
             # of the mean elements.
-            Δt = (vJD[k] - epoch) * 86400
+            Δt = (vjd[k] - epoch) * 86400
 
             r̂, v̂ = estimate_bstar ?
                 _sgp4_sv(
