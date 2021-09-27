@@ -56,10 +56,10 @@ function geomag_dipole(
     m::Number
 ) where T
     # DCM that converts the ECEF into the geomagnetic coordinates.
-    Dge = angle_to_dcm(T(pole_lon), T(π / 2) - T(pole_lat), 0, :ZYX)
+    Dge = angle_to_dcm(T(pole_lon), T(π / 2) - T(pole_lat), T(0), :ZYX)
 
     # Compute the dipole momentum represented in the ECEF reference frame.
-    k₀_e = T(1e-7) * m * (Dge' * SVector{3, T}(0, 0, -1))
+    k₀_e = T(1e-7) * T(m) * (Dge' * SVector{3, T}(0, 0, -1))
 
     # Compute the distance from the Earth center of the desired point.
     r = norm(r_e)
@@ -68,7 +68,7 @@ function geomag_dipole(
     eᵣ_e = SVector{3, T}(r_e) / r
 
     # Compute the geomagnetic field vector [nT].
-    B_e = 1 / r^3 * (3 * eᵣ_e*eᵣ_e' - I) * k₀_e * T(1e9)
+    B_e = (3eᵣ_e * eᵣ_e' - I) * k₀_e * T(1e9) / r^3
 
     return B_e
 end
