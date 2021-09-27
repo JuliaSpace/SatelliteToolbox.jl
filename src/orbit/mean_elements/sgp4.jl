@@ -18,7 +18,7 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_it::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
+    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_iterations::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
 
 Compute the mean elements for SGP4 based on the position vectors `vr` and
 velocity vectors `vr`, both represented in TEME reference frame. The epoch of
@@ -33,7 +33,7 @@ The matrix `W` defined the weights for the least-square algorithm.
 - `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
     elements will be equal to the last value in `vjd`. Otherwise, if it is
     `:begin`, the epoch will be selected as the first value in `vjd`.
-- `max_it::Int`: The maximum allowed number of iterations.
+- `max_iterations::Int`: The maximum allowed number of iterations.
 - `sgp4_gc::SGP4_GravCte`: SPG4 gravitational constants (see `SGP4_GravCte`).
 - `atol::Number`: The tolerance for the absolute value of the residue. If, at
     any iteration, the residue is lower than `atol`, then the iterations stop.
@@ -61,7 +61,7 @@ function rv_to_mean_elements_sgp4(
     W = I;
     estimate_bstar::Bool = true,
     mean_elements_epoch::Symbol = :end,
-    max_it::Int = 50,
+    max_iterations::Int = 50,
     sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
     atol::Number = 2e-4,
     rtol::Number = 2e-4
@@ -105,7 +105,7 @@ function rv_to_mean_elements_sgp4(
     @printf("          %10s %20s %20s\n", "Iter.", "Residue", "Res. variation")
 
     # Loop until the maximum allowed iteration.
-    @inbounds for it in 1:max_it
+    @inbounds for it in 1:max_iterations
         x₁ = x₂
 
         # Variables to store the summations to compute the least square fitting
@@ -196,11 +196,11 @@ function rv_to_mean_elements_sgp4(
         end
 
         # If the residue increased by three iterations and the residue is higher
-        # than 5e8, then we abort because the iterations are diverging.
+        # than 5e11, then we abort because the iterations are diverging.
         ((Δd ≥ 3) && (σ_i > 5e11)) && error("The iterations diverged!")
 
         # Check if the condition to stop has been reached.
-        ((abs(σ_p) < rtol) || (σ_i < atol) || (it ≥ max_it)) && break
+        ((abs(σ_p) < rtol) || (σ_i < atol) || (it ≥ max_iterations)) && break
 
         σ_i₋₁ = σ_i
     end
