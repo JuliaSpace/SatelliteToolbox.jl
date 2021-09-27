@@ -7,7 +7,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-get_epoch(orbp::OrbitPropagatorJ2osc) = orbp.j2d.epoch
+get_epoch(orbp::OrbitPropagatorJ2osc) = orbp.j2oscd.j2d.epoch
 
 function get_mean_elements(orbp::OrbitPropagatorJ2osc)
     j2d = orbp.j2oscd.j2d
