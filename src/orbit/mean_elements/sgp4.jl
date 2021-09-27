@@ -20,9 +20,10 @@ export rv_to_mean_elements_sgp4, rv_to_tle
 """
     rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84, print_debug::Bool = true, max_iterations::Int = 50, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
 
-Compute the mean elements for SGP4 based on the position vectors `vr` and
-velocity vectors `vr`, both represented in TEME reference frame. The epoch of
-those measurements, represented as Julian days, must be in `vjd`.
+Compute the mean elements for the orbit propagator SGP4 based on the position
+vectors `vr` and velocity vectors `vr`, both represented in TEME reference
+frame. The epoch of those measurements, represented as Julian days, must be in
+`vjd`.
 
 The matrix `W` defined the weights for the least-square algorithm.
 
@@ -46,7 +47,7 @@ The matrix `W` defined the weights for the least-square algorithm.
 # Returns
 
 - The epoch of the elements [Julian Day].
-- The mean elements for SGP4 algorithm:
+- The mean elements for the SGP4 orbit propagator:
     - Semi-major axis [m];
     - Eccentricity [ ];
     - Inclination [rad];
