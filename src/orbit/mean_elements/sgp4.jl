@@ -18,7 +18,7 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, max_iterations::Int = 50, sgp4_gc = sgp4_gc_wgs84, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
+    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84, print_debug::Bool = true, max_iterations::Int = 50, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
 
 Compute the mean elements for SGP4 based on the position vectors `vr` and
 velocity vectors `vr`, both represented in TEME reference frame. The epoch of
@@ -33,8 +33,10 @@ The matrix `W` defined the weights for the least-square algorithm.
 - `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
     elements will be equal to the last value in `vjd`. Otherwise, if it is
     `:begin`, the epoch will be selected as the first value in `vjd`.
-- `max_iterations::Int`: The maximum allowed number of iterations.
 - `sgp4_gc::SGP4_GravCte`: SPG4 gravitational constants (see `SGP4_GravCte`).
+- `print_debug::Bool`: If `true`, then debug information will be printed to the
+    `stdout`. (**Default** = `true`)
+- `max_iterations::Int`: The maximum allowed number of iterations.
 - `atol::Number`: The tolerance for the absolute value of the residue. If, at
     any iteration, the residue is lower than `atol`, then the iterations stop.
 - `rtol::Number`: The tolerance for the relative difference between the
@@ -61,8 +63,9 @@ function rv_to_mean_elements_sgp4(
     W = I;
     estimate_bstar::Bool = true,
     mean_elements_epoch::Symbol = :end,
-    max_iterations::Int = 50,
     sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
+    print_debug::Bool = true,
+    max_iterations::Int = 50,
     atol::Number = 2e-4,
     rtol::Number = 2e-4
 ) where {T, Tv<:AbstractVector}
@@ -102,7 +105,7 @@ function rv_to_mean_elements_sgp4(
     Δd = 0
 
     # Header
-    @printf("          %10s %20s %20s\n", "Iter.", "Residue", "Res. variation")
+    print_debug && @printf("          %10s %20s %20s\n", "Iter.", "Residue", "Res. variation")
 
     # Loop until the maximum allowed iteration.
     @inbounds for it in 1:max_iterations
@@ -182,10 +185,12 @@ function rv_to_mean_elements_sgp4(
         # Compute the residue variation.
         σ_p = (σ_i - σ_i₋₁) / σ_i₋₁
 
-        if it != 1
-            @printf("PROGRESS: %10d %20g %20g %%\n", it, σ_i, 100σ_p)
-        else
-            @printf("PROGRESS: %10d %20g %20s\n", it, σ_i, "---")
+        if print_debug
+            if it != 1
+                @printf("PROGRESS: %10d %20g %20g %%\n", it, σ_i, 100σ_p)
+            else
+                @printf("PROGRESS: %10d %20g %20s\n", it, σ_i, "---")
+            end
         end
 
         # Check if the residue is increasing.
