@@ -47,7 +47,7 @@
     ϵ = @evalpoly(T_TDB, 23.439_291, -0.013_004_2, -1.64e-7, +5.04e-7)
     ϵ = mod2pi(deg2rad(ϵ))
 
-    r_moon_ecl = create_rotation_matrix(ϵ, :X)*r_moon_mod
+    r_moon_ecl = angle_to_dcm(ϵ, :X)*r_moon_mod
 
     λ = atand(r_moon_ecl[2], r_moon_ecl[1])
     β = atand(r_moon_ecl[3], √(r_moon_ecl[1]^2 + r_moon_ecl[2]^2))

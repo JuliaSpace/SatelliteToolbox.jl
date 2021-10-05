@@ -616,7 +616,7 @@ function igrf(
     )
 
     # Convert to geodetic coordinates.
-    D_gd_gc = create_rotation_matrix(λ_gc - λ, :Y)
+    D_gd_gc = angle_to_dcm(λ_gc - λ, :Y)
     B_gd    = D_gd_gc * B_gc
 
     return B_gd

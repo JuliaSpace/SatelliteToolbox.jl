@@ -324,7 +324,7 @@ function r_cirs_to_gcrf_iau2006(
                -a * XY, 1 - a * Y², Y,
                     -X,        -Y , 1 - a * (X² + Y²))'
 
-    return D * create_rotation_matrix(s, :Z)
+    return D * angle_to_dcm(s, :Z)
 end
 
 function r_cirs_to_gcrf_iau2006(
@@ -392,7 +392,7 @@ function r_gcrf_to_cirs_iau2006(
                -a * XY, 1 - a * Y², Y,
                    -X ,        -Y , 1 - a * (X² + Y²))
 
-    return create_rotation_matrix(-s, :Z) * D
+    return angle_to_dcm(-s, :Z) * D
 end
 
 function r_gcrf_to_cirs_iau2006(
