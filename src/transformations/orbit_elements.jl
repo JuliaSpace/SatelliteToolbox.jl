@@ -134,10 +134,10 @@ function change_oe_frame(oe::T, conv_args...) where T<:Orbit
 
     # NOTE: In my benchmarks, the operation with DCMs are faster than with
     # quaternions after the DCM representation was changed to SMatrix.
-    D_ECIf_ECIo = r_eci_to_eci(DCM, conv_args...)
-    r_f         = D_ECIf_ECIo * r_o
-    v_f         = D_ECIf_ECIo * v_o
-    a_f         = D_ECIf_ECIo * a_o
+    D_ecif_ecio = r_eci_to_eci(DCM, conv_args...)
+    r_f         = D_ecif_ecio * r_o
+    v_f         = D_ecif_ecio * v_o
+    a_f         = D_ecif_ecio * a_o
 
     # Create the new state vector that will be converted to an entity with the
     # type `T`.

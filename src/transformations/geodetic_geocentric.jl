@@ -38,38 +38,38 @@ Convert the vector `r_e` [m] represented in the Earth-Centered, Earth-Fixed
 (defaults to WGS-84).
 
 !!! info
-    The algorithm is based in **[3]**.
+    The algorithm is based in **[1]**.
 
 # Returns
 
-* Latitude [rad].
-* Longitude [rad].
-* Altitude [m].
+- Latitude [rad].
+- Longitude [rad].
+- Altitude [m].
 
 # Reference
 
-- **[3]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
+- **[1]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
     Application Note.
 """
 function ecef_to_geodetic(r_e::AbstractVector; ellipsoid = wgs84_ellipsoid)
     # Auxiliary variables.
-    X = r_e[1]
-    Y = r_e[2]
-    Z = r_e[3]
+    x = r_e[1]
+    y = r_e[2]
+    z = r_e[3]
 
     # Auxiliary variables.
     a = ellipsoid.a
     b = ellipsoid.b
     e² = ellipsoid.e²
     el² = ellipsoid.el²
-    p = √(X^2 + Y^2)
-    θ = atan(Z * a, p * b)
+    p = √(x^2 + y^2)
+    θ = atan(z * a, p * b)
     sin_θ, cos_θ = sincos(θ)
 
     # Compute Geodetic.
-    lon = atan(Y, X)
+    lon = atan(y, x)
     lat = atan(
-        Z + el² * b * sin_θ^3,
+        z + el² * b * sin_θ^3,
         p -  e² * a * cos_θ^3
     )
 
@@ -80,9 +80,9 @@ function ecef_to_geodetic(r_e::AbstractVector; ellipsoid = wgs84_ellipsoid)
     # Avoid singularity if we are near the poles (~ 1 deg according to [1,
     # p.172]). Note that `cosd(1) = -0.01745240643728351`.
     if !(-0.01745240643728351 < cos_lat < 0.01745240643728351)
-        h = p/cos_lat - N
+        h = p / cos_lat - N
     else
-        h = Z/sin_lat - N*(1 - e²)
+        h = z / sin_lat - N * (1 - e²)
     end
 
     return lat, lon, h
@@ -96,11 +96,11 @@ reference ellipsoid (defaults to WGS-84) into a vector represented on the Earth-
 Earth-Fixed (ECEF) reference frame.
 
 !!! info
-    The algorithm is based in **[3]**.
+    The algorithm is based in **[1]**.
 
 # Reference
 
-- **[3]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
+- **[1]**: mu-blox ag (1999). Datum Transformations of GPS Positions.
     Application Note.
 """
 function geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid = wgs84_ellipsoid)
@@ -116,9 +116,9 @@ function geodetic_to_ecef(lat::Number, lon::Number, h::Number; ellipsoid = wgs84
 
     # Compute the position in ECEF frame.
     return SVector(
-        (                        N + h) * cos_lat * cos_lon,
-        (                        N + h) * cos_lat * sin_lon,
-        (                        (b / a)^2 * N + h) * sin_lat
+        (            N + h) * cos_lat * cos_lon,
+        (            N + h) * cos_lat * sin_lon,
+        ((b / a)^2 * N + h) * sin_lat
     )
 end
 
@@ -130,7 +130,7 @@ WGS-84) from the geocentric latitude `ϕ_gc` (-π/2, π/2) [rad] and radius `r` 
 Notice that the longitude is the same in both geocentric and geodetic coordinates.
 
 !!! info
-    The algorithm is based in **[5]**.
+    The algorithm is based in **[1]**.
 
 # Returns
 
@@ -139,7 +139,7 @@ Notice that the longitude is the same in both geocentric and geodetic coordinate
 
 # References
 
-- **[5]** Borkowski, K. M (1987). Transformation of geocentric to geodetic
+- **[1]** Borkowski, K. M (1987). Transformation of geocentric to geodetic
     coordinates without approximations. Astrophysics and Space Science, vol.
     139, pp. 1-4.
 """
@@ -199,7 +199,7 @@ Notice that the longitude is the same in both geocentric and geodetic
 coordinates.
 
 !!! info
-    The algorithm is based in **[4]**(p. 3).
+    The algorithm is based in **[1]**(p. 3).
 
 # Returns
 
@@ -208,17 +208,17 @@ coordinates.
 
 # References
 
-- **[4]** ISO TC 20/SC 14 N (2011). Geomagnetic Reference Models.
+- **[1]** ISO TC 20/SC 14 N (2011). Geomagnetic Reference Models.
 """
 function geodetic_to_geocentric(ϕ_gd::Number, h::Number; ellipsoid = wgs84_ellipsoid)
     # Auxiliary variables to decrease computational burden.
     sin_ϕ_gd, cos_ϕ_gd = sincos(ϕ_gd)
     sin²_ϕ_gd = sin_ϕ_gd^2
-    a  = ellipsoid.a
-    e²  = ellipsoid.e²
+    a = ellipsoid.a
+    e² = ellipsoid.e²
 
     # Radius of curvature in the prime vertical [m].
-    N    = a/√(1 - e² * sin²_ϕ_gd )
+    N = a / √(1 - e² * sin²_ϕ_gd )
 
     # Compute the geocentric latitude and radius from the Earth center.
     ρ    = (N + h) * cos_ϕ_gd

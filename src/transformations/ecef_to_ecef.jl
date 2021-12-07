@@ -19,10 +19,10 @@
 export r_ecef_to_ecef
 
 """
-    r_ecef_to_ecef([T,] ECEFo, ECEFf, JD_UTC::Number, eop_data)
+    r_ecef_to_ecef([T,] ECEFo, ECEFf, jd_utc::Number, eop_data)
 
 Compute the rotation from an Earth-Centered, Earth-Fixed (`ECEF`) reference
-frame to another ECEF reference frame at the Julian Day [UTC] `JD_UTC`. The
+frame to another ECEF reference frame at the Julian Day [UTC] `jd_utc`. The
 rotation description that will be used is given by `T`, which can be `DCM` or
 `Quaternion`. The origin ECEF frame is selected by the input `ECEFo` and the
 destination ECEF frame is selected by the input `ECEFf`. The model used to
@@ -104,19 +104,19 @@ Quaternion{Float64}:
 @inline function r_ecef_to_ecef(
     T_ECEFo::T_ECEFs,
     T_ECEFf::T_ECEFs,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
-    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, jd_utc, eop_data)
 end
 
 @inline function r_ecef_to_ecef(
     T_ECEFo::T_ECEFs_IAU_2006,
     T_ECEFf::T_ECEFs_IAU_2006,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
-    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, JD_UTC, eop_data)
+    return r_ecef_to_ecef(DCM, T_ECEFo, T_ECEFf, jd_utc, eop_data)
 end
 
 ################################################################################
@@ -130,16 +130,16 @@ function r_ecef_to_ecef(
     T::T_ROT,
     ::Val{:ITRF},
     ::Val{:PEF},
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
     arcsec_to_rad = π / 648000
 
     # Get the EOP data related to the desired epoch.
     #
-    # TODO: The difference is small, but should it be `JD_TT` or `JD_UTC`?
-    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
-    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
+    # TODO: The difference is small, but should it be `JD_TT` or `jd_utc`?
+    x_p = eop_data.x(jd_utc) * arcsec_to_rad
+    y_p = eop_data.y(jd_utc) * arcsec_to_rad
 
     # Return the rotation.
     return r_itrf_to_pef_fk5(T, x_p, y_p)
@@ -149,10 +149,10 @@ end
     T::T_ROT,
     T_ECEFo::Val{:PEF},
     T_ECEFf::Val{:ITRF},
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
-    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, jd_utc, eop_data))
 end
 
 ################################################################################
@@ -166,25 +166,25 @@ function r_ecef_to_ecef(
     T::T_ROT,
     ::Val{:ITRF},
     ::Val{:TIRS},
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
     arcsec_to_rad = π / 648000
 
     # Get the EOP data related to the desired epoch.
-    x_p = eop_data.x(JD_UTC) * arcsec_to_rad
-    y_p = eop_data.y(JD_UTC) * arcsec_to_rad
+    x_p = eop_data.x(jd_utc) * arcsec_to_rad
+    y_p = eop_data.y(jd_utc) * arcsec_to_rad
 
     # Return the rotation.
-    return r_itrf_to_tirs_iau2006(T, JD_UTC, x_p, y_p)
+    return r_itrf_to_tirs_iau2006(T, jd_utc, x_p, y_p)
 end
 
 @inline function r_ecef_to_ecef(
     T::T_ROT,
     T_ECEFo::Val{:TIRS},
     T_ECEFf::Val{:ITRF},
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
-    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, JD_UTC, eop_data))
+    return inv_rotation(r_ecef_to_ecef(T, T_ECEFf, T_ECEFo, jd_utc, eop_data))
 end

@@ -19,11 +19,11 @@
 export sv_ecef_to_eci
 
 """
-    sv_ecef_to_eci(sv::OrbitStateVector, ECEF, ECI, JD_UTC [, eop_data])
+    sv_ecef_to_eci(sv::OrbitStateVector, ECEF, ECI, jd_utc [, eop_data])
 
 Convert the orbit state vector `sv` from the Earth-Centered, Earth-Fixed (ECEF)
 reference frame `ECEF` to the Earth-Centered Inertial (ECI) reference frame at
-the Julian day `JD_UTC` [UTC]. The `eop_data` may be required depending on the
+the Julian day `jd_utc` [UTC]. The `eop_data` may be required depending on the
 selection of the input and output reference system. For more information,
 see the documentation of the function [`r_ecef_to_eci`](@ref).
 
@@ -36,49 +36,49 @@ function sv_ecef_to_eci(
     sv::OrbitStateVector,
     T_ECEF::Val{:ITRF},
     T_ECI::T_ECIs,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
     # First, convert from the ITRF to PEF.
-    sv_pef = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:PEF), JD_UTC, eop_data)
+    sv_pef = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:PEF), jd_utc, eop_data)
 
     # Now, convert from PEF to ECI.
-    return sv_ecef_to_eci(sv_pef, Val(:PEF), T_ECI, JD_UTC, eop_data)
+    return sv_ecef_to_eci(sv_pef, Val(:PEF), T_ECI, jd_utc, eop_data)
 end
 
 function sv_ecef_to_eci(
     sv::OrbitStateVector,
     T_ECEF::Val{:ITRF},
     T_ECI::T_ECIs_IAU_2006,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
     # First, convert from the ITRF to TIRS.
-    sv_tirs = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:TIRS), JD_UTC, eop_data)
+    sv_tirs = sv_ecef_to_ecef(sv, Val(:ITRF), Val(:TIRS), jd_utc, eop_data)
 
     # Now, convert from TIRS to ECI.
-    return sv_ecef_to_eci(sv_tirs, Val(:TIRS), T_ECI, JD_UTC, eop_data)
+    return sv_ecef_to_eci(sv_tirs, Val(:TIRS), T_ECI, jd_utc, eop_data)
 end
 
 function sv_ecef_to_eci(
     sv::OrbitStateVector,
     T_ECEF::Union{Val{:PEF}, Val{:TIRS}},
     T_ECI::Union{T_ECIs, T_ECIs_IAU_2006},
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::Union{Nothing, EOPData_IAU1980, EOPData_IAU2000A} = nothing
 )
     # Get the matrix that converts the ECEF to the ECI.
-    if eop_data == nothing
-        D = r_ecef_to_eci(DCM, T_ECEF, T_ECI, JD_UTC)
+    if eop_data === nothing
+        D = r_ecef_to_eci(DCM, T_ECEF, T_ECI, jd_utc)
     else
-        D = r_ecef_to_eci(DCM, T_ECEF, T_ECI, JD_UTC, eop_data)
+        D = r_ecef_to_eci(DCM, T_ECEF, T_ECI, jd_utc, eop_data)
     end
 
     # Since the ECI and ECEF frames have a relative velocity between them, then
     # we must account from it when converting the velocity and acceleration. The
     # angular velocity between those frames is computed using `we` and corrected
     # by the length of day (LOD) parameter of the EOP data, if available.
-    ω  = we * (1 - (eop_data != nothing ? eop_data.LOD(JD_UTC) / 86400000 : 0))
+    ω  = we * (1 - (eop_data !== nothing ? eop_data.LOD(jd_utc) / 86400000 : 0))
     vω = SVector{3}(0, 0, ω)
 
     # Compute the position in the ECI frame.

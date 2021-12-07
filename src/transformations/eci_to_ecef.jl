@@ -19,11 +19,11 @@
 export r_eci_to_ecef
 
 """
-    r_eci_to_ecef([T,] ECI, ECEF, JD_UTC::Number [, eop_data])
+    r_eci_to_ecef([T,] ECI, ECEF, jd_utc::Number [, eop_data])
 
 Compute the rotation from an Earth-Centered Inertial (`ECI`) reference frame to
 an Earth-Centered, Earth-Fixed (`ECEF`) reference frame at the Julian Day [UTC]
-`JD_UTC`. The rotation description that will be used is given by `T`, which can
+`jd_utc`. The rotation description that will be used is given by `T`, which can
 be `DCM` or `Quaternion`. The ECI frame is selected by the input `ECI` and the
 `ECEF` frame is selected by the input `ECEF`. The possible values are listed
 below. The model used to compute the rotation is specified by the selection of
@@ -188,72 +188,72 @@ Quaternion{Float64}:
 """
 @inline function r_eci_to_ecef(T_ECI::T_ECIs,
     T_ECEF::T_ECEFs,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
-    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, jd_utc, eop_data)
 end
 
 @inline function r_eci_to_ecef(
     T::T_ROT,
     T_ECI::T_ECIs,
     T_ECEF::T_ECEFs,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU1980
 )
-    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, jd_utc, eop_data))
 end
 
 @inline function r_eci_to_ecef(
     T_ECI::T_ECIs_IAU_2006,
     T_ECEF::T_ECEFs_IAU_2006,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
-    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC, eop_data)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, jd_utc, eop_data)
 end
 
 @inline function r_eci_to_ecef(
     T::T_ROT,
     T_ECI::T_ECIs_IAU_2006,
     T_ECEF::T_ECEFs_IAU_2006,
-    JD_UTC::Number,
+    jd_utc::Number,
     eop_data::EOPData_IAU2000A
 )
-    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC, eop_data))
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, jd_utc, eop_data))
 end
 
 # Specializations for those cases that EOP Data is not needed.
 @inline function r_eci_to_ecef(
     T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
     T_ECEF::Val{:PEF},
-    JD_UTC::Number
+    jd_utc::Number
 )
-    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, jd_utc)
 end
 
 @inline function r_eci_to_ecef(
     T::T_ROT,
     T_ECI::Union{Val{:J2000}, Val{:TOD}, Val{:MOD}, Val{:TEME}},
     T_ECEF::Val{:PEF},
-    JD_UTC::Number
+    jd_utc::Number
 )
-    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, jd_utc))
 end
 
 @inline function r_eci_to_ecef(
     T_ECI::T_ECIs_IAU_2006,
     T_ECEF::Val{:TIRS},
-    JD_UTC::Number
+    jd_utc::Number
 )
-    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, JD_UTC)
+    return r_eci_to_ecef(DCM, T_ECI, T_ECEF, jd_utc)
 end
 
 @inline function r_eci_to_ecef(
     T::T_ROT,
     T_ECI::T_ECIs_IAU_2006,
     T_ECEF::Val{:TIRS},
-    JD_UTC::Number
+    jd_utc::Number
 )
-    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, JD_UTC))
+    return inv_rotation(r_ecef_to_eci(T, T_ECEF, T_ECI, jd_utc))
 end
