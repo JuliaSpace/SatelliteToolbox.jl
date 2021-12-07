@@ -35,10 +35,10 @@ export r_teme_to_pef,  r_pef_to_teme
 # ==============================================================================
 
 """
-    r_teme_to_tod([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_tod([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the True of Date (TOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
+the True of Date (TOD) frame at the Julian Day `jd_tt` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
@@ -59,18 +59,18 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_teme_to_tod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_teme_to_tod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_tod(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_tod(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_teme_to_tod(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
-    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
+    # Compute the nutation in the Julian Day (Terrestrial Time) `jd_tt`.
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(jd_tt)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -80,10 +80,10 @@ function r_teme_to_tod(
     # [0,2π]°.
     #
     # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000) / 36525
+    t_tt = (jd_tt - JD_J2000) / 36525
     r    = 360
     Ω_m  = @evalpoly(
-        T_TT,
+        t_tt,
         125.04452222,
         -5r - 134.1362608,
         0.0020708,
@@ -102,10 +102,10 @@ function r_teme_to_tod(
 end
 
 """
-    r_tod_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_tod_to_teme([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True of Date (TOD) frame with the True
-Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
+Equator Mean Equinox (TEME) frame at the Julian Day `jd_tt` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
 233). Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
@@ -126,27 +126,27 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_tod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_tod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_tod_to_teme(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_tod_to_teme(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_tod_to_teme(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
-    return inv_rotation(r_teme_to_tod(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+    return inv_rotation(r_teme_to_tod(T, jd_tt, δΔϵ_1980, δΔψ_1980))
 end
 
 #                                 TEME <=> MOD
 # ==============================================================================
 
 """
-    r_teme_to_mod([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_mod([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Mean of Date (MOD) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
+the Mean of Date (MOD) frame at the Julian Day `jd_tt` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
@@ -167,13 +167,13 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_teme_to_mod(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_teme_to_mod(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_mod(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_mod(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_teme_to_mod(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
@@ -182,8 +182,8 @@ function r_teme_to_mod(
     # performance drop. Hence, the code of those two functions is almost
     # entirely rewritten here.
 
-    # Compute the nutation in the Julian Day (Terrestrial Time) `JD_TT`.
-    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(JD_TT)
+    # Compute the nutation in the Julian Day (Terrestrial Time) `jd_tt`.
+    mϵ_1980, Δϵ_1980, Δψ_1980 = nutation_fk5(jd_tt)
 
     # Add the corrections to the nutation in obliquity and longitude.
     Δϵ_1980 += δΔϵ_1980
@@ -196,10 +196,10 @@ function r_teme_to_mod(
     # [0,2π]°.
     #
     # The parameters here were updated as stated in the errata [2].
-    T_TT = (JD_TT - JD_J2000) / 36525
+    t_tt = (jd_tt - JD_J2000) / 36525
     r    = 360
     Ω_m  = @evalpoly(
-        T_TT,
+        t_tt,
         125.04452222,
         -5r - 134.1362608,
         0.0020708,
@@ -210,24 +210,24 @@ function r_teme_to_mod(
     # Compute the equation of Equinoxes.
     #
     # According to [2], the constant unit before `sin(2Ω_m)` is also in [rad].
-    Eq_equinox1982 = Δψ_1980*cos(mϵ_1980) +
+    Eq_equinox1982 = Δψ_1980 * cos(mϵ_1980) +
         (0.002640sin(1Ω_m) + 0.000063sin(2Ω_m)) * π / 648000
 
     # Compute the rotation TEME => TOD.
-    r_TOD_TEME = angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
+    r_tod_teme = angle_to_rot(T, -Eq_equinox1982, 0, 0, :ZYX)
 
     # Compute the rotation TOD => MOD.
-    r_MOD_TOD = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
+    r_mod_tod = angle_to_rot(T, ϵ_1980, Δψ_1980, -mϵ_1980, :XZX)
 
     # Return the full rotation.
-    return compose_rotation(r_TOD_TEME, r_MOD_TOD)
+    return compose_rotation(r_tod_teme, r_mod_tod)
 end
 
 """
-    r_mod_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_mod_to_teme([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the Mean of Date (MOD) frame with the True
-Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time].
+Equator Mean Equinox (TEME) frame at the Julian Day `jd_tt` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
 233). Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually
@@ -248,27 +248,27 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_mod_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_mod_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_mod_to_teme(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_mod_to_teme(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_mod_to_teme(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
-    return inv_rotation(r_teme_to_mod(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+    return inv_rotation(r_teme_to_mod(T, jd_tt, δΔϵ_1980, δΔψ_1980))
 end
 
 #                                TEME <=> GCRF
 # ==============================================================================
 
 """
-    r_teme_to_gcrf([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_teme_to_gcrf([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `JD_TT`
+the Geocentric Celestial Reference Frame (GCRF) at the Julian Day `jd_tt`
 [Terrestrial Time]. This algorithm uses the IAU-76/FK5 theory and TEME
 definition in **[1]**(p. 233). Notice that one can provide corrections for the
 nutation in obliquity (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad]
@@ -294,31 +294,31 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_teme_to_gcrf(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_teme_to_gcrf(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_teme_to_gcrf(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_teme_to_gcrf(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_teme_to_gcrf(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
     # Compute the rotation TEME => MOD.
-    r_MOD_TEME  = r_teme_to_mod(T, JD_TT, δΔϵ_1980, δΔψ_1980)
+    r_mod_teme  = r_teme_to_mod(T, jd_tt, δΔϵ_1980, δΔψ_1980)
 
     # Compute the rotation MOD => GCRF.
-    r_GCRF_MOD = r_mod_to_gcrf_fk5(T, JD_TT)
+    r_gcrf_mod = r_mod_to_gcrf_fk5(T, jd_tt)
 
     # Return the full rotation.
-    return compose_rotation(r_MOD_TEME, r_GCRF_MOD)
+    return compose_rotation(r_mod_teme, r_gcrf_mod)
 end
 
 """
-    r_gcrf_to_teme([T,] JD_TT::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
+    r_gcrf_to_teme([T,] jd_tt::Number [, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0])
 
 Compute the rotation that aligns the GCRF frame with the True Equator Mean
-Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial Time]. This
+Equinox (TEME) frame at the Julian Day `jd_tt` [Terrestrial Time]. This
 algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p. 233).
 Notice that one can provide corrections for the nutation in obliquity
 (`δΔϵ_1980`) [rad] and in longitude (`δΔψ_1980`) [rad] that are usually obtained
@@ -344,27 +344,27 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function r_gcrf_to_teme(JD_TT::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
-    return r_gcrf_to_teme(DCM, JD_TT, δΔϵ_1980, δΔψ_1980)
+function r_gcrf_to_teme(jd_tt::Number, δΔϵ_1980::Number = 0, δΔψ_1980::Number = 0)
+    return r_gcrf_to_teme(DCM, jd_tt, δΔϵ_1980, δΔψ_1980)
 end
 
 function r_gcrf_to_teme(
     T::Type,
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_1980::Number = 0,
     δΔψ_1980::Number = 0
 )
-    return inv_rotation(r_teme_to_gcrf(T, JD_TT, δΔϵ_1980, δΔψ_1980))
+    return inv_rotation(r_teme_to_gcrf(T, jd_tt, δΔϵ_1980, δΔψ_1980))
 end
 
 #                                 TEME <=> PEF
 # ==============================================================================
 
 """
-    r_teme_to_pef([T,] JD_TT::Number)
+    r_teme_to_pef([T,] jd_tt::Number)
 
 Compute the rotation that aligns the True Equator Mean Equinox (TEME) frame with
-the Pseudo-Earth Fixed (PEF) frame at the Julian Day `JD_TT` [Terrestrial Time].
+the Pseudo-Earth Fixed (PEF) frame at the Julian Day `jd_tt` [Terrestrial Time].
 This algorithm uses the IAU-76/FK5 theory and TEME definition in **[1]**(p.
 233).
 
@@ -383,21 +383,21 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-r_teme_to_pef(JD_UT1::Number) = r_teme_to_pef(DCM, JD_UT1)
+r_teme_to_pef(jd_ut1::Number) = r_teme_to_pef(DCM, jd_ut1)
 
-function r_teme_to_pef(T::Type, JD_UT1::Number)
+function r_teme_to_pef(T::Type, jd_ut1::Number)
     # Compute the Greenwich Mean Sidereal Time.
-    θ_gmst = jd_to_gmst(JD_UT1)
+    θ_gmst = jd_to_gmst(jd_ut1)
 
     # Compute the rotation.
     return angle_to_rot(T, θ_gmst, 0, 0, :ZYX)
 end
 
 """
-    r_pef_to_teme([T,] JD_TT::Number)
+    r_pef_to_teme([T,] jd_tt::Number)
 
 Compute the rotation that aligns the Pseudo-Earth Fixed (PEF) frame with the
-True Equator Mean Equinox (TEME) frame at the Julian Day `JD_TT` [Terrestrial
+True Equator Mean Equinox (TEME) frame at the Julian Day `jd_tt` [Terrestrial
 Time]. This algorithm uses the IAU-76/FK5 theory and TEME definition in
 **[1]**(p. 233).
 
@@ -416,5 +416,5 @@ representation is selected by the optional parameter `T`.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-r_pef_to_teme(JD_UT1::Number) = r_pef_to_teme(DCM, JD_UT1)
-r_pef_to_teme(T::Type, JD_UT1::Number) = inv_rotation(r_teme_to_pef(T, JD_UT1))
+r_pef_to_teme(jd_ut1::Number) = r_pef_to_teme(DCM, jd_ut1)
+r_pef_to_teme(T::Type, jd_ut1::Number) = inv_rotation(r_teme_to_pef(T, jd_ut1))
