@@ -45,7 +45,7 @@ export nutation_fk5
 #
 ################################################################################
 
-const nut_coefs_1980 = [
+const NUT_COEFS_1980 = [
   # Notation used in [1, p. 226].
   #
   # an1  an2  an3  an4  an5        Ai            Bi         Ci            Di
@@ -162,9 +162,9 @@ const nut_coefs_1980 = [
 ################################################################################
 
 """
-    nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
+    nutation_fk5(jd_tt::Number, n_max::Number = 106, nut_coefs_1980::Matrix = NUT_COEFS_1980)
 
-Compute the nutation parameters at the Julian Day `JD_TT` [Terrestrial Time]
+Compute the nutation parameters at the Julian Day `jd_tt` [Terrestrial Time]
 using the 1980 IAU Theory of Nutation. The coefficients are `nut_coefs_1980`
 that must be a matrix in which each line has the following syntax **[1]**(p.
 1043):
@@ -187,7 +187,11 @@ defaults to 106.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix = nut_coefs_1980)
+function nutation_fk5(
+    jd_tt::Number,
+    n_max::Number = 106,
+    nut_coefs_1980::Matrix = NUT_COEFS_1980
+)
     # Check inputs.
     if n_max > 106
         @warn("The maximum number of coefficients to compute nutation using IAU-76/FK5 theory is 106.")
@@ -197,8 +201,8 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
         n_max = 106
     end
 
-    # Compute the Julian Centuries from `JD_TT`.
-    T_TT = (JD_TT - JD_J2000) / 36525
+    # Compute the Julian Centuries from `jd_tt`.
+    t_tt = (jd_tt - JD_J2000) / 36525
 
     # Auxiliary variables
     # ===================
@@ -209,7 +213,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     # ==============================
 
     # Compute the mean obliquity of the ecliptic [°].
-    mϵ_1980 = @evalpoly(T_TT, 23.439291, -0.0130042, -1.64e-7, +5.04e-7)
+    mϵ_1980 = @evalpoly(t_tt, 23.439291, -0.0130042, -1.64e-7, +5.04e-7)
 
     # Reduce to the interval [0, 2π]°.
     mϵ_1980 = mod(mϵ_1980, 360) * d2r
@@ -224,7 +228,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     r = 360
 
     M_m = @evalpoly(
-        T_TT,
+        t_tt,
         +134.96298139,
         +(1325r + 198.8673981),
         +0.0086972,
@@ -233,7 +237,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     M_m = mod(M_m, 360) * d2r
 
     M_s = @evalpoly(
-        T_TT,
+        t_tt,
         +357.52772333,
         +(99r + 359.0503400),
         -0.0001603,
@@ -242,7 +246,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     M_s = mod(M_s, 360) * d2r
 
     u_Mm = @evalpoly(
-        T_TT,
+        t_tt,
         +93.27191028,
         +(1342r + 82.0175381),
         -0.0036825,
@@ -251,7 +255,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     u_Mm = mod(u_Mm, 360) * d2r
 
     D_s = @evalpoly(
-        T_TT,
+        t_tt,
         +297.85036306,
         +(1236r + 307.1114800),
         -0.0019142,
@@ -260,7 +264,7 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
     D_s = mod(D_s, 360) * d2r
 
     Ω_m = @evalpoly(
-        T_TT,
+        t_tt,
         +125.04452222,
         -(5r + 134.1362608),
         +0.0020708,
@@ -291,8 +295,8 @@ function nutation_fk5(JD_TT::Number, n_max::Number = 106, nut_coefs_1980::Matrix
 
         sin_a_pi, cos_a_pi = sincos(a_pi)
 
-        ΔΨ_1980 += (Ai + Bi * T_TT) * sin_a_pi
-        Δϵ_1980 += (Ci + Di * T_TT) * cos_a_pi
+        ΔΨ_1980 += (Ai + Bi * t_tt) * sin_a_pi
+        Δϵ_1980 += (Ci + Di * t_tt) * cos_a_pi
     end
 
     # The nutation coefficients in `nut_coefs_1980` lead to angles with unit
