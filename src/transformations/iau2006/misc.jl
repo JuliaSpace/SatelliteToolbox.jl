@@ -11,7 +11,9 @@
 # parameter is a tuple with the coefficient matrices, the second is the Julian
 # century [TT], and the rest are the fundamental arguments.
 @inline function _iau2006_sum(
-    coefs::Tuple, T_TT::Number, M_s::Number,
+    coefs::Tuple,
+    t_tt::Number,
+    M_s::Number,
     M_m::Number,
     u_Mm::Number,
     D_s::Number,
@@ -29,13 +31,13 @@
     # Result of the sum.
     r = 0.0
 
-    # Auxiliary variable to compute the powers of T_TT.
-    T_TT_power = one(T_TT)
+    # Auxiliary variable to compute the powers of t_tt.
+    t_tt_power = one(t_tt)
 
     # Number of sums.
     num_sums = length(coefs)
 
-    @inbounds for i = 1:num_sums
+    @inbounds for i in 1:num_sums
         ci = coefs[i]
 
         # Result of this sum.
@@ -59,10 +61,10 @@
         end
 
         # Accumulate in the output variable.
-        r += rp * T_TT_power
+        r += rp * t_tt_power
 
-        # Update the T_TT power for the next pass.
-        T_TT_power *= T_TT
+        # Update the t_tt power for the next pass.
+        t_tt_power *= t_tt
     end
 
     return r

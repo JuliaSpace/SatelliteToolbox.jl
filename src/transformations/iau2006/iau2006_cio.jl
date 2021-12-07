@@ -51,7 +51,7 @@ export r_cirs_to_gcrf_iau2006, r_gcrf_to_cirs_iau2006
 # ==============================================================================
 
 """
-    r_itrf_to_tirs_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
+    r_itrf_to_tirs_iau2006([T::Type,] jd_tt::Number, x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the International Terrestrial Reference Frame
 (ITRF) with the Terrestrial Intermediate Reference System (TIRS) considering the
@@ -92,27 +92,27 @@ differ.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_itrf_to_tirs_iau2006(
-    JD_TT::Number,
+    jd_tt::Number,
     x_p::Number,
     y_p::Number
 )
-    return r_itrf_to_tirs_iau2006(DCM, JD_TT, x_p, y_p)
+    return r_itrf_to_tirs_iau2006(DCM, jd_tt, x_p, y_p)
 end
 
-function r_itrf_to_tirs_iau2006(T::Type, JD_TT::Number, x_p::Number, y_p::Number)
+function r_itrf_to_tirs_iau2006(T::Type, jd_tt::Number, x_p::Number, y_p::Number)
     # Convert Julian days to Julian centuries.
-    T_TT = (JD_TT - JD_J2000) / 36525
+    t_tt = (jd_tt - JD_J2000) / 36525
 
     # Notice that this rotation has an additional one, called `sl`, from the
     # IAU-76/FK5 theory that accounts for the instantaneous prime meridian
     # called TIO locator [1, p. 212].
-    sl = (-0.000047 * π / 648000) * T_TT # [rad]
+    sl = (-0.000047 * π / 648000) * t_tt # [rad]
 
     return angle_to_rot(T, y_p, x_p, -sl, :XYZ)
 end
 
 """
-    r_tirs_to_itrf_iau2006([T::Type,] JD_TT::Number, x_p::Number, y_p::Number)
+    r_tirs_to_itrf_iau2006([T::Type,] jd_tt::Number, x_p::Number, y_p::Number)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the International Terrestrial Reference Frame (ITRF) considering the
@@ -153,21 +153,21 @@ differ.
     Microcosm Press, Hawthorn, CA, USA.
 """
 function r_tirs_to_itrf_iau2006(
-    JD_TT::Number,
+    jd_tt::Number,
     x_p::Number,
     y_p::Number
 )
-    return r_tirs_to_itrf_iau2006(DCM, JD_TT, x_p, y_p)
+    return r_tirs_to_itrf_iau2006(DCM, jd_tt, x_p, y_p)
 end
 
-function r_tirs_to_itrf_iau2006(T::Type, JD_TT::Number, x_p::Number, y_p::Number)
+function r_tirs_to_itrf_iau2006(T::Type, jd_tt::Number, x_p::Number, y_p::Number)
     # Convert Julian days to Julian centuries.
-    T_TT = (JD_TT - JD_J2000) / 36525
+    t_tt = (jd_tt - JD_J2000) / 36525
 
     # Notice that this rotation has an additional one, called `sl`, from the
     # IAU-76/FK5 theory that accounts for the instantaneous prime meridian
     # called TIO locator [1, p. 212].
-    sl = (-0.000047 * π / 648000) * T_TT # [rad]
+    sl = (-0.000047 * π / 648000) * t_tt # [rad]
 
     return angle_to_rot(T, sl, -x_p, -y_p, :ZYX)
 end
@@ -176,11 +176,11 @@ end
 # ==============================================================================
 
 """
-    r_tirs_to_cirs_iau2006([T::Type,] JD_UT1::Number)
+    r_tirs_to_cirs_iau2006([T::Type,] jd_ut1::Number)
 
 Compute the rotation that aligns the Terrestrial Intermediate Reference System
 (TIRS) with the Celestial Intermediate Reference System (CIRS) at the Julian Day
-`JD_UT1` [UT1]. This algorithm uses the IAU-2006 theory.
+`jd_ut1` [UT1]. This algorithm uses the IAU-2006 theory.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -206,26 +206,26 @@ Greenwich meridian along the equator of the Celestial Intermediate Pole (CIP)
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-r_tirs_to_cirs_iau2006(JD_UT1::Number) = r_tirs_to_cirs_iau2006(DCM, JD_UT1)
+r_tirs_to_cirs_iau2006(jd_ut1::Number) = r_tirs_to_cirs_iau2006(DCM, jd_ut1)
 
-function r_tirs_to_cirs_iau2006(T::Type, JD_UT1::Number)
+function r_tirs_to_cirs_iau2006(T::Type, jd_ut1::Number)
     # In this theory, the rotation of Earth is taken into account by the Earth
     # Rotation Angle, which is the angle between the Conventional International
     # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
     # is a reference meridian on Earth that is located about 100m away from
     # Greenwich meridian along the equator of the Celestial Intermediate Pole
     # (CIP) [1].
-    θ_era = 2π * (0.7790572732640 + 1.00273781191135448 * (JD_UT1 - JD_J2000))
+    θ_era = 2π * (0.7790572732640 + 1.00273781191135448 * (jd_ut1 - JD_J2000))
 
     return angle_to_rot(T, -θ_era, 0, 0, :ZXY)
 end
 
 """
-    r_cirs_to_tirs_iau2006([T::Type,] JD_UT1::Number)
+    r_cirs_to_tirs_iau2006([T::Type,] jd_ut1::Number)
 
 Compute the rotation that aligns the Celestial Intermediate Reference System
 (CIRS) with the Terrestrial Intermediate Reference System (TIRS) at the Julian
-Day `JD_UT1` [UT1]. This algorithm uses the IAU-2006 theory.
+Day `jd_ut1` [UT1]. This algorithm uses the IAU-2006 theory.
 
 The rotation type is described by the optional variable `T`. If it is `DCM`,
 then a DCM will be returned. Otherwise, if it is `Quaternion`, then a Quaternion
@@ -251,16 +251,16 @@ Pole (CIP) **[1]**.
 - **[1]**: Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
     Microcosm Press, Hawthorn, CA, USA.
 """
-r_cirs_to_tirs_iau2006(JD_UT1::Number) = r_cirs_to_tirs_iau2006(DCM, JD_UT1)
+r_cirs_to_tirs_iau2006(jd_ut1::Number) = r_cirs_to_tirs_iau2006(DCM, jd_ut1)
 
-function r_cirs_to_tirs_iau2006(T::Type, JD_UT1::Number)
+function r_cirs_to_tirs_iau2006(T::Type, jd_ut1::Number)
     # In this theory, the rotation of Earth is taken into account by the Earth
     # Rotation Angle, which is the angle between the Conventional International
     # Origin (CIO) and the Terrestrial Intermediate Origin (TIO) [1]. The latter
     # is a reference meridian on Earth that is located about 100m away from
     # Greenwich meridian along the equator of the Celestial Intermediate Pole
     # (CIP) [1].
-    θ_era = 2π * (0.7790572732640 + 1.00273781191135448 * (JD_UT1 - JD_J2000))
+    θ_era = 2π * (0.7790572732640 + 1.00273781191135448 * (jd_ut1 - JD_J2000))
 
     return angle_to_rot(T, θ_era, 0, 0, :ZXY)
 end
@@ -269,14 +269,14 @@ end
 # ==============================================================================
 
 """
-    r_cirs_to_gcrf_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
+    r_cirs_to_gcrf_iau2006([T::Type,] jd_tt::Number, dx::Number = 0, dy::Number = 0)
 
 Compute the rotation that aligns the Celestial Intermediate Reference System
 (CIRS) with the Geocentric Celestial Reference Frame (GCRF) at the Julian Day
-`JD_TT` [TT] and considering the IERS EOP Data `dX` [rad] and `dY` [rad] \\(see
+`jd_tt` [TT] and considering the IERS EOP Data `dx` [rad] and `dy` [rad] \\(see
 [`get_iers_eop`](@ref)). This algorithm uses the IAU-2006 theory.
 
-The IERS EOP Data `dX` and `dY` accounts for the free-core nutation and time
+The IERS EOP Data `dx` and `dy` accounts for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
 to the GCRF.
 
@@ -290,61 +290,61 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the CIRS frame with the GCRF frame. The rotation
 representation is selected by the optional parameter `T`.
 """
-function r_cirs_to_gcrf_iau2006(JD_TT::Number, dX::Number = 0, dY::Number = 0)
-    return r_cirs_to_gcrf_iau2006(DCM, JD_TT, dX, dY)
+function r_cirs_to_gcrf_iau2006(jd_tt::Number, dx::Number = 0, dy::Number = 0)
+    return r_cirs_to_gcrf_iau2006(DCM, jd_tt, dx, dy)
 end
 
 function r_cirs_to_gcrf_iau2006(
     ::Type{DCM},
-    JD_TT::Number,
-    dX::Number = 0,
-    dY::Number = 0
+    jd_tt::Number,
+    dx::Number = 0,
+    dy::Number = 0
 )
     # Compute the rotations to obtain the Celestial Intermediate Origin (CIO).
-    X, Y, s = cio_iau2006(JD_TT)
+    x, y, s = cio_iau2006(jd_tt)
 
     # Add the corrections.
-    X += dX
-    Y += dY
+    x += dx
+    y += dy
 
     # Auxiliary variables.
-    X² = X^2
-    Y² = Y^2
-    XY = X * Y
+    x² = x^2
+    y² = y^2
+    xy = x * y
 
     # Compute the rotation matrix
     # ==========================================================================
 
     # This is the approximate value for:
     #
-    #   a = 1/(1 + cos(d)), d = atan( sqrt( ( X^2 + Y^2 )/( 1 - X^2 - Y^2 ) ) )
-    a = 1 / 2 + 1 / 8 * (X² + Y²)
+    #   a = 1/(1 + cos(d)), d = atan( sqrt( ( x^2 + y^2 )/( 1 - x^2 - y^2 ) ) )
+    a = 1 / 2 + 1 / 8 * (x² + y²)
 
-    D = DCM(1 - a * X²,    -a * XY, X,
-               -a * XY, 1 - a * Y², Y,
-                    -X,        -Y , 1 - a * (X² + Y²))'
+    D = DCM(1 - a * x²,    -a * xy, x,
+               -a * xy, 1 - a * y², y,
+                    -x,        -y , 1 - a * (x² + y²))'
 
     return D * angle_to_dcm(s, :Z)
 end
 
 function r_cirs_to_gcrf_iau2006(
     ::Type{Quaternion},
-    JD_TT::Number,
-    dX::Number = 0,
-    dY::Number = 0
+    jd_tt::Number,
+    dx::Number = 0,
+    dy::Number = 0
 )
-    return dcm_to_quat(r_cirs_to_gcrf_iau2006(DCM, JD_TT, dX, dY))
+    return dcm_to_quat(r_cirs_to_gcrf_iau2006(DCM, jd_tt, dx, dy))
 end
 
 """
-    r_gcrf_to_cirs_iau2006([T::Type,] JD_TT::Number, dX::Number = 0, dY::Number = 0)
+    r_gcrf_to_cirs_iau2006([T::Type,] jd_tt::Number, dx::Number = 0, dy::Number = 0)
 
 Compute the rotation that aligns the Geocentric Celestial Reference Frame (GCRF)
 with the Celestial Intermediate Reference System (CIRS) at the Julian Day
-`JD_TT` [TT] and considering the IERS EOP Data `dX` [rad] and `dY` [rad] \\(see
+`jd_tt` [TT] and considering the IERS EOP Data `dx` [rad] and `dy` [rad] \\(see
 [`get_iers_eop`](@ref)). This algorithm uses the IAU-2006 theory.
 
-The IERS EOP Data `dX` and `dY` accounts for the free-core nutation and time
+The IERS EOP Data `dx` and `dy` accounts for the free-core nutation and time
 dependent effects of the Celestial Intermediate Pole (CIP) position with respect
 to the GCRF.
 
@@ -358,48 +358,48 @@ will be returned. In case this parameter is omitted, then it falls back to
 The rotation that aligns the GCRF frame with the CIRS frame. The rotation
 representation is selected by the optional parameter `T`.
 """
-function r_gcrf_to_cirs_iau2006(JD_TT::Number, dX::Number = 0, dY::Number = 0)
-    return r_gcrf_to_cirs_iau2006(DCM, JD_TT, dX, dY)
+function r_gcrf_to_cirs_iau2006(jd_tt::Number, dx::Number = 0, dy::Number = 0)
+    return r_gcrf_to_cirs_iau2006(DCM, jd_tt, dx, dy)
 end
 
 function r_gcrf_to_cirs_iau2006(
     ::Type{DCM},
-    JD_TT::Number,
-    dX::Number = 0,
-    dY::Number = 0
+    jd_tt::Number,
+    dx::Number = 0,
+    dy::Number = 0
 )
     # Compute the rotations to obtain the Celestial Intermediate Origin (CIO).
-    X, Y, s = cio_iau2006(JD_TT)
+    x, y, s = cio_iau2006(jd_tt)
 
     # Add the corrections.
-    X += dX
-    Y += dY
+    x += dx
+    y += dy
 
     # Auxiliary variables.
-    X² = X^2
-    Y² = Y^2
-    XY = X * Y
+    x² = x^2
+    y² = y^2
+    xy = x * y
 
     # Compute the rotation matrix
     # ==========================================================================
 
     # This is the approximate value for:
     #
-    #   a = 1/(1 + cos(d)), d = atan( sqrt( ( X^2 + Y^2 )/( 1 - X^2 - Y^2 ) ) )
-    a = 1 / 2 + 1 / 8 * (X² + Y²)
+    #   a = 1/(1 + cos(d)), d = atan( sqrt( ( x^2 + y^2 )/( 1 - x^2 - y^2 ) ) )
+    a = 1 / 2 + 1 / 8 * (x² + y²)
 
-    D = DCM(1 - a * X²,    -a * XY, X,
-               -a * XY, 1 - a * Y², Y,
-                   -X ,        -Y , 1 - a * (X² + Y²))
+    D = DCM(1 - a * x²,    -a * xy, x,
+               -a * xy, 1 - a * y², y,
+                   -x ,        -y , 1 - a * (x² + y²))
 
     return angle_to_dcm(-s, :Z) * D
 end
 
 function r_gcrf_to_cirs_iau2006(
     ::Type{Quaternion},
-    JD_TT::Number,
-    dX::Number = 0,
-    dY::Number = 0
+    jd_tt::Number,
+    dx::Number = 0,
+    dy::Number = 0
 )
-    return dcm_to_quat(r_gcrf_to_cirs_iau2006(DCM, JD_TT, dX, dY))
+    return dcm_to_quat(r_gcrf_to_cirs_iau2006(DCM, jd_tt, dx, dy))
 end

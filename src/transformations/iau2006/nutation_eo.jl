@@ -27,21 +27,21 @@
 export mean_obliquity_iau2006, nutation_eo_iau2006
 
 """
-    mean_obliquity_iau2006(JD_TT::Number)
+    mean_obliquity_iau2006(jd_tt::Number)
 
 Compute the mean obliquity of the ecliptic [rad] using the equinox-based
-IAU-2006 theory in the Julian day `JD_TT` [Terrestiral Time].
+IAU-2006 theory in the Julian day `jd_tt` [Terrestiral Time].
 
-The algorithm was obtained in **[3]**.
+The algorithm was obtained in **[1]**.
 
 # Reference
 
-- **[3]**: Wallace, P. T., Capitaine, N (2006). Precession-nutation procedures
+- **[1]**: Wallace, P. T., Capitaine, N (2006). Precession-nutation procedures
     consistent with IAU 2006 resolutions. Astronomy & Astrophysics.
 """
-function mean_obliquity_iau2006(JD_TT::Number)
-    # Compute the Julian Centuries from `JD_TT`.
-    T_TT = (JD_TT - JD_J2000) / 36525
+function mean_obliquity_iau2006(jd_tt::Number)
+    # Compute the Julian Centuries from `jd_tt`.
+    t_tt = (jd_tt - JD_J2000) / 36525
 
     # Auxiliary variables
     # ===================
@@ -55,10 +55,10 @@ function mean_obliquity_iau2006(JD_TT::Number)
 
     # Compute the mean obliquity of the ecliptic [s].
 
-    # NOTE: This equation is wrong in [1](p. 216, eq. 3-68)! The one used here
-    # was obtained in [3].
+    # NOTE: This equation is wrong in [1](p. 216, eq. 3-68)!
+    # The one used here was obtained in [3].
     mϵ_2000 = @evalpoly(
-        T_TT,
+        t_tt,
         +84381.406,
         -46.836769,
         -0.0001831,
@@ -74,28 +74,28 @@ function mean_obliquity_iau2006(JD_TT::Number)
 end
 
 """
-    nutation_eo_iau2006(JD_TT::Number)
+    nutation_eo_iau2006(jd_tt::Number)
 
 Compute the nutation parameters and the Equation of Origins (EO) at the Julian
-Day `JD_TT` [TT] using the equinox-based 2006 IAU Theory of Nutation. Notice
+Day `jd_tt` [TT] using the equinox-based 2006 IAU Theory of Nutation. Notice
 that one can provide corrections for the nutation in obliquity (`δΔϵ_2000`)
 [rad] and in longitude (`δΔψ_2000`) [rad] that are usually obtained from IERS
 EOP Data (see [`get_iers_eop`](@ref)).
 
 # Returns
 
-* The mean obliquity of the ecliptic [rad].
-* The nutation in obliquity of the ecliptic [rad].
-* The nutation in longitude [rad].
-* The Equation of Origins (EO) [rad].
+- The mean obliquity of the ecliptic [rad].
+- The nutation in obliquity of the ecliptic [rad].
+- The nutation in longitude [rad].
+- The Equation of Origins (EO) [rad].
 """
 function nutation_eo_iau2006(
-    JD_TT::Number,
+    jd_tt::Number,
     δΔϵ_2000::Number = 0,
     δΔΨ_2000::Number = 0
 )
-    # Compute the Julian Centuries from `JD_TT`.
-    T_TT = (JD_TT - JD_J2000) / 36525
+    # Compute the Julian Centuries from `jd_tt`.
+    t_tt = (jd_tt - JD_J2000) / 36525
 
     # Auxiliary variables
     # ===================
@@ -111,25 +111,25 @@ function nutation_eo_iau2006(
     # =====================
 
     # Luni-solar part.
-    M_s, M_m, u_Mm, D_s, Ω_m = luni_solar_args_iau2006(JD_TT)
+    M_s, M_m, u_Mm, D_s, Ω_m = luni_solar_args_iau2006(jd_tt)
 
     # Planetary part.
-    λ_M☿, λ_M♀, λ_Me, λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ = planetary_args_iau2006(JD_TT)
+    λ_M☿, λ_M♀, λ_Me, λ_M♂, λ_M♃, λ_M♄, λ_M⛢, λ_M♆, p_λ = planetary_args_iau2006(jd_tt)
 
     # Mean obliquity of the ecliptic
     # ==============================
 
-    mϵ_2000 = mean_obliquity_iau2006(JD_TT)
+    mϵ_2000 = mean_obliquity_iau2006(jd_tt)
 
     # Nutation in the obliquity
     # ==========================================================================
 
     Δϵ_2000 = _iau2006_sum(
         (
-            coefs_iau2006_nut_obl0,
-            coefs_iau2006_nut_obl1
+            COEFS_IAU2006_NUT_OBL0,
+            COEFS_IAU2006_NUT_OBL1
         ),
-        T_TT,
+        t_tt,
         M_s,
         M_m,
         u_Mm,
@@ -154,10 +154,10 @@ function nutation_eo_iau2006(
 
     ΔΨ_2000 = _iau2006_sum(
         (
-            coefs_iau2006_nut_lon0,
-            coefs_iau2006_nut_lon1
+            COEFS_IAU2006_NUT_LON0,
+            COEFS_IAU2006_NUT_LON1
         ),
-        T_TT,
+        t_tt,
         M_s,
         M_m,
         u_Mm,
@@ -182,10 +182,10 @@ function nutation_eo_iau2006(
 
     ΔEO = _iau2006_sum(
         (
-            coefs_iau2006_EO_0,
-            coefs_iau2006_EO_1
+            COEFS_IAU2006_EO_0,
+            COEFS_IAU2006_EO_1
         ),
-        T_TT,
+        t_tt,
         M_s,
         M_m,
         u_Mm,
@@ -205,7 +205,7 @@ function nutation_eo_iau2006(
     # NOTE: This equation is wrong in [1](p. 216, eq. 3-66)! The coefficients
     # were obtained from [2] and [4](eq. 69).
     EO = @evalpoly(
-        T_TT,
+        t_tt,
         -0.014_506,
         -4612.156_534,
         -1.391_581_7,
