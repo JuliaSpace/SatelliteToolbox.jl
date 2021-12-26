@@ -449,4 +449,10 @@ end
     JDdatetime = date_to_jd(DateTime(2020, 8, 14, 12, 4, 1))
     JDnums     = date_to_jd(2020, 8, 14, 12, 4, 1)
     @test JDdatetime == JDnums
+
+    JDdatetime_ms = date_to_jd(DateTime(2020, 8, 14, 12, 4, 1, 500))
+    JDnums_ms     = date_to_jd(2020, 8, 14, 12, 4, 1.5)
+    JDdatetime_back_ms = jd_to_date(DateTime,JDnums_ms)
+    @test JDdatetime_ms ≈ JDnums_ms atol=6e-9
+    @test JDdatetime_back_ms == DateTime(2020, 8, 14, 12, 4, 1, 500)
 end

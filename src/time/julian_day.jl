@@ -126,7 +126,7 @@ function date_to_jd(dateTime::DateTime)
                     Dates.day(dateTime),
                     Dates.hour(dateTime),
                     Dates.minute(dateTime),
-                    Dates.second(dateTime))
+                    Dates.second(dateTime) + Dates.millisecond(dateTime)/1000.0 )
 end
 
 """
