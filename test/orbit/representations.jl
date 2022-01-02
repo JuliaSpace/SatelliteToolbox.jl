@@ -202,3 +202,23 @@ end
     @test orb_o.ω ≈ orb_e.ω   atol = 1e-7
     @test orb_o.f ≈ orb_e.f   atol = 1e-7
 end
+
+@testset "Issue #72 - Bug with elliptical and equatorial orbit" begin
+    a = 6674.790266053491 * 1000
+    e = 0.0055622826070485095
+    i = 0.0 |> deg2rad
+    Ω = 0.0 |> deg2rad
+    ω = 330.27258118831503 |> deg2rad
+    f = 42.80749332919855 |> deg2rad
+
+    rr, vv = kepler_to_rv(a, e, i, Ω, ω, f)
+
+    oe = rv_to_kepler(rr, vv, 0)
+
+    @test oe.a ≈ a atol = 1e-7
+    @test oe.e ≈ e atol = 1e-7
+    @test oe.i ≈ i atol = 1e-7
+    @test oe.Ω ≈ Ω atol = 1e-7
+    @test oe.ω ≈ ω atol = 1e-7
+    @test oe.f ≈ f atol = 1e-7
+end

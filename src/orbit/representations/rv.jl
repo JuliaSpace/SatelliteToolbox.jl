@@ -227,7 +227,7 @@ function rv_to_kepler(
                 cos_ω = abs(cos_ω) > 1 ? sign(cos_ω) : cos_ω
                 ω     = acos(cos_ω)
 
-                (e_i[3] < 0) && (ω = T(2π) - ω)
+                (e_i[2] < 0) && (ω = T(2π) - ω)
 
                 # True anomaly
                 # ============
