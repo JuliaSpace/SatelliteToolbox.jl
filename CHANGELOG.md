@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.4
+-------------
+
+- ![Bugfix][badge-bugfix] The conversion from RV to Keplerian elements had a bug
+  for Equatorial and elliptical orbits. (Issue [#72][gh-issue-72])
+
 Version 0.9.3
 -------------
 
@@ -459,6 +465,7 @@ Version 0.1.0
 [gh-issue-38]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/38
 [gh-issue-53]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/53
 [gh-issue-58]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/58
+[gh-issue-72]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/72
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
