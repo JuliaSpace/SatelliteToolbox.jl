@@ -137,8 +137,9 @@ function get_iers_eop_iau_1980(
     url::String = "https://datacenter.iers.org/data/csv/finals.all.csv";
     force_download = false
 )
-    _eop_iau1980 = @RemoteFile(
-        @eval($url),
+    @RemoteFile(
+        _eop_iau1980,
+        url,
         file="EOP_IAU1980.TXT",
         updates=:daily
     )
@@ -196,8 +197,9 @@ function get_iers_eop_iau_2000A(
     url::String = "https://datacenter.iers.org/data/csv/finals2000A.all.csv";
     force_download = false
 )
-    _eop_iau2000A = @RemoteFile(
-        @eval($url),
+    @RemoteFile(
+        _eop_iau2000A, 
+        url,
         file="EOP_IAU2000A.TXT",
         updates=:daily
     )
