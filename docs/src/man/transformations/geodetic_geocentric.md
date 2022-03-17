@@ -24,7 +24,7 @@ function ecef_to_geodetic(r_e::AbstractVector)
 
 which returns a tuple with:
 
-* The Geocentric latitude [rad];
+* The Geodetic latitude [rad];
 * The longitude [rad]; and
 * The altitude above the reference ellipsoid [m].
 
