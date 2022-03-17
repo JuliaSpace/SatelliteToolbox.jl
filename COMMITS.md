@@ -53,8 +53,8 @@ Notice that:
 4. All the phrases in the explanatory text **must** be punctuated.
 5. If there is an explanatory text, a blank line **must** exist between the
    short summary of changes and the explanatory text.
-6. The is no limit for the detailed explanatory text, but it must be wrap to 72
-   characters.
+6. There is no limit for the detailed explanatory text, but it must be wrap to
+   72 characters.
 
 ## Commit emojis
 
