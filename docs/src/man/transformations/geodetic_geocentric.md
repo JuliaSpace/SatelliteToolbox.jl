@@ -78,7 +78,7 @@ function geocentric_to_geodetic(ϕ_gc::Number, r::Number)
 in which a tuple with two values will be returned:
 
 * The Geodetic latitude [rad]; and
-* The altitude about the reference ellipsoid (WGS-84) [m].
+* The altitude above the reference ellipsoid (WGS-84) [m].
 
 !!! note
 
