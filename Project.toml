@@ -25,7 +25,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 Crayons = "4.0"
-Interpolations = "~0.13.3"
+Interpolations = "~0.13.3, 0.14"
 OptionalData = "0.3, 1"
 Parameters = "0.12"
 PolynomialRoots = "1"
