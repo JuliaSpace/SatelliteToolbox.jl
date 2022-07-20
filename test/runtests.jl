@@ -98,6 +98,7 @@ end
 println("")
 
 @testset "Functions related with time" begin
+     include("./time/raan.jl")
      include("./time/time.jl")
 end
 println("")

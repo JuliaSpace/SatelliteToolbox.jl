@@ -24,7 +24,7 @@
         7130.982e3,
         0.001111,
         deg2rad(98.405),
-        compute_RAAN_lt(jd₀, 22.5),
+        ltan_to_raan(jd₀, 22.5),
         deg2rad(90),
         deg2rad(10)
     )

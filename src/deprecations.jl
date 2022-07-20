@@ -7,6 +7,11 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+# Deprecations introduced in SatelliteToolbox v0.10
+# ==============================================================================
+
+@deprecate compute_RAAN_lt ltan_to_raan
+
 # Deprecations introduced in SatelliteToolbox v0.9
 # ==============================================================================
 
