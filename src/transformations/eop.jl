@@ -38,7 +38,7 @@ Download and parse the IERS EOP C04 data. The data type is specified by
 
 If `data_type` is omitted, then it defaults to `Val(:IAU1980)`.
 
-The files are downloaded using the `RemoteFile` package with daily updates.
+The files are downloaded using the `RemoteFile` package with weekly updates.
 Hence, if one desires to force a download before the scheduled time, then set
 the keyword `force_download` to `true`.
 
@@ -101,7 +101,7 @@ Get the IERS EOP C04 IAU1980 data from the URL `url`.
 If `url` is omitted, then it defaults to
 https://datacenter.iers.org/data/csv/finals.all.csv
 
-The file is downloaded using the `RemoteFile` package with daily updates. Hence,
+The file is downloaded using the `RemoteFile` package with weekly updates. Hence,
 if one desires to force a download before the scheduled time, then set the
 keyword `force_download` to `true`.
 
@@ -141,7 +141,7 @@ function get_iers_eop_iau_1980(
         _eop_iau1980,
         url,
         file="EOP_IAU1980.TXT",
-        updates=:daily
+        updates=:thursdays
     )
 
     download(_eop_iau1980; force = force_download, force_update = true)
@@ -161,7 +161,7 @@ Get the IERS EOP C04 IAU2000A data from the URL `url`.
 If `url` is omitted, then it defaults to
 https://datacenter.iers.org/data/csv/finals2000A.all.csv.
 
-The file is downloaded using the `RemoteFile` package with daily updates. Hence,
+The file is downloaded using the `RemoteFile` package with weekly updates. Hence,
 if one desires to force a download before the scheduled time, then set the
 keyword `force_download` to `true`.
 
@@ -198,10 +198,10 @@ function get_iers_eop_iau_2000A(
     force_download = false
 )
     @RemoteFile(
-        _eop_iau2000A, 
+        _eop_iau2000A,
         url,
         file="EOP_IAU2000A.TXT",
-        updates=:daily
+        updates=:thursdays
     )
 
     download(_eop_iau2000A; force = force_download, force_update = true)
@@ -422,7 +422,6 @@ The algorithm was obtained from **[1]**(eq. 5.25) and
     Reference System and the Geocentric Celestial Reference System. IERS
     Technical Note No. 36, Chapter 5.
 - **[2]**: ftp://hpiers.obspm.fr/eop-pc/models/uai2000.package
-
 """
 function deps_dpsi(eop_iau2000a::EOPData_IAU2000A, JD::Number)
     # Constants.
