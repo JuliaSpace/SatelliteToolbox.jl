@@ -1,12 +1,14 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions related Data and Time conversion.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
@@ -20,7 +22,7 @@
 # Remarks
 #
 # Information about the Julian Day obtained from [2] (Accessed on 2018-04-11).
-# ============================================================================
+# ==============================================================================
 #
 # The Julian Day Count is a uniform count of days from a remote epoch in the
 # past (-4712 January 1, 12 hours Greenwich Mean Time (Julian proleptic
@@ -44,7 +46,7 @@
 # Indiction Cycle (a Roman Taxation Cycle) and the 28-year Solar Cycle (the
 # length of time for the old Julian Calendar to repeat exactly).
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export date_to_jd, jd_to_date
 
@@ -61,8 +63,11 @@ Day.
 
 # Remarks
 
-The algorithm was obtained from \\[2] (Accessed on 2018-04-11).
+The algorithm was obtained from \\[1] (accessed on 2022-07-20).
 
+# References
+
+- **[1]**: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
 """
 function date_to_jd(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, s::Number)
     # Check the input.
@@ -90,17 +95,17 @@ function date_to_jd(Y::Integer, M::Integer, D::Integer, h::Integer, m::Integer, 
         M += 12
     end
 
-    a = div(Y,100)
-    b = div(a,4)
-    c = 2-a+b
-    e = floor(Integer,365.25*(Y+4716))
-    f = floor(Integer,30.6001*(M+1))
+    a = div(Y, 100)
+    b = div(a, 4)
+    c = 2 - a + b
+    e = floor(Integer, 365.25 * (Y + 4716))
+    f = floor(Integer, 30.6001 * (M + 1))
 
     # Compute the Julian Day considering the time of day.
     #
     # Notice that the algorithm in [2] always return the Julian day at 00:00
     # GMT.
-    c+D+e+f-1524.5 + ((h*60 + m)*60 + s)/86400
+    return c + D + e + f - 1524.5 + ((60h + m) * 60 + s) / 86400
 end
 
 """
@@ -110,8 +115,14 @@ Convert the date `date` to Julian Day.
 
 """
 function date_to_jd(date::Date)
-    return date_to_jd(Dates.year(date), Dates.month(date), Dates.day(date),
-                    0, 0, 0)
+    return date_to_jd(
+        Dates.year(date),
+        Dates.month(date),
+        Dates.day(date),
+        0,
+        0,
+        0
+    )
 end
 
 """
@@ -121,12 +132,14 @@ Convert the date and time `dateTime` to Julian Day.
 
 """
 function date_to_jd(dateTime::DateTime)
-    return date_to_jd(Dates.year(dateTime),
-                    Dates.month(dateTime),
-                    Dates.day(dateTime),
-                    Dates.hour(dateTime),
-                    Dates.minute(dateTime),
-                    Dates.second(dateTime) + Dates.millisecond(dateTime)/1000.0 )
+    return date_to_jd(
+        Dates.year(dateTime),
+        Dates.month(dateTime),
+        Dates.day(dateTime),
+        Dates.hour(dateTime),
+        Dates.minute(dateTime),
+        Dates.second(dateTime) + Dates.millisecond(dateTime) / 1000
+    )
 end
 
 """
@@ -159,7 +172,7 @@ If `T` is `DateTime`, then it will return the Julia structure `DateTime`.
 
 # Remarks
 
-The algorithm was obtained from \\[2] (Accessed on 2018-04-11). In [2], there is
+The algorithm was obtained from \\[1] (accessed on 2022-07-20). In [1], there is
 the following warning:
 
 > Note: This method will not give dates accurately on the Gregorian Proleptic
@@ -167,43 +180,46 @@ the following warning:
 > backwards to years earlier than 1582. using the Gregorian leap year rules.
 > In particular, the method fails if Y<400.
 
+# References
+
+- **[1]**: https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
 """
 function jd_to_date(JD::Number)
     Q = JD + 0.5
     Z = floor(Int, Q)
-    W = div(Z - 1867216.25,36524.25)
-    X = div(W,4)
-    A = Z+1+W-X
-    B = A+1524
-    C = div(B-122.1,365.25)
-    D = floor(Integer,365.25*C)
-    E = div(B-D,30.6001)
-    F = floor(Integer,30.6001*E)
+    W = div(Z - 1867216.25, 36524.25)
+    X = div(W, 4)
+    A = Z + 1 + W - X
+    B = A + 1524
+    C = div(B - 122.1, 365.25)
+    D = floor(Int, 365.25 * C)
+    E = div(B - D, 30.6001)
+    F = floor(Int, 30.6001 * E)
 
     # In this case, `dayf` will have the fractional part of the day.
-    dayf   = B-D-F+(Q-Z)
-    monthf = (E-1 <= 12) ? E-1 : E-13
-    yearf  = ( (monthf == 1) || (monthf == 2) ) ? C-4715 : C-4716
+    dayf   = B - D - F + (Q - Z)
+    monthf = (E - 1 <= 12) ? E - 1 : E - 13
+    yearf  = ((monthf == 1) || (monthf == 2)) ? C - 4715 : C - 4716
 
     # Get the hour, minute, and second from the day.
-    hf = (dayf % 1)*24
-    mf = (hf   % 1)*60
-    sf = (mf   % 1)*60
+    hf = (dayf % 1) * 24
+    mf = (hf   % 1) * 60
+    sf = (mf   % 1) * 60
 
     # Transform everything in integers.
-    year  = floor(Integer, yearf)
-    month = floor(Integer, monthf)
-    day   = floor(Integer, dayf)
-    h     = floor(Integer, hf)
-    m     = floor(Integer, mf)
+    year  = floor(Int, yearf)
+    month = floor(Int, monthf)
+    day   = floor(Int, dayf)
+    h     = floor(Int, hf)
+    m     = floor(Int, mf)
     s     = sf
 
     # Return.
-    (year, month, day, h, m, s)
+    return year, month, day, h, m, s
 end
 
 function jd_to_date(::Type{Int}, JD::Number)
-    (year, month, day, h, m, s) = jd_to_date(JD)
+    year, month, day, h, m, s = jd_to_date(JD)
 
     # If the seconds are large than 59.5, then we must take care of the
     # rounding. In this case, we should advance a minute that can trigger an
@@ -212,15 +228,15 @@ function jd_to_date(::Type{Int}, JD::Number)
 
     if s >= 59.5
         Δs = 60.01 - s
-        (year, month, day, h, m, s) = jd_to_date(JD + Δs/86400)
+        year, month, day, h, m, s = jd_to_date(JD + Δs / 86400)
     end
 
-    (year, month, day, h, m, round(Integer,s))
+    return year, month, day, h, m, round(Int, s)
 end
 
 function jd_to_date(::Type{Date}, JD::Number)
-    (Y, M, D, ~, ~, ~) = jd_to_date(JD)
-    Date(Y,M,D)
+    Y, M, D, ~, ~, ~ = jd_to_date(JD)
+    return Date(Y, M, D)
 end
 
 jd_to_date(::Type{DateTime}, JD::Number) = julian2datetime(JD)
