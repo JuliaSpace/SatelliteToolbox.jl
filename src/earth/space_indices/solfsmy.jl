@@ -35,14 +35,14 @@ Structure to store the interpolations of the data in `SOLFSMY.TXT` file.
 
 """
 struct _SOLFSMY_Structure
-    F10::_space_indices_itp_constant{Float64}
-    F81a::_space_indices_itp_constant{Float64}
-    S10::_space_indices_itp_constant{Float64}
-    S81a::_space_indices_itp_constant{Float64}
-    M10::_space_indices_itp_constant{Float64}
-    M81a::_space_indices_itp_constant{Float64}
-    Y10::_space_indices_itp_constant{Float64}
-    Y81a::_space_indices_itp_constant{Float64}
+    F10::_space_indices_itp_constant{Float64,Vector{Float64}}
+    F81a::_space_indices_itp_constant{Float64,Vector{Float64}}
+    S10::_space_indices_itp_constant{Float64,Vector{Float64}}
+    S81a::_space_indices_itp_constant{Float64,Vector{Float64}}
+    M10::_space_indices_itp_constant{Float64,Vector{Float64}}
+    M81a::_space_indices_itp_constant{Float64,Vector{Float64}}
+    Y10::_space_indices_itp_constant{Float64,Vector{Float64}}
+    Y81a::_space_indices_itp_constant{Float64,Vector{Float64}}
 end
 
 # Remote file: SOLFSMY.TXT

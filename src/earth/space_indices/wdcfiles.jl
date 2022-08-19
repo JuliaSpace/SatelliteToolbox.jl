@@ -29,8 +29,8 @@ Structure to store the interpolations of the data in WDC files.
 
 """
 struct _WDC_Structure
-    Kp::_space_indices_itp_constant{SVector{8,Float64}}
-    Ap::_space_indices_itp_constant{SVector{8,Float64}}
+    Kp::_space_indices_itp_constant{SVector{8,Float64},Vector{SVector{8,Float64}}}
+    Ap::_space_indices_itp_constant{SVector{8,Float64},Vector{SVector{8,Float64}}}
 end
 
 # Remote files: *.wdc

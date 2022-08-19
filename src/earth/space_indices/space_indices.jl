@@ -10,18 +10,18 @@
 export get_space_index, init_space_indices
 
 # Interpolation types used in space indices.
-const _space_indices_itp_constant{T} = Interpolations.GriddedInterpolation{
-    T,
+const _space_indices_itp_constant{T1,T2} = Interpolations.GriddedInterpolation{
+    T1,
     1,
-    T,
+    T2,
     Gridded{Constant{Nearest, Throw{OnGrid}}},
     Tuple{Array{Float64,1}}
 }
 
-const _space_indices_itp_linear{T} = Interpolations.GriddedInterpolation{
-    T,
+const _space_indices_itp_linear{T1,T2} = Interpolations.GriddedInterpolation{
+    T1,
     1,
-    T,
+    T2,
     Gridded{Linear{Throw{OnGrid}}},
     Tuple{Array{Float64,1}}
 }
