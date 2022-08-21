@@ -24,7 +24,7 @@ Structure to store the interpolations of the data in `DTCFILE.TXT` file.
 
 """
 struct _DTCFILE_Structure
-    DstΔTc::_space_indices_itp_linear{Float64}
+    DstΔTc::_space_indices_itp_linear{Float64,Vector{Float64}}
 end
 
 # Remote file: DTCFILE.TXT

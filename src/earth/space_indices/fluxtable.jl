@@ -10,8 +10,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 struct _fluxtable_Structure
-    F10obs::_space_indices_itp_constant{Float64}
-    F10adj::_space_indices_itp_constant{Float64}
+    F10obs::_space_indices_itp_constant{Float64,Vector{Float64}}
+    F10adj::_space_indices_itp_constant{Float64,Vector{Float64}}
 end
 
 # Remote file: fluxtable.txt
