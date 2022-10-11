@@ -1,6 +1,41 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.10.0
+--------------
+
+- ![BREAKING][badge-breaking] The support for Julia 1.0 was dropped.
+- ![BREAKING][badge-breaking] The function `satellite_position_i` was removed.
+- ![BREAKING][badge-breaking] All the functions with analysis were removed
+  because they will be implemented in
+  [SatelliteAnalysis.jl](https://github.com/JuliaSpace/SatelliteAnalysis.jl).
+- ![Deprecation][badge-deprecation] The keyword argument `vJD` was renamed to
+  `vjd` in `rv_to_mean_elements_sgp4`.
+- ![Deprecation][badge-deprecation] The keyword argument `max_it` was renamed to
+  `max_iterations` in `rv_to_mean_elements_sgp4`.
+- ![Deprecation][badge-deprecation] The function `compute_RAAN_lt` was renamed
+  to `ltan_to_raan`.
+- ![Bugfix][badge-bugfix] The epoch was not being correctly obtained by
+  `get_epoch` in the J2 osculating propagator.
+- ![Enhancement][badge-enhancement] The maximum degree used when computing the
+  IGRF can now be selected using the keyword argument `max_degree`.
+- ![Enhancement][badge-enhancement] Many functions now supports other type of
+  floats, including the orbit propagators.
+- ![Enhancement][badge-enhancement] The keyword argument `print_debug` was added
+  to `rv_to_mean_elements_sgp4` to print debugging information.
+- ![Enhancement][badge-enhancement] The function `data_to_jd` now supports
+  milliseconds. (PR [#71][gh-pr-71])
+- ![Enhancement][badge-enhancement] The EOP remote files are now updated every
+  week.
+- ![Enhancement][badge-enhancement] Many performance improvements in the
+  functions.
+
+Version 0.9.4
+-------------
+
+- ![Bugfix][badge-bugfix] The conversion from RV to Keplerian elements had a bug
+  for Equatorial and elliptical orbits. (Issue [#72][gh-issue-72])
+
 Version 0.9.3
 -------------
 
@@ -459,6 +494,7 @@ Version 0.1.0
 [gh-issue-38]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/38
 [gh-issue-53]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/53
 [gh-issue-58]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/58
+[gh-issue-72]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/72
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
@@ -468,3 +504,4 @@ Version 0.1.0
 [gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
 [gh-pr-60]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/60
 [gh-pr-61]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/61
+[gh-pr-71]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/71
