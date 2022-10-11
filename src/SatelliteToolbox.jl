@@ -71,16 +71,6 @@ const _u = _crayon_u
 #                                    Files
 ################################################################################
 
-include("analysis/beta_angle.jl")
-include("analysis/eclipse_time.jl")
-include("analysis/lighting_conditions.jl")
-include("analysis/ground_stations.jl")
-include("analysis/ground_trace.jl")
-include("analysis/payload_optical_analysis.jl")
-include("analysis/satellite_position_countries.jl")
-include("analysis/sun_angle.jl")
-include("analysis/sun_radiation.jl")
-
 include("earth/atmospheric_models/expatmosphere/expatmosphere.jl")
 include("earth/atmospheric_models/jb2008/jb2008.jl")
 include("earth/atmospheric_models/jr1971/jr1971.jl")
