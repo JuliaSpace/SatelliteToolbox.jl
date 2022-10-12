@@ -1,17 +1,19 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Functions to convert anomalies related to the orbit.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # References
+# ==============================================================================
 #
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 export M_to_E, M_to_f
 export E_to_f, E_to_M
@@ -61,11 +63,7 @@ This function uses the Newton-Raphson algorithm to solve the Kepler's equation.
     sin_E, cos_E = sincos(E)
 
     # Check the tolerance.
-    if tol === nothing
-        δ = eps(T)
-    else
-        δ = T(tol)
-    end
+    δ = isnothing(tol) ? eps(T) : T(tol)
 
     # Check the maximum number of iterations.
     if max_iterations < 1
@@ -74,7 +72,7 @@ This function uses the Newton-Raphson algorithm to solve the Kepler's equation.
 
     # Newton-Raphson iterations.
     for i in 1:max_iterations
-        abs(E - e*sin_E - M) ≤ δ && break
+        abs(E - e * sin_E - M) ≤ δ && break
         E = E - (E - e * sin_E - M) / (1 - e * cos_E)
         sin_E, cos_E = sincos(E)
     end
