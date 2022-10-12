@@ -18,6 +18,7 @@ makedocs(
         "Earth" => Any[
             "Earth atmospheric models" => "man/earth/atmospheric_models.md",
             "Earth geomagnetic field models" => "man/earth/geomagnetic_field_models.md",
+            "Gravity models" => "man/earth/gravity_models.md",
             "Space indices" => "man/earth/space_indices.md",
            ],
         "Orbit" => Any[
