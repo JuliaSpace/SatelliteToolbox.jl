@@ -47,15 +47,15 @@ end
 ################################################################################
 
 """
-    angvel(a::T1, e::T2, i::T3, pert::Symbol = :J2) where {T1, T2, T3}
-    angvel(orb::Orbit, pert::Symbol = :J2)
+    angvel(a::T1, e::T2, i::T3; pert::Symbol = :J2) where {T1, T2, T3}
+    angvel(orb::Orbit; pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
-axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
-perturbation terms specified by the symbol `pert`. The orbit can also be
+axis `a` [m], eccentricity `e`, and inclination `i` [rad]. The orbit can also be
 specified by `orb` (see [`Orbit`](@ref)).
 
-`pert` can be:
+The keyword argument `pert` can be used to select the perturbation terms that
+will be considered in the computation. The possible values are:
 
 - `:J0`: Consider a Keplerian orbit.
 - `:J2`: Consider the perturbation terms up to J2.
@@ -63,7 +63,7 @@ specified by `orb` (see [`Orbit`](@ref)).
 
 If `pert` is omitted, then it defaults to `:J2`.
 """
-@inline function angvel(a::T1, e::T2, i::T3, pert::Symbol = :J2) where {T1, T2, T3}
+@inline function angvel(a::T1, e::T2, i::T3; pert::Symbol = :J2) where {T1, T2, T3}
     T = float(promote_type(T1, T2, T3))
 
     # Unperturbed orbit period.
@@ -123,10 +123,10 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
-@inline function angvel(orb::Orbit, pert::Symbol = :J2)
+@inline function angvel(orb::Orbit; pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return angvel(get_a(k), get_e(k), get_i(k), pert)
+    return angvel(get_a(k), get_e(k), get_i(k); pert = pert)
 end
 
 """
