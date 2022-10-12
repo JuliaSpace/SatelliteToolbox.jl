@@ -130,7 +130,7 @@ end
 end
 
 """
-    angvel_to_a(n::Number, e::Number, i::Number; μ::Number = m0, max_iter::Int = 20, pert::Symbol = :J2, tol::Number = 1e-10)
+   angvel_to_a(n::T1, e::T2, i::T3; kwargs...) where {T1 <: Number, T2 <: Number, T3 <: Number}
 
 Compute the semi-major axis that will provide an angular velocity `n` [rad/s] in
 an orbit with eccentricity `e` and inclination `i` [rad].
@@ -159,17 +159,19 @@ If `pert` is omitted, then it defaults to `:J2`.
     (**Default** = 1e-10)
 """
 function angvel_to_a(
-    n::Number,
-    e::Number,
-    i::Number;
+    n::T1,
+    e::T2,
+    i::T3;
     μ::Number = m0,
     max_iterations::Int = 20,
     pert::Symbol = :J2,
     tol::Number = 1e-10
-)
+) where {T1 <: Number, T2 <: Number, T3 <: Number}
+    T = float(promote_type(T1, T2, T3))
+
     if pert === :J0
 
-        a = (μ/n^2)^(1/3)
+        a = (T(μ) / T(n)^2)^T(1 / 3)
         return a
 
     elseif pert === :J2
@@ -194,19 +196,19 @@ function angvel_to_a(
         # semi-major axis, i.e. `a / R0`.
 
         # Auxiliary variables to solve for the semi-major axis.
-        sqrt_μ = sqrt(μ / R0^3)
-        cos_i  = cos(i)
-        K      = 3 / 4 * J2 * (sqrt(1 - e^2) * (3cos_i^2 - 1) + (5cos_i^2 - 1)) / (1 - e^2)^2
+        sqrt_μ = √(T(μ) / T(R0)^3)
+        cos_i  = cos(T(i))
+        K      = 3 // 4 * T(J2) * (√(1 - T(e)^2) * (3cos_i^2 - 1) + (5cos_i^2 - 1)) / (1 - T(e)^2)^2
 
         # Initial guess using a non-perturbed orbit.
-        a = (μ / n^2)^(1 / 3) / R0
+        a = (T(μ) / T(n)^2)^T(1 / 3) / T(R0)
 
         # Newton-Raphson algorithm.
         #
         # Notice that we will allow, at most, `max_iterations`.
         for k in 1:max_iterations
             # Auxiliary variables.
-            ap3o2  = a^(3 / 2)
+            ap3o2  = a^T(3 / 2)
             ap5o2  = ap3o2 * a # -> a^(5/2)
             ap7o2  = ap5o2 * a # -> a^(7/2)
             ap11o2 = ap7o2 * a # -> a^(11/2)
@@ -215,7 +217,7 @@ function angvel_to_a(
             res = n - sqrt_μ / ap3o2 - K * sqrt_μ / ap7o2
 
             # Compute the Jacobian of the function.
-            df = +3 / 2 * sqrt_μ / ap5o2 + 7 / 2 * K * sqrt_μ / ap11o2
+            df = 3 // 2 * sqrt_μ / ap5o2 + 7 // 2 * K * sqrt_μ / ap11o2
 
             # Compute the new estimate.
             a = a - res / df
@@ -223,19 +225,19 @@ function angvel_to_a(
             (abs(res) < tol) && break
         end
 
-        return a * R0
+        return a * T(R0)
 
     elseif pert === :J4
 
         # Auxiliary variables
-        sqrt_μ = sqrt(μ / R0^3)
-        sin_i  = sin(i)
+        sqrt_μ = √(T(μ) / T(R0)^3)
+        sin_i  = sin(T(i))
         sin_i² = sin_i^2
         sin_i⁴ = sin_i^3
-        e²     = e^2
-        e⁴     = e^4
+        e²     = T(e)^2
+        e⁴     = T(e)^4
         aux    = 1 - e²
-        saux   = sqrt(aux)
+        saux   = √aux
 
         # Get the semi-major axis using J4 perturbation theory [er].
         #
@@ -255,9 +257,9 @@ function angvel_to_a(
         # To improve algorithm stability, we will compute the normalized
         # semi-major axis, i.e. `a/R0`.
 
-        K₁ = 3 / 4 * J2 / aux^2 * ((4 - 5sin_i²) + sqrt(1 - e²) * (2 - 3sin_i²))
+        K₁ = 3 // 4 * T(J2) / aux^2 * ((4 - 5sin_i²) + √(1 - e²) * (2 - 3sin_i²))
 
-        K₂ = 3 / 512 * J2^2 / aux^4 * (
+        K₂ = 3 // 512 * T(J2)^2 / aux^4 * (
             224e² + (3040 - 144e²) * sin_i² - (3560 + 180e²) * sin_i⁴ + 1 / saux * (
                 (         320e² - 280e⁴) +
                 ( 1600 - 1568e² + 328e⁴) * sin_i² +
@@ -265,7 +267,7 @@ function angvel_to_a(
             )
         )
 
-        K₃ = 15 / 128 * J4 / aux^4 * (
+        K₃ = 15 // 128 * T(J4) / aux^4 * (
             64 + 72e² -
             (248 + 252e²) * sin_i² +
             (196 + 189e²) * sin_i⁴ +
@@ -273,14 +275,14 @@ function angvel_to_a(
         )
 
         # Initial guess using a non-perturbed orbit.
-        a = (μ / n^2)^(1 / 3) / R0
+        a = (T(μ) / T(n)^2)^T(1 / 3) / T(R0)
 
         # Newton-Raphson algorithm.
         #
         # Notice that we will allow, at most, `max_iterations`.
         for k = 1:max_iterations
             # Auxiliary variables.
-            ap3o2  = a^(3 / 2)
+            ap3o2  = a^T(3 / 2)
             ap5o2  =  ap3o2 * a  # -> a^(5/2)
             ap7o2  =  ap5o2 * a  # -> a^(7/2)
             ap9o2  =  ap7o2 * a  # -> a^(9/2)
@@ -299,7 +301,7 @@ function angvel_to_a(
             (abs(res) < tol) && break
         end
 
-        return a * R0
+        return a * T(R0)
     else
         throw(ArgumentError("The perturbation parameter $pert is not defined."))
     end
