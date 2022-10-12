@@ -70,11 +70,11 @@ If `pert` is omitted, then it defaults to `:J2`.
     n0 = sqrt(T(m0) / T(a)^3)
 
     # Perturbation computed using a Keplerian orbit.
-    if pert == :J0
+    if pert === :J0
         return n0
 
     # Perturbation computed using perturbations terms up to J2.
-    elseif pert == :J2
+    elseif pert === :J2
         # Auxiliary variables.
         cos_i² = cos(T(i))^2
         aux    = 1 - T(e)^2
@@ -86,7 +86,7 @@ If `pert` is omitted, then it defaults to `:J2`.
         return n0 + 3T(R0)^2 * T(J2) / (4p^2) * n0 * (√aux * (3cos_i² - 1) + (5cos_i² - 1))
 
     # Perturbation computed using perturbations terms J2, J4, and J2².
-    elseif pert == :J4
+    elseif pert === :J4
 
         # Auxiliary variables
         e²     = T(e)^2
@@ -167,12 +167,12 @@ function angvel_to_a(
     pert::Symbol = :J2,
     tol::Number = 1e-10
 )
-    if pert == :J0
+    if pert === :J0
 
         a = (μ/n^2)^(1/3)
         return a
 
-    elseif pert == :J2
+    elseif pert === :J2
         # Get the semi-major axis [m] that will provide the mean motion `n`
         # using perturbation terms up to J2.
         #
@@ -225,7 +225,7 @@ function angvel_to_a(
 
         return a * R0
 
-    elseif pert == :J4
+    elseif pert === :J4
 
         # Auxiliary variables
         sqrt_μ = sqrt(μ / R0^3)
@@ -324,7 +324,7 @@ If `pert` is omitted, then it defaults to `:J2`.
 """
 @inline function dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
-    if pert == :J0
+    if pert === :J0
         return 0.0
     # Perturbation computed using perturbations terms up to J2.
     elseif pert == :J2
@@ -337,7 +337,7 @@ If `pert` is omitted, then it defaults to `:J2`.
         # Perturbation of the argument of perigee.
         return 3R0^2 * J2 / (4p^2) * n0 * (5cos(i)^2 - 1)
 
-    elseif pert == :J4
+    elseif pert === :J4
         # Auxiliary variables
         e²     = e^2
         e⁴     = e^4
@@ -389,10 +389,10 @@ If `pert` is omitted, then it defaults to `:J2`.
 """
 @inline function draan(a::Number, e::Number, i::Number, pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
-    if pert == :J0
+    if pert === :J0
         return 0.0
     # Perturbation computed using perturbations terms up to J2.
-    elseif pert == :J2
+    elseif pert === :J2
         # Semi-lactum rectum.
         p = a * (1 - e^2)
 
@@ -403,7 +403,7 @@ If `pert` is omitted, then it defaults to `:J2`.
         return -3 / 2 * R0^2 / (p^2) * n0 * J2 * cos(i)
 
     # Perturbation computed using perturbation terms J2, J4, and J2².
-    elseif pert == :J4
+    elseif pert === :J4
         # Auxiliary variables
         sin_i, cos_i = sincos(i)
         sin_i²       = sin_i^2
