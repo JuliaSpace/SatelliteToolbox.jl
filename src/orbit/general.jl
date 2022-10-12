@@ -130,16 +130,16 @@ end
 end
 
 """
-    angvel_to_a(n::Number, e::Number, i::Number, pert::Symbol = :J2; μ::Number = m0, max_iter::Int = 20, tol::Number = 1e-10)
+    angvel_to_a(n::Number, e::Number, i::Number; μ::Number = m0, max_iter::Int = 20, pert::Symbol = :J2, tol::Number = 1e-10)
 
 Compute the semi-major axis that will provide an angular velocity `n` [rad/s] in
-an orbit with eccentricity `e` and inclination `i` [rad], using the perturbation
-terms specified by the symbol `pert`.
+an orbit with eccentricity `e` and inclination `i` [rad].
 
 Notice that the angular velocity `n` is related to the nodal period, *i.e.* the
 time between two consecutive passages by the ascending node.
 
-`pert` can be:
+The keyword argument `pert` can be used to select the perturbation terms that
+will be considered in the computation. The possible values are:
 
 - `:J0`: Consider a Keplerian orbit.
 - `:J2`: Consider the perturbation terms up to J2.
@@ -149,19 +149,22 @@ If `pert` is omitted, then it defaults to `:J2`.
 
 # Keyword
 
-- `μ`: Standard gravitational parameter for Earth [m^3/s^2].
+- `μ::Number`: Standard gravitational parameter for Earth [m^3/s^2].
     (**Default** = `m0`)
-- `max_iter`: Maximum number of iterations allowed in the Newton-Raphson
-    algorithm. (**Default** = 20)
-- `tol`: Tolerance to stop the Newton-Raphson algorithm. (**Default** = 1e-10)
+- `max_iterations::Int`: Maximum number of iterations allowed in the
+    Newton-Raphson algorithm. (**Default** = 20)
+- `pert::Symbol`: Symbol to select the perturbation terms that will be used.
+    (**Default**: `:J2`)
+- `tol::Number`: Tolerance to stop the Newton-Raphson algorithm.
+    (**Default** = 1e-10)
 """
 function angvel_to_a(
     n::Number,
     e::Number,
-    i::Number,
-    pert::Symbol = :J2;
+    i::Number;
     μ::Number = m0,
     max_iterations::Int = 20,
+    pert::Symbol = :J2,
     tol::Number = 1e-10
 )
     if pert == :J0
@@ -188,7 +191,7 @@ function angvel_to_a(
         #
 
         # To improve algorithm stability, we will compute the normalized
-        # semi-major axis, i.e. `a/R0`.
+        # semi-major axis, i.e. `a / R0`.
 
         # Auxiliary variables to solve for the semi-major axis.
         sqrt_μ = sqrt(μ / R0^3)
