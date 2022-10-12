@@ -313,15 +313,15 @@ function angvel_to_a(
 end
 
 """
-    dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
-    dargp(orb::Orbit, pert::Symbol = :J2)
+    dargp(a::Number, e::Number, i::Number; pert::Symbol = :J2)
+    dargp(orb::Orbit; pert::Symbol = :J2)
 
 Compute the time-derivative of the argument of perigee [rad/s] of an orbit with
-semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad], using the
-perturbation terms specified by the symbol `pert`. The orbit can also be
-specified by `orb` (see [`Orbit`](@ref)).
+semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad]. The orbit
+can also be specified by `orb` (see [`Orbit`](@ref)).
 
-`pert` can be:
+The keyword argument `pert` can be used to select the perturbation terms that
+will be considered in the computation. The possible values are:
 
 - `:J0`: Consider a Keplerian orbit.
 - `:J2`: Consider the perturbation terms up to J2.
@@ -329,17 +329,18 @@ specified by `orb` (see [`Orbit`](@ref)).
 
 If `pert` is omitted, then it defaults to `:J2`.
 """
-@inline function dargp(a::Number, e::Number, i::Number, pert::Symbol = :J2)
+@inline function dargp(a::Number, e::Number, i::Number; pert::Symbol = :J2)
     # Perturbation computed using a Keplerian orbit.
     if pert === :J0
         return 0.0
+
     # Perturbation computed using perturbations terms up to J2.
     elseif pert == :J2
         # Semi-lactum rectum.
         p = a * (1 - e^2)
 
         # Unperturbed orbit period.
-        n0 = angvel(a, e, i, :J0)
+        n0 = angvel(a, e, i; pert = :J0)
 
         # Perturbation of the argument of perigee.
         return 3R0^2 * J2 / (4p^2) * n0 * (5cos(i)^2 - 1)
@@ -358,7 +359,7 @@ If `pert` is omitted, then it defaults to `:J2`.
         p⁴     = p^4
 
         # Unperturbed orbit period.
-        n0 = angvel(a, e, i, :J0)
+        n0 = angvel(a, e, i; pert = :J0)
 
         # Perturbation of the argument of perigee.
         δω =  3 /  4  * n0 * J2   / p² * (4 - 5sin_i²) +
@@ -371,10 +372,10 @@ If `pert` is omitted, then it defaults to `:J2`.
     end
 end
 
-function dargp(orb::Orbit, pert::Symbol = :J2)
+function dargp(orb::Orbit; pert::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return dargp(get_a(k), get_e(k), get_i(k), pert)
+    return dargp(get_a(k), get_e(k), get_i(k); pert = pert)
 end
 
 """
