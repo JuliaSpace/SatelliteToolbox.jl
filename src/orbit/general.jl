@@ -161,7 +161,7 @@ function angvel_to_a(
     i::Number,
     pert::Symbol = :J2;
     μ::Number = m0,
-    max_iter::Int = 20,
+    max_iterations::Int = 20,
     tol::Number = 1e-10
 )
     if pert == :J0
@@ -200,8 +200,8 @@ function angvel_to_a(
 
         # Newton-Raphson algorithm.
         #
-        # Notice that we will allow, at most, 20 iterations.
-        for k = 1:20
+        # Notice that we will allow, at most, `max_iterations`.
+        for k in 1:max_iterations
             # Auxiliary variables.
             ap3o2  = a^(3 / 2)
             ap5o2  = ap3o2 * a # -> a^(5/2)
@@ -274,8 +274,8 @@ function angvel_to_a(
 
         # Newton-Raphson algorithm.
         #
-        # Notice that we will allow, at most, 20 iterations.
-        for k = 1:20
+        # Notice that we will allow, at most, `max_iterations`.
+        for k = 1:max_iterations
             # Auxiliary variables.
             ap3o2  = a^(3 / 2)
             ap5o2  =  ap3o2 * a  # -> a^(5/2)
