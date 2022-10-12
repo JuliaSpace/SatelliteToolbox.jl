@@ -47,7 +47,7 @@ end
 ################################################################################
 
 """
-    angvel(a::T1, e::T2, i::T3; pert::Symbol = :J2) where {T1, T2, T3}
+    angvel(a::T1, e::T2, i::T3; pert::Symbol = :J2) where {T1<:Number, T2<:Number, T3<:Number}
     angvel(orb::Orbit; pert::Symbol = :J2)
 
 Compute the angular velocity [rad/s] of an object in an orbit with semi-major
@@ -63,7 +63,12 @@ will be considered in the computation. The possible values are:
 
 If `pert` is omitted, then it defaults to `:J2`.
 """
-@inline function angvel(a::T1, e::T2, i::T3; pert::Symbol = :J2) where {T1, T2, T3}
+@inline function angvel(
+    a::T1,
+    e::T2,
+    i::T3;
+    pert::Symbol = :J2
+) where {T1<:Number, T2<:Number, T3<:Number}
     T = float(promote_type(T1, T2, T3))
 
     # Unperturbed orbit period.
@@ -109,13 +114,13 @@ If `pert` is omitted, then it defaults to `:J2`.
         #
         # in which the time-derivatives are computed as in [1, p. 692].
 
-        δω   = T( 3 /   4) * n0 * T_J2  / p² * (4 - 5sin_i²) +
-               T( 9 / 384) * n0 * T_J2² / p⁴ * (     56e² + (760 -  36e²) * sin_i² - (890 +  45e²) * sin_i⁴) -
-               T(15 / 128) * n0 * T_J4  / p⁴ * (64 + 72e² - (248 + 252e²) * sin_i² + (196 + 189e²) * sin_i⁴)
+        δω   =  3 //   4 * n0 * T_J2  / p² * (4 - 5sin_i²) +
+                9 // 384 * n0 * T_J2² / p⁴ * (     56e² + (760 -  36e²) * sin_i² - (890 +  45e²) * sin_i⁴) -
+               15 // 128 * n0 * T_J4  / p⁴ * (64 + 72e² - (248 + 252e²) * sin_i² + (196 + 189e²) * sin_i⁴)
 
-        δM_0 = T( 3 /   4) * n0 * T_J2  / p² * saux * (2 - 3sin_i²) +
-               T( 3 / 512) * n0 * T_J2² / p⁴ / saux * (320e² - 280e⁴ + (1600 - 1568e² + 328e⁴) * sin_i² + (-2096 + 1072e² +  79e⁴) * sin_i⁴) -
-               T(45 / 128) * n0 * T_J4  / p⁴ * saux * e² * (-8 + 40sin_i - 35sin_i²)
+        δM_0 =  3 //   4 * n0 * T_J2  / p² * saux * (2 - 3sin_i²) +
+                3 // 512 * n0 * T_J2² / p⁴ / saux * (320e² - 280e⁴ + (1600 - 1568e² + 328e⁴) * sin_i² + (-2096 + 1072e² +  79e⁴) * sin_i⁴) -
+               45 // 128 * n0 * T_J4  / p⁴ * saux * e² * (-8 + 40sin_i - 35sin_i²)
 
         return n0 + δω + δM_0
     else
