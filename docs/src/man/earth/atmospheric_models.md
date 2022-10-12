@@ -94,7 +94,7 @@ following fields:
 ```jldoctest
 julia> jr1971(date_to_jd(2018, 6, 19, 18, 35, 0), deg2rad(-22), deg2rad(-45), 700e3, 79, 73.5, 1.34)
 JR1971_Output{Float64}
-  nN2: Float64 2.8434980991303828e7
+  nN2: Float64 2.843498099130382e7
   nO2: Float64 174222.87498004676
   nO: Float64 1.4139107014677634e11
   nAr: Float64 8.972570981074634
@@ -253,15 +253,15 @@ Notice that:
 ```jldoctest
 julia> nrlmsise00(date_to_jd(2018, 6, 19, 18, 35, 0), 700e3, deg2rad(-22), deg2rad(-45), 73.5, 79, 5.13)
 NRLMSISE00_Output{Float64}
-  den_N: Float64 5.597834653523333e9
+  den_N: Float64 5.597834653523334e9
   den_N2: Float64 5.743312510585916e7
   den_O: Float64 1.2705655159941983e11
   den_aO: Float64 2.4185558056141124e9
-  den_O2: Float64 340464.9752380828
+  den_O2: Float64 340464.975238083
   den_H: Float64 1.2667781795293002e11
-  den_He: Float64 6.248499395447589e11
-  den_Ar: Float64 23.18462060029951
-  den_Total: Float64 7.930928885098513e-15
+  den_He: Float64 6.248499395447592e11
+  den_Ar: Float64 23.184620600299517
+  den_Total: Float64 7.930928885098514e-15
   T_exo: Float64 837.4122645268103
   T_alt: Float64 837.4119807046409
   flags: NRLMSISE00_Flags

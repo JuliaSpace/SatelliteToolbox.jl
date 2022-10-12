@@ -91,13 +91,13 @@ where:
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
-julia> dargp(7130982, 0.001111, deg2rad(98.405))
+julia> dargp(7130982.0, 0.001111, deg2rad(98.405))
 -6.082892348533058e-7
 
-julia> dargp(7130982, 0.001111, deg2rad(63.435))
+julia> dargp(7130982.0, 0.001111, deg2rad(63.435))
 -2.433253158726004e-12
 
-julia> dargp(7130982, 0.001111, deg2rad(98.405), :J0)
+julia> dargp(7130982.0, 0.001111, deg2rad(98.405), :J0)
 0.0
 ```
 
@@ -135,10 +135,10 @@ where:
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
-julia> draan(7130982, 0.001111, deg2rad(98.405))
+julia> draan(7130982.0, 0.001111, deg2rad(98.405))
 1.9909533223838115e-7
 
-julia> draan(7130982, 0.001111, deg2rad(98.405), :J0)
+julia> draan(7130982.0, 0.001111, deg2rad(98.405), :J0)
 0.0
 ```
 
@@ -170,10 +170,10 @@ where:
 * `orb` is an instance of [`Orbit`](@ref).
 
 ```jldoctest
-julia> period(7130982, 0.001111, deg2rad(98.405))/60
+julia> period(7130982.0, 0.001111, deg2rad(98.405))/60
 100.00000980636328
 
-julia> period(7130982, 0.001111, deg2rad(98.405), :J0)/60
+julia> period(7130982.0, 0.001111, deg2rad(98.405), :J0)/60
 99.88119746433748
 ```
 
