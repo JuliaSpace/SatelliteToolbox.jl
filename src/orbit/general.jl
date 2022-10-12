@@ -176,7 +176,7 @@ function angvel_to_a(
 
     if pert === :J0
 
-        a = (T(μ) / T(n)^2)^T(1 / 3)
+        a = (T(μ) / T(n)^2)^(1 // 3)
         return a
 
     elseif pert === :J2
@@ -206,14 +206,14 @@ function angvel_to_a(
         K      = 3 // 4 * T(J2) * (√(1 - T(e)^2) * (3cos_i^2 - 1) + (5cos_i^2 - 1)) / (1 - T(e)^2)^2
 
         # Initial guess using a non-perturbed orbit.
-        a = (T(μ) / T(n)^2)^T(1 / 3) / T(R0)
+        a = (T(μ) / T(n)^2)^(1 // 3) / T(R0)
 
         # Newton-Raphson algorithm.
         #
         # Notice that we will allow, at most, `max_iterations`.
         for k in 1:max_iterations
             # Auxiliary variables.
-            ap3o2  = a^T(3 / 2)
+            ap3o2  = a^(3 // 2)
             ap5o2  = ap3o2 * a # -> a^(5/2)
             ap7o2  = ap5o2 * a # -> a^(7/2)
             ap11o2 = ap7o2 * a # -> a^(11/2)
@@ -280,14 +280,14 @@ function angvel_to_a(
         )
 
         # Initial guess using a non-perturbed orbit.
-        a = (T(μ) / T(n)^2)^T(1 / 3) / T(R0)
+        a = (T(μ) / T(n)^2)^(1 // 3) / T(R0)
 
         # Newton-Raphson algorithm.
         #
         # Notice that we will allow, at most, `max_iterations`.
         for k = 1:max_iterations
             # Auxiliary variables.
-            ap3o2  = a^T(3 / 2)
+            ap3o2  = a^(3 // 2)
             ap5o2  =  ap3o2 * a  # -> a^(5/2)
             ap7o2  =  ap5o2 * a  # -> a^(7/2)
             ap9o2  =  ap7o2 * a  # -> a^(9/2)
