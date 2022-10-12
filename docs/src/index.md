@@ -19,18 +19,6 @@ of the [Forplan Satellite Simulator](https://journals.sagepub.com/doi/abs/10.117
     extensively documented using the Julia documentation system, which can be
     accessed by typing `?` followed by the function name in REPL.
 
-## Requirements
-
-* Julia >= 1.0
-* Crayons >= 4.0.0
-* Interpolations >= 0.12
-* OptionalData >= 0.3
-* Parameters >= 0.12
-* PolynomialRoots >= 0.2
-* ReferenceFrameRotations >= 0.5
-* RemoteFiles >= 0.3
-* StaticArrays >= 0.12
-
 ## Installation
 
 This package can be installed using:
