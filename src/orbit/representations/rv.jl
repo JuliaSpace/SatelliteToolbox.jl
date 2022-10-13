@@ -88,7 +88,7 @@ function kepler_to_rv(
     r_o = SVector{3, T}(r * cos_f, r * sin_f, 0)
 
     # Compute the velocity vector in the orbit plane without perturbations.
-    n = angvel(a, e, i, :J0)
+    n = angvel(a, e, i; pert = :J0)
     v_o = n * a / sqrt(1 - e^2) * SVector{3, T}(-sin_f, e + cos_f, 0)
 
     # Compute the matrix that rotates the orbit reference frame into the
