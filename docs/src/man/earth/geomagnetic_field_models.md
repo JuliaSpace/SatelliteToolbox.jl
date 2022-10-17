@@ -28,7 +28,7 @@ The `igrf` function has the following signature:
 function igrf(date::Number, [r,h]::Number, λ::Number, Ω::Number, T[, P, dP]; max_degree = 13, show_warns = true)
 ```
 
-It computes the geomagnetic field vector [nT] at the date `date` [Year A.D.] and
+It computes the geomagnetic field vector (X, Y, and Z in nT) at the date `date` [Year A.D.] and
 position (`r`, `λ`, `Ω`).
 
 The position representation is defined by `T`. If `T` is `Val(:geocentric)`,
