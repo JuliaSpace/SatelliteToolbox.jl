@@ -88,7 +88,7 @@ function rv_to_mean_elements_j2osc(
     # Initial guess of the mean elements.
     #
     # NOTE: x₁ is the previous estimate and x₂ is the current estimate.
-    x₁ = SVector{6,T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3])
+    x₁ = SVector{6, T}(r₁[1], r₁[2], r₁[3], v₁[1], v₁[2], v₁[3])
     x₂ = x₁
 
     # Number of states in the input vector.
@@ -152,8 +152,9 @@ function rv_to_mean_elements_j2osc(
 
         # Limit the correction to avoid divergence.
         for i in 1:num_states
-            if abs(δx[i] / x₁[i]) > 0.01
-                δx = setindex(δx, 0.01 * abs(x₁[i]) * sign(δx[i]), i)
+            threshold = 0.1
+            if abs(δx[i] / x₁[i]) > threshold
+                δx = setindex(δx, threshold * abs(x₁[i]) * sign(δx[i]), i)
             end
         end
 
