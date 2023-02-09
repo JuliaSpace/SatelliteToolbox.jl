@@ -63,7 +63,7 @@ function init_orbit_propagator(
     dn_o2::Number = 0,
     ddn_o6::Number = 0;
     j2_gc::J2_GravCte = j2_gc_egm08
-) where T
+)
     # Create the new Two Body propagator structure.
     j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6; j2_gc = j2_gc)
 
