@@ -50,6 +50,7 @@ println("")
 @testset "General orbit functions" verbose=true begin
     include("./orbit/general.jl")
     include("./orbit/representations.jl")
+    include("./orbit/sun_sync_orbits.jl")
 end
 println("")
 
