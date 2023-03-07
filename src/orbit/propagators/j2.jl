@@ -178,22 +178,34 @@ function j2_init(
     M_0  = f_to_M(e_0, f_0)      # .................. Initial mean anomaly [rad]
 
     # Auxiliary variables.
-    dn   = 2dn_o2            # ..... Time-derivative of the mean motion [rad/s²]
+    dn   = 2dn_o2                # . Time-derivative of the mean motion [rad/s²]
     p_0² = p_0^2
     e_0² = e_0^2
 
     sin_i_0, cos_i_0 = sincos(i_0)
     sin_i_0² = sin_i_0^2
 
-    # First-order time-derivative of the orbital elements.
+    # We need to compute the "mean" mean motion that is used to calculate the
+    # first-order time derivative of the orbital elements.
     #
-    # See [1, p 692].
+    # NOTE: Description of J2 propagator in [1, p. 691].
+    #
+    # Using the equations in [1, p. 691], we could not match the results from
+    # STK as mentioned in the issue:
+    #
+    #   https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/91
+    #
+    # After analyzing the perturbation equations, it turns out that the
+    # time-derivative depends on the mean motion instead of the unperturbed mean
+    # motion as in the algorithm 65. We can see this by looking at the algorithm
+    # in Kozai's method in [1, p. 693].
+    n̄ = n_0 * (1 + T(3 / 4) * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²))
 
-    δa   = +T(2 / 3) * al_0 * dn / n_0
-    δe   = +T(2 / 3) * (1 - e_0) * dn / n_0
-    δΩ   = -T(3 / 2) * n_0 * J2 / p_0² * cos_i_0
-    δω   = +T(3 / 4) * n_0 * J2 / p_0² * (4 - 5sin_i_0²)
-    δM_0 = +T(3 / 4) * n_0 * J2 / p_0² * sqrt(1 - e_0²) * (2 - 3sin_i_0²)
+    # First-order time-derivative of the orbital elements.
+    δa = +T(2 / 3) * al_0 * dn / n_0
+    δe = +T(2 / 3) * (1 - e_0) * dn / n_0
+    δΩ = -T(3 / 2) * n̄ * J2 / p_0² * cos_i_0
+    δω = +T(3 / 4) * n̄ * J2 / p_0² * (4 - 5sin_i_0²)
 
     # Create the output structure with the data.
     return J2_Structure{Tepoch, T}(
@@ -221,7 +233,7 @@ function j2_init(
         δe     = δe,
         δΩ     = δΩ,
         δω     = δω,
-        δM_0   = δM_0,
+        n̄      = n̄
     )
 end
 
@@ -248,7 +260,7 @@ requires an inertial frame with true equator.
 function j2!(j2d::J2_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # Unpack the variables.
     @unpack al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0, dn_o2, ddn_o6 = j2d
-    @unpack δa, δe, δΩ, δω, δM_0, j2_gc = j2d
+    @unpack δa, δe, δΩ, δω, n̄, j2_gc = j2d
     @unpack R0, μm, J2 = j2_gc
 
     # Time elapsed since epoch.
@@ -261,24 +273,12 @@ function j2!(j2d::J2_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     Ω_k  = mod(Ω_0 + δΩ * Δt, T(2π))
     ω_k  = mod(ω_0 + δω * Δt, T(2π))
 
-    # In [1, p. 692], it is mentioned that the mean anomaly must be updated
-    # considering the equation:
-    #                           .           ..
-    #                          n_0          n_0
-    #   M_k = M_0 + n_0 ⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
-    #                           2            6
-    #
-    # However, the time derivative of M_0 for perturbed orbits considering terms
-    # up to J2 is not 0. This is clear in [1, p. 652].
-    #
-    # Hence, we will use the equation:
-    #                                     .           ..
-    #                .                    n_0          n_0
-    #   M_k = M_0 + M_0 ⋅ Δt + n_0 ⋅ Δt + ---- ⋅ Δt² + ---- ⋅ Δt³
-    #                                      2            6
-    #
+    # The mean anomaly update equation can be seen in [1, p. 693]. However, we
+    # add the terms related with the time-derivative of the mean motion as in
+    # [1, p. 692].
+    M_k = mod(@evalpoly(Δt, M_0, n̄, dn_o2, ddn_o6), T(2π))
 
-    M_k = mod(@evalpoly(Δt, M_0, (n_0 + δM_0), dn_o2, ddn_o6), T(2π))
+    # Convert the mean anomaly to the true anomaly.
     f_k = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.
