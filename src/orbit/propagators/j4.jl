@@ -180,26 +180,32 @@ function j4_init(
     p_0⁴             = p_0^4
     J2²              = J2^2
 
-    # First-order time-derivative of the orbital elements.
+    # We need to compute the "mean" mean motion that is used to calculate the
+    # first-order time derivative of the orbital elements.
     #
-    # See [1, p 692].
+    # NOTE: Description of J4 propagator in [1, p. 648-653].
+    #
+    # Using the equations in [1], we could not match the results from STK. After
+    # analyzing the perturbation equations, it turns out that the
+    # time-derivative depends on the mean motion instead of the unperturbed mean
+    # motion. We can see this by looking at the algorithm in Kozai's method in
+    # [1, p. 693].
+    #
+    # Notice that using the full expression here, with the J2² and J4 terms,
+    # yields a solution with much higher error compared with STK result.
+    #
+    # TODO: This propagator still has a large error compared with STK.
+    n̄ = n_0 * (1 + T(3 / 4) * J2 / p_0² * saux * (2 - 3sin_i_0²))
 
-    δa   = -T( 2 /  3) * al_0 * dn / n_0
-    δe   = -T( 2 /  3) * (1 - e_0) * dn / n_0
-    δΩ   = -T( 3 /  2) * n_0 * J2 /p_0² * cos_i_0 +
-            T( 3 / 32) * n_0 * J2²/ p_0⁴ * cos_i_0 * (12 -  4e_0² - (80 +  5e_0²) * sin_i_0²) +
-            T(15 / 32) * n_0 * J4 / p_0⁴ * cos_i_0 * ( 8 + 12e_0² - (14 + 21e_0²) * sin_i_0²)
-
-    δω   = T( 3 /   4) * n_0 * J2  / p_0² * (4 - 5sin_i_0²) +
-           T( 9 / 384) * n_0 * J2² / p_0⁴ * (     56e_0² + (760 -  36e_0²) * sin_i_0² - (890 +  45e_0²) * sin_i_0⁴) -
-           T(15 / 128) * n_0 * J4  / p_0⁴ * (64 + 72e_0² - (248 + 252e_0²) * sin_i_0² + (196 + 189e_0²) * sin_i_0⁴)
-
-    δM_0 = T( 3 /   4) * n_0 * J2 / p_0² * saux * (2 - 3sin_i_0²) +
-           T( 3 / 512) * n_0 * J2²/ p_0⁴ / saux * (
-               (         320e_0² - 280e_0⁴) +
-               ( 1600 - 1568e_0² + 328e_0⁴) * sin_i_0² +
-               (-2096 + 1072e_0² +  79e_0⁴) * sin_i_0⁴
-           ) - T(45 / 128) * n_0 * J4 / p_0⁴ * saux * e_0² * (-8 + 40sin_i_0 - 35sin_i_0²)
+    # First-order time-derivative of the orbital elements.
+    δa = -T( 2 / 3  ) * al_0 * dn / n_0
+    δe = -T( 2 / 3  ) * (1 - e_0) * dn / n_0
+    δΩ = -T( 3 / 2  ) * n̄ * J2  / p_0² * cos_i_0 +
+          T( 3 / 32 ) * n̄ * J2² / p_0⁴ * cos_i_0 * (12 -  4e_0² - (80 +  5e_0²) * sin_i_0²) +
+          T(15 / 32 ) * n̄ * J4  / p_0⁴ * cos_i_0 * ( 8 + 12e_0² - (14 + 21e_0²) * sin_i_0²)
+    δω = +T( 3 / 4  ) * n̄ * J2  / p_0² * (4 - 5sin_i_0²) +
+          T( 9 / 384) * n̄ * J2² / p_0⁴ * (     56e_0² + (760 -  36e_0²) * sin_i_0² - (890 +  45e_0²) * sin_i_0⁴) -
+          T(15 / 128) * n̄ * J4  / p_0⁴ * (64 + 72e_0² - (248 + 252e_0²) * sin_i_0² + (196 + 189e_0²) * sin_i_0⁴)
 
     # Create the output structure with the data.
     J4_Structure{Tepoch, T}(
@@ -227,7 +233,7 @@ function j4_init(
         δe     = δe,
         δΩ     = δΩ,
         δω     = δω,
-        δM_0   = δM_0,
+        n̄      = n̄
     )
 end
 
@@ -254,7 +260,7 @@ requires an inertial frame with true equator.
 function j4!(j4d::J4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # Unpack the variables.
     @unpack epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0 = j4d
-    @unpack dn_o2, ddn_o6, j4_gc, δa, δe, δΩ, δω, δM_0 = j4d
+    @unpack dn_o2, ddn_o6, j4_gc, δa, δe, δΩ, δω, n̄ = j4d
     @unpack R0, μm, J2, J4 = j4_gc
 
     # Time elapsed since epoch.
@@ -266,7 +272,7 @@ function j4!(j4d::J4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     i_k  = i_0
     Ω_k  = mod(Ω_0 + δΩ * Δt, T(2π))
     ω_k  = mod(ω_0 + δω * Δt, T(2π))
-    M_k  = mod(M_0 + (δM_0 + n_0) * Δt, T(2π))
+    M_k  = mod(M_0 + n̄  * Δt, T(2π))
     f_k  = M_to_f(e_k, M_k)
 
     # Make sure that eccentricity is not lower than 0.

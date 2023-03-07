@@ -254,7 +254,7 @@ Low level J4 orbit propagator structure.
     δe::T   # ............................... Eccentricity time derivative [1/s]
     δΩ::T   # ..................................... RAAN time derivative [rad/s]
     δω::T   # ...................... Argument of perigee time derivative [rad/s]
-    δM_0::T # ............................. Mean anomaly time derivative [rad/s]
+    n̄::T    # ....................................... "Mean" mean motion [rad/s]
 end
 
 """
