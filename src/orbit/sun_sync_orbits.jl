@@ -19,7 +19,8 @@ the orbit excentricity `e` [ ]. If the latter is omitted, the orbit is
 considered circular, i.e., `e = 0`.
 
 This function returns the orbit semi-major axis [km] and the orbit inclination
-[rad] that provides a Sun synchronous orbit.
+[rad] that provides a Sun synchronous orbit. It also returns a `Bool` indicating
+whether the numerical algorithm has converged.
 
 !!! note
     Internaly, this function uses the precision obtained by promoting `T1` and
@@ -33,7 +34,9 @@ This function returns the orbit semi-major axis [km] and the orbit inclination
     converged. If it is `nothing`, `eps(T)` will be used, where `T` is the
     internal type for the computations. (**Default** = 1e-18)
 
-# Remarks
+# Extended help
+
+## Remarks
 
 This algorithm uses the Newton-Raphson method to compute the orbit semi-major
 axis and inclination that leads to a Sun synchronous orbit with the angular
@@ -137,7 +140,7 @@ function sun_sync_orbit_from_ang_vel(
     )
 
     # Return.
-    return a_k, i_k
+    return a_k, i_k, converged
 end
 
 """

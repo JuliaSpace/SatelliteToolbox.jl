@@ -31,27 +31,32 @@
     # Angular velocity of Amazonia-1.
     n = 2π / 6000
 
-    a, i = sun_sync_orbit_from_ang_vel(n, 0.001111)
+    a, i, c = sun_sync_orbit_from_ang_vel(n, 0.001111)
 
     @test a / 1000 ≈ 7130.982 (atol = 1e-3)
     @test i * 180 / π ≈ 98.405 (atol = 1e-3)
+    @test c == true
 
     # Test return types.
-    a, i = sun_sync_orbit_from_ang_vel(n)
+    a, i, c = sun_sync_orbit_from_ang_vel(n)
     @test a isa Float64
     @test i isa Float64
+    @test c isa Bool
 
-    a, i = sun_sync_orbit_from_ang_vel(n, 0.0)
+    a, i, c = sun_sync_orbit_from_ang_vel(n, 0.0)
     @test a isa Float64
     @test i isa Float64
+    @test c isa Bool
 
-    a, i = sun_sync_orbit_from_ang_vel(Float32(n))
+    a, i, c = sun_sync_orbit_from_ang_vel(Float32(n))
     @test a isa Float32
     @test i isa Float32
+    @test c isa Bool
 
-    a, i = sun_sync_orbit_from_ang_vel(Float32(n), 0.0f0)
+    a, i, c = sun_sync_orbit_from_ang_vel(Float32(n), 0.0f0)
     @test a isa Float32
     @test i isa Float32
+    @test c isa Bool
 
     # Test errors.
     @test_throws ArgumentError sun_sync_orbit_from_ang_vel(-1.0)
@@ -60,6 +65,8 @@
 
     # Test warnings.
     @test_logs (:warn,) sun_sync_orbit_from_ang_vel(n; max_iterations = 2)
+    a, i, c = sun_sync_orbit_from_ang_vel(n; max_iterations = 2)
+    @test c == false
 end
 
 # Function sun_sync_orbit_semi_major_axis
