@@ -100,7 +100,7 @@ include("sun/sun_velocity.jl")
 
 include("orbit/general.jl")
 include("orbit/anomalies.jl")
-include("orbit/orbit_sun_sync_ground_reap.jl")
+include("orbit/ground_repeating_orbits.jl")
 include("orbit/sun_sync_orbits.jl")
 
 include("orbit/mean_elements/j2osc.jl")
