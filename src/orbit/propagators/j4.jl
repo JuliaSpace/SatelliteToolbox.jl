@@ -150,28 +150,16 @@ function j4_init(
     # Unpack the gravitational constants to improve code readability.
     @unpack_J4_GravCte j4_gc
 
-    # Convert all inputs to the correct type.
-    a_0    = T(a_0)
-    e_0    = T(e_0)
-    i_0    = T(i_0)
-    Ω_0    = T(Ω_0)
-    ω_0    = T(ω_0)
-    f_0    = T(f_0)
-    dn_o2  = T(dn_o2)
-    ddn_o6 = T(ddn_o6)
-
     # Initial values.
-    al_0 = a_0 / R0               # ............ Normalized semi-major axis [er]
+    al_0 = T(a_0) / R0            # ............ Normalized semi-major axis [er]
     n_0  = μm / al_0^(T(3 / 2))   # ............ Unperturbed mean motion [rad/s]
     p_0  = al_0 * (1 - T(e_0)^2)  # ..................... Semi-latus rectum [er]
-    M_0  = f_to_M(e_0, f_0)       # ................. Initial mean anomaly [rad]
+    M_0  = f_to_M(T(e_0), T(f_0)) # ................. Initial mean anomaly [rad]
 
     # Auxiliary variables.
     dn               = 2 * dn_o2  # .... Time-deriv. of the mean motion [rad/s²]
-    e_0²             = e_0^2
-    e_0⁴             = e_0^4
-    sin_i_0, cos_i_0 = sincos(i_0)
-    sin_i_0          = sin(i_0)
+    e_0²             = T(e_0)^2
+    sin_i_0, cos_i_0 = sincos(T(i_0))
     sin_i_0²         = sin_i_0^2
     sin_i_0⁴         = sin_i_0^4
     aux              = (1 - e_0²)
@@ -193,18 +181,24 @@ function j4_init(
     #
     # Notice that using the full expression here, with the J2² and J4 terms,
     # yields a solution with much higher error compared with STK result.
-    #
-    # TODO: This propagator still has a large error compared with STK.
-    n̄ = n_0 * (1 + T(3 / 4) * J2 / p_0² * saux * (2 - 3sin_i_0²))
+    āl = al_0 * (1 - T(3 / 4) * J2 / p_0² * saux * (2 - 3sin_i_0²))
+    p̄  = āl   * aux
+    n̄  = n_0  * (1 + T(3 / 4) * J2 / p̄^2 * saux * (2 - 3sin_i_0²))
 
     # First-order time-derivative of the orbital elements.
     δa = -T( 2 / 3  ) * al_0 * dn / n_0
     δe = -T( 2 / 3  ) * (1 - e_0) * dn / n_0
+
+    # TODO: Check the J4 perturbation term sign.
+    #
+    # We needed to flip the J4 perturbation term sign to obtain values that
+    # match those of STK.
     δΩ = -T( 3 / 2  ) * n̄ * J2  / p_0² * cos_i_0 +
-          T( 3 / 32 ) * n̄ * J2² / p_0⁴ * cos_i_0 * (12 -  4e_0² - (80 +  5e_0²) * sin_i_0²) +
-          T(15 / 32 ) * n̄ * J4  / p_0⁴ * cos_i_0 * ( 8 + 12e_0² - (14 + 21e_0²) * sin_i_0²)
+          T( 3 / 32 ) * n̄ * J2² / p_0⁴ * cos_i_0 * (-36 -  4e_0² + 48saux + (40 - 5e_0² - 72saux) * sin_i_0²) -
+          T(15 / 32 ) * n̄ * J4  / p_0⁴ * cos_i_0 * (  8 + 12e_0² - (14 + 21e_0²) * sin_i_0²)
+
     δω = +T( 3 / 4  ) * n̄ * J2  / p_0² * (4 - 5sin_i_0²) +
-          T( 9 / 384) * n̄ * J2² / p_0⁴ * (     56e_0² + (760 -  36e_0²) * sin_i_0² - (890 +  45e_0²) * sin_i_0⁴) -
+          T( 9 / 384) * n̄ * J2² / p_0⁴ * (192 + 56e_0² - 192saux + (-172 + 288saux) * sin_i_0² + e_0² * sin_i_0⁴) -
           T(15 / 128) * n̄ * J4  / p_0⁴ * (64 + 72e_0² - (248 + 252e_0²) * sin_i_0² + (196 + 189e_0²) * sin_i_0⁴)
 
     # Create the output structure with the data.
@@ -212,23 +206,23 @@ function j4_init(
         epoch  = epoch,
         al_0   = al_0,
         n_0    = n_0,
-        e_0    = e_0,
-        i_0    = i_0,
-        Ω_0    = Ω_0,
-        ω_0    = ω_0,
-        f_0    = f_0,
-        M_0    = M_0,
-        dn_o2  = dn_o2,
-        ddn_o6 = ddn_o6,
+        e_0    = T(e_0),
+        i_0    = T(i_0),
+        Ω_0    = T(Ω_0),
+        ω_0    = T(ω_0),
+        f_0    = T(f_0),
+        M_0    = T(M_0),
+        dn_o2  = T(dn_o2),
+        ddn_o6 = T(ddn_o6),
         j4_gc  = j4_gc,
         Δt     = 0,
         al_k   = al_0,
-        e_k    = e_0,
-        i_k    = i_0,
-        Ω_k    = Ω_0,
-        ω_k    = ω_0,
-        f_k    = f_0,
-        M_k    = M_0,
+        e_k    = T(e_0),
+        i_k    = T(i_0),
+        Ω_k    = T(Ω_0),
+        ω_k    = T(ω_0),
+        f_k    = T(f_0),
+        M_k    = T(M_0),
         δa     = δa,
         δe     = δe,
         δΩ     = δΩ,
