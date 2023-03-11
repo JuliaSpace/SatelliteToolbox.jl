@@ -6,11 +6,14 @@
 #   J4 orbit propagator algorithm.
 #
 #   This algorithm propagates the orbit considering the secular perturbations of
-#   central body zonal harmonics as presented in [1, p. 647-654] and in [2].
-#   Notice that only the terms J2, J2², and J4 are considered, i.e. the J6 is
-#   assumed to be 0. The effect of the drag is also taken into account. This
-#   can be used as a propagator of mean elements for mission analysis in which
-#   the satellite orbit is maintained.
+#   central body zonal harmonics as presented in [1, p. 647-654, 692-692], which
+#   is Kozai's method but neglecting long-periodic and short-periodic
+#   perturbations.
+#
+#   The terms J2, J2², and J4 are considered, i.e. the J6 is assumed to be 0.
+#   The effect of the drag is also taken into account. This can be used as a
+#   propagator of mean elements for mission analysis in which the satellite
+#   orbit is maintained.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -20,9 +23,8 @@
 #   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
 #       Microcosm Press, Hawthorn, CA, USA.
 #
-#   [2] Merson, R. H (1961). The motion of a satellite in an axi-symmetric
-#       gravitational field. Geophysical journal international, Vol. 4(1),
-#       p. 17-52.
+#   [2] Hoots, F. R., Roehrich, R. L (1980). Models for Propagation of NORAD
+#       Elements Set. Spacetrack Report No. 3.
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -189,12 +191,17 @@ function j4_init(
     δa = -T( 2 / 3  ) * al_0 * dn / n_0
     δe = -T( 2 / 3  ) * (1 - e_0) * dn / n_0
 
-    # TODO: Check the J4 perturbation term sign.
+    # TODO: Check J4 perturbation term sign.
     #
     # We needed to flip the J4 perturbation term sign to obtain values that
-    # match those of STK.
+    # match those of STK. However, this modification does not seem right if we
+    # observe the RAAN secular perturbation term in SGP4 orbit propagator
+    # [2, p. 16]. For more information, see:
+    #
+    #   https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/91
+    #
     δΩ = -T( 3 / 2  ) * n̄ * J2  / p_0² * cos_i_0 +
-          T( 3 / 32 ) * n̄ * J2² / p_0⁴ * cos_i_0 * (-36 -  4e_0² + 48saux + (40 - 5e_0² - 72saux) * sin_i_0²) -
+          T( 3 / 32 ) * n̄ * J2² / p_0⁴ * cos_i_0 * (-36 -  4e_0² + 48saux + (40 - 5e_0² - 72saux) * sin_i_0²) +
           T(15 / 32 ) * n̄ * J4  / p_0⁴ * cos_i_0 * (  8 + 12e_0² - (14 + 21e_0²) * sin_i_0²)
 
     δω = +T( 3 / 4  ) * n̄ * J2  / p_0² * (4 - 5sin_i_0²) +
