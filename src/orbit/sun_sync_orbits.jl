@@ -15,7 +15,7 @@ export sun_sync_orbit_inclination
     sun_sync_orbit_from_ang_vel(n::T1, e::T2 = 0; kwargs...) where {T1 <: Number, T2 <: Number}
 
 Compute the a Sun synchronous orbit given the angular velocity `n` [rad/s] and
-the orbit excentricity `e` [ ]. If the latter is omitted, the orbit is
+the orbit eccentricity `e` [ ]. If the latter is omitted, the orbit is
 considered circular, i.e., `e = 0`.
 
 This function returns the orbit semi-major axis [km] and the orbit inclination
@@ -147,7 +147,7 @@ end
     sun_sync_orbit_semi_major_axis(i::T1, e::T2 = 0) where {T1 <: Number, T2 <: Number}
 
 Compute the Sun synchronous orbit semi-major axis [m] given the orbit inclination
-`i` [rad] and the orbit excentricity `e` [ ]. If the latter is omitted, the
+`i` [rad] and the orbit eccentricity `e` [ ]. If the latter is omitted, the
 orbit is considered circular, i.e., `e = 0`.
 
 !!! note
@@ -185,7 +185,7 @@ end
     sun_sync_orbit_inclination(a::T1, e::T2 = 0) where {T1 <: Number, T2 <: Number}
 
 Compute the Sun synchronous orbit inclination [rad] given the orbit semi-major
-axis `a` [m] and the orbit excentricity `e` [ ]. If the latter is omitted, the
+axis `a` [m] and the orbit eccentricity `e` [ ]. If the latter is omitted, the
 orbit is considered circular, i.e., `e = 0`.
 
 !!! note
