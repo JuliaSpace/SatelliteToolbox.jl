@@ -64,6 +64,7 @@ println("")
 @testset "Orbit propagators" verbose=true begin
     cd("./orbit/propagators")
     include("./orbit/propagators/j2.jl")
+    include("./orbit/propagators/j4.jl")
     include("./orbit/propagators/sgp4.jl")
     include("./orbit/propagators/twobody.jl")
     cd("../../")
