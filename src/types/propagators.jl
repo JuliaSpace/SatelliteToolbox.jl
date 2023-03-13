@@ -75,48 +75,52 @@ end
 #                             J2 Orbit Propagator
 # ==============================================================================
 
-export J2_GravCte, J2_Structure, OrbitPropagatorJ2
+export J2PropagatorConstants, J2Propagator, OrbitPropagatorJ2
 
 """
-    J2_GravCte{T}
+    J2PropagatorConstants{T}
 
-Gravitational constants for J2 orbit propagator.
+Constants for the J2 orbit propagator.
 
 # Fields
 
 - `R0::T`: Earth equatorial radius [m].
-- `μm::T`: √GM [er/s]^(3/2).
+- `μm::T`: √(GM / R0^3) [er/s]^(3/2).
 - `J2::T`: The second gravitational zonal harmonic of the Earth.
 """
-@with_kw struct J2_GravCte{T}
+@with_kw struct J2PropagatorConstants{T}
     R0::T
     μm::T
     J2::T
 end
 
 """
-    J2_Structure{Tepoch, T}
+    J2Propagator{Tepoch, T}
 
 Low level J2 orbit propagator structure.
 """
-@with_kw mutable struct J2_Structure{Tepoch, T}
+@with_kw mutable struct J2Propagator{Tepoch, T}
     # Initial mean orbital elements
     # ==========================================================================
-    epoch::Tepoch         # ............ Epoch of the initial mean elements [JD]
-    al_0::T               # ....... Initial mean normalized semi-major axis [er]
-    n_0::T                # ........................ Initial mean motion [rad/s]
-    e_0::T                # ..................... Initial mean eccentricity [  ]
-    i_0::T                # ..................... Initial mean inclination [rad]
-    Ω_0::T                # ............................ Initial mean RAAN [rad]
-    ω_0::T                # ............. Initial mean argument of perigee [rad]
-    f_0::T                # .................... Initial mean true anomaly [rad]
-    M_0::T                # .................... Initial mean mean anomaly [rad]
-    dn_o2::T              # ...... First time derivative of mean motion [rad/s²]
-    ddn_o6::T             # ..... Second time derivative of mean motion [rad/s³]
-    j2_gc::J2_GravCte{T}  # ........ J2 orbit propagator gravitational constants
+
+    epoch::Tepoch # .................... Epoch of the initial mean elements [JD]
+    al_0::T       # ............... Initial mean normalized semi-major axis [er]
+    n_0::T        # ................................ Initial mean motion [rad/s]
+    e_0::T        # ............................. Initial mean eccentricity [  ]
+    i_0::T        # ............................. Initial mean inclination [rad]
+    Ω_0::T        # .................................... Initial mean RAAN [rad]
+    ω_0::T        # ..................... Initial mean argument of perigee [rad]
+    f_0::T        # ............................ Initial mean true anomaly [rad]
+    M_0::T        # ............................ Initial mean mean anomaly [rad]
+    dn_o2::T      # .............. First time derivative of mean motion [rad/s²]
+    ddn_o6::T     # ............. Second time derivative of mean motion [rad/s³]
+
+    # J2 orbit propagator gravitational constants.
+    j2c::J2PropagatorConstants{T}
 
     # Current mean orbital elements
     # ==========================================================================
+
     Δt::T   # .............. Timespan from the epoch of the initial elements [s]
     al_k::T # ..................... Current mean normalized semi-major axis [er]
     e_k::T  # ................................... Current mean eccentricity [  ]
@@ -128,6 +132,7 @@ Low level J2 orbit propagator structure.
 
     # Auxiliary variables
     # ==========================================================================
+
     δa::T   # ........................... Semi-major axis time derivative [er/s]
     δe::T   # ............................... Eccentricity time derivative [1/s]
     δΩ::T   # ..................................... RAAN time derivative [rad/s]
@@ -143,25 +148,25 @@ Structure that holds the information related to the J2 orbit propagator.
 # Fields
 
 - `j2d`: Structure that stores the J2 orbit propagator data (see
-    [`J2_Structure`](@ref)).
+    [`J2Propagator`](@ref)).
 """
 struct OrbitPropagatorJ2{Tepoch, T} <: OrbitPropagator{Tepoch, T}
-    j2d::J2_Structure{Tepoch, T}
+    j2d::J2Propagator{Tepoch, T}
 end
 
 #                        J2 osculating orbit propagator
 # ==============================================================================
 
-export J2osc_Strutcture, OrbitPropagatorJ2osc
+export J2oscPropagator, OrbitPropagatorJ2osc
 
 """
-    J2osc_Structure{Tepoch, T}
+    J2oscPropagator{Tepoch, T}
 
 Low level J2 osculating orbit propagator structure.
 """
-@with_kw mutable struct J2osc_Structure{Tepoch, T}
+@with_kw mutable struct J2oscPropagator{Tepoch, T}
     # J2 orbit propagator to propagate the mean elements.
-    j2d::J2_Structure{Tepoch, T}
+    j2d::J2Propagator{Tepoch, T}
 
     # Propagation time from epoch.
     Δt::T
@@ -186,10 +191,10 @@ propagator.
 # Fields
 
 - `j2oscd`: Structure that stores the J2 osculating orbit propagator data (see
-    [`J2osc_Structure`](@ref)).
+    [`J2oscPropagator`](@ref)).
 """
 struct OrbitPropagatorJ2osc{Tepoch, T} <: OrbitPropagator{Tepoch, T}
-    j2oscd::J2osc_Structure{Tepoch, T}
+    j2oscd::J2oscPropagator{Tepoch, T}
 end
 
 #                             J4 orbit propagator

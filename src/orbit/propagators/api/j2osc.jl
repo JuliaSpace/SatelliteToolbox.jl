@@ -13,7 +13,7 @@ function get_mean_elements(orbp::OrbitPropagatorJ2osc)
     j2d = orbp.j2oscd.j2d
     orb = KeplerianElements(
         j2d.epoch + j2d.Δt / 86400,
-        j2d.al_k * j2d.j2_gc.R0,
+        j2d.al_k * j2d.j2c.R0,
         j2d.e_k,
         j2d.i_k,
         j2d.Ω_k,
@@ -25,8 +25,8 @@ function get_mean_elements(orbp::OrbitPropagatorJ2osc)
 end
 
 """
-    init_orbit_propagator(Val(:J2osc), epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte{T} = j2_gc_egm08) where T
-    init_orbit_propagator(Val(:J2osc), orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0; j2_gc::J2_GravCte = j2_gc_egm08)
+    init_orbit_propagator(Val(:J2osc), epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; kwargs...)
+    init_orbit_propagator(Val(:J2osc), orb_0::Orbit, dn_o2::Number = 0, ddn_o6::Number = 0; kwargs...)
 
 Initialize the J2 osculating orbit propagator.
 
@@ -48,8 +48,8 @@ Initialize the J2 osculating orbit propagator.
 
 # Keywords
 
-- `j2_gc::J2_GravCte`: (OPTIONAL) J2 orbit propagator gravitational constants.
-    (**Default** = `j2_gc_egm08`).
+- `j2c::J2PropagatorConstants`: J2 orbit propagator constants.
+    (**Default** = `j2c_egm08`).
 """
 function init_orbit_propagator(
     ::Val{:J2osc},
@@ -62,7 +62,7 @@ function init_orbit_propagator(
     f_0::Number,
     dn_o2::Number = 0,
     ddn_o6::Number = 0;
-    j2_gc::J2_GravCte{T} = j2_gc_egm08
+    j2c::J2PropagatorConstants{T} = j2c_egm08
 ) where T
     # Create the new Two Body propagator structure.
     j2oscd = j2osc_init(
@@ -75,7 +75,7 @@ function init_orbit_propagator(
         f_0,
         dn_o2,
         ddn_o6;
-        j2_gc = j2_gc
+        j2c = j2c
     )
 
     # Create and return the orbit propagator structure.
@@ -87,7 +87,7 @@ function init_orbit_propagator(
     orb_0::Orbit,
     dn_o2::Number = 0,
     ddn_o6::Number = 0;
-    j2_gc::J2_GravCte = j2_gc_egm08
+    j2c::J2PropagatorConstants = j2c_egm08
 )
     # Convert the orbit representation to Keplerian elements.
     k_0 = convert(KeplerianElements, orb_0)
@@ -103,7 +103,7 @@ function init_orbit_propagator(
         k_0.f,
         dn_o2,
         ddn_o6;
-        j2_gc = j2_gc
+        j2c = j2c
     )
 end
 

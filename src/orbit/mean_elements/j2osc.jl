@@ -19,7 +19,7 @@
 export rv_to_mean_elements_j2osc
 
 """
-    rv_to_mean_elements_j2osc(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; mean_elements_epoch::Symbol = :end, j2_gc::J2_GravCte = j2_gc_egm08, max_iterations::Int = 50, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
+    rv_to_mean_elements_j2osc(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; kwargs...)
 
 Compute the mean elements for the orbit propagator J2 (osculator) based on the
 position vectors `vr` and velocity vectors `vr`. The epoch of those measurements
@@ -32,7 +32,8 @@ The matrix `W` defined the weights for the least-square algorithm.
 - `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
     elements will be equal to the last value in `vjd`. Otherwise, if it is
     `:begin`, the epoch will be selected as the first value in `vjd`.
-- `j2_gc::J2_GravCte`: J2 gravitational constants (see `J2_GravCte`).
+- `j2c::J2PropagatorConstants`: J2 orbit propagator constants (see
+    [`J2PropagatorConstants`](@ref)).
 - `print_debug::Bool`: If `true`, then debug information will be printed to the
     `stdout`. (**Default** = `true`)
 - `max_iterations::Int`: The maximum allowed number of iterations.
@@ -44,14 +45,8 @@ The matrix `W` defined the weights for the least-square algorithm.
 
 # Returns
 
-- The epoch of the elements [Julian Day].
-- The mean elements for J2 orbit propagator (osculating):
-    - Semi-major axis [m];
-    - Eccentricity [ ];
-    - Inclination [rad];
-    - Right ascension of the ascending node [rad];
-    - Argument of perigee [rad];
-    - True anomaly [rad].
+- An object of type [`KeplerianElements`](@ref) with the osculating orbital
+  elements [SI]; and
 - The covariance matrix of the mean elements estimation.
 
 !!! note
@@ -64,7 +59,7 @@ function rv_to_mean_elements_j2osc(
     vv::AbstractVector{Tv},
     W = I;
     mean_elements_epoch::Symbol = :end,
-    j2_gc::J2_GravCte = j2_gc_egm08,
+    j2c::J2PropagatorConstants = j2c_egm08,
     print_debug::Bool = true,
     max_iterations::Int = 50,
     atol::Number = 2e-4,
@@ -127,7 +122,7 @@ function rv_to_mean_elements_j2osc(
             # of the mean elements.
             Δt = (vjd[k] - epoch) * 86400
 
-            r̂, v̂ = _j2osc_sv(Δt, j2_gc, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6])
+            r̂, v̂ = _j2osc_sv(Δt, j2c, epoch, x₁[1], x₁[2], x₁[3], x₁[4], x₁[5], x₁[6])
 
             ŷ = vcat(r̂, v̂)
 
@@ -204,7 +199,7 @@ end
 # vector.
 function _j2osc_sv(
     Δt::Number,
-    j2_gc::J2_GravCte,
+    j2c::J2PropagatorConstants,
     epoch::Number,
     rx_i::Number,
     ry_i::Number,
@@ -230,7 +225,7 @@ function _j2osc_sv(
         orb_i.f,
         0,
         0;
-        j2_gc = j2_gc
+        j2c = j2c
     )
 
     r, v = j2osc!(j2oscd, Δt)
@@ -246,7 +241,7 @@ function _j2osc_jacobian(
     y₁::SVector{NO, T};
     pert::T = 1e-3,
     perttol::T = 1e-5,
-    j2_gc::J2_GravCte = j2_gc_egm08
+    j2c::J2PropagatorConstants = j2c_egm08
 ) where {NS, NO, T}
     num_states = NS
     dim_obs    = NO
@@ -281,7 +276,7 @@ function _j2osc_jacobian(
         x₂ = setindex(x₂, α, j)
 
         # Obtain the Jacobian by finite differentiation.
-        r, v = _j2osc_sv(Δt, j2_gc, epoch, x₂...)
+        r, v = _j2osc_sv(Δt, j2c, epoch, x₂...)
         y₂   = vcat(r, v)
 
         M[:, j] .= (y₂ .- y₁) ./ ϵ

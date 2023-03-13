@@ -54,7 +54,7 @@
             T(45) |> deg2rad
         )
 
-        orbp = init_orbit_propagator(Val(:J2), orb; j2_gc = j2_gc_egm08)
+        orbp = init_orbit_propagator(Val(:J2), orb; j2c = j2c_egm08)
         r, v = propagate_to_epoch!(orbp, jd₁)
 
         @test r[1] / 1000 ≈ -6849.654348 atol = 5e-3
@@ -79,7 +79,7 @@
             T(45) |> deg2rad
         )
 
-        orbp = init_orbit_propagator(Val(:J2), orb; j2_gc = j2_gc_egm08_f32)
+        orbp = init_orbit_propagator(Val(:J2), orb; j2c = j2c_egm08_f32)
         r, v = propagate_to_epoch!(orbp, jd₁)
 
         @test r[1] / 1000 ≈ -6849.654348 atol = 5e-1

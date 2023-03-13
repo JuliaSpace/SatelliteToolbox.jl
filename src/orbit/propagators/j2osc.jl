@@ -5,9 +5,9 @@
 #
 #   J2 osculating orbit propagator algorithm.
 #
-#       This algorithm propagates the orbit considering the secular and
-#       short-period perturbations introduced by the J2 gravitational term. The
-#       algorithm is based on Kwok version as indicated in [1, p. 708-710].
+#   This algorithm propagates the orbit considering the secular and short-period
+#   perturbations introduced by the J2 gravitational term. The algorithm is
+#   based on Kwok version as indicated in [1, p. 708-710].
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
@@ -26,13 +26,13 @@ export j2osc_init, j2osc!
 ################################################################################
 
 """
-    j2osc_init(epoch::Tepoch, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; j2_gc::J2_GravCte{T} = j2_gc_egm08) where {Tepoch, T}
+    j2osc_init(epoch::Tepoch, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number, ddn_o6::Number; kwargs...)
 
 Initialize the data structure of J2 osculating orbit propagator algorithm.
 
 !!! note
     The type used in the propagation will be the same as used to define the
-    gravitational constants in the structure `j2_gc`.
+    constants in the structure `j2c`.
 
 # Args
 
@@ -50,12 +50,12 @@ Initialize the data structure of J2 osculating orbit propagator algorithm.
 
 # Keywords
 
-- `j2_gc::J2_GravCte`: J2 orbit propagator gravitational constants (see
-    [`J2_GravCte`](@ref)). (**Default** = `j2_gc_egm08`)
+- `j2c::J2PropagatorConstants`: J2 orbit propagator constants (see
+  [`J2PropagatorConstants`](@ref)). (**Default** = `j2c_egm08`)
 
 # Returns
 
-The structure [`J2osc_Structure`](@ref) with the initialized parameters.
+The structure [`J2oscPropagator`](@ref) with the initialized parameters.
 
 # Remarks
 
@@ -71,12 +71,12 @@ function j2osc_init(
     f_0::Number,
     dn_o2::Number,
     ddn_o6::Number;
-    j2_gc::J2_GravCte{T} = j2_gc_egm08
+    j2c::J2PropagatorConstants{T} = j2c_egm08
 ) where {Tepoch, T}
-    j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6; j2_gc = j2_gc)
+    j2d = j2_init(epoch, a_0, e_0, i_0, Ω_0, ω_0, f_0, dn_o2, ddn_o6; j2c = j2c)
 
     # Initialize the structure.
-    j2oscd = J2osc_Structure{Tepoch, T}(j2d, 0, 0, 0, 0, 0, 0, 0, 0)
+    j2oscd = J2oscPropagator{Tepoch, T}(j2d, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # Call the propagation one first time to update the osculating elements.
     j2osc!(j2oscd, 0)
@@ -85,9 +85,9 @@ function j2osc_init(
 end
 
 """
-    j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
+    j2osc!(j2oscd::J2oscPropagator{Tepoch, T}, t::Number) where {Tepoch, T}
 
-Propagate the orbit defined in `j2oscd` (see [`J2osc_Structure`](@ref)) until
+Propagate the orbit defined in `j2oscd` (see [`J2oscPropagator`](@ref)) until
 the time `t` [s].
 
 !!! note
@@ -104,13 +104,13 @@ The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. Notice, however, that the
 perturbation theory requires an inertial frame with true equator.
 """
-function j2osc!(j2oscd::J2osc_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
+function j2osc!(j2oscd::J2oscPropagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # First, we need to propagate the mean elements since they are necessary to
     # compute the short-periodic perturbations.
     j2d = j2oscd.j2d
     j2!(j2d, t)
 
-    @unpack_J2_GravCte j2d.j2_gc
+    @unpack R0, μm, J2 = j2d.j2c
 
     # Obtain the mean elements at this time instant.
     al_k = j2d.al_k
