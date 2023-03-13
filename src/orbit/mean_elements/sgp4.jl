@@ -332,7 +332,7 @@ function _sgp4_sv(
     # Obtain the mean motion [rad/min].
     n₀ = sgp4c.XKE / sqrt(a₀ * a₀ * a₀)
 
-    r, v, ~ = sgp4(Δt / 60, sgp4c, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar)
+    r, v, ~ = sgp4(Δt / 60, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar; sgp4c = sgp4c)
 
     # Return the elements using SI units.
     return 1000r, 1000v

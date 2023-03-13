@@ -159,9 +159,9 @@ function init_orbit_propagator(T, tle::TLE; sgp4c::Sgp4Constants = sgp4c_wgs84)
 
 where:
 
-* `T` must be `Val(:sgp4)`;
-* `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
-* `sgp4c`: SGP4 orbit propagator constants (see [`Sgp4Constants`](@ref)).
+- `T` must be `Val(:sgp4)`;
+- `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
+- `sgp4c`: SGP4 orbit propagator constants (see [`Sgp4Constants`](@ref)).
   (**Default** = `sgp4c_wgs84`)
 
 ## Propagation
@@ -169,7 +169,7 @@ where:
 After the orbit propagator is initialized, the orbit can be propagated by the
 API functions `propagate!`, `propagate_to_epoch!`, and `step!`.
 
-The function `propagate!` has two signature. The first one is
+The function `propagate!` has the following signature:
 
 ```julia
 function propagate!(orbp, t::Number) where T
@@ -177,35 +177,18 @@ function propagate!(orbp, t::Number) where T
 
 in which the orbit will be propagated by `t` [s] **from the orbit epoch**,
 which is defined in the initialization and is never changed. This function
-returns a tuple with three values:
+returns:
 
-* The mean Keplerian elements represented in the inertial reference frame
-  encapsulated in an instance of the structure `Orbit` [SI units].
-* The position vector represented in the inertial reference frame [m].
-* The velocity vector represented in the inertial reference frame [m].
-
-The second signature of `propagate!` is:
-
-```julia
-function propagate!(orbp, t::AbstractVector) where T
-```
-
-where the orbit will be propagated for every value in the vector `t` [s], which
-is a number of seconds **from the orbit epoch**. In this case, an array of
-tuples with be returned with each element equivalent to that described for the
-first case.
-
-The function `propagate_to_epoch!` also have two signatures similar to
-`propagate!`:
+- The position vector represented in the inertial reference frame [m]; and
+- The velocity vector represented in the inertial reference frame [m].
 
 ```julia
 function propagate_to_epoch!(orbp, JD::Number) where T
-function propagate_to_epoch!(orbp, JD::AbstractVector) where T
 ```
 
-It also returns the same information. However, the input argument `JD` is an
-epoch \[Julian Day] to which the orbit will be propagated instead of the number
-of seconds from the orbit epoch.
+This function returns the same information as `propagate!`. However, the input
+argument `JD` is an epoch [Julian Day] to which the orbit will be propagated
+instead of the number of seconds from the orbit epoch.
 
 !!! warning
 
@@ -219,10 +202,9 @@ function step!(orbp, Δt::Number)
 ```
 
 where the orbit is propagated by `Δt` [s] from the last propagation instant.
-This function returns the same information of the first signature of
-`propagate!` method.
+This function returns the same information as `propagate!` method.
 
-In all cases, the structure `orbp` is modified by updating the orbit elements
+In all cases, the structure `orbp` is modified by updating the orbital elements
 related to the last propagation instant.
 
 !!! note

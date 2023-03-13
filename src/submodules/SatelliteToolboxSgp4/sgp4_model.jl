@@ -91,14 +91,13 @@ const sgp4c_wgs72_f32 = Sgp4Constants{Float32}(
 ################################################################################
 
 """
-    sgp4_init(spg4_gc::Sgp4Constants{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
-    sgp4_init(tle::TLE, sgp4c::Sgp4Constants = sgp4c_wgs84)
+    sgp4_init(epoch::Tepoch, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number; kwargs...) where {Tepoch, T}
+    sgp4_init(tle::TLE; kwargs...) where T
 
-Initialize the data structure of SGP4 algorithm.
+Initialize the data structure of SGP4 orbit propagator.
 
 # Args
 
-- `spg4_gc::SGP4_GravCet`: SPG4 gravitational constants (see `Sgp4Constants`).
 - `epoch::Number`: Epoch of the orbital elements [Julian Day].
 - `n_0::Number`: SGP type "mean" mean motion at epoch [rad/min].
 - `e_0::Number`: "Mean" eccentricity at epoch.
@@ -109,17 +108,21 @@ Initialize the data structure of SGP4 algorithm.
 - `bstar::Number`: Drag parameter (B*).
 - `tle::TLE`: TLE to initialize the SPG4 (see `TLE`).
 
+# Keywords
+
+- `spg4_gc::Sgp4Constants`: SPG4 orbit propagator constants (see
+    [`Sgp4Constants`](@ref)). (**Default** = `sgp4c_wgs84`)
+
 # Returns
 
 The structure [`Sgp4Propagator`](@ref) with the initialized parameters.
 """
 function sgp4_init(
-    tle::TLE,
+    tle::TLE;
     sgp4c::Sgp4Constants{T} = sgp4c_wgs84
 ) where T
     d2r = T(π / 180)
     return sgp4_init(
-        sgp4c,
         tle.epoch,
         tle.n * T(2π / (24 * 60)),
         tle.e,
@@ -127,12 +130,12 @@ function sgp4_init(
         tle.Ω * d2r,
         tle.ω * d2r,
         tle.M * d2r,
-        tle.bstar
+        tle.bstar;
+        sgp4c = sgp4c
     )
 end
 
 function sgp4_init(
-    sgp4c::Sgp4Constants{T},
     epoch::Tepoch,
     n_0::Number,
     e_0::Number,
@@ -140,7 +143,8 @@ function sgp4_init(
     Ω_0::Number,
     ω_0::Number,
     M_0::Number,
-    bstar::Number
+    bstar::Number;
+    sgp4c::Sgp4Constants{T}
 ) where {Tepoch, T}
     # Unpack the gravitational constants to improve code readability.
     @unpack R0, XKE, J2, J3, J4 = sgp4c

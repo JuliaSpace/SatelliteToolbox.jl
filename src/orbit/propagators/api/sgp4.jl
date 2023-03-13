@@ -56,7 +56,6 @@ function init_orbit_propagator(
 
     # Create the new SGP4 structure.
     sgp4d = sgp4_init(
-        sgp4c,
         tle.epoch,
         n_0,
         e_0,
@@ -64,7 +63,8 @@ function init_orbit_propagator(
         Ω_0,
         ω_0,
         M_0,
-        tle.bstar
+        tle.bstar;
+        sgp4c = sgp4c
     )
 
     # Create and return the orbit propagator structure.
@@ -74,7 +74,6 @@ end
 function propagate!(orbp::OrbitPropagatorSGP4, t::Number)
     # Auxiliary variables.
     sgp4d = orbp.sgp4d
-    sgp4c = sgp4d.sgp4c
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, t / 60)
@@ -86,7 +85,6 @@ end
 function step!(orbp::OrbitPropagatorSGP4, Δt::Number)
     # Auxiliary variables.
     sgp4d = orbp.sgp4d
-    sgp4c = sgp4d.sgp4c
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, sgp4d.Δt + Δt / 60)
