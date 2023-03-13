@@ -200,21 +200,21 @@ end
 #                             J4 orbit propagator
 # ==============================================================================
 
-export J4_GravCte, J4_Structure, OrbitPropagatorJ4
+export J4PropagatorConstants, J4Propagator, OrbitPropagatorJ4
 
 """
-    J4_GravCte{T}
+    J4PropagatorConstants{T}
 
 Gravitational constants for J4 orbit propagator.
 
 # Fields
 
 - `R0::T`: Earth equatorial radius [m].
-- `μm::T`: √GM [er/s]^(3/2).
+- `μm::T`: √(GM / R0^3) [er/s]^(3/2).
 - `J2::T`: The second gravitational zonal harmonic of the Earth.
 - `J4::T`: The fourth gravitational zonal harmonic of the Earth.
 """
-@with_kw struct J4_GravCte{T}
+@with_kw struct J4PropagatorConstants{T}
     R0::T
     μm::T
     J2::T
@@ -222,28 +222,32 @@ Gravitational constants for J4 orbit propagator.
 end
 
 """
-    J4_Structure{Tepoch, T}
+    J4Propagator{Tepoch, T}
 
 Low level J4 orbit propagator structure.
 """
-@with_kw mutable struct J4_Structure{Tepoch, T}
+@with_kw mutable struct J4Propagator{Tepoch, T}
     # Initial mean orbital elements
     # ==========================================================================
-    epoch::Tepoch         # ............ Epoch of the initial mean elements [JD]
-    al_0::T               # ....... Initial mean normalized semi-major axis [er]
-    n_0::T                # ........................ Initial mean motion [rad/s]
-    e_0::T                # ..................... Initial mean eccentricity [  ]
-    i_0::T                # ..................... Initial mean inclination [rad]
-    Ω_0::T                # ............................ Initial mean RAAN [rad]
-    ω_0::T                # ............. Initial mean argument of perigee [rad]
-    f_0::T                # .................... Initial mean true anomaly [rad]
-    M_0::T                # .................... Initial mean mean anomaly [rad]
-    dn_o2::T              # ...... First time derivative of mean motion [rad/s²]
-    ddn_o6::T             # ..... Second time derivative of mean motion [rad/s³]
-    j4_gc::J4_GravCte{T}  # ........ J4 orbit propagator gravitational constants
+
+    epoch::Tepoch # .................... Epoch of the initial mean elements [JD]
+    al_0::T       # ............... Initial mean normalized semi-major axis [er]
+    n_0::T        # ................................ Initial mean motion [rad/s]
+    e_0::T        # ............................. Initial mean eccentricity [  ]
+    i_0::T        # ............................. Initial mean inclination [rad]
+    Ω_0::T        # .................................... Initial mean RAAN [rad]
+    ω_0::T        # ..................... Initial mean argument of perigee [rad]
+    f_0::T        # ............................ Initial mean true anomaly [rad]
+    M_0::T        # ............................ Initial mean mean anomaly [rad]
+    dn_o2::T      # .............. First time derivative of mean motion [rad/s²]
+    ddn_o6::T     # ............. Second time derivative of mean motion [rad/s³]
+
+    # J4 orbit propagator gravitational constants.
+    j4c::J4PropagatorConstants{T}
 
     # Current mean orbital elements
     # ==========================================================================
+
     Δt::T   # .............. Timespan from the epoch of the initial elements [s]
     al_k::T # ..................... Current mean normalized semi-major axis [er]
     e_k::T  # ................................... Current mean eccentricity [  ]
@@ -255,6 +259,7 @@ Low level J4 orbit propagator structure.
 
     # Auxiliary variables
     # ==========================================================================
+
     δa::T   # ........................... Semi-major axis time derivative [er/s]
     δe::T   # ............................... Eccentricity time derivative [1/s]
     δΩ::T   # ..................................... RAAN time derivative [rad/s]
@@ -270,10 +275,10 @@ Structure that holds the information related to the J4 orbit propagator.
 # Fields
 
 - `j4d`: Structure that stores the J4 orbit propagator data (see
-    [`J4_Structure`](@ref)).
+    [`J4Propagator`](@ref)).
 """
 struct OrbitPropagatorJ4{Tepoch, T} <: OrbitPropagator{Tepoch, T}
-    j4d::J4_Structure{Tepoch, T}
+    j4d::J4Propagator{Tepoch, T}
 end
 
 #                                     SGP4

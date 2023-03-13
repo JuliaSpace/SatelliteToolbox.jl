@@ -28,8 +28,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export j4_gc_egm08, j4_gc_egm96, j4_gc_jgm02, j4_gc_jgm03
-export j4_gc_egm08_f32, j4_gc_egm96_f32, j4_gc_jgm02_f32, j4_gc_jgm03_f32
+export j4c_egm08, j4c_egm96, j4c_jgm02, j4c_jgm03
+export j4c_egm08_f32, j4c_egm96_f32, j4c_jgm02_f32, j4c_jgm03_f32
 export j4_init, j4!
 
 ################################################################################
@@ -41,60 +41,60 @@ export j4_init, j4!
 #   J_n = -C_n,0 * sqrt(2n+1)
 #
 
-# EGM-08 Gravitational constants.
-const j4_gc_egm08 = J4_GravCte(
+# EGM-08 gravitational constants.
+const j4c_egm08 = J4PropagatorConstants(
     6378137.0,
     sqrt(3.986004415e14 / 6378137.0^3),
     0.0010826261738522227,
     -1.6198975999169731e-6
 )
 
-const j4_gc_egm08_f32 = J4_GravCte{Float32}(
+const j4c_egm08_f32 = J4PropagatorConstants{Float32}(
     6378137.0,
     sqrt(3.986004415e14 / 6378137.0^3),
     0.0010826261738522227,
     -1.6198975999169731e-6
 )
 
-# EGM-96 Gravitational constants.
-const j4_gc_egm96 = J4_GravCte(
+# EGM-96 gravitational constants.
+const j4c_egm96 = J4PropagatorConstants(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826266835531513,
     -1.619621591367e-6
 )
 
-const j4_gc_egm96_f32 = J4_GravCte{Float32}(
+const j4c_egm96_f32 = J4PropagatorConstants{Float32}(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826266835531513,
     -1.619621591367e-6
 )
 
-# JGM-02 Gravitational constants.
-const j4_gc_jgm02 = J4_GravCte(
+# JGM-02 gravitational constants.
+const j4c_jgm02 = J4PropagatorConstants(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826269256388149,
     -1.62042999e-6
 )
 
-const j4_gc_jgm02_f32 = J4_GravCte{Float32}(
+const j4c_jgm02_f32 = J4PropagatorConstants{Float32}(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826269256388149,
     -1.62042999e-6
 )
 
-# JGM-03 Gravitational constants.
-const j4_gc_jgm03 = J4_GravCte(
+# JGM-03 gravitational constants.
+const j4c_jgm03 = J4PropagatorConstants(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826360229829945,
     -1.619331205071e-6
 )
 
-const j4_gc_jgm03_f32 = J4_GravCte{Float32}(
+const j4c_jgm03_f32 = J4PropagatorConstants{Float32}(
     6378136.3,
     sqrt(3.986004415e14/6378136.3^3),
     0.0010826360229829945,
@@ -106,13 +106,13 @@ const j4_gc_jgm03_f32 = J4_GravCte{Float32}(
 ################################################################################
 
 """
-    j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; j4_gc::J4_GravCte{T} = j4_gc_egm08) where T
+    j4_init(epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number, dn_o2::Number = 0, ddn_o6::Number = 0; kwargs...)
 
 Initialize the data structure of J4 orbit propagator algorithm.
 
 !!! note
     The type used in the propagation will be the same as used to define the
-    gravitational constants in the structure `j4_gc`.
+    constants in the structure `j4c`.
 
 # Args
 
@@ -130,12 +130,12 @@ Initialize the data structure of J4 orbit propagator algorithm.
 
 # Keywords
 
-* `j4_gc::J4_GravCtr`: J4 orbit propagator gravitational constants (see
-    [`J4_GravCte`](@ref)). (**Default** = `j4_gc_egm08`)
+- `j4c::J4_GravCtr`: J4 orbit propagator constants (see
+    [`J4PropagatorConstants`](@ref)). (**Default** = `j4c_egm08`)
 
 # Returns
 
-The structure [`J4_Structure`](@ref) with the initialized parameters.
+The structure [`J4Propagator`](@ref) with the initialized parameters.
 """
 function j4_init(
     epoch::Tepoch,
@@ -147,10 +147,10 @@ function j4_init(
     f_0::Number,
     dn_o2::Number = 0,
     ddn_o6::Number = 0;
-    j4_gc::J4_GravCte{T} = j4_gc_egm08
+    j4c::J4PropagatorConstants{T} = j4c_egm08
 ) where {Tepoch, T}
     # Unpack the gravitational constants to improve code readability.
-    @unpack_J4_GravCte j4_gc
+    @unpack R0, μm, J2, J4 = j4c
 
     # Initial values.
     al_0 = T(a_0) / R0            # ............ Normalized semi-major axis [er]
@@ -209,7 +209,7 @@ function j4_init(
           T(15 / 128) * n̄ * J4  / p_0⁴ * (64 + 72e_0² - (248 + 252e_0²) * sin_i_0² + (196 + 189e_0²) * sin_i_0⁴)
 
     # Create the output structure with the data.
-    J4_Structure{Tepoch, T}(
+    J4Propagator{Tepoch, T}(
         epoch  = epoch,
         al_0   = al_0,
         n_0    = n_0,
@@ -221,7 +221,7 @@ function j4_init(
         M_0    = T(M_0),
         dn_o2  = T(dn_o2),
         ddn_o6 = T(ddn_o6),
-        j4_gc  = j4_gc,
+        j4c    = j4c,
         Δt     = 0,
         al_k   = al_0,
         e_k    = T(e_0),
@@ -239,9 +239,9 @@ function j4_init(
 end
 
 """
-    j4!(j4d::J4_Structure{T}, t::Number) where T
+    j4!(j4d::J4Propagator{T}, t::Number) where T
 
-Propagate the orbit defined in `j4d` (see [`J4_Structure`](@ref)) until the time
+Propagate the orbit defined in `j4d` (see [`J4Propagator`](@ref)) until the time
 `t` [s].
 
 !!! note
@@ -258,11 +258,11 @@ The inertial frame in which the output is represented depends on which frame it
 was used to generate the orbit parameters. Notice that the perturbation theory
 requires an inertial frame with true equator.
 """
-function j4!(j4d::J4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
+function j4!(j4d::J4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # Unpack the variables.
     @unpack epoch, al_0, n_0, e_0, i_0, Ω_0, ω_0, f_0, M_0 = j4d
-    @unpack dn_o2, ddn_o6, j4_gc, δa, δe, δΩ, δω, n̄ = j4d
-    @unpack R0, μm, J2, J4 = j4_gc
+    @unpack dn_o2, ddn_o6, j4c, δa, δe, δΩ, δω, n̄ = j4d
+    @unpack R0, μm, J2, J4 = j4c
 
     # Time elapsed since epoch.
     Δt = T(t)

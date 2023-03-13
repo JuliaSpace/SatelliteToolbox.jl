@@ -77,13 +77,13 @@
             T(45) |> deg2rad
         )
 
-        orbp = init_orbit_propagator(Val(:J4), orb; j4_gc = j4_gc_egm08)
+        orbp = init_orbit_propagator(Val(:J4), orb; j4c = j4c_egm08)
         r, v = propagate_to_epoch!(orbp, jd₁)
 
         @test eltype(r) == T
         @test eltype(v) == T
 
-        @test orbp.j4d.al_k * j4_gc_egm08.R0 ≈ 8000e3 (atol = 1e-3)
+        @test orbp.j4d.al_k * j4c_egm08.R0 ≈ 8000e3 (atol = 1e-3)
         @test orbp.j4d.e_k ≈  0.015 (atol = 1e-6)
         @test orbp.j4d.i_k |> rad2deg ≈  28.5 (atol = 1e-6)
         @test orbp.j4d.ω_k |> rad2deg ≈  225.864212 (atol = 4e-3)
@@ -103,13 +103,13 @@
             T(45) |> deg2rad
         )
 
-        orbp = init_orbit_propagator(Val(:J4), orb; j4_gc = j4_gc_egm08_f32)
+        orbp = init_orbit_propagator(Val(:J4), orb; j4c = j4c_egm08_f32)
         r, v = propagate_to_epoch!(orbp, jd₁)
 
         @test eltype(r) == T
         @test eltype(v) == T
 
-        @test orbp.j4d.al_k * j4_gc_egm08_f32.R0 ≈ 8000e3 (atol = 1e-1)
+        @test orbp.j4d.al_k * j4c_egm08_f32.R0 ≈ 8000e3 (atol = 1e-1)
         @test orbp.j4d.e_k ≈  0.015 (atol = 1e-6)
         @test orbp.j4d.i_k |> rad2deg ≈  28.5 (atol = 2e-6)
         @test orbp.j4d.ω_k |> rad2deg ≈  225.864212 (atol = 4e-3)
