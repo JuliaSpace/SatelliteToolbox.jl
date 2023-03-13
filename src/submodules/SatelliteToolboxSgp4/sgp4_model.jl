@@ -39,10 +39,14 @@ export dsinit, dsper!, dssec!
 ################################################################################
 
 # Copy for Sgp4Propagator.
-Base.copy(m::Sgp4Propagator) = Sgp4Propagator([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
+function Base.copy(m::Sgp4Propagator)
+    return Sgp4Propagator([getfield(m, k) for k = 1:length(fieldnames(m))]...)
+end
 
 # Deepcopy for Sgp4Propagator.
-Base.deepcopy(m::Sgp4Propagator) = Sgp4Propagator([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
+function Base.deepcopy(m::Sgp4Propagator)
+    return Sgp4Propagator([deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m))]...)
+end
 
 ################################################################################
 #                                  Constants
@@ -467,10 +471,9 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
         M_k += nll_0 * (T(1.5) * C1 * Δt^2)
 
     # Check if perigee is above 220 km.
-    elseif algorithm == :sgp4
+    elseif algorithm === :sgp4
 
         sin_M_0, cos_M_0 = sincos(M_0)
-
         δω  = bstar * C3 * cos(ω_0) * Δt
 
         # TODO: sin(M_k) and cos(M_k) can be computed faster here.
@@ -479,16 +482,11 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
             -T(2 / 3) * QOMS2T * bstar * ξ^4 * AE / (e_0 * η) * (
                 (1 + η * cos(M_k))^3 - (1 + η * cos_M_0)^3
             ) : T(0)
-
         M_k += +δω + δM
-
         ω_k += -δω - δM
-
-        e_k = e_0 - bstar * C4 * Δt - bstar * C5 * (sin(M_k) - sin_M_0)
-
-        a_k = all_0 * (@evalpoly(Δt, 1, -C1, -D2, -D3, -D4))^2
-
-        IL  = M_k + ω_k + Ω_k + nll_0 * (@evalpoly(
+        e_k  = e_0 - bstar * C4 * Δt - bstar * C5 * (sin(M_k) - sin_M_0)
+        a_k  = all_0 * (@evalpoly(Δt, 1, -C1, -D2, -D3, -D4))^2
+        IL   = M_k + ω_k + Ω_k + nll_0 * @evalpoly(
             Δt,
             0,
             0,
@@ -496,18 +494,16 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
             +(D2 + 2C1^2),
             +(3D3 + 12C1*D2 + 10C1^3) / 4,
             +(3D4 + 12C1*D3 + 6D2^2 + 30C1^2*D2 + 15C1^4) / 5
-        ))
+        )
 
-    elseif algorithm == :sgp4_lowper
+    elseif algorithm === :sgp4_lowper
         # If so, then
         #     1. Drop all terms after C1 in `a` and `IL`.
         #     2. Drop all terms involving C5.
         #     3. Drop δω.
         #     4. Drop δM.
         e_k = e_0 - bstar * C4 * Δt
-
         a_k = all_0 * (1 - C1 * Δt)^2
-
         IL  = M_k + ω_k + Ω_k + nll_0 * T(3 / 2) * C1 * Δt^2
     else
         error("Unknown algorithm :$algorithm. Possible values are :sgp4, :sgp4_lowper, :sdp4.")
@@ -525,7 +521,7 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # ===========================================
 
     # This is only necessary if we are using SDP4 algorithm.
-    if algorithm == :sdp4
+    if algorithm === :sdp4
         # Compute the elements perturbed by the Lunar-Solar periodics.
         e_k, i_k, Ω_k, ω_k, M_k = dsper!(sgp4ds, e_k, i_k, Ω_k, ω_k, M_k, Δt)
 
@@ -565,11 +561,9 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # However, both produces the same result. Verify which one is better.
     #
     a_yNL = A_30 * sin_i_k / (4k_2 * a_k * β^2)
-    a_yN = e_k * sin_ω_k + a_yNL
-
-    IL_L =  T(1 / 2) * a_yNL * a_xN * (3 + 5θ) / (1 + θ)
-
-    IL_T = IL + IL_L
+    a_yN  = e_k * sin_ω_k + a_yNL
+    IL_L  =  T(1 / 2) * a_yNL * a_xN * (3 + 5θ) / (1 + θ)
+    IL_T  = IL + IL_L
 
     # Solve Kepler's equation for (E + ω).
     # ====================================
@@ -610,17 +604,11 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
 
     e_cos_E = a_xN * cos_E_ω + a_yN * sin_E_ω
     e_sin_E = a_xN * sin_E_ω - a_yN * cos_E_ω
-
     e_L     = sqrt(a_xN^2 + a_yN^2)
-
     p_L     = a_k * (1 - e_L^2)
-
     r       = a_k * (1 - e_cos_E)
-
     dot_r   = XKE * sqrt(a_k) * e_sin_E / r
-
     r_dot_f = XKE * sqrt(p_L) / r
-
     aux     = e_sin_E / (1 + sqrt(1 - e_L^2))
     cos_u   = a_k / r * (cos_E_ω - a_xN + a_yN * aux)
     sin_u   = a_k / r * (sin_E_ω - a_yN - a_xN * aux)
@@ -631,29 +619,19 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # Short-term periodic terms.
 
     Δr       = +k_2 / (2p_L) * (1 - θ²) * cos_2u
-
     Δu       = -k_2 / (4p_L^2) * (7θ² - 1) * sin_2u
-
     ΔΩ       = +3k_2 * θ / (2p_L^2) * sin_2u
-
     Δi       = +3k_2 * θ / (2p_L^2) * sin_i_k * cos_2u
-
     Δdot_r   = -k_2 * n_k / p_L * (1 - θ²) * sin_2u
-
     Δr_dot_f = +k_2 * n_k / p_L * ((1 - θ²) * cos_2u - T(3 / 2) * (1 - 3θ²))
 
     # The short-term periodics are added to give the osculating quantities.
 
     r_k       = r * (1 - T(3 / 2) * k_2 * sqrt(1 - e_L^2) / p_L^2 * (3θ² - 1)) + Δr
-
     u_k       = u + Δu
-
     Ω_k       = Ω_k + ΔΩ
-
     i_k       = i_k + Δi
-
     dot_r_k   = dot_r + Δdot_r
-
     r_dot_f_k = r_dot_f + Δr_dot_f
 
     # Orientation vectors.
@@ -661,17 +639,8 @@ function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     sin_i_k, cos_i_k = sincos(i_k)
     sin_u_k, cos_u_k = sincos(u_k)
 
-    M = SVector{3}(
-        -sin_Ω_k*cos_i_k,
-        +cos_Ω_k*cos_i_k,
-                 sin_i_k
-    )
-
-    N = SVector{3}(
-        +cos_Ω_k,
-        +sin_Ω_k,
-        +T(0)
-    )
+    M = SVector{3}(-sin_Ω_k * cos_i_k, +cos_Ω_k * cos_i_k, sin_i_k)
+    N = SVector{3}(+cos_Ω_k,           +sin_Ω_k,           T(0))
 
     Uv = M * sin_u_k + N * cos_u_k
     Vv = M * cos_u_k - N * sin_u_k
@@ -769,6 +738,7 @@ function dsinit(
 
     #                         Auxiliary Variables
     # ==========================================================================
+
     e_0²        = e_0 * e_0
     e_0³        = e_0 * e_0²
     sqrt_1_e_0² = sqrt(1 - e_0²)
@@ -784,9 +754,9 @@ function dsinit(
     sin_Ω_0, cos_Ω_0 = sincos(Ω_0)
     sin_ω_0, cos_ω_0 = sincos(ω_0)
 
-    sin_i_0²    = sin_i_0 * sin_i_0
-    cos_i_0²    = cos_i_0 * cos_i_0
-    xpidot      = dotω + dotΩ
+    sin_i_0² = sin_i_0 * sin_i_0
+    cos_i_0² = cos_i_0 * cos_i_0
+    xpidot   = dotω + dotΩ
 
     #                        Initial Configuration
     # ==========================================================================
@@ -806,17 +776,15 @@ function dsinit(
     # `day` is the number of days since Jan 0, 1900 at 12h.
     day = T(epoch - (datetime2julian(DateTime(1900, 1, 1, 12, 0, 0)) - 1))
 
-    xnodce     = mod(T(4.5236020) - T(9.2422029e-4) * day, T(2π))
+    xnodce = mod(T(4.5236020) - T(9.2422029e-4) * day, T(2π))
+
     stem, ctem = sincos(xnodce)
 
     zcosil = T(0.91375164) - T(0.03568096) * ctem
     zsinil = sqrt(1 - zcosil^2)
-
     zsinhl = T(0.089683511) * stem / zsinil
     zcoshl = sqrt(1 - zsinhl^2)
-
     gam    = T(5.8351514) + T(0.0019443680) * day
-
     zx     = T(0.39785416) * stem / zsinil
     zy     = zcoshl * ctem + T(0.91744867) * zsinhl * stem
     zx     = atan(zx, zy)
@@ -824,11 +792,12 @@ function dsinit(
 
     zsingl, zcosgl = sincos(zx)
 
-    zmol   = mod(T(4.7199672) + T(0.22997150)  * day - gam, T(2π))
-    zmos   = mod(T(6.2565837) + T(0.017201977) * day,       T(2π))
+    zmol = mod(T(4.7199672) + T(0.22997150)  * day - gam, T(2π))
+    zmos = mod(T(6.2565837) + T(0.017201977) * day,       T(2π))
 
     #                            Do Solar Terms
     # ==========================================================================
+
     zcosg = ZCOSGS
     zsing = ZSINGS
     zcosi = ZCOSIS
@@ -892,7 +861,7 @@ function dsinit(
 
         if ishq
             sh   = -zn * s2 * (z21 + z23);
-			shdq = sh / sin_i_0;
+            shdq = sh / sin_i_0;
         end
 
         ee2  =  +2s1 * s6
@@ -912,6 +881,7 @@ function dsinit(
 
         #                        Do Lunar Terms
         # ======================================================================
+
         sse   = se
         ssi   = si
         ssl   = sl
@@ -1060,11 +1030,12 @@ function dsinit(
         isynfl = false
     end
 
-	if iresfl
+    if iresfl
         #                   Initialize the Integrator
         # ======================================================================
-		xfact = bfact - nll_0
-		xli   = xlamo
+
+        xfact = bfact - nll_0
+        xli   = xlamo
         atime = T(0)
 
         # TODO: Check if this variable can be removed from Sgp4DeepSpace.
@@ -1109,17 +1080,16 @@ function dsinit(
         xnddt *= xldot
     end
 
-	# Set up for original mode (LS terms at epoch non-zero).
+    # Set up for original mode (LS terms at epoch non-zero).
     pgh0 = ph0 = pe0 = pinc0 = pl0 = T(0)
 
     @pack! sgp4ds = atime, xli, xni, xnq, xfact, ssl, ssg, ssh, sse, ssi,
-                     xlamo, omegaq, omgdt, gmst, del1, del2, del3, fasx2, fasx4,
-                     fasx6, d2201, d2211, d3210, d3222, d4410, d4422, d5220,
-                     d5232, d5421, d5433, xnddt, xndot, xldot, zmos, se2, se3,
-                     si2, si3, sl2, sl3, sl4, sgh2, sgh3, sgh4, sh2, sh3, zmol,
-                     ee2, e3, xi2, xi3, xl2, xl3, xl4, xgh2, xgh3, xgh4, xh2,
-                     xh3, pe, pinc, pgh, ph, pl, pgh0, ph0, pe0, pinc0, pl0,
-                     isynfl, iresfl, ilsz
+        xlamo, omegaq, omgdt, gmst, del1, del2, del3, fasx2, fasx4, fasx6,
+        d2201, d2211, d3210, d3222, d4410, d4422, d5220, d5232, d5421, d5433,
+        xnddt, xndot, xldot, zmos, se2, se3, si2, si3, sl2, sl3, sl4, sgh2,
+        sgh3, sgh4, sh2, sh3, zmol, ee2, e3, xi2, xi3, xl2, xl3, xl4, xgh2,
+        xgh3, xgh4, xh2, xh3, pe, pinc, pgh, ph, pl, pgh0, ph0, pe0, pinc0, pl0,
+        isynfl, iresfl, ilsz
 
     return sgp4ds
 end
@@ -1327,6 +1297,7 @@ function dsper!(
 
     #                               Constants
     # ==========================================================================
+
     STEP = T(720.0)
     ZNS  = T(1.19459E-5)
     ZES  = T(0.01675)
@@ -1336,45 +1307,43 @@ function dsper!(
     #                          Update Solar Terms
     # ==========================================================================
 
-	zm    = zmos +  ZNS * Δt
-	zf    = zm   + 2ZES * sin(zm)
+    zm = zmos +  ZNS * Δt
+    zf = zm   + 2ZES * sin(zm)
 
     sinzf, coszf = sincos(zf)
 
-    f2    = +sinzf * sinzf / 2 - T(0.25)
-	f3    = -sinzf * coszf / 2
-	ses   = se2 * f2 + se3 * f3
-	sis   = si2 * f2 + si3 * f3
-	sls   = sl2 * f2 + sl3 * f3 + sl4 * sinzf
-
-	sghs  = sgh2 * f2 + sgh3 * f3 + sgh4 * sinzf
-	shs   = sh2  * f2 + sh3  * f3
+    f2   = +sinzf * sinzf / 2 - T(0.25)
+    f3   = -sinzf * coszf / 2
+    ses  = se2 * f2 + se3 * f3
+    sis  = si2 * f2 + si3 * f3
+    sls  = sl2 * f2 + sl3 * f3 + sl4 * sinzf
+    sghs = sgh2 * f2 + sgh3 * f3 + sgh4 * sinzf
+    shs  = sh2  * f2 + sh3  * f3
 
     #                          Update Lunar Terms
     # ==========================================================================
 
-	zm    = zmol +  ZNL * Δt
-	zf    = zm   + 2ZEL * sin(zm)
+    zm    = zmol +  ZNL * Δt
+    zf    = zm   + 2ZEL * sin(zm)
 
     sinzf, coszf = sincos(zf)
 
-    f2    = +sinzf * sinzf / 2 - T(0.25)
-	f3    = -sinzf * coszf / 2
-	sel   = ee2 * f2 + e3 * f3
-	sil   = xi2 * f2 + xi3 * f3
-	sll   = xl2 * f2 + xl3 * f3 + xl4 * sinzf
-
-	sghl  = xgh2 * f2 + xgh3 * f3 + xgh4 * sinzf
-	shl   = xh2  * f2 + xh3  * f3
+    f2   = +sinzf * sinzf / 2 - T(0.25)
+    f3   = -sinzf * coszf / 2
+    sel  = ee2 * f2 + e3 * f3
+    sil  = xi2 * f2 + xi3 * f3
+    sll  = xl2 * f2 + xl3 * f3 + xl4 * sinzf
+    sghl = xgh2 * f2 + xgh3 * f3 + xgh4 * sinzf
+    shl  = xh2  * f2 + xh3  * f3
 
     #                         Save computed values
     # ==========================================================================
 
-	pgh  = sghs + sghl
-	ph   = shs  + shl
-	pe   = ses  + sel
-	pinc = sis  + sil
-	pl   = sls  + sll
+    pgh  = sghs + sghl
+    ph   = shs  + shl
+    pe   = ses  + sel
+    pinc = sis  + sil
+    pl   = sls  + sll
 
     # Update inclination and eccentricity.
     e_per = e_k + pe
@@ -1388,34 +1357,34 @@ function dsper!(
     # mentioned that this is the behavior selected in GSFC source code.
     if i_per >= T(0.2)
         tmp_ph = ph / sinis;
-		ω_per  = ω_k + pgh - cosis * tmp_ph;
-		Ω_per  = Ω_k + tmp_ph;
-		M_per  = M_k + pl;
+        ω_per  = ω_k + pgh - cosis * tmp_ph;
+        Ω_per  = Ω_k + tmp_ph;
+        M_per  = M_k + pl;
     else
-        sinok   = sin(Ω_k)
-        cosok   = cos(Ω_k)
+        sinok = sin(Ω_k)
+        cosok = cos(Ω_k)
 
-        #                       |----------    dalf     ----------|
-		alfdp   = sinis * sinok + ph * cosok + pinc * cosis * sinok
-        #                       |----------    dbet     ----------|
-		betdp   = sinis * cosok - ph * sinok + pinc * cosis * cosok
+        #                     |----------    dalf     ----------|
+        alfdp = sinis * sinok + ph * cosok + pinc * cosis * sinok
+        #                     |----------    dbet     ----------|
+        betdp = sinis * cosok - ph * sinok + pinc * cosis * cosok
 
         # For the following computation, in which `Ω_per` is used without a
         # trigonometric function, it is advisable to make sure that it stays in
         # the interval [0, 2π].
-        Ω_per   = mod(Ω_k, T(2π))
+        Ω_per = mod(Ω_k, T(2π))
 
-        #                                   |----------    dls    ----------|
-		xls     = M_k + ω_k + cosis * Ω_per + pl + pgh - pinc * Ω_per * sinis
-        Ω_aux   = Ω_per
-        Ω_per   = mod(atan(alfdp, betdp), T(2π))
+        #                                 |----------    dls    ----------|
+        xls   = M_k + ω_k + cosis * Ω_per + pl + pgh - pinc * Ω_per * sinis
+        Ω_aux = Ω_per
+        Ω_per = mod(atan(alfdp, betdp), T(2π))
 
         if abs(Ω_aux - Ω_per) > π
             Ω_per = (Ω_per < Ω_aux) ? Ω_per + T(2π) : Ω_per - T(2π)
         end
 
-		M_per   = M_k + pl;
-		ω_per   = xls - M_per - cosis * Ω_per
+        M_per = M_k + pl;
+        ω_per = xls - M_per - cosis * Ω_per
     end
 
     @pack! sgp4ds = pgh, ph, pe, pinc, pl
