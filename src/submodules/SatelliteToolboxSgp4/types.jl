@@ -10,7 +10,7 @@
 export Sgp4Constants, Sgp4Propagator
 
 """
-    Sgp4Constants{T<:Real}
+    struct Sgp4Constants{T}
 
 Gravitational constants for SGP4.
 
@@ -30,6 +30,12 @@ Gravitational constants for SGP4.
     J4::T
 end
 
+"""
+    struct Sgp4DeepSpace{T}
+
+Structure to store the internal SGP4 variables to account for deep space
+perturbations.
+"""
 @with_kw mutable struct Sgp4DeepSpace{T}
     atime::T  = T(0)
     xli::T    = T(0)
