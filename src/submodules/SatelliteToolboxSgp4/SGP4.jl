@@ -1,4 +1,4 @@
-module SGP4
+module SatelliteToolboxSgp4
 
 using Dates, Parameters, StaticArrays
 using SatelliteToolbox.SatelliteToolboxTLE

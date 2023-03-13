@@ -6,10 +6,10 @@ using LinearAlgebra
 using Printf
 using ReferenceFrameRotations
 using SatelliteToolbox
-using SatelliteToolbox.SGP4
+using SatelliteToolbox.SatelliteToolboxSgp4
 using StaticArrays
 
-@testset "Atmospheric Models" verbose=true begin
+@testset "Atmospheric Models" verbose = true begin
     cd("./earth/atmospheric_models/expatmosphere/")
     include("./earth/atmospheric_models/expatmosphere/expatmosphere.jl")
     cd("../../../")
@@ -25,7 +25,7 @@ using StaticArrays
 end
 println("")
 
-@testset "Geomagnetic Field Models" verbose=true begin
+@testset "Geomagnetic Field Models" verbose = true begin
     cd("./earth/geomagnetic_field_models/")
     include("./earth/geomagnetic_field_models/dipole.jl")
     include("./earth/geomagnetic_field_models/igrf.jl")
@@ -33,21 +33,21 @@ println("")
 end
 println("")
 
-@testset "Gravity Field Models" verbose=true begin
+@testset "Gravity Field Models" verbose = true begin
     cd("./earth/gravity_models/")
     include("./earth/gravity_models/gravity_models.jl")
     cd("../../")
 end
 println("")
 
-@testset "Space Indices" verbose=true begin
+@testset "Space Indices" verbose = true begin
     cd("./earth/space_indices/")
     include("./earth/space_indices/space_indices.jl")
     cd("../../")
 end
 println("")
 
-@testset "General orbit functions" verbose=true begin
+@testset "General orbit functions" verbose = true begin
     include("./orbit/general.jl")
     include("./orbit/representations.jl")
     include("./orbit/ground_repeating_orbits.jl")
@@ -55,13 +55,13 @@ println("")
 end
 println("")
 
-@testset "Conversion from osculating to mean elements" verbose=true begin
+@testset "Conversion from osculating to mean elements" verbose = true begin
     include("./orbit/mean_elements/j2osc.jl")
     include("./orbit/mean_elements/sgp4.jl")
 end
 println("")
 
-@testset "Orbit propagators" verbose=true begin
+@testset "Orbit propagators" verbose = true begin
     cd("./orbit/propagators")
     include("./orbit/propagators/j2.jl")
     include("./orbit/propagators/j4.jl")
@@ -71,7 +71,7 @@ println("")
 end
 println("")
 
-@testset "Coordinate transformations" verbose=true begin
+@testset "Coordinate transformations" verbose = true begin
     cd("./transformations/fk5/")
     include("./transformations/fk5/fk5.jl")
     cd("../../")
@@ -101,25 +101,25 @@ println("")
 end
 println("")
 
-@testset "Functions related with time" verbose=true begin
+@testset "Functions related with time" verbose = true begin
      include("./time/raan.jl")
      include("./time/time.jl")
 end
 println("")
 
-@testset "Functions related with the Sun" verbose=true begin
+@testset "Functions related with the Sun" verbose = true begin
     include("./sun/equation_of_time.jl")
     include("./sun/sun_position.jl")
     include("./sun/sun_velocity.jl")
 end
 println("")
 
-@testset "Functions related with the Moon" verbose=true begin
+@testset "Functions related with the Moon" verbose = true begin
     include("./moon/moon_position.jl")
 end
 println("")
 
-@testset "Submodules" verbose=true begin
+@testset "Submodules" verbose = true begin
     cd("./submodules/")
     include("./submodules/submodules.jl")
     cd("../")
