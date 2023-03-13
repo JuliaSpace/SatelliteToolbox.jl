@@ -293,8 +293,8 @@ Structure that holds the information related to the SGP4 propagator.
 
 # Fields
 
-- `sgp4d`: Structure that stores the SGP4 data (see [`SGP4_Structure`](@ref)).
+- `sgp4d`: Structure that stores the SGP4 data (see [`Sgp4Propagator`](@ref)).
 """
 struct OrbitPropagatorSGP4{Tepoch, T} <: OrbitPropagator{Tepoch, T}
-    sgp4d::SGP4_Structure{Tepoch, T}
+    sgp4d::Sgp4Propagator{Tepoch, T}
 end

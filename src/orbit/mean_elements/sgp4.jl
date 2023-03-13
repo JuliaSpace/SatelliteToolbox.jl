@@ -18,7 +18,7 @@
 export rv_to_mean_elements_sgp4, rv_to_tle
 
 """
-    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; estimate_bstar::Bool = true, mean_elements_epoch::Symbol = :end, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84, print_debug::Bool = true, max_iterations::Int = 50, atol::Number = 2e-4, rtol::Number = 2e-4) where {T, Tv<:AbstractVector}
+    rv_to_mean_elements_sgp4(vjd::AbstractVector{T}, vr::AbstractVector{Tv}, vv::AbstractVector{Tv}, W = I; kwargs...) where {T, Tv<:AbstractVector}
 
 Compute the mean elements for the orbit propagator SGP4 based on the position
 vectors `vr` and velocity vectors `vr`, both represented in TEME reference
@@ -34,7 +34,8 @@ The matrix `W` defined the weights for the least-square algorithm.
 - `mean_elements_epoch::Symbol`: If it is  `:end`, the epoch of the mean
     elements will be equal to the last value in `vjd`. Otherwise, if it is
     `:begin`, the epoch will be selected as the first value in `vjd`.
-- `sgp4_gc::SGP4_GravCte`: SPG4 gravitational constants (see `SGP4_GravCte`).
+- `sgp4c::Sgp4Constants`: SPG4 orbit propagator constants (see
+    [`Sgp4Constants`](@ref)). (**Default** = `sgp4c_wgs84`)
 - `print_debug::Bool`: If `true`, then debug information will be printed to the
     `stdout`. (**Default** = `true`)
 - `max_iterations::Int`: The maximum allowed number of iterations.
@@ -64,7 +65,7 @@ function rv_to_mean_elements_sgp4(
     W = I;
     estimate_bstar::Bool = true,
     mean_elements_epoch::Symbol = :end,
-    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
+    sgp4c::Sgp4Constants = sgp4c_wgs84,
     print_debug::Bool = true,
     max_iterations::Int = 50,
     atol::Number = 2e-4,
@@ -131,7 +132,7 @@ function rv_to_mean_elements_sgp4(
             r̂, v̂ = estimate_bstar ?
                 _sgp4_sv(
                     Δt,
-                    sgp4_gc,
+                    sgp4c,
                     epoch,
                     x₁[1],
                     x₁[2],
@@ -143,7 +144,7 @@ function rv_to_mean_elements_sgp4(
                 ) :
                 _sgp4_sv(
                     Δt,
-                    sgp4_gc,
+                    sgp4c,
                     epoch,
                     x₁[1],
                     x₁[2],
@@ -225,7 +226,7 @@ function rv_to_mean_elements_sgp4(
 end
 
 """
-    rv_to_tle(args...; name::String = "UNDEFINED", sat_num::Int = 9999, classification::Char = 'U', int_designator = "999999", elem_set_number::Int = 0, rev_num, kwargs...)
+    rv_to_tle(args...; kwargs...)
 
 Convert a set of position and velocity vectors represented in TEME reference
 frame to a TLE. The arguments `args` and keywords `kwargs` are the same as those
@@ -244,7 +245,7 @@ function rv_to_tle(
     int_designator = "999999",
     elem_set_number::Int = 0,
     rev_num::Int = 0,
-    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84,
+    sgp4c::Sgp4Constants = sgp4c_wgs84,
     kwargs...
 )
     # Convert the position and velocity vectors to mean elements.
@@ -259,7 +260,7 @@ function rv_to_tle(
     epoch_day  = (dt - dt₀).value / 1000 / 86400 + 1
 
     # Obtain the Keplerian elements with the right units.
-    a₀ = x[1] / (1000sgp4_gc.R0)
+    a₀ = x[1] / (1000sgp4c.R0)
     e₀ = x[2]
     i₀ = rad2deg(x[3])
     Ω₀ = rad2deg(x[4])
@@ -267,7 +268,7 @@ function rv_to_tle(
     M₀ = rad2deg(f_to_M(e₀, x[6]))
 
     # Obtain the mean motion [rad/min].
-    n₀ = sgp4_gc.XKE / sqrt(a₀ * a₀ * a₀)
+    n₀ = sgp4c.XKE / sqrt(a₀ * a₀ * a₀)
 
     # Construct the TLE.
     tle = TLE(
@@ -305,7 +306,7 @@ end
 # Compute the SGP4 algorithm considering all variables in a state vector.
 function _sgp4_sv(
     Δt::Number,
-    sgp4_gc::SGP4_GravCte,
+    sgp4c::Sgp4Constants,
     epoch::Number,
     rx_TEME::Number,
     ry_TEME::Number,
@@ -321,7 +322,7 @@ function _sgp4_sv(
     orb_TEME = rv_to_kepler(r_TEME, v_TEME, epoch)
 
     # Obtain the required mean elements to initialize the SGP4.
-    a₀ = orb_TEME.a / (1000sgp4_gc.R0) # .................. Semi-major axis [ER]
+    a₀ = orb_TEME.a / (1000sgp4c.R0) # .................. Semi-major axis [ER]
     e₀ = orb_TEME.e                    # ...................... Eccentricity [ ]
     i₀ = orb_TEME.i                    # ..................... Inclination [rad]
     Ω₀ = orb_TEME.Ω                    # ............................ RAAN [rad]
@@ -329,9 +330,9 @@ function _sgp4_sv(
     M₀ = f_to_M(e₀, orb_TEME.f)        # .................... Mean anomaly [rad]
 
     # Obtain the mean motion [rad/min].
-    n₀ = sgp4_gc.XKE / sqrt(a₀ * a₀ * a₀)
+    n₀ = sgp4c.XKE / sqrt(a₀ * a₀ * a₀)
 
-    r, v, ~ = sgp4(Δt / 60, sgp4_gc, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar)
+    r, v, ~ = sgp4(Δt / 60, sgp4c, epoch, n₀, e₀, i₀, Ω₀, ω₀, M₀, bstar)
 
     # Return the elements using SI units.
     return 1000r, 1000v
@@ -345,7 +346,7 @@ function _sgp4_jacobian(
     estimate_bstar::Bool = true,
     pert::T = 1e-3,
     perttol::T = 1e-5,
-    sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84
+    sgp4c::Sgp4Constants = sgp4c_wgs84
 ) where {NS, NO, T}
     num_states = NS
     dim_obs    = NO
@@ -384,7 +385,7 @@ function _sgp4_jacobian(
         x₂ = setindex(x₂, α, j)
 
         # Obtain the Jacobian by finite differentiation.
-        r, v = _sgp4_sv(Δt, sgp4_gc, epoch, x₂...)
+        r, v = _sgp4_sv(Δt, sgp4c, epoch, x₂...)
         y₂   = vcat(r,v)
 
         M[:, j] .= (y₂ .- y₁) ./ ϵ

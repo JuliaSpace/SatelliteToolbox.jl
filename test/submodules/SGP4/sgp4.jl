@@ -29,12 +29,14 @@
     SGP4_results = []
 
     for tle in tles
-        filename = @sprintf("./sgp4_tests/aiaa-2006-6753/sgp4_tle_%d_result.txt",
-                            tle.sat_num)
-        SGP4_results = readdlm(filename; comments=true)
+        filename = @sprintf(
+            "./sgp4_tests/aiaa-2006-6753/sgp4_tle_%d_result.txt",
+            tle.sat_num
+        )
+        SGP4_results = readdlm(filename; comments = true)
 
         # Initialize the orbit propagator.
-        sgp4d = sgp4_init(tle, sgp4_gc_wgs72)
+        sgp4d = sgp4_init(tle, sgp4c_wgs72)
 
         t = SGP4_results[:,1]
         @inbounds for k = 1:length(t)

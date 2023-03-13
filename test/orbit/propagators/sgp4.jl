@@ -49,10 +49,10 @@
                 "./sgp4_tests/aiaa-2006-6753/sgp4_tle_%d_result.txt",
                 tle.sat_num
             )
-            SGP4_results = readdlm(filename; comments=true)
+            SGP4_results = readdlm(filename; comments = true)
 
             # Initialize the orbit propagator.
-            orbp = init_orbit_propagator(Val(:sgp4), tle; sgp4_gc = sgp4_gc_wgs72)
+            orbp = init_orbit_propagator(Val(:sgp4), tle; sgp4c = sgp4c_wgs72)
 
             # Propagate the orbit.
             t = SGP4_results[:,1] * 60
@@ -91,7 +91,7 @@
         SGP4_results = readdlm(filename; comments = true)
 
         # Initialize the orbit propagator.
-        orbp = init_orbit_propagator(Val(:sgp4), tle[1]; sgp4_gc = sgp4_gc_wgs72)
+        orbp = init_orbit_propagator(Val(:sgp4), tle[1]; sgp4c = sgp4c_wgs72)
 
         # Propagate the orbit.
         t = SGP4_results[:,1]   # [min.]
@@ -146,7 +146,7 @@
             SGP4_results = readdlm(filename; comments=true)
 
             # Initialize the orbit propagator.
-            orbp = init_orbit_propagator(Val(:sgp4), tle; sgp4_gc = sgp4_gc_wgs72_f32)
+            orbp = init_orbit_propagator(Val(:sgp4), tle; sgp4c = sgp4c_wgs72_f32)
 
             # Propagate the orbit.
             t = SGP4_results[:,1] * 60
@@ -185,7 +185,7 @@
         SGP4_results = readdlm(filename; comments = true)
 
         # Initialize the orbit propagator.
-        orbp = init_orbit_propagator(Val(:sgp4), tle[1]; sgp4_gc = sgp4_gc_wgs72_f32)
+        orbp = init_orbit_propagator(Val(:sgp4), tle[1]; sgp4c = sgp4c_wgs72_f32)
 
         # Propagate the orbit.
         t = SGP4_results[:,1]   # [min.]

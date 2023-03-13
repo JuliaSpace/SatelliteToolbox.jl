@@ -29,8 +29,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-export sgp4_gc_wgs72, sgp4_gc_wgs84
-export sgp4_gc_wgs72_f32, sgp4_gc_wgs84_f32
+export sgp4c_wgs72, sgp4c_wgs84
+export sgp4c_wgs72_f32, sgp4c_wgs84_f32
 export sgp4_init, sgp4!
 export dsinit, dsper!, dssec!
 
@@ -38,18 +38,18 @@ export dsinit, dsper!, dssec!
 #                                  Overloads
 ################################################################################
 
-# Copy for SGP4_Structure.
-Base.copy(m::SGP4_Structure) = SGP4_Structure([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
+# Copy for Sgp4Propagator.
+Base.copy(m::Sgp4Propagator) = Sgp4Propagator([ getfield(m, k) for k = 1:length(fieldnames(m)) ]...)
 
-# Deepcopy for SGP4_Structure.
-Base.deepcopy(m::SGP4_Structure) = SGP4_Structure([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
+# Deepcopy for Sgp4Propagator.
+Base.deepcopy(m::Sgp4Propagator) = Sgp4Propagator([ deepcopy(getfield(m, k)) for k = 1:length(fieldnames(m)) ]...)
 
 ################################################################################
 #                                  Constants
 ################################################################################
 
-# WGS-84 / EGM-08 Gravitational constants.
-const sgp4_gc_wgs84 = SGP4_GravCte{Float64}(
+# WGS-84 / EGM-08 gravitational constants.
+const sgp4c_wgs84 = Sgp4Constants{Float64}(
     R0 / 1000,
     60.0 / sqrt(6378.137^3 / 398600.5),
      0.00108262998905,
@@ -57,7 +57,7 @@ const sgp4_gc_wgs84 = SGP4_GravCte{Float64}(
     -0.00000161098761
 )
 
-const sgp4_gc_wgs84_f32 = SGP4_GravCte{Float32}(
+const sgp4c_wgs84_f32 = Sgp4Constants{Float32}(
     R0 / 1000,
     60.0 / sqrt(6378.137^3 / 398600.5),
      0.00108262998905,
@@ -65,8 +65,8 @@ const sgp4_gc_wgs84_f32 = SGP4_GravCte{Float32}(
     -0.00000161098761
 )
 
-# WGS-72 Gravitational constants.
-const sgp4_gc_wgs72 = SGP4_GravCte{Float64}(
+# WGS-72 gravitational constants.
+const sgp4c_wgs72 = Sgp4Constants{Float64}(
     6378.135,
     60.0 / sqrt(6378.135^3 / 398600.8),
      0.001082616,
@@ -74,7 +74,7 @@ const sgp4_gc_wgs72 = SGP4_GravCte{Float64}(
     -0.00000165597
 )
 
-const sgp4_gc_wgs72_f32 = SGP4_GravCte{Float32}(
+const sgp4c_wgs72_f32 = Sgp4Constants{Float32}(
     6378.135,
     60.0 / sqrt(6378.135^3 / 398600.8),
      0.001082616,
@@ -87,14 +87,14 @@ const sgp4_gc_wgs72_f32 = SGP4_GravCte{Float32}(
 ################################################################################
 
 """
-    sgp4_init(spg4_gc::SGP4_GravCte{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
-    sgp4_init(tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+    sgp4_init(spg4_gc::Sgp4Constants{T}, epoch::Number, n_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, M_0::Number, bstar::Number) where T
+    sgp4_init(tle::TLE, sgp4c::Sgp4Constants = sgp4c_wgs84)
 
 Initialize the data structure of SGP4 algorithm.
 
 # Args
 
-- `spg4_gc::SGP4_GravCet`: SPG4 gravitational constants (see `SGP4_GravCte`).
+- `spg4_gc::SGP4_GravCet`: SPG4 gravitational constants (see `Sgp4Constants`).
 - `epoch::Number`: Epoch of the orbital elements [Julian Day].
 - `n_0::Number`: SGP type "mean" mean motion at epoch [rad/min].
 - `e_0::Number`: "Mean" eccentricity at epoch.
@@ -107,15 +107,15 @@ Initialize the data structure of SGP4 algorithm.
 
 # Returns
 
-The structure [`SGP4_Structure`](@ref) with the initialized parameters.
+The structure [`Sgp4Propagator`](@ref) with the initialized parameters.
 """
 function sgp4_init(
     tle::TLE,
-    sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84
+    sgp4c::Sgp4Constants{T} = sgp4c_wgs84
 ) where T
     d2r = T(π / 180)
     return sgp4_init(
-        sgp4_gc,
+        sgp4c,
         tle.epoch,
         tle.n * T(2π / (24 * 60)),
         tle.e,
@@ -128,7 +128,7 @@ function sgp4_init(
 end
 
 function sgp4_init(
-    sgp4_gc::SGP4_GravCte{T},
+    sgp4c::Sgp4Constants{T},
     epoch::Tepoch,
     n_0::Number,
     e_0::Number,
@@ -139,16 +139,7 @@ function sgp4_init(
     bstar::Number
 ) where {Tepoch, T}
     # Unpack the gravitational constants to improve code readability.
-    @unpack_SGP4_GravCte sgp4_gc
-
-    # Convert the inputs to the correct type.
-    n_0   = T(n_0)
-    e_0   = T(e_0)
-    i_0   = T(i_0)
-    Ω_0   = T(Ω_0)
-    ω_0   = T(ω_0)
-    M_0   = T(M_0)
-    bstar = T(bstar)
+    @unpack R0, XKE, J2, J3, J4 = sgp4c
 
     # Constants
     # =========
@@ -178,9 +169,9 @@ function sgp4_init(
     # Auxiliary variables to improve the performance.
     # ===============================================
 
-    e_0² = e_0 * e_0
+    e_0² = T(e_0) * T(e_0)
 
-    sin_i_0, θ = sincos(i_0)
+    sin_i_0, θ = sincos(T(i_0))
     θ²         = θ  * θ
     θ³         = θ² * θ
     θ⁴         = θ² * θ²
@@ -192,12 +183,12 @@ function sgp4_init(
 
     aux = (3θ² - 1) / (1 - e_0²)^(T(3 / 2))
 
-    a_1 = (XKE / n_0)^(T(2 / 3))
+    a_1 = (XKE / T(n_0))^(T(2 / 3))
     δ_1 = T(3 / 2) * k_2 / (a_1 * a_1)* aux
     a_0 = a_1 * @evalpoly(δ_1, 1, -T(1 / 3), -1, -T(134 / 81))
-    δ_0 = T(3 / 2) * k_2 / (a_0 * a_0) * aux
+    δ_0 = T(3 / 2) * k_2 / (T(a_0) * T(a_0)) * aux
 
-    nll_0 = n_0 / (1 + δ_0)
+    nll_0 = T(n_0) / (1 + δ_0)
 
     # Vallado's implementation of SGP4 [2] compute the semi-major axis
     # considering the new angular velocity, which is called `no_unkozai`. In the
@@ -215,7 +206,7 @@ function sgp4_init(
     # ==============
 
     # Compute the orbit perigee [ER].
-    perigee = (all_0 * (1 - e_0) - AE) * XKMPER
+    perigee = (all_0 * (1 - T(e_0)) - AE) * XKMPER
 
     # For perigee below 156 km, the values of S and QOMS2T are altered.
     if perigee < 156
@@ -223,7 +214,7 @@ function sgp4_init(
             s = 20 / XKMPER + AE
         # Perigee between 98km and 156km.
         else
-            s = all_0 * (1 - e_0) - s + AE
+            s = all_0 * (1 - T(e_0)) - s + AE
         end
 
         QOMS2T = (q_0 - s) * (q_0 - s) * (q_0 - s) * (q_0 - s)
@@ -243,7 +234,7 @@ function sgp4_init(
     β_0⁷ = β_0⁴ * β_0³
     β_0⁸ = β_0⁴ * β_0⁴
 
-    η  = all_0 * e_0 * ξ
+    η  = all_0 * T(e_0) * ξ
     η² = η  * η
     η³ = η² * η
     η⁴ = η² * η²
@@ -258,28 +249,28 @@ function sgp4_init(
     aux2 = ξ⁴ * all_0 * β_0² * aux1
 
     C2 = QOMS2T * ξ⁴ * nll_0 * aux1 * (
-        all_0 * (1 + T(3 / 2) * η² + 4e_0 * η + e_0 * η³) +
+        all_0 * (1 + T(3 / 2) * η² + 4T(e_0) * η + T(e_0) * η³) +
         T(3 / 2) * (k_2 * ξ) / aux0 * (-T(1 / 2) + T(3 / 2) * θ²) * (8 + 24η² + 3η⁴)
     )
 
-    C1  = bstar * C2
+    C1  = T(bstar) * C2
     C1² = C1  * C1
     C1³ = C1² * C1
     C1⁴ = C1² * C1²
 
-    C3 = (e_0 > 1e-4) ?
-        QOMS2T * ξ⁵ * A_30 * nll_0 * AE * sin_i_0 / (k_2 * e_0) :
+    C3 = (T(e_0) > 1e-4) ?
+        QOMS2T * ξ⁵ * A_30 * nll_0 * AE * sin_i_0 / (k_2 * T(e_0)) :
         T(0)
 
     C4 = 2nll_0 * QOMS2T * aux2 * (
-        2η * (1 + e_0 * η) + T(1 / 2) * e_0 + T(1 / 2) * η³ -
+        2η * (1 + T(e_0) * η) + T(1 / 2) * T(e_0) + T(1 / 2) * η³ -
         2k_2 * ξ / (all_0 * aux0) * (
-            3 * (1 - 3θ²) * (1 + T(3 / 2) * η² - 2e_0 * η - T(1 / 2) * e_0 * η³) +
-            T(3 / 4) * (1 - θ²) * (2η² - e_0 * η - e_0 * η³) * cos(2ω_0)
+            3 * (1 - 3θ²) * (1 + T(3 / 2) * η² - 2T(e_0) * η - T(1 / 2) * T(e_0) * η³) +
+            T(3 / 4) * (1 - θ²) * (2η² - T(e_0) * η - T(e_0) * η³) * cos(2T(ω_0))
         )
     )
 
-    C5 = 2QOMS2T * aux2 * (1 + T(11 / 4) * η * (η + e_0) + e_0 * η³)
+    C5 = 2QOMS2T * aux2 * (1 + T(11 / 4) * η * (η + T(e_0)) + T(e_0) * η³)
 
     D2 = 4all_0 * ξ * C1²
 
@@ -310,31 +301,31 @@ function sgp4_init(
 
     # The current orbital parameters are obtained from the TLE.
     a_k = all_0
-    e_k = e_0
-    i_k = i_0
-    Ω_k = Ω_0
-    ω_k = ω_0
-    M_k = M_0
+    e_k = T(e_0)
+    i_k = T(i_0)
+    Ω_k = T(Ω_0)
+    ω_k = T(ω_0)
+    M_k = T(M_0)
     n_k = nll_0
 
-    sgp4_ds::SGP4_DeepSpace{T} = SGP4_DeepSpace{T}()
+    sgp4ds::Sgp4DeepSpace{T} = Sgp4DeepSpace{T}()
 
     # If the orbit period is higher than 225 min., then we must consider the
     # deep space perturbations. This is indicated by selecting the algorithm
     # `:sdp4`.
-    if 2π / n_0 >= 225.0
+    if 2π / T(n_0) >= 225.0
         algorithm = :sdp4
 
         # Initialize the values for the SDP4 (deep space) algorithm.
-        sgp4_ds = dsinit(
+        sgp4ds = dsinit(
             epoch,
             nll_0,
             all_0,
-            e_0,
-            i_0,
-            Ω_0,
-            ω_0,
-            M_0,
+            T(e_0),
+            T(i_0),
+            T(Ω_0),
+            T(ω_0),
+            T(M_0),
             dotM,
             dotω,
             dotΩ
@@ -350,15 +341,15 @@ function sgp4_init(
     end
 
     # Create the output structure with the data.
-    SGP4_Structure{Tepoch, T}(
+    Sgp4Propagator{Tepoch, T}(
         epoch,
-        n_0,
-        e_0,
-        i_0,
-        Ω_0,
-        ω_0,
-        M_0,
-        bstar,
+        T(n_0),
+        T(e_0),
+        T(i_0),
+        T(Ω_0),
+        T(ω_0),
+        T(M_0),
+        T(bstar),
         0,
         a_k,
         e_k,
@@ -392,15 +383,15 @@ function sgp4_init(
         dotΩ1,
         dotΩ,
         algorithm,
-        sgp4_gc,
-        sgp4_ds
+        sgp4c,
+        sgp4ds
     )
 end
 
 """
-    sgp4!(sgp4d::SGP4_Structure{Tepoch, T}, t::Number) where T
+    sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where T
 
-Propagate the orbit defined in `sgp4d` (see [`SGP4_Structure`](@ref)) until the
+Propagate the orbit defined in `sgp4d` (see [`Sgp4Propagator`](@ref)) until the
 time `t` [min].
 
 !!! note
@@ -411,10 +402,10 @@ time `t` [min].
 - The position vector represented in TEME frame at time `t` [km].
 - The velocity vector represented in TEME frame at time `t` [km/s].
 """
-function sgp4!(sgp4d::SGP4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
+function sgp4!(sgp4d::Sgp4Propagator{Tepoch, T}, t::Number) where {Tepoch, T}
     # Unpack variables.
-    @unpack_SGP4_Structure sgp4d
-    @unpack_SGP4_GravCte   sgp4_gc
+    @unpack_Sgp4Propagator sgp4d
+    @unpack_Sgp4Constants   sgp4c
 
     # After unpacking sgp4d, we have two sets of orbit elements:
     #
@@ -459,7 +450,7 @@ function sgp4!(sgp4d::SGP4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     if algorithm == :sdp4
         # Compute the elements perturbed by the secular effects.
         n_k, e_k, i_k, Ω_k, ω_k, M_k = dssec!(
-            sgp4_ds,
+            sgp4ds,
             nll_0,
             e_0,
             i_0,
@@ -536,7 +527,7 @@ function sgp4!(sgp4d::SGP4_Structure{Tepoch, T}, t::Number) where {Tepoch, T}
     # This is only necessary if we are using SDP4 algorithm.
     if algorithm == :sdp4
         # Compute the elements perturbed by the Lunar-Solar periodics.
-        e_k, i_k, Ω_k, ω_k, M_k = dsper!(sgp4_ds, e_k, i_k, Ω_k, ω_k, M_k, Δt)
+        e_k, i_k, Ω_k, ω_k, M_k = dsper!(sgp4ds, e_k, i_k, Ω_k, ω_k, M_k, Δt)
 
         IL = M_k + ω_k + Ω_k
 
@@ -710,7 +701,7 @@ end
 
 Initialize the deep space structure. This function performs the initial
 computations and save the values at an instance of the structure
-`SGP4_DeepSpace`. Those will be used when calling the functions `dsper!` and
+`Sgp4DeepSpace`. Those will be used when calling the functions `dsper!` and
 `dpsec!`.
 
 # Args
@@ -729,7 +720,7 @@ computations and save the values at an instance of the structure
 
 # Returns
 
-An instance of the structure `SGP4_DeepSpace` with the initalized values.
+An instance of the structure `Sgp4DeepSpace` with the initalized values.
 """
 function dsinit(
     epoch::Tepoch,
@@ -744,8 +735,8 @@ function dsinit(
     dotω::T,
     dotΩ::T
 ) where {Tepoch, T}
-    sgp4_ds::SGP4_DeepSpace{T} = SGP4_DeepSpace{T}()
-    @unpack_SGP4_DeepSpace sgp4_ds
+    sgp4ds::Sgp4DeepSpace{T} = Sgp4DeepSpace{T}()
+    @unpack_Sgp4DeepSpace sgp4ds
 
     #                               Constants
     # ==========================================================================
@@ -1076,7 +1067,7 @@ function dsinit(
 		xli   = xlamo
         atime = T(0)
 
-        # TODO: Check if this variable can be removed from SGP4_DeepSpace.
+        # TODO: Check if this variable can be removed from Sgp4DeepSpace.
         xni   = nll_0
 
         # Compute the "dot" terms.
@@ -1121,7 +1112,7 @@ function dsinit(
 	# Set up for original mode (LS terms at epoch non-zero).
     pgh0 = ph0 = pe0 = pinc0 = pl0 = T(0)
 
-    @pack! sgp4_ds = atime, xli, xni, xnq, xfact, ssl, ssg, ssh, sse, ssi,
+    @pack! sgp4ds = atime, xli, xni, xnq, xfact, ssl, ssg, ssh, sse, ssi,
                      xlamo, omegaq, omgdt, gmst, del1, del2, del3, fasx2, fasx4,
                      fasx6, d2201, d2211, d3210, d3222, d4410, d4422, d5220,
                      d5232, d5421, d5433, xnddt, xndot, xldot, zmos, se2, se3,
@@ -1130,20 +1121,20 @@ function dsinit(
                      xh3, pe, pinc, pgh, ph, pl, pgh0, ph0, pe0, pinc0, pl0,
                      isynfl, iresfl, ilsz
 
-    return sgp4_ds
+    return sgp4ds
 end
 
 """
-    dssec!(sgp4_ds::SGP4_DeepSpace{T}, nll_0::T, e_0::T, i_0::T, ω_0::T, Ω_k::T, ω_k::T, M_k::T, dotω::T, Δt::Number) where T<:Number
+    dssec!(sgp4ds::Sgp4DeepSpace{T}, nll_0::T, e_0::T, i_0::T, ω_0::T, Ω_k::T, ω_k::T, M_k::T, dotω::T, Δt::Number) where T<:Number
 
 Compute the secular effects.
 
 !!! note
-    The internal values in `sgp4_ds` will be modified.
+    The internal values in `sgp4ds` will be modified.
 
 # Args
 
-- `sgp4_ds::SGP4_DeepSpace`: Deep space structure (see [`SGP4_DeepSpace`](@ref)).
+- `sgp4ds::Sgp4DeepSpace`: Deep space structure (see [`Sgp4DeepSpace`](@ref)).
 - `nll_0::Number`: Initial mean motion [rad/min].
 - `e_0::Number`: Initial eccentricity.
 - `i_0::Number`: Initial inclination [rad].
@@ -1166,7 +1157,7 @@ The following elements perturbed by the secular effects:
 - Mean anomaly [rad].
 """
 function dssec!(
-    sgp4_ds::SGP4_DeepSpace{T},
+    sgp4ds::Sgp4DeepSpace{T},
     nll_0::T,
     e_0::T,
     i_0::T,
@@ -1178,7 +1169,7 @@ function dssec!(
     Δt::Number
 ) where T<:Number
     # Unpack variables.
-    @unpack_SGP4_DeepSpace sgp4_ds
+    @unpack_Sgp4DeepSpace sgp4ds
 
     #                               Constants
     # ==========================================================================
@@ -1289,22 +1280,22 @@ function dssec!(
     n_sec = xni + ft * (xndot + ft * xnddt / 2)
     M_sec = !isynfl ? xl - 2Ω_sec + 2θ : xl - Ω_sec - ω_sec + θ
 
-    @pack! sgp4_ds = atime, xni, xli, xnddt, xndot, xldot
+    @pack! sgp4ds = atime, xni, xli, xnddt, xndot, xldot
 
     return n_sec, e_sec, i_sec, Ω_sec, ω_sec, M_sec
 end
 
 """
-    dsper!(sgp4_ds::SGP4_DeepSpace{T}, e_k::T, i_k::T, Ω_k::T, ω_k::T, M_k::T, Δt:Number) where T<:Number
+    dsper!(sgp4ds::Sgp4DeepSpace{T}, e_k::T, i_k::T, Ω_k::T, ω_k::T, M_k::T, Δt:Number) where T<:Number
 
 Compute the effects caused by Lunar-Solar periodics.
 
 !!! note
-    The internal values in `sgp4_ds` will be modified.
+    The internal values in `sgp4ds` will be modified.
 
 # Args
 
-- `sgp4_ds::SGP4_DeepSpace`: Deep space structure (see [`SGP4_DeepSpace`](@ref)).
+- `sgp4ds::Sgp4DeepSpace`: Deep space structure (see [`Sgp4DeepSpace`](@ref)).
 - `e_k::Number`: Current eccentricity.
 - `i_k::Number`: Current inclination [rad].
 - `Ω_k::Number`: Current right ascension of the ascending node [rad].
@@ -1323,7 +1314,7 @@ The following elements perturbed by lunar-solar periodics.
 - Mean anomaly [rad].
 """
 function dsper!(
-    sgp4_ds::SGP4_DeepSpace{T},
+    sgp4ds::Sgp4DeepSpace{T},
     e_k::T,
     i_k::T,
     Ω_k::T,
@@ -1332,7 +1323,7 @@ function dsper!(
     Δt::Number
 ) where T<:Number
     # Unpack variables.
-    @unpack_SGP4_DeepSpace sgp4_ds
+    @unpack_Sgp4DeepSpace sgp4ds
 
     #                               Constants
     # ==========================================================================
@@ -1427,7 +1418,7 @@ function dsper!(
 		ω_per   = xls - M_per - cosis * Ω_per
     end
 
-    @pack! sgp4_ds = pgh, ph, pe, pinc, pl
+    @pack! sgp4ds = pgh, ph, pe, pinc, pl
 
     return e_per, i_per, Ω_per, ω_per, M_per
 end

@@ -40,7 +40,7 @@
     )
 
     # Convert some elements to compare with the TLE.
-    a₀ = xo[1] / (1000sgp4_gc_wgs84.R0)
+    a₀ = xo[1] / (1000sgp4c_wgs84.R0)
     e₀ = xo[2]
     i₀ = rad2deg(xo[3])
     Ω₀ = rad2deg(xo[4])
@@ -48,7 +48,7 @@
     M₀ = rad2deg(f_to_M(e₀, xo[6]))
 
     # Obtain the mean motion [rev / day].
-    n₀ = 720 * sgp4_gc_wgs84.XKE / (sqrt(a₀ * a₀ * a₀) * π)
+    n₀ = 720 * sgp4c_wgs84.XKE / (sqrt(a₀ * a₀ * a₀) * π)
 
     # Compare.
     @test epoch == tle.epoch

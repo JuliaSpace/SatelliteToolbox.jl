@@ -13,7 +13,7 @@ function get_mean_elements(orbp::OrbitPropagatorSGP4)
     sgp4d = orbp.sgp4d
     orb = KeplerianElements(
         sgp4d.epoch + sgp4d.Δt / 86400,
-        sgp4d.a_k * (1000 * sgp4d.sgp4_gc.R0),
+        sgp4d.a_k * (1000 * sgp4d.sgp4c.R0),
         sgp4d.e_k,
         sgp4d.i_k,
         sgp4d.Ω_k,
@@ -25,19 +25,19 @@ function get_mean_elements(orbp::OrbitPropagatorSGP4)
 end
 
 """
-    init_orbit_propagator(Val(:sgp4), tle::TLE, sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84) where T
+    init_orbit_propagator(Val(:sgp4), tle::TLE,; kwargs...) where T
 
 Initialize the SGP4 orbit propagator using the TLE `tle`.
 
-## Keywords
+# Keywords
 
-* `sgp4_gc::SGP4_GraveCte`: (OPTIONAL) Gravitational constants.
-    (**Default** = `sgp4_gc_wgs84`)
+- `sgp4c::SGP4_GraveCte`: SGP4 propagator constants.
+    (**Default** = `sgp4c_wgs84`)
 """
 function init_orbit_propagator(
     ::Val{:sgp4},
     tle::TLE;
-    sgp4_gc::SGP4_GravCte{T} = sgp4_gc_wgs84
+    sgp4c::Sgp4Constants{T} = sgp4c_wgs84
 ) where T
 
     # Constants.
@@ -56,7 +56,7 @@ function init_orbit_propagator(
 
     # Create the new SGP4 structure.
     sgp4d = sgp4_init(
-        sgp4_gc,
+        sgp4c,
         tle.epoch,
         n_0,
         e_0,
@@ -73,8 +73,8 @@ end
 
 function propagate!(orbp::OrbitPropagatorSGP4, t::Number)
     # Auxiliary variables.
-    sgp4d   = orbp.sgp4d
-    sgp4_gc = sgp4d.sgp4_gc
+    sgp4d = orbp.sgp4d
+    sgp4c = sgp4d.sgp4c
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, t / 60)
@@ -85,8 +85,8 @@ end
 
 function step!(orbp::OrbitPropagatorSGP4, Δt::Number)
     # Auxiliary variables.
-    sgp4d   = orbp.sgp4d
-    sgp4_gc = sgp4d.sgp4_gc
+    sgp4d = orbp.sgp4d
+    sgp4c = sgp4d.sgp4c
 
     # Propagate the orbit.
     r_teme, v_teme = sgp4!(sgp4d, sgp4d.Δt + Δt / 60)
