@@ -25,7 +25,7 @@ function get_mean_elements(orbp::OrbitPropagatorTwoBody)
 end
 
 """
-    init_orbit_propagator(::Val{:twobody}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number; μ::T = m0) where T
+    init_orbit_propagator(::Val{:twobody}, epoch::Number, a_0::Number, e_0::Number, i_0::Number, Ω_0::Number, ω_0::Number, f_0::Number; kwargs...) where T
 
 Initialize the two body orbit propagator.
 
@@ -43,8 +43,8 @@ Initialize the two body orbit propagator.
 
 ## Keywords
 
-* `μ::Number`: (OPTIONAL) Standard gravitational parameter of the central body
-    \\[m^3/s^2] (**Default** = `m0`).
+- `μ::Number`: Standard gravitational parameter of the central body [m^3/s^2].
+    (**Default** = `m0`).
 """
 function init_orbit_propagator(
     ::Val{:twobody},

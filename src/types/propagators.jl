@@ -30,14 +30,14 @@ abstract type OrbitPropagator{Tepoch, T} end
 #                          Two Body Orbit Propagator
 # ==============================================================================
 
-export TwoBody_Structure, OrbitPropagatorTwoBody
+export TwoBodyPropagator, OrbitPropagatorTwoBody
 
 """
-    TwoBody_Structure{Tepoch, T}
+    TwoBodyPropagator{Tepoch, T}
 
 Low level Two Body orbit propagator structure.
 """
-@with_kw mutable struct TwoBody_Structure{Tepoch, T}
+@with_kw mutable struct TwoBodyPropagator{Tepoch, T}
     # Initial mean orbital elements
     # ==========================================================================
     epoch::Tepoch # .................... Epoch of the initial mean elements [JD]
@@ -65,11 +65,11 @@ Structure that holds the information related to the Two Body orbit propagator.
 
 # Fields
 
-- `tbd::TwoBody_Structure`: Structure that stores the Two Body orbit propagator
-    data (see [`TwoBody_Structure`](@ref)).
+- `tbd::TwoBodyPropagator`: Structure that stores the Two Body orbit propagator
+    data (see [`TwoBodyPropagator`](@ref)).
 """
 struct OrbitPropagatorTwoBody{Tepoch, T} <: OrbitPropagator{Tepoch, T}
-    tbd::TwoBody_Structure{Tepoch, T}
+    tbd::TwoBodyPropagator{Tepoch, T}
 end
 
 #                             J2 Orbit Propagator
