@@ -1,4 +1,4 @@
-module SatelliteToolboxTLE
+module SatelliteToolboxTle
 
 using Crayons, Dates, Parameters, Printf
 

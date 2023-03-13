@@ -7,6 +7,7 @@ using Printf
 using ReferenceFrameRotations
 using SatelliteToolbox
 using SatelliteToolbox.SatelliteToolboxSgp4
+using SatelliteToolbox.SatelliteToolboxTle
 using StaticArrays
 
 @testset "Atmospheric Models" verbose = true begin

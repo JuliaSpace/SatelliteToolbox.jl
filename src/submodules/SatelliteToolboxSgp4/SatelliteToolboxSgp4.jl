@@ -1,7 +1,7 @@
 module SatelliteToolboxSgp4
 
 using Dates, Parameters, StaticArrays
-using SatelliteToolbox.SatelliteToolboxTLE
+using SatelliteToolbox.SatelliteToolboxTle
 
 ################################################################################
 #                                  Constants

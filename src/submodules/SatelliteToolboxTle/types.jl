@@ -47,7 +47,8 @@ This structure contains the same elements of the TLE with the same units.
     name::String
 
     # First line
-    # ==========
+    # ==========================================================================
+
     sat_num::Int
     classification::Char
     int_designator::String
@@ -61,7 +62,7 @@ This structure contains the same elements of the TLE with the same units.
     checksum_l1::Int
 
     # Second line
-    # ===========
+    # ==========================================================================
 
     i::Float64
     Ω::Float64

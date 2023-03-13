@@ -13,8 +13,8 @@
     cd("../")
 end
 
-@testset "SatelliteToolboxTLE" verbose = true begin
-    cd("./SatelliteToolboxTLE")
-    include("./SatelliteToolboxTLE/tle.jl")
+@testset "SatelliteToolboxTle" verbose = true begin
+    cd("./SatelliteToolboxTle")
+    include("./SatelliteToolboxTle/tle.jl")
     cd("../")
 end
