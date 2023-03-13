@@ -49,15 +49,15 @@ function init_orbit_propagator(T, epoch::Number, a_0::Number, e_0::Number, i_0::
 
 where:
 
-* `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
+- `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
   `Val(:J2)` for **J2**, and `Val(:J4)` for **J4**).
-* `epoch`: Initial orbit epoch \[Julian Day].
-* `a_0`: Initial semi-major axis \[m].
-* `e_0`: Initial eccentricity.
-* `i_0`: Initial inclination \[rad].
-* `Ω_0`: Initial right ascension of the ascending node \[rad].
-* `ω_0`: Initial argument of perigee \[rad].
-* `f_0`: Initial true anomaly \[rad].
+- `epoch`: Initial orbit epoch [Julian Day].
+- `a_0`: Initial semi-major axis [m].
+- `e_0`: Initial eccentricity.
+- `i_0`: Initial inclination [rad].
+- `Ω_0`: Initial right ascension of the ascending node [rad].
+- `ω_0`: Initial argument of perigee [rad].
+- `f_0`: Initial true anomaly [rad].
 
 !!! note
 
@@ -69,9 +69,9 @@ function init_orbit_propagator(T, orb_0::Orbit)
 
 where:
 
-* `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
+- `T` is the type of the orbit propagator (`Val(:twobody)` for **Two Body**,
   `Val(:J2)` for **J2**, and `Val(:J4)` for **J4**).
-* `orb_0`: Initial orbital elements (see `Orbit`).
+- `orb_0`: Initial orbital elements (see [`Orbit`](@ref)).
 
 ```julia
 function init_orbit_propagator(T, tle::TLE)
@@ -88,17 +88,17 @@ can be used to customize the algorithm. Those options are listed as follows:
 
 **Two Body**
 
-* `μ`: Standard gravitational parameter of the central body \[m³/s²]
-  (**Default** = `m0`).
+- `μ`: Standard gravitational parameter of the central body [m³/s²].
+  (**Default** = `m0`)
 
 **J2 Orbit Propagator**
 
-* `dn_o2`: First time derivative of mean motion divided by 2 \[rad/s²]
-  (**Default** = 0).
-* `ddn_o6`: Second time derivative of mean motion divided by 6 \[rad/s³]
-  (**Default** = 0).
-* `j2_gc`: J2 orbit propagator gravitational constants (see `J2_GravCte`)
-  (**Default** = `j2_gc_egm08`).
+- `dn_o2`: First time derivative of mean motion divided by 2 [rad/s²].
+  (**Default** = 0)
+- `ddn_o6`: Second time derivative of mean motion divided by 6 [rad/s³].
+  (**Default** = 0)
+- `j2c`: J2 orbit propagator constants (see [`J2PropagatorConstants`](@ref)).
+  (**Default** = `j2c_egm08`)
 
 !!! warning
 
@@ -107,12 +107,12 @@ can be used to customize the algorithm. Those options are listed as follows:
 
 **J4 Orbit Propagator**
 
-* `dn_o2`: First time derivative of mean motion divided by 2 \[rad/s²]
-  (**Default** = 0).
-* `ddn_o6`: Second time derivative of mean motion divided by 6 \[rad/s³]
-  (**Default** = 0).
-* `j4_gc`: J4 orbit propagator gravitational constants (see `J4_GravCte`)
-  (**Default** = `j4_gc_egm08`).
+* `dn_o2`: First time derivative of mean motion divided by 2 [rad/s²].
+  (**Default** = 0)
+* `ddn_o6`: Second time derivative of mean motion divided by 6 [rad/s³].
+  (**Default** = 0)
+* `j4c`: J4 orbit propagator constants (see [`J4PropagatorConstants`](@ref)).
+  (**Default** = `j4c_egm08`)
 
 !!! warning
 
@@ -138,9 +138,9 @@ time between two consecutive passages by the ascending node.
 
 `pert` can be:
 
-* `:J0`: Consider a Keplerian orbit.
-* `:J2`: Consider the perturbation terms up to J2.
-* `:J4`: Consider the perturbation terms J2, J4, and J2².
+- `:J0`: Consider a Keplerian orbit.
+- `:J2`: Consider the perturbation terms up to J2.
+- `:J4`: Consider the perturbation terms J2, J4, and J2².
 
 If `pert` is omitted, then it defaults to `:J2`.
 
@@ -154,15 +154,15 @@ function `sgp4_init`.
 The API function to initialize the SGP4 using a TLE is:
 
 ```julia
-function init_orbit_propagator(T, tle::TLE, sgp4_gc::SGP4_GravCte = sgp4_gc_wgs84)
+function init_orbit_propagator(T, tle::TLE; sgp4c::Sgp4Constants = sgp4c_wgs84)
 ```
 
 where:
 
 * `T` must be `Val(:sgp4)`;
 * `tle`: TLE that will be used to initialize the propagator (see [TLE](@ref)).
-* `sgp4_gc`: Gravitational constants (see `SGP4_GravCte`) (**Default** =
-  `sgp4_gc_wgs84`).
+* `sgp4c`: SGP4 orbit propagator constants (see [`Sgp4Constants`](@ref)).
+  (**Default** = `sgp4c_wgs84`)
 
 ## Propagation
 
@@ -175,14 +175,14 @@ The function `propagate!` has two signature. The first one is
 function propagate!(orbp, t::Number) where T
 ```
 
-in which the orbit will be propagated by `t` \[s] **from the orbit epoch**,
+in which the orbit will be propagated by `t` [s] **from the orbit epoch**,
 which is defined in the initialization and is never changed. This function
 returns a tuple with three values:
 
 * The mean Keplerian elements represented in the inertial reference frame
-  encapsulated in an instance of the structure `Orbit` \[SI units].
-* The position vector represented in the inertial reference frame \[m].
-* The velocity vector represented in the inertial reference frame \[m].
+  encapsulated in an instance of the structure `Orbit` [SI units].
+* The position vector represented in the inertial reference frame [m].
+* The velocity vector represented in the inertial reference frame [m].
 
 The second signature of `propagate!` is:
 
@@ -190,7 +190,7 @@ The second signature of `propagate!` is:
 function propagate!(orbp, t::AbstractVector) where T
 ```
 
-where the orbit will be propagated for every value in the vector `t` \[s], which
+where the orbit will be propagated for every value in the vector `t` [s], which
 is a number of seconds **from the orbit epoch**. In this case, an array of
 tuples with be returned with each element equivalent to that described for the
 first case.
@@ -218,7 +218,7 @@ The `step!` function has the following signature:
 function step!(orbp, Δt::Number)
 ```
 
-where the orbit is propagated by `Δt` \[s] from the last propagation instant.
+where the orbit is propagated by `Δt` [s] from the last propagation instant.
 This function returns the same information of the first signature of
 `propagate!` method.
 
@@ -254,7 +254,7 @@ julia> r
  [70133.24341579647, 7.106899204003144e6, 474654.76899136906]
  [-962529.3359925373, 2.7285451480913754e6, -6.514302167865425e6]
  [-688667.0923815856, -5.36079828379197e6, -4.660829924952772e6]
- [518047.6024024392, -6.195799233949873e6, 3.506094300915793e6]
+ [518047.6024024393, -6.195799233949873e6, 3.506094300915793e6]
 ```
 
 ```jldoctest
@@ -265,14 +265,14 @@ julia> r, v = propagate!(orbp, collect(0:3:24) * 60 * 60);
 julia> r
 9-element Vector{StaticArraysCore.SVector{3, Float64}}:
  [4.361615995545557e-10, 7.123059478998e6, 0.0]
- [-996350.5627452108, 2.186373157247237e6, -6.711368000333959e6]
- [-587227.7525506096, -5.782378228281175e6, -4.142557925272834e6]
- [649426.5668814591, -5.775582427101443e6, 4.1430161225754153e6]
- [972827.4418151112, 2.196925098537513e6, 6.711636962147706e6]
- [-76509.36508562126, 7.122652836574904e6, 475.61934682240826]
- [-1.0197591007931489e6, 2.1755856272240356e6, -6.711096628505176e6]
- [-524958.6813354684, -5.788492655475164e6, -4.1421039190142583e6]
- [711547.4810490764, -5.768106186767626e6, 4.143478050495974e6]
+ [-996346.4853015806, 2.186401557738358e6, -6.711359353519007e6]
+ [-587249.7620858465, -5.782343273146654e6, -4.1426035968859396e6]
+ [649394.1186498147, -5.77563521668829e6, 4.1429476164136184e6]
+ [972844.9708790068, 2.196811673503107e6, 6.7116715478035575e6]
+ [-76442.02054033201, 7.122653548864724e6, 616.3347631588938]
+ [-1.0197364675476991e6, 2.1757562758479198e6, -6.711044744823977e6]
+ [-525037.0262366664, -5.788371159271364e6, -4.1422637722758204e6]
+ [711462.472416347, -5.768247894518292e6, 4.1432953711127904e6]
 ```
 
 ```jldoctest
@@ -283,14 +283,14 @@ julia> r, v = propagate_to_epoch!(orbp, date_to_jd(1986, 6, 19, 0, 0, 0) .+ coll
 julia> r
 9-element Vector{StaticArraysCore.SVector{3, Float64}}:
  [4.361615995545557e-10, 7.123059478998e6, 0.0]
- [-996350.5627452108, 2.186373157247237e6, -6.711368000333959e6]
- [-587227.7525506096, -5.782378228281175e6, -4.142557925272834e6]
- [649426.5668814591, -5.775582427101443e6, 4.1430161225754153e6]
- [972827.4418151112, 2.196925098537513e6, 6.711636962147706e6]
- [-76509.36508562126, 7.122652836574904e6, 475.61934682240826]
- [-1.0197591007931489e6, 2.1755856272240356e6, -6.711096628505176e6]
- [-524958.6813354684, -5.788492655475164e6, -4.1421039190142583e6]
- [711547.4810490764, -5.768106186767626e6, 4.143478050495974e6]
+ [-996346.4853015806, 2.186401557738358e6, -6.711359353519007e6]
+ [-587249.7620858465, -5.782343273146654e6, -4.1426035968859396e6]
+ [649394.1186498147, -5.77563521668829e6, 4.1429476164136184e6]
+ [972844.9708790068, 2.196811673503107e6, 6.7116715478035575e6]
+ [-76442.02054033201, 7.122653548864724e6, 616.3347631588938]
+ [-1.0197364675476991e6, 2.1757562758479198e6, -6.711044744823977e6]
+ [-525037.0262366664, -5.788371159271364e6, -4.1422637722758204e6]
+ [711462.472416347, -5.768247894518292e6, 4.1432953711127904e6]
 ```
 
 ```jldoctest
@@ -301,14 +301,14 @@ julia> r, v = propagate!(orbp, (0:3:24) * 60 * 60);
 julia> r
 9-element Vector{StaticArraysCore.SVector{3, Float64}}:
  [4.361615995545557e-10, 7.123059478998e6, 0.0]
- [-996366.9594234177, 2.1861582928190185e6, -6.711435734685331e6]
- [-587137.7898110648, -5.7826428097349685e6, -4.1422016962297964e6]
- [649557.2207988158, -5.775184062488014e6, 4.143550414292531e6]
- [972752.5982241486, 2.1977837698636954e6, 6.711365970393662e6]
- [-76783.52152808056, 7.1226498462156085e6, -625.3752709346008]
- [-1.0198435837396844e6, 2.174295411570012e6, -6.711502954871595e6]
- [-524633.841231651, -5.7894151019522315e6, -4.1408569967521494e6]
- [711884.4066346248, -5.767040023322984e6, 4.144902689785466e6]
+ [-996328.1391516541, 2.1866979202810586e6, -6.711265455195797e6]
+ [-587351.4977451706, -5.781977956360871e6, -4.1430989093935397e6]
+ [649247.3984650016, -5.776184753898326e6, 4.1422046006276514e6]
+ [972931.0502343922, 2.195626999467983e6, 6.712046983413733e6]
+ [-76133.21692916384, 7.122656571281528e6, 2143.7786822213416]
+ [-1.0196454421172746e6, 2.1775354104756843e6, -6.7104811146588875e6]
+ [-525406.7893977595, -5.7870963407158125e6, -4.1439972536698123e6]
+ [711086.9506192617, -5.769717325650816e6, 4.141313873268091e6]
 ```
 
 ```jldoctest

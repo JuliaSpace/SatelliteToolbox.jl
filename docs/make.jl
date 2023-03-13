@@ -1,12 +1,12 @@
 using Documenter
 using SatelliteToolbox
-using SatelliteToolbox.SGP4
-using SatelliteToolbox.SatelliteToolboxTLE
+using SatelliteToolbox.SatelliteToolboxSgp4
+using SatelliteToolbox.SatelliteToolboxTle
 
 makedocs(
     modules = [SatelliteToolbox,
-               SatelliteToolbox.SGP4,
-               SatelliteToolbox.SatelliteToolboxTLE],
+               SatelliteToolbox.SatelliteToolboxSgp4,
+               SatelliteToolbox.SatelliteToolboxTle],
     format = Documenter.HTML(
         prettyurls = !("local" in ARGS),
         canonical = "https://juliaspace.github.io/SatelliteToolbox.jl/stable/",
