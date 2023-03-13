@@ -1,6 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Types and structures of TLE.
 #
@@ -9,7 +10,7 @@
 export TLE
 
 """
-    TLE
+    struct TLE
 
 This structure contains the same elements of the TLE with the same units.
 

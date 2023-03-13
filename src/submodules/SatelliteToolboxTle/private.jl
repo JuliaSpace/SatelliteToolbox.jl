@@ -1,6 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Private functions.
 #
@@ -26,7 +27,9 @@ macro parse_value(T, str, line_num)
         try
             parse(_T, _str)
         catch e
-            throw(ErrorException("The TLE file is not valid (error in line $_line_num): $(e.msg)."))
+            throw(ErrorException(
+                "The TLE file is not valid (error in line $_line_num): $(e.msg)."
+            ))
         end
     end
 end
@@ -43,7 +46,7 @@ function _get_mant_exp(n)
     exp  = floor(Int, log10(n)) + 1
     mant = n/10.0^exp
 
-    return mant,exp
+    return mant, exp
 end
 
 function _parse_tle(io::IO, verify_checksum::Bool = true)
@@ -128,42 +131,49 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             state = :l1
 
         # TLE Line 1
-        # ==========
-        elseif state == :l1
+        # ======================================================================
+
+        elseif state === :l1
             # The next non-blank line must be the first line of the TLE.
             # Otherwise, the file is not valid.
 
             # The first line must start with "1 " and have 69 characters.
             if (line[1:2] != "1 ") || (length(line) != 69)
-                throw(ErrorException("The TLE file is not valid (error in line $line_num): This is not a valid 1st line."))
+                throw(ErrorException(
+                    "The TLE file is not valid (error in line $line_num): This is not a valid 1st line."
+                ))
             end
 
             # Verify the checksum.
-            # ====================
+            # ------------------------------------------------------------------
 
             checksum_l1   = @parse_value(Int, line[69], line_num)
             checksum_line = compute_checksum(line[1:end-1])
 
             if (verify_checksum) && (checksum_l1 != checksum_line)
-                throw(ErrorException("The TLE file is not valid (error in line $line_num): Expected checksum: $checksum_line, line checksum: $checksum_l1."))
+                throw(ErrorException(
+                    "The TLE file is not valid (error in line $line_num): Expected checksum: $checksum_line, line checksum: $checksum_l1."
+                ))
             end
 
             # Satellite number and classification
-            # ===================================
+            # ------------------------------------------------------------------
+
             sat_num        = @parse_value(Int, line[3:7], line_num)
             classification = Char(line[8])
 
             # International designator
-            # ========================
+            # ------------------------------------------------------------------
+
             int_designator = line[10:17]
 
             # Epoch
-            # =====
+            # ------------------------------------------------------------------
+
             epoch_year = @parse_value(Int,     line[19:20], line_num)
             epoch_day  = @parse_value(Float64, line[21:32], line_num)
 
             # Convert the TLE year and date to JD.
-            # ------------------------------------
 
             # If the two-number year is higher than 75, then consider it in the
             # past (e.g. 50 = 2050, but 81 = 1981).
@@ -176,7 +186,8 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             end
 
             # Mean motion derivatives
-            # =======================
+            # ------------------------------------------------------------------
+
             dn_o2  = @parse_value(Float64, line[34:43], line_num)
 
             aux = ( (line[45] == ' ') ? "+." : line[45:45] * "." )*line[46:50]
@@ -186,7 +197,7 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             ddn_o6 = ddn_o6_dec*10^ddn_o6_exp
 
             # BSTAR
-            # =====
+            # ------------------------------------------------------------------
 
             aux = ( (line[54] == ' ') ? "+." : line[54:54] * "." )*line[55:59]
 
@@ -195,97 +206,115 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
             bstar = bstar_dec*10^bstar_exp
 
             # Ephemeris type
-            # ==============
+            # ------------------------------------------------------------------
+
             (line[63] != '0' && line[63] != ' ') &&
                 warn("Warning in TLE file (line $line_num): Ephemeris type should be 0!")
 
             # Element number
-            # ==============
+            # ------------------------------------------------------------------
+
             elem_set_number = @parse_value(Int, line[65:68], line_num)
 
             # Change the state to wait for the line 2.
             state = :l2
 
         # TLE Line 2
-        # ==========
-        elseif state == :l2
+        # ======================================================================
+
+        elseif state === :l2
             # The next non-blank line must be the second line of the TLE.
             # Otherwise, the file is not valid.
 
             # The second line must start with "2 " and have 69 characters.
             if (line[1:2] != "2 ") || (length(line) != 69)
-                throw(ErrorException("The TLE file is not valid (error in line $line_num): This is not a valid 2st line."))
+                throw(ErrorException(
+                    "The TLE file is not valid (error in line $line_num): This is not a valid 2st line."
+                ))
             end
 
             # Verify the checksum.
-            # ====================
+            # ------------------------------------------------------------------
 
             checksum_l2   = @parse_value(Int, line[69], line_num)
             checksum_line = compute_checksum(line[1:end-1])
 
             if (verify_checksum) && (checksum_l2 != checksum_line)
-                throw(ErrorException("The TLE file is not valid (error in line $line_num): Expected checksum: $checksum_line, line checksum: $checksum_l2."))
+                throw(ErrorException(
+                    "The TLE file is not valid (error in line $line_num): Expected checksum: $checksum_line, line checksum: $checksum_l2."
+                ))
             end
 
-            # Check satellite number with the one in the first line.
-            # ======================================================
+            # Compare satellite number with the one in the first line
+            # ------------------------------------------------------------------
+
             sat_num_l2 = @parse_value(Int, line[3:7], line_num)
 
             if sat_num_l2 != sat_num
-                throw(ErrorException("The TLE file is not valid (error in line $line_num): Satellite number in line 2 is not equal to that in line 1."))
+                throw(ErrorException(
+                    "The TLE file is not valid (error in line $line_num): Satellite number in line 2 is not equal to that in line 1."
+                ))
             end
 
             # Inclination
-            # ===========
+            # ------------------------------------------------------------------
+
             i = @parse_value(Float64, line[9:16], line_num)
 
             # RAAN
-            # ====
+            # ------------------------------------------------------------------
+
             Ω = @parse_value(Float64, line[18:25], line_num)
 
             # Eccentricity
-            # ============
+            # ------------------------------------------------------------------
+
             e = @parse_value(Float64, "." * line[27:33], line_num)
 
             # Argument of perigee
-            # ===================
+            # ------------------------------------------------------------------
+
             ω = @parse_value(Float64, line[35:42], line_num)
 
             # Mean anomaly
-            # ============
+            # ------------------------------------------------------------------
+
             M = @parse_value(Float64, line[44:51], line_num)
 
             # Mean motion
-            # ===========
+            # ------------------------------------------------------------------
+
             n = @parse_value(Float64, line[53:63], line_num)
 
             # Revolution number at epoch
-            # ==========================
+            # ------------------------------------------------------------------
+
             rev_num = @parse_value(Int, line[64:68], line_num)
 
             # Now that we have all the information, we can store our TLE in the
             # output array.
-            push!(tles,
-                  TLE(name,
-                      sat_num,
-                      classification,
-                      int_designator,
-                      epoch_year,
-                      epoch_day,
-                      epoch,
-                      dn_o2,
-                      ddn_o6,
-                      bstar,
-                      elem_set_number,
-                      checksum_l1,
-                      i,
-                      Ω,
-                      e,
-                      ω,
-                      M,
-                      n,
-                      rev_num,
-                      checksum_l2))
+            push!(tles, TLE(
+                name,
+                sat_num,
+                classification,
+                int_designator,
+                epoch_year,
+                epoch_day,
+                epoch,
+                dn_o2,
+                ddn_o6,
+                bstar,
+                elem_set_number,
+                checksum_l1,
+                i,
+                Ω,
+                e,
+                ω,
+                M,
+                n,
+                rev_num,
+                checksum_l2
+            ))
 
             # Change the state to wait for another TLE.
             state = :name
@@ -294,11 +323,11 @@ function _parse_tle(io::IO, verify_checksum::Bool = true)
 
     # If the final state is not :name, then we have an incomplete TLE. Thus,
     # throw and exception because the file is not valid.
-    if state != :name
-        throw(ErrorException("The TLE file is not valid.\nThere is an incomplete TLE."))
+    if state !== :name
+        throw(ErrorException("The TLE file is not valid. There is an incomplete TLE."))
     end
 
-    tles
+    return tles
 end
 
 """
@@ -309,7 +338,6 @@ Compute the checksum of the line `str` modulo 10.
 The algorithm is simple: add all the numbers in the line, ignoring letters,
 spaces, periods, and plus signs, but assigning +1 to the minus signs. The
 checksum is the remainder of the division by 10.
-
 """
 function compute_checksum(str::AbstractString)
     checksum = 0
@@ -328,7 +356,7 @@ function compute_checksum(str::AbstractString)
     end
 
     # Return the checksum modulo 10.
-    checksum % 10
+    return checksum % 10
 end
 
 """
@@ -338,7 +366,6 @@ Show the TLE `tle` in the IO `io`.
 
 If `color` is `true`, then the text will be printed using colors. If `color` is
 omitted, then it defaults to `true`.
-
 """
 function _show_tle(io::IO, tle::TLE, color::Bool = true)
     # Colors will be printed only for STDOUT.
@@ -386,6 +413,5 @@ function _show_tle(io::IO, tle::TLE, color::Bool = true)
     print(io, "$(b)                    ṅ / 2 : $(d)"); @printf(io, "%f rev/day²\n", dn_o2)
     print(io, "$(b)                    n̈ / 6 : $(d)"); @printf(io, "%f rev/day³", ddn_o6)
 
-    nothing
+    return nothing
 end
-

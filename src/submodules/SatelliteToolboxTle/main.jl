@@ -1,6 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==============================================================================
 #
 #   Main file for TLE.
 #
@@ -37,7 +38,7 @@ julia> tles = tle\"""
 ```
 """
 macro tle_str(str)
-    read_tle_from_string(str, true)
+    return read_tle_from_string(str, true)
 end
 
 """
@@ -64,7 +65,7 @@ julia> tles = tlenc\"""
 ```
 """
 macro tlenc_str(str)
-    read_tle_from_string(str, false)
+    return read_tle_from_string(str, false)
 end
 
 ################################################################################
@@ -78,7 +79,7 @@ end
 
 function show(io::IO, mime::MIME"text/plain", tle::TLE)
     color = get(io, :color, false)
-    _show_tle(io, tle, color)
+    return _show_tle(io, tle, color)
 end
 
 ################################################################################
@@ -91,7 +92,6 @@ end
 Print the TLE `tle` to the IO `io`. If `io` is omited, then `stdout` is used.
 
 The keywords of this function are the same that can be used in `tle_to_str`.
-
 """
 print_tle(tle; kwargs...) = print_tle(stdout, tle; kwargs...)
 
@@ -111,7 +111,6 @@ parsed TLEs.
 If `verify_checksum` if `true`, then the checksum of both TLE lines will be
 verified. Otherwise, the checksum will not be checked. If `verify_checksum` is
 omitted, then it defaults to `true`.
-
 """
 @inline function read_tle(tle_filename::String, verify_checksum::Bool = true)
     # Open the file in read mode.
@@ -131,19 +130,22 @@ TLEs.
 If `verify_checksum` if `true`, then the checksum of both TLE lines will be
 verified. Otherwise, the checksum will not be checked. If `verify_checksum` is
 omitted, then it defaults to `true`.
-
 """
-@inline function read_tle_from_string(tles::String,
-                                      verify_checksum::Bool = true)
+@inline function read_tle_from_string(
+    tles::String,
+    verify_checksum::Bool = true
+)
     # Convert the string to an IOBuffer and call the function to parse it.
-    _parse_tle(IOBuffer(tles), verify_checksum)
+    return _parse_tle(IOBuffer(tles), verify_checksum)
 end
 
-@inline function read_tle_from_string(tle_l1::String,
-                                      tle_l2::String,
-                                      verify_checksum::Bool = false)
+@inline function read_tle_from_string(
+    tle_l1::String,
+    tle_l2::String,
+    verify_checksum::Bool = false
+)
     # Assemble the TLE into one string and call the function to parse it.
-    read_tle_from_string(tle_l1 * '\n' * tle_l2, verify_checksum)
+    return read_tle_from_string(tle_l1 * '\n' * tle_l2, verify_checksum)
 end
 
 
@@ -158,7 +160,6 @@ The keyword `bstar_exp_le` selects if the BSTAR exponent signal will be `+` or
 `-` when BSTAR is zero. This is required for the tests because it is not
 standardized in TLE generation. If it is `true`, then the exponent signal will
 be `-` when BSTAR is zero.
-
 """
 function tle_to_str(tle::TLE; recompute_checksum = true, bstar_exp_le = true)
     @unpack_TLE tle
@@ -273,5 +274,6 @@ function tle_to_str(tle::TLE; recompute_checksum = true, bstar_exp_le = true)
 
     # Assemble and return the TLE.
     # ==========================================================================
+
     return str_name * '\n' * str_l1 * '\n' * str_l2
 end
