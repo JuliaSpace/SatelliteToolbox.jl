@@ -73,9 +73,11 @@ function ground_repeating_orbit_adjacent_track_angle(
     # satellite. α is an auxiliary angle and γ is the angle we are looking for.
     sin_βo2, cos_βo2 = sincos(β / 2)
     α = √(T(R0)^2 + (T(R0) + T(h))^2 - 2T(R0) * (T(R0) + T(h)) * cos_βo2)
-    γ = asin(T(R0) / α * sin_βo2)
+    γo2 = asin(T(R0) / α * sin_βo2)
 
-    return γ
+    # Notice that the previous computation obtained half the angle between the
+    # two adjacent ground tracks.
+    return 2γo2
 end
 
 """

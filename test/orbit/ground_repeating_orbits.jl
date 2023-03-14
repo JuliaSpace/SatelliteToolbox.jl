@@ -35,7 +35,7 @@
     c = 5
     min_fov = ground_repeating_orbit_adjacent_track_angle(h, p, i, c)
 
-    @test (min_fov |> rad2deg) ≈ 19.9361 (atol = 1e-4)
+    @test (min_fov |> rad2deg) ≈ 39.8721 (atol = 1e-4)
 
     # Test return types.
     min_fov = ground_repeating_orbit_adjacent_track_angle(h, p, i, c)
