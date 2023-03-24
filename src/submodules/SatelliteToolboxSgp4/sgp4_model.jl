@@ -144,7 +144,7 @@ function sgp4_init(
     ω_0::Number,
     M_0::Number,
     bstar::Number;
-    sgp4c::Sgp4Constants{T}
+    sgp4c::Sgp4Constants{T} = sgp4c_wgs84
 ) where {Tepoch, T}
     # Unpack the gravitational constants to improve code readability.
     @unpack R0, XKE, J2, J3, J4 = sgp4c
