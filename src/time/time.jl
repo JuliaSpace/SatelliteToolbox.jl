@@ -21,6 +21,7 @@ export is_leap_year
 export jd_ut1_to_utc, jd_utc_to_ut1
 export jd_utc_to_tt,  jd_tt_to_utc
 export get_Δat
+export diff_tt_utc, hms_to_h
 
 ################################################################################
 #                                  Constants
@@ -198,4 +199,28 @@ function is_leap_year(year::Integer)
     else
         return false
     end
+end
+
+
+"""
+    diff_tt_utc(year::Integer)
+
+Difference between terrestrial time and universal time: TT-UT (terrestrial time - universal time), in seconds;
+
+# Remarks
+
+This algorithm was based on the source: https://ui.adsabs.harvard.edu/abs/2012SoEn...86.1323G/abstract.
+
+"""
+function diff_tt_utc(year::Integer)
+    return ( 96.4 + 0.567 * (year - 2061) );
+end
+
+
+
+
+
+
+function hms_to_h(h::Integer, m::Integer, s::Number)
+    return h + m/60.0 + s/3600.0;
 end
