@@ -97,6 +97,7 @@ include("./moon/moon_position.jl")
 include("sun/equation_of_time.jl")
 include("sun/sun_position.jl")
 include("sun/sun_velocity.jl")
+include("sun/sunpos.jl")
 
 include("orbit/general.jl")
 include("orbit/anomalies.jl")
