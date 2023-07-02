@@ -69,5 +69,3 @@ Please, see each package for the related documentation of the functions.
 [SatelliteToolboxTransformations-link]: https://github.com/JuliaSpace/SatelliteToolboxTransformations.jl
 [SatelliteToolboxTransformations-cov]: https://codecov.io/gh/JuliaSpace/SatelliteToolboxTransformations.jl/branch/main/graph/badge.svg?token=SH31IN1JXM
 [SatelliteToolboxTransformations-ci]: https://github.com/JuliaSpace/SatelliteToolboxTransformations.jl/workflows/CI/badge.svg
-
-
