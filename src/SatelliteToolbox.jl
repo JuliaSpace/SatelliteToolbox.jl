@@ -1,167 +1,24 @@
 module SatelliteToolbox
 
-export JD_J2000, R0, Rm, m0, J2, Rs, ne, au2m, sunRad
-export a_wgs84, b_wgs84, f_wgs84, e_wgs84, el_wgs84
-
-import Base: asin, atan, convert, copy, cos, deepcopy, getindex, length,
-             iterate, mod, setindex!, sin, show
-
-using Crayons
-using Dates
-using DelimitedFiles
-using Interpolations
-using LinearAlgebra
-using OptionalData
-using Parameters
-using PolynomialRoots
-using PrettyTables
-using Printf
-using ReferenceFrameRotations
-using RemoteFiles
-using StaticArrays
-using SparseArrays
-using Statistics
 using Reexport
 
-# Re-exporting symbols from ReferenceFrameRotations.jl.
-export DCM
-export Quaternion
+@reexport using SatelliteToolboxAtmosphericModels
+@reexport using SatelliteToolboxBase
+@reexport using SatelliteToolboxCelestialBodies
+@reexport using SatelliteToolboxGeomagneticField
+@reexport using SatelliteToolboxGravityModels
+@reexport using SatelliteToolboxPropagators
+@reexport using SatelliteToolboxSgp4
+@reexport using SatelliteToolboxTle
+@reexport using SatelliteToolboxTransformations
 
-################################################################################
-#                                  Submodules
-################################################################################
+############################################################################################
+#                                          Files
+############################################################################################
 
-include("submodules/SatelliteToolboxTle/SatelliteToolboxTle.jl")
-@reexport using .SatelliteToolboxTle
+include("./orbit/general.jl")
 
-include("submodules/SatelliteToolboxSgp4/SatelliteToolboxSgp4.jl")
-@reexport using .SatelliteToolboxSgp4
-
-################################################################################
-#                             Types and Structures
-################################################################################
-
-include("./types/types.jl")
-
-################################################################################
-#                                  Constants
-################################################################################
-
-include("constants.jl")
-
-# Pre-defined crayons.
-const _reset_crayon = Crayon(reset = true)
-const _crayon_bold  = crayon"bold"
-const _crayon_g     = crayon"bold green"
-const _crayon_u     = crayon"bold blue"
-const _crayon_y     = crayon"bold yellow"
-
-# Escape sequences related to the crayons.
-const _b = _crayon_bold
-const _d = _reset_crayon
-const _g = _crayon_g
-const _y = _crayon_y
-const _u = _crayon_u
-
-################################################################################
-#                                  Exceptions
-################################################################################
-
-################################################################################
-#                                    Files
-################################################################################
-
-include("earth/atmospheric_models/expatmosphere/expatmosphere.jl")
-include("earth/atmospheric_models/jb2008/jb2008.jl")
-include("earth/atmospheric_models/jr1971/jr1971.jl")
-include("earth/atmospheric_models/nrlmsise00/nrlmsise00.jl")
-include("earth/gravity_models/embedded_gravity_models.jl")
-include("earth/gravity_models/gravity_model.jl")
-include("earth/geomagnetic_field_models/dipole/geomag_dipole.jl")
-include("earth/geomagnetic_field_models/dipole/geomag_dipole_constants.jl")
-include("earth/geomagnetic_field_models/igrf/igrf.jl")
-include("earth/geomagnetic_field_models/igrf/igrf_coefs.jl")
-include("earth/geomagnetic_field_models/igrf/igrf12/igrf12syn.jl")
-include("earth/geomagnetic_field_models/igrf/igrf12/igrf12syn_coefs.jl")
-include("earth/geomagnetic_field_models/igrf/igrf13/igrf13syn.jl")
-include("earth/space_indices/space_indices.jl")
-
-include("./misc/crossing.jl")
-include("./misc/legendre.jl")
-include("./misc/dlegendre.jl")
-include("./misc/icgem.jl")
-
-include("./moon/constants.jl")
-include("./moon/moon_position.jl")
-
-include("sun/equation_of_time.jl")
-include("sun/sun_position.jl")
-include("sun/sun_velocity.jl")
-
-include("orbit/general.jl")
-include("orbit/anomalies.jl")
-include("orbit/ground_repeating_orbits.jl")
-include("orbit/sun_sync_orbits.jl")
-
-include("orbit/mean_elements/j2osc.jl")
-include("orbit/mean_elements/sgp4.jl")
-
-include("orbit/propagators/j2.jl")
-include("orbit/propagators/j2osc.jl")
-include("orbit/propagators/j4.jl")
-include("orbit/propagators/twobody.jl")
-include("orbit/propagators/api/api.jl")
-include("orbit/propagators/api/j2.jl")
-include("orbit/propagators/api/j2osc.jl")
-include("orbit/propagators/api/j4.jl")
-include("orbit/propagators/api/sgp4.jl")
-include("orbit/propagators/api/twobody.jl")
-
-include("orbit/representations/api.jl")
-include("orbit/representations/conversions.jl")
-include("orbit/representations/keplerian_elements.jl")
-include("orbit/representations/rv.jl")
-include("orbit/representations/state_vector.jl")
-
-include("transformations/eop.jl")
-include("transformations/ecef_to_ecef.jl")
-include("transformations/ecef_to_eci.jl")
-include("transformations/eci_to_ecef.jl")
-include("transformations/eci_to_eci.jl")
-include("transformations/geodetic_geocentric.jl")
-include("transformations/gmst.jl")
-include("transformations/local_frame.jl")
-include("transformations/misc.jl")
-include("transformations/orbit_elements.jl")
-include("transformations/sv_ecef_to_ecef.jl")
-include("transformations/sv_ecef_to_eci.jl")
-include("transformations/sv_eci_to_ecef.jl")
-include("transformations/sv_eci_to_eci.jl")
-
-include("transformations/fk5/fk5.jl")
-include("transformations/fk5/nutation.jl")
-include("transformations/fk5/precession.jl")
-
-include("transformations/iau2006/cio.jl")
-include("transformations/iau2006/iau2006_cio.jl")
-include("transformations/iau2006/iau2006_equinox.jl")
-include("transformations/iau2006/fundamental_args.jl")
-include("transformations/iau2006/misc.jl")
-include("transformations/iau2006/nutation_eo.jl")
-include("transformations/iau2006/precession.jl")
-
-include("transformations/iau2006/constants/cio_s.jl")
-include("transformations/iau2006/constants/cip_x.jl")
-include("transformations/iau2006/constants/cip_y.jl")
-include("transformations/iau2006/constants/equation_of_origins.jl")
-include("transformations/iau2006/constants/nutation.jl")
-
-include("transformations/teme/teme.jl")
-
-include("time/julian_day.jl")
-include("time/raan.jl")
-include("time/time.jl")
-
-include("deprecations.jl")
+include("./time/equation_of_time.jl")
+include("./time/raan.jl")
 
 end # module

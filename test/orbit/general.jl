@@ -1,84 +1,185 @@
-#== # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Description
+# ==========================================================================================
 #
-#   Tests related to orbit functions.
+#   Tests related to general orbit functions.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# References
-#
-#   [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications.
-#       Microcosm Press, Hawthorn, CA, USA.
-#
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # ==#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# File: ./src/orbit/anomalies.jl
-# ==============================
+# File: ./src/orbit/general.jl
+# ==========================================================================================
 
-# Function M_to_E
-# ---------------
+# Function: orbital_angular_velocity
+# ------------------------------------------------------------------------------------------
 
-################################################################################
-#                                 Test Results
-################################################################################
+############################################################################################
+#                                       Test Results
+############################################################################################
 #
-# Scenario 01
-# ===========
+# The Amazonia-1 orbit is:
 #
-# Example 2-1: Using Kepler's Equation [1, p. 66-67].
+#   - Semi-major axis : 7130.982e3 m
+#   - Excentricity    : 0.001111
+#   - Inclination     : 98.405°
 #
-#   M = 235.4°, e = 0.4 ===> E = 220.512074767522º
+# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
 #
-# Using this function, the following result was obtained:
-#
-#   julia> M_to_E(0.4,235.4*pi/180)*180/pi
-#   220.51207476752163
-#
-################################################################################
+############################################################################################
 
-@testset "Function M_to_E" begin
-    # Float64
-    # ==========================================================================
+@testset "Function orbital_angular_velocity" begin
+    for T in (Float64, Float32)
+        a   = T(7130.982e3)
+        e   = T(0.001111)
+        i   = T(98.405) |> deg2rad
+        orb = KeplerianElements(0, a, e, i, 0, 0, 0)
 
-    E = M_to_E(0.4, 235.4 * π / 180) * 180 / π
-    @test E ≈ 220.512074767522 atol=1e-12
+        # J₀
+        # ==================================================================================
 
-    # Float32
-    # ==========================================================================
+        angvel = orbital_angular_velocity(a, e, i; perturbation = :J0)
+        @test eltype(angvel) == T
+        @test angvel ≈ √(GM_EARTH / a^3)
 
-    E = M_to_E(0.4f0, 235.4f0 * π / 180) * 180 / π
-    @test E ≈ 220.512074767522 atol=1e-5
+        angvel = orbital_angular_velocity(orb; perturbation = :J0)
+        @test eltype(angvel) == T
+        @test angvel ≈ √(GM_EARTH / a^3)
+
+        # J₂
+        # ==================================================================================
+
+        angvel = orbital_angular_velocity(a, e, i)
+        @test eltype(angvel) == T
+        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+
+        angvel = orbital_angular_velocity(orb)
+        @test eltype(angvel) == T
+        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+
+        # J₄
+        # ==================================================================================
+
+        angvel = orbital_angular_velocity(a, e, i; perturbation = :J4)
+        @test eltype(angvel) == T
+        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+
+        angvel = orbital_angular_velocity(orb; perturbation = :J4)
+        @test eltype(angvel) == T
+        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+    end
 end
 
-# File: ./src/transformation/gmst.jl
-# ==================================
+@testset "Function orbital_angular_velocity [ERRORS]" begin
+    @test_throws ArgumentError orbital_angular_velocity(7130.9e3, 0, 0; perturbation = :J3)
+end
 
-# Function jd_to_gmst
-# -----------------
+# Function: orbital_angular_velocity_to_semimajor_axis
+# ------------------------------------------------------------------------------------------
 
-################################################################################
-#                                 Test Results
-################################################################################
+############################################################################################
+#                                       Test Results
+############################################################################################
 #
-# Scenario 01
-# ===========
+# The Amazonia-1 orbit is:
 #
-# Example 3-5: Finding GMST and LST (Method 1) [1, p. 188].
+#   - Semi-major axis : 7130.982e3 m
+#   - Excentricity    : 0.001111
+#   - Inclination     : 98.405°
 #
-# Considering the Julian Day [UT1] 2448855.009722, the Greenwich Mean Sideral
-# Time was computed as 152.578787810°.
+# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
 #
-# Using SatelliteToolbox, the following was obtained:
-#
-#   julia> jd_to_gmst(2448855.009722)*180/pi
-#   152.57870762832462
-#
-# NOTE: The difference was also found by replicating the algorithm in MATLAB.
-#
-################################################################################
+############################################################################################
 
-@testset "Function jd_to_gmst" begin
-    θ_GMST = jd_to_gmst(2448855.009722)*180/pi
-    @test θ_GMST ≈ 152.578787810 atol = 1e-4
+@testset "Function orbital_angular_velocity_to_semimajor_axis" begin
+    for T in (Float64, Float32)
+        n   = T(0.06) |> deg2rad
+        a   = T(7130.982e3)
+        e   = T(0.001111)
+        i   = T(98.405) |> deg2rad
+        orb = KeplerianElements(0, a, e, i, 0, 0, 0)
+
+        # J₀
+        # ==================================================================================
+
+        â = orbital_angular_velocity_to_semimajor_axis(n, e, i; perturbation = :J0)
+        @test eltype(â) == T
+        @test â ≈ (GM_EARTH / n^2)^(1 // 3)
+
+        # J₂
+        # ==================================================================================
+
+        â = orbital_angular_velocity_to_semimajor_axis(n, e, i)
+        @test eltype(â) == T
+        @test â ≈ a atol = 2
+
+        # J₄
+        # ==================================================================================
+
+        â = orbital_angular_velocity_to_semimajor_axis(n, e, i; perturbation = :J4)
+        @test eltype(â) == T
+        @test â ≈ a atol = 30
+    end
+end
+
+@testset "Function orbital_angular_velocity_to_semimajor_axis [ERRORS]" begin
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; perturbation = :J3)
+end
+
+# Functions: orbital_period
+# ------------------------------------------------------------------------------------------
+
+############################################################################################
+#                                       Test Results
+############################################################################################
+#
+# The Amazonia-1 orbit is:
+#
+#   - Semi-major axis : 7130.982e3 m
+#   - Excentricity    : 0.001111
+#   - Inclination     : 98.405°
+#
+# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
+#
+############################################################################################
+
+@testset "Function orbital_period" begin
+    for T in (Float64, Float32)
+        a   = T(7130.982e3)
+        e   = T(0.001111)
+        i   = T(98.405) |> deg2rad
+        orb = KeplerianElements(0, a, e, i, 0, 0, 0)
+
+        # J₀
+        # ==================================================================================
+
+        period = orbital_period(a, e, i; perturbation = :J0)
+        @test eltype(period) == T
+        @test period ≈ 2π / √(GM_EARTH / a^3)
+
+        period = orbital_period(orb; perturbation = :J0)
+        @test eltype(period) == T
+        @test period ≈ 2π / √(GM_EARTH / a^3)
+
+        # J₂
+        # ==================================================================================
+
+        period = orbital_period(a, e, i)
+        @test eltype(period) == T
+        @test period ≈ 6000 atol = 1e-3
+
+        period = orbital_period(orb)
+        @test eltype(period) == T
+        @test period ≈ 6000 atol = 1e-3
+
+        # J₄
+        # ==================================================================================
+
+        period = orbital_period(a, e, i; perturbation = :J4)
+        @test eltype(period) == T
+        @test period ≈ 6000 atol = 2e-2
+
+        period = orbital_period(orb; perturbation = :J4)
+        @test eltype(period) == T
+        @test period ≈ 6000 atol = 2e-2
+    end
 end
