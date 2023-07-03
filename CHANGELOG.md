@@ -6,8 +6,8 @@ Version 0.11.0
 
 - ![BREAKING][badge-breaking] This version split the **SatelliteToolbox.jl** ecosystem into
   smaller packages. All previous functionalities are available, but we perform drastically
-  modified in the API, leading to breaking changes. Those modifications were necessary to
-  stabilize the API into a more consistent state.
+  modifications in the API, leading to breaking changes. Those modifications were necessary
+  to stabilize the API into a more consistent state.
 
 Version 0.10.0
 --------------
