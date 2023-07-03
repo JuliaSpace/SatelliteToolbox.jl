@@ -11,6 +11,9 @@ makedocs(
     authors = "Ronan Arraes Jardim Chagas",
     pages = [
         "Home" => "index.md",
+        "Tutorials" => [
+            "ISS Observation" => "tutorials/iss_observation.md",
+        ],
         "Library" => "lib/library.md",
     ],
 )
