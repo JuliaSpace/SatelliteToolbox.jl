@@ -20,7 +20,7 @@ angle using:
 
 ```math
 \begin{equation*}
-  \lambda = atan\left(\frac{R_{NED,z}}{\sqrt{R_{NED,x}^2 + R_{NED,y}^2}}\right)~,
+  \lambda = atan\left(-\frac{R_{NED,z}}{\sqrt{R_{NED,x}^2 + R_{NED,y}^2}}\right)~,
 \end{equation*}
 ```
 
