@@ -10,6 +10,7 @@
 export orbital_angular_velocity
 export orbital_angular_velocity_to_semimajor_axis
 export orbital_period
+export raan_time_derivative
 
 ############################################################################################
 #                                        Functions
@@ -340,4 +341,107 @@ function orbital_period(orb::Orbit; perturbation::Symbol = :J2)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
     return orbital_period(k.a, k.e, k.i; perturbation = perturbation)
+end
+
+"""
+    raan_time_derivative(a::Number, e::Number, i::Number; kwargs...) -> T
+
+Compute the time derivative of the right ascension of the ascending node (RAAN) [rad / s] in
+an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad]. The
+orbit can also be specified by `orb` (see `Orbit`).
+
+!!! note
+    The output type `T` in the first signature is obtained by promoting the inputs to a
+    float type.
+
+# Keyword
+
+- `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
+    (**Default**: `:J2`)
+
+# Perturbations
+
+The keyword argument `perturbation` can be used to select the perturbation terms that will
+be considered in the computation. The possible values are:
+
+- `:J0`: Consider a Keplerian orbit.
+- `:J2`: Consider the perturbation terms up to J2.
+- `:J4`: Consider the perturbation terms J2, J4, and J2².
+
+If `perturbation` is omitted, it defaults to `:J2`.
+"""
+function raan_time_derivative(
+    a::T1,
+    e::T2,
+    i::T3;
+    perturbation::Symbol = :J2
+) where {T1<:Number, T2<:Number, T3<:Number}
+    T = float(promote_type(T1, T2, T3))
+
+    # Perturbation computed using a Keplerian orbit.
+    if perturbation === :J0
+        return zero(T)
+
+    # Perturbation computed using perturbations terms up to J2.
+    elseif perturbation === :J2
+        # Auxiliary variables.
+        J₂ = T(EGM08_J2)
+        R₀ = T(WGS84_ELLIPSOID.a)
+        e² = e^2
+        p  = (a / R₀) * (1 - e²)
+        p² = p^2
+
+        sin_i, cos_i = sincos(i)
+
+        # Unperturbed mean motion.
+        n₀ = orbital_angular_velocity(a, e, i; perturbation = :J0)
+
+        # Perturbed orbit mean motion.
+        n̄ = n₀ * (1 + (3 // 4) * J₂ / p² * √(1 - e²) * (2 - 3sin_i^2))
+
+        # First-order time-derivative of the RAAN [rad / s].
+        ∂Ω = -(3 // 2) * n̄ * J₂ / p² * cos_i
+
+        return ∂Ω
+
+    # Perturbation computed using perturbation terms J₂, J₂², and J₄.
+    elseif perturbation === :J4
+        # Auxiliary variables.
+        J₂   = T(EGM08_J2)
+        J₂²  = J₂^2
+        J₄   = T(EGM08_J4)
+        R₀   = T(WGS84_ELLIPSOID.a)
+        e²   = e^2
+        p    = (a / R₀) * (1 - e²)
+        p²   = p^2
+        p⁴   = p^4
+        aux  = 1 - e²
+        saux = √aux
+
+        sin_i, cos_i = sincos(i)
+        sin_i² = sin_i^2
+
+        # Unperturbed orbit period.
+        n₀ = orbital_angular_velocity(a, e, i; perturbation = :J0)
+
+        # Perturbed mean motion.
+        ā = a * (1 - (3 // 4) * J₂ / p² * saux * (2 - 3sin_i²))
+        p̄ = (ā / R₀) * aux
+        n̄ = n₀ * (1 + (3 // 4) * J₂ / p̄^2 * saux * (2 - 3sin_i²))
+
+        # First-order time-derivative of the RAAN [rad / s].
+        δΩ = -( 3 // 2 ) * n̄ * J₂  / p² * cos_i +
+              ( 3 // 32) * n̄ * J₂² / p⁴ * cos_i * (-36 -  4e² + 48saux + (40 - 5e² - 72saux) * sin_i²) +
+              (15 // 32) * n̄ * J₄  / p⁴ * cos_i * (  8 + 12e² - (14 + 21e²) * sin_i²)
+
+        return δΩ
+    else
+        throw(ArgumentError("The perturbation parameter $perturbation is not defined."))
+    end
+end
+
+function raan_time_derivative(orb::Orbit; perturbation::Symbol = :J2)
+    # Convert first to Keplerian elements.
+    k = convert(KeplerianElements, orb)
+    return raan_time_derivative(k.a, k.e, k.i; perturbation = perturbation)
 end

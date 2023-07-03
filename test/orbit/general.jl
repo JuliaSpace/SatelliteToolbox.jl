@@ -125,7 +125,7 @@ end
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; perturbation = :J3)
 end
 
-# Functions: orbital_period
+# Function: orbital_period
 # ------------------------------------------------------------------------------------------
 
 ############################################################################################
@@ -182,4 +182,68 @@ end
         @test eltype(period) == T
         @test period ≈ 6000 atol = 2e-2
     end
+end
+
+# Function: raan_time_derivative
+# ------------------------------------------------------------------------------------------
+
+############################################################################################
+#                                       Test Results
+############################################################################################
+#
+# The Amazonia-1 orbit is:
+#
+#   - Semi-major axis : 7130.982e3 m
+#   - Excentricity    : 0.001111
+#   - Inclination     : 98.405°
+#
+# and it is Sun-synchronous. Hence, the time-derivative of the RAAN must be close to
+# 0.9856473598947981 ° / day.
+#
+############################################################################################
+
+@testset "Function raan_time_derivative" begin
+    for T in (Float64, Float32)
+        a   = T(7130.982e3)
+        e   = T(0.001111)
+        i   = T(98.405) |> deg2rad
+        orb = KeplerianElements(0, a, e, i, 0, 0, 0)
+
+        # J₀
+        # ==================================================================================
+
+        ∂Ω = raan_time_derivative(a, e, i; perturbation = :J0)
+        @test eltype(∂Ω) == T
+        @test ∂Ω == T(0)
+
+        ∂Ω = raan_time_derivative(orb; perturbation = :J0)
+        @test eltype(∂Ω) == T
+        @test ∂Ω == T(0)
+
+        # J₂
+        # ==================================================================================
+
+        ∂Ω = raan_time_derivative(a, e, i)
+        @test eltype(∂Ω) == T
+        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 1e-3
+
+        ∂Ω = raan_time_derivative(orb)
+        @test eltype(∂Ω) == T
+        @test rad2deg(∂Ω) * 86400 ≈ 0.9856473598947981 atol = 1e-3
+
+        # J₄
+        # ==================================================================================
+
+        ∂Ω = raan_time_derivative(a, e, i; perturbation = :J4)
+        @test eltype(∂Ω) == T
+        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 2e-3
+
+        ∂Ω = raan_time_derivative(orb; perturbation = :J4)
+        @test eltype(∂Ω) == T
+        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 2e-3
+    end
+end
+
+@testset "Function raan_time_derivative [ERRORS]" begin
+    @test_throws ArgumentError raan_time_derivative(7000e3, 0, 0; perturbation = :J3)
 end
