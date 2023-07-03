@@ -40,5 +40,5 @@ This page contains tutorials with examples of analyses that can be performed usi
 **SatelliteToolbox.jl** ecosystem. For the documentation of the functions, please refer to
 the related package documentation page.
 
-!!! warn
+!!! warning
     This documentation is under construction, and more tutorials will be added.
