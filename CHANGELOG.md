@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.11.1
+--------------
+
+- ![Feature][badge-feature] We added the function `raan_time_derivative` to compute the RAAN
+  time derivative of an orbit.
+
 Version 0.11.0
 --------------
 
