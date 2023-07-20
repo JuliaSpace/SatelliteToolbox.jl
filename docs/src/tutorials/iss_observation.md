@@ -49,6 +49,9 @@ by using the Celestrak TLE fetcher. The following code creates the fetcher and d
 latest available ISS TLE:
 
 ```julia-repl
+julia> f = create_tle_fetcher(CelestrakTleFetcher)
+CelestrakTleFetcher("https://celestrak.org/NORAD/elements/gp.php")
+
 julia> tles = fetch_tles(f; satellite_name = "ISS (ZARYA)")
 [ Info: Fetch TLEs from Celestrak using satellite name: "ISS (ZARYA)" ...
 1-element Vector{TLE}:
