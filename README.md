@@ -1,4 +1,9 @@
-# SatelliteToolbox
+<p align="center">
+  <img src="./docs/src/assets/logo.png" width="150" title="SatelliteToolboxTransformations.jl"><br>
+</p>
+
+SatelliteToolbox.jl
+===================
 
 [![Build status](https://github.com/JuliaSpace/SatelliteToolbox.jl/workflows/CI/badge.svg)](https://github.com/JuliaSpace/SatelliteToolbox.jl/actions)
 [![codecov](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl)
