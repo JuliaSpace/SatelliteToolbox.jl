@@ -28,10 +28,15 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
-# Keyword
+# Keywords
 
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
+- `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
+    (**Default** = `GM_EARTH`)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
 
@@ -48,73 +53,124 @@ function orbital_angular_velocity(
     a::T1,
     e::T2,
     i::T3;
-    perturbation::Symbol = :J2
+    perturbation::Symbol = :J2,
+    # Constants.
+    J2::Number = EGM08_J2,
+    J4::Number = EGM08_J4,
+    m0::Number = GM_EARTH,
+    R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1<:Number, T2<:Number, T3<:Number}
     T = float(promote_type(T1, T2, T3))
 
+    R₀ = T(R0)
+    μ  = T(m0)
+    J₂ = T(J2)
+    J₄ = T(J4)
+
     # Unperturbed orbit period.
-    n₀ = √(T(GM_EARTH) / T(a)^3)
+    n₀ = √(μ / T(a)^3)
 
     # Perturbation computed using a Keplerian orbit.
-    if perturbation === :J0
+    if perturbation == :J0
         return n₀
 
     # Perturbation computed using perturbations terms up to J2.
-    elseif perturbation === :J2
-        # Auxiliary variables.
-        cos_i² = cos(T(i))^2
-        aux    = 1 - T(e)^2
-        R₀     = T(WGS84_ELLIPSOID.a)
+    elseif perturbation == :J2
+        # Convert the inputs to the correct type.
+        a₀ = T(a)
+        e₀ = T(e)
+        i₀ = T(i)
 
-        # Semi-lactum rectum.
-        p = T(a) * aux
+        # Initial values and auxiliary variables.
+        al₀ = a₀ / R₀          # ........................... Normalized semi-major axis [er]
+        e₀² = e₀^2             # .................................. Eccentricity squared [ ]
+        p₀  = al₀ * (1 - e₀²)  # .................................... Semi-latus rectum [er]
+        p₀² = p₀^2             # ........................... Semi-latus rectum squared [er²]
 
-        # Orbit period considering the perturbations (up to J2).
-        return n₀ + 3R₀^2 * T(EGM08_J2) / (4p^2) * n₀ * (√aux * (3cos_i² - 1) + (5cos_i² - 1))
+        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀² = sin_i₀^2
+
+        # We defined the orbit angular velocity here based on the nodal period, i.e., the
+        # time it takes for the satellite to cross the ascending node two consecutive times.
+        # Hence, we can compute it by:
+        #
+        #             ∂M     ∂ω
+        #   angvel = ──── + ────.
+        #             ∂t     ∂t
+        #
+        # The expressions for those time-derivatives were obtained from the J2 orbit
+        # propagator of SatelliteToolboxPropagators.jl package.
+
+        n̄     = n₀ * (1 + (3 // 4) * J₂ / p₀² * √(1 - e₀²) * (2 - 3sin_i₀²))
+        ∂M_∂t = n̄
+        ∂ω_∂t = +(3 // 4) * n̄ * J₂ / p₀² * (4 - 5sin_i₀²)
+
+        # Angular velocity.
+        ang_vel = ∂M_∂t + ∂ω_∂t
+
+        return ang_vel
 
     # Perturbation computed using perturbations terms J2, J4, and J2².
-    elseif perturbation === :J4
+    elseif perturbation == :J4
+        # Convert the inputs to the correct type.
+        a₀ = T(a)
+        e₀ = T(e)
+        i₀ = T(i)
 
-        # Auxiliary variables
-        e²     = T(e)^2
-        e⁴     = T(e)^4
-        sin_i  = sin(T(i))
-        sin_i² = sin_i^2
-        sin_i⁴ = sin_i^4
-        aux    = (1 - e²)
-        saux   = √aux
-        R₀     = T(WGS84_ELLIPSOID.a)
-        p      = (T(a) / R₀) * aux
-        p²     = p^2
-        p⁴     = p^4
-        T_J2   = T(EGM08_J2)
-        T_J2²  = T_J2^2
-        T_J4   = T(EGM08_J4)
+        # Initial values and auxiliary variables.
+        e₀² = e₀^2
+        β²  = (1 - e₀²)
+        β   = √β²
 
-        # Notice that:
-        #            .   .
-        #   n = n₀ + ω + M₀
+        al₀ = a₀ / R₀    # ................................. Normalized semi-major axis [er]
+        J₂² = J₂^2       # ............................................. J2 constant squared
+        p₀  = al₀ * β²   # .......................................... Semi-latus rectum [er]
+        p₀² = p₀^2       # ................................. Semi-latus rectum squared [er²]
+        p₀⁴ = p₀^4       # ........................ Semi-latus rectum to the 4th power [er⁴]
+
+        sin_i₀, cos_i₀ = sincos(T(i₀))
+
+        sin_i₀² = sin_i₀^2
+        sin_i₀⁴ = sin_i₀^4
+        cos_i₀⁴ = cos_i₀^4
+
+        # We defined the orbit angular velocity here based on the nodal period, i.e., the
+        # time it takes for the satellite to cross the ascending node two consecutive times.
+        # Hence, we can compute it by:
         #
-        # in which the time-derivatives are computed as in [1, p. 692].
+        #             ∂M     ∂ω
+        #   angvel = ──── + ────.
+        #             ∂t     ∂t
+        #
+        # The expressions for those time-derivatives were obtained from the J2 orbit
+        # propagator of SatelliteToolboxPropagators.jl package.
 
-        δω  = ( 3 //   4) * n₀ * T_J2  / p² * (4 - 5sin_i²) +
-              ( 9 // 384) * n₀ * T_J2² / p⁴ * (     56e² + (760 -  36e²) * sin_i² - (890 +  45e²) * sin_i⁴) -
-              (15 // 128) * n₀ * T_J4  / p⁴ * (64 + 72e² - (248 + 252e²) * sin_i² + (196 + 189e²) * sin_i⁴)
+        n̄ = n₀ * (
+            1 +
+            ( 3 // 4  ) * J₂  / p₀² * β * (2 - 3sin_i₀²) +
+            ( 3 // 128) * J₂² / p₀⁴ * β * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴) -
+            (45 // 128) * J₄  / p₀⁴ * β * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
+        )
 
-        δM₀ = ( 3 //   4) * n₀ * T_J2  / p² * saux * (2 - 3sin_i²) +
-              ( 3 // 512) * n₀ * T_J2² / p⁴ / saux * (320e² - 280e⁴ + (1600 - 1568e² + 328e⁴) * sin_i² + (-2096 + 1072e² +  79e⁴) * sin_i⁴) -
-              (45 // 128) * n₀ * T_J4  / p⁴ * saux * e² * (-8 + 40sin_i - 35sin_i²)
+        ∂M_∂t = n̄
+        ∂ω_∂t = ( 3 // 4  ) * n̄  * J₂  / p₀² * (4 - 5sin_i₀²) +
+                ( 3 // 128) * n̄  * J₂² / p₀⁴ * (384 + 96e₀² - 384β + (-824 - 116e₀² + 1056β) * sin_i₀² + (430 - 5e₀² - 720β) * sin_i₀⁴) -
+                (15 // 16 ) * n₀ * J₂² / p₀⁴ * e₀² * cos_i₀⁴ -
+                (15 // 128) * n₀ * J₄  / p₀⁴ * (64 + 72e₀² - (248 + 252e₀²) * sin_i₀² + (196 + 189e₀²) * sin_i₀⁴)
 
-        return n₀ + δω + δM₀
+        # Angular velocity.
+        ang_vel = ∂M_∂t + ∂ω_∂t
+
+        return ang_vel
     else
         throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
     end
 end
 
-function orbital_angular_velocity(orb::Orbit; perturbation::Symbol = :J2)
+function orbital_angular_velocity(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return orbital_angular_velocity(k.a, k.e, k.i; perturbation = perturbation)
+    return orbital_angular_velocity(k.a, k.e, k.i; kwargs...)
 end
 
 """
@@ -331,16 +387,16 @@ be considered in the computation. The possible values are:
 
 If `perturbation` is omitted, it defaults to `:J2`.
 """
-function orbital_period(a::Number, e::Number, i::Number; perturbation::Symbol = :J2)
-    n = orbital_angular_velocity(a, e, i; perturbation = perturbation)
+function orbital_period(a::Number, e::Number, i::Number; kwargs...)
+    n = orbital_angular_velocity(a, e, i; kwargs...)
     T = eltype(n)
     return T(2π) / n
 end
 
-function orbital_period(orb::Orbit; perturbation::Symbol = :J2)
+function orbital_period(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return orbital_period(k.a, k.e, k.i; perturbation = perturbation)
+    return orbital_period(k.a, k.e, k.i; kwargs...)
 end
 
 """

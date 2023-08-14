@@ -19,9 +19,9 @@
 #
 # The Amazonia-1 orbit is:
 #
-#   - Semi-major axis : 7130.982e3 m
+#   - Semi-major axis : 7130.984e3 m
 #   - Excentricity    : 0.001111
-#   - Inclination     : 98.405°
+#   - Inclination     : 98.4106°
 #
 # and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
 #
@@ -29,9 +29,9 @@
 
 @testset "Function orbital_angular_velocity" begin
     for T in (Float64, Float32)
-        a   = T(7130.982e3)
+        a   = T(7130.984e3)
         e   = T(0.001111)
-        i   = T(98.405) |> deg2rad
+        i   = T(98.4106) |> deg2rad
         orb = KeplerianElements(0, a, e, i, 0, 0, 0)
 
         # J₀
@@ -82,9 +82,9 @@ end
 #
 # The Amazonia-1 orbit is:
 #
-#   - Semi-major axis : 7130.982e3 m
+#   - Semi-major axis : 7130.984e3 m
 #   - Excentricity    : 0.001111
-#   - Inclination     : 98.405°
+#   - Inclination     : 98.4106°
 #
 # and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
 #
@@ -93,9 +93,9 @@ end
 @testset "Function orbital_angular_velocity_to_semimajor_axis" begin
     for T in (Float64, Float32)
         n   = T(0.06) |> deg2rad
-        a   = T(7130.982e3)
+        a   = T(7130.984e3)
         e   = T(0.001111)
-        i   = T(98.405) |> deg2rad
+        i   = T(98.4106) |> deg2rad
         orb = KeplerianElements(0, a, e, i, 0, 0, 0)
 
         # J₀
@@ -134,9 +134,9 @@ end
 #
 # The Amazonia-1 orbit is:
 #
-#   - Semi-major axis : 7130.982e3 m
+#   - Semi-major axis : 7130.984e3 m
 #   - Excentricity    : 0.001111
-#   - Inclination     : 98.405°
+#   - Inclination     : 98.4106°
 #
 # and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
 #
@@ -144,9 +144,9 @@ end
 
 @testset "Function orbital_period" begin
     for T in (Float64, Float32)
-        a   = T(7130.982e3)
+        a   = T(7130.984e3)
         e   = T(0.001111)
-        i   = T(98.405) |> deg2rad
+        i   = T(98.4106) |> deg2rad
         orb = KeplerianElements(0, a, e, i, 0, 0, 0)
 
         # J₀
@@ -193,9 +193,9 @@ end
 #
 # The Amazonia-1 orbit is:
 #
-#   - Semi-major axis : 7130.982e3 m
+#   - Semi-major axis : 7130.984e3 m
 #   - Excentricity    : 0.001111
-#   - Inclination     : 98.405°
+#   - Inclination     : 98.4106°
 #
 # and it is Sun-synchronous. Hence, the time-derivative of the RAAN must be close to
 # 0.9856473598947981 ° / day.
@@ -204,9 +204,9 @@ end
 
 @testset "Function raan_time_derivative" begin
     for T in (Float64, Float32)
-        a   = T(7130.982e3)
+        a   = T(7130.984e3)
         e   = T(0.001111)
-        i   = T(98.405) |> deg2rad
+        i   = T(98.4106) |> deg2rad
         orb = KeplerianElements(0, a, e, i, 0, 0, 0)
 
         # J₀
