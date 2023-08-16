@@ -17,13 +17,8 @@
 #                                       Test Results
 ############################################################################################
 #
-# The Amazonia-1 orbit is:
-#
-#   - Semi-major axis : 7130.984e3 m
-#   - Excentricity    : 0.001111
-#   - Inclination     : 98.4106°
-#
-# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
+# We will test the conversion by initializing the related propagator with the same inputs to
+# the function and comparing the angular velocity.
 #
 ############################################################################################
 
@@ -48,24 +43,48 @@
         # J₂
         # ==================================================================================
 
-        angvel = orbital_angular_velocity(a, e, i)
+        orbp = Propagators.init(Val(:J2), orb)
+
+        angvel = orbital_angular_velocity(
+            a,
+            e,
+            i;
+            J2 = 0.0010826261738522227,
+            m0 = 3.986004415e14,
+        )
         @test eltype(angvel) == T
-        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.δω
 
         angvel = orbital_angular_velocity(orb)
         @test eltype(angvel) == T
-        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.δω
 
         # J₄
         # ==================================================================================
 
-        angvel = orbital_angular_velocity(a, e, i; perturbation = :J4)
-        @test eltype(angvel) == T
-        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+        orbp = Propagators.init(Val(:J4), orb)
 
-        angvel = orbital_angular_velocity(orb; perturbation = :J4)
+        angvel = orbital_angular_velocity(
+            a,
+            e,
+            i;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
         @test eltype(angvel) == T
-        @test angvel ≈ deg2rad(0.06) atol = 4e-9
+        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.δω
+
+        angvel = orbital_angular_velocity(
+            orb;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
+        @test eltype(angvel) == T
+        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.δω
     end
 end
 
