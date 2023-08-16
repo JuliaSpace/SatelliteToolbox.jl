@@ -146,13 +146,8 @@ end
 #                                       Test Results
 ############################################################################################
 #
-# The Amazonia-1 orbit is:
-#
-#   - Semi-major axis : 7130.984e3 m
-#   - Excentricity    : 0.001111
-#   - Inclination     : 98.4106°
-#
-# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
+# We will test the conversion by initializing the related propagator with the same inputs to
+# the function and comparing the period.
 #
 ############################################################################################
 
@@ -166,35 +161,53 @@ end
         # J₀
         # ==================================================================================
 
-        period = orbital_period(a, e, i; perturbation = :J0)
-        @test eltype(period) == T
-        @test period ≈ 2π / √(GM_EARTH / a^3)
+        P = orbital_period(a, e, i; perturbation = :J0)
+        @test eltype(P) == T
+        @test P ≈ 2π / √(GM_EARTH / a^3)
 
-        period = orbital_period(orb; perturbation = :J0)
-        @test eltype(period) == T
-        @test period ≈ 2π / √(GM_EARTH / a^3)
+        P = orbital_period(orb; perturbation = :J0)
+        @test eltype(P) == T
+        @test P ≈ 2π / √(GM_EARTH / a^3)
 
         # J₂
         # ==================================================================================
 
-        period = orbital_period(a, e, i)
-        @test eltype(period) == T
-        @test period ≈ 6000 atol = 1e-3
+        orbp = Propagators.init(Val(:J2), orb)
 
-        period = orbital_period(orb)
-        @test eltype(period) == T
-        @test period ≈ 6000 atol = 1e-3
+        P = orbital_period(a, e, i; m0 = 3.986004415e14, J2 = 0.0010826261738522227)
+        @test eltype(P) == T
+        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.δω)
+
+        P = orbital_period(orb)
+        @test eltype(P) == T
+        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.δω)
 
         # J₄
         # ==================================================================================
 
-        period = orbital_period(a, e, i; perturbation = :J4)
-        @test eltype(period) == T
-        @test period ≈ 6000 atol = 2e-2
+        orbp = Propagators.init(Val(:J4), orb)
 
-        period = orbital_period(orb; perturbation = :J4)
-        @test eltype(period) == T
-        @test period ≈ 6000 atol = 2e-2
+        P = orbital_period(
+            a,
+            e,
+            i;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
+        @test eltype(P) == T
+        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.δω)
+
+        P = orbital_period(
+            orb;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
+        @test eltype(P) == T
+        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.δω)
     end
 end
 
