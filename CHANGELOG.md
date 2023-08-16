@@ -1,6 +1,20 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.12.0
+--------------
+
+- ![Feature][badge-feature] We can now modify the constants in the functions related to the
+  orbits.
+- ![Enhancement][badge-enhancement] We improved the algorithm to compute the orbital angular
+  velocity and period.
+- ![Enhancement][badge-enhancement] We improved the algorithm to convert the angular
+  velocity to semi-major axis.
+- ![Enhancement][badge-enhancement] We improved the algorithm to compute the RAAN
+  time-derivative.
+- ![Enhancement][badge-enhancement] We update the functions to comply with the new API of
+  the packages.
+
 Version 0.11.1
 --------------
 
