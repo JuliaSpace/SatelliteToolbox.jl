@@ -45,46 +45,26 @@
 
         orbp = Propagators.init(Val(:J2), orb)
 
-        angvel = orbital_angular_velocity(
-            a,
-            e,
-            i;
-            J2 = 0.0010826261738522227,
-            m0 = 3.986004415e14,
-        )
+        angvel = orbital_angular_velocity(a, e, i)
         @test eltype(angvel) == T
-        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.δω
+        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.∂ω
 
         angvel = orbital_angular_velocity(orb)
         @test eltype(angvel) == T
-        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.δω
+        @test angvel ≈ orbp.j2d.n̄ + orbp.j2d.∂ω
 
         # J₄
         # ==================================================================================
 
         orbp = Propagators.init(Val(:J4), orb)
 
-        angvel = orbital_angular_velocity(
-            a,
-            e,
-            i;
-            perturbation = :J4,
-            J2 = 0.0010826261738522227,
-            J4 = -1.6198975999169731e-6,
-            m0 = 3.986004415e14,
-        )
+        angvel = orbital_angular_velocity(a, e, i; perturbation = :J4)
         @test eltype(angvel) == T
-        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.δω
+        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.∂ω
 
-        angvel = orbital_angular_velocity(
-            orb;
-            perturbation = :J4,
-            J2 = 0.0010826261738522227,
-            J4 = -1.6198975999169731e-6,
-            m0 = 3.986004415e14,
-        )
+        angvel = orbital_angular_velocity(orb; perturbation = :J4)
         @test eltype(angvel) == T
-        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.δω
+        @test angvel ≈ orbp.j4d.n̄ + orbp.j4d.∂ω
     end
 end
 
@@ -122,34 +102,23 @@ end
         # J₂
         # ==================================================================================
 
-        â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            m0 = 3.986004415e14
-        )
+        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i)
         orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
         orbp = Propagators.init(Val(:J2), orb)
 
         @test eltype(â) == T
-        @test (orbp.j2d.n̄ + orbp.j2d.δω) ≈ angvel
+        @test (orbp.j2d.n̄ + orbp.j2d.∂ω) ≈ angvel
         @test conv == true
 
         # J₄
         # ==================================================================================
 
-        â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            perturbation = :J4,
-            m0 = 3.986004415e14
-        )
+        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; perturbation = :J4)
         orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
         orbp = Propagators.init(Val(:J4), orb)
 
         @test eltype(â) == T
-        @test (orbp.j4d.n̄ + orbp.j4d.δω) ≈ angvel
+        @test (orbp.j4d.n̄ + orbp.j4d.∂ω) ≈ angvel
         @test conv == true
     end
 end
@@ -193,13 +162,13 @@ end
 
         orbp = Propagators.init(Val(:J2), orb)
 
-        P = orbital_period(a, e, i; m0 = 3.986004415e14, J2 = 0.0010826261738522227)
+        P = orbital_period(a, e, i)
         @test eltype(P) == T
-        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.δω)
+        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.∂ω)
 
         P = orbital_period(orb)
         @test eltype(P) == T
-        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.δω)
+        @test P ≈ T(2π) / (orbp.j2d.n̄ + orbp.j2d.∂ω)
 
         # J₄
         # ==================================================================================
@@ -216,7 +185,7 @@ end
             m0 = 3.986004415e14,
         )
         @test eltype(P) == T
-        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.δω)
+        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.∂ω)
 
         P = orbital_period(
             orb;
@@ -226,7 +195,7 @@ end
             m0 = 3.986004415e14,
         )
         @test eltype(P) == T
-        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.δω)
+        @test P ≈ T(2π) / (orbp.j4d.n̄ + orbp.j4d.∂ω)
     end
 end
 
@@ -265,40 +234,26 @@ end
 
         orbp = Propagators.init(Val(:J2), orb)
 
-        ∂Ω = raan_time_derivative(a, e, i; m0 = 3.986004415e14, J2 = 0.0010826261738522227)
+        ∂Ω = raan_time_derivative(a, e, i)
         @test eltype(∂Ω) == T
-        @test ∂Ω ≈ orbp.j2d.δΩ
+        @test ∂Ω ≈ orbp.j2d.∂Ω
 
         ∂Ω = raan_time_derivative(orb)
         @test eltype(∂Ω) == T
-        @test ∂Ω ≈ orbp.j2d.δΩ
+        @test ∂Ω ≈ orbp.j2d.∂Ω
 
         # J₄
         # ==================================================================================
 
         orbp = Propagators.init(Val(:J4), orb)
 
-        ∂Ω = raan_time_derivative(
-            a,
-            e,
-            i;
-            perturbation = :J4,
-            J2 = 0.0010826261738522227,
-            J4 = -1.6198975999169731e-6,
-            m0 = 3.986004415e14,
-        )
+        ∂Ω = raan_time_derivative(a, e, i; perturbation = :J4)
         @test eltype(∂Ω) == T
-        @test ∂Ω ≈ orbp.j4d.δΩ
+        @test ∂Ω ≈ orbp.j4d.∂Ω
 
-        ∂Ω = raan_time_derivative(
-            orb;
-            perturbation = :J4,
-            J2 = 0.0010826261738522227,
-            J4 = -1.6198975999169731e-6,
-            m0 = 3.986004415e14,
-        )
+        ∂Ω = raan_time_derivative(orb; perturbation = :J4)
         @test eltype(∂Ω) == T
-        @test ∂Ω ≈ orbp.j4d.δΩ
+        @test ∂Ω ≈ orbp.j4d.∂Ω
     end
 end
 

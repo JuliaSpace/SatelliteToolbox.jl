@@ -34,8 +34,8 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
 - `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
@@ -55,8 +55,8 @@ function orbital_angular_velocity(
     i::T3;
     perturbation::Symbol = :J2,
     # Constants.
-    J2::Number = EGM08_J2,
-    J4::Number = EGM08_J4,
+    J2::Number = EGM_2008_J2,
+    J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
     R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1<:Number, T2<:Number, T3<:Number}
@@ -198,8 +198,8 @@ between two consecutive passages by the ascending node.
     (**Default** = nothing)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
 - `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Returns
@@ -226,8 +226,8 @@ function orbital_angular_velocity_to_semimajor_axis(
     perturbation::Symbol = :J2,
     tolerance::Union{Nothing, Number} = nothing,
     # Constants.
-    J2::Number = EGM08_J2,
-    J4::Number = EGM08_J4,
+    J2::Number = EGM_2008_J2,
+    J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
     R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
@@ -474,8 +474,8 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
 - `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
@@ -518,8 +518,8 @@ orbit can also be specified by `orb` (see `Orbit`).
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
 - `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
@@ -539,8 +539,8 @@ function raan_time_derivative(
     i::T3;
     perturbation::Symbol = :J2,
     # Constants.
-    J2::Number = EGM08_J2,
-    J4::Number = EGM08_J4,
+    J2::Number = EGM_2008_J2,
+    J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
     R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1<:Number, T2<:Number, T3<:Number}
