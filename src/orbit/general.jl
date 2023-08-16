@@ -512,10 +512,15 @@ orbit can also be specified by `orb` (see `Orbit`).
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
-# Keyword
+# Keywords
 
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
+- `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
+    (**Default** = `GM_EARTH`)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
 
@@ -532,74 +537,109 @@ function raan_time_derivative(
     a::T1,
     e::T2,
     i::T3;
-    perturbation::Symbol = :J2
+    perturbation::Symbol = :J2,
+    # Constants.
+    J2::Number = EGM08_J2,
+    J4::Number = EGM08_J4,
+    m0::Number = GM_EARTH,
+    R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1<:Number, T2<:Number, T3<:Number}
     T = float(promote_type(T1, T2, T3))
 
+    R₀ = T(R0)
+    μ  = T(m0)
+    J₂ = T(J2)
+    J₄ = T(J4)
+
     # Perturbation computed using a Keplerian orbit.
-    if perturbation === :J0
+    if perturbation == :J0
         return zero(T)
 
     # Perturbation computed using perturbations terms up to J2.
-    elseif perturbation === :J2
+    elseif perturbation == :J2
+        # Convert the inputs to the correct type.
+        a₀  = T(a)
+        e₀  = T(e)
+        i₀  = T(i)
+
         # Auxiliary variables.
-        J₂ = T(EGM08_J2)
-        R₀ = T(WGS84_ELLIPSOID.a)
-        e² = e^2
-        p  = (a / R₀) * (1 - e²)
-        p² = p^2
+        μm  = √(μ / R₀^3)
+        al₀ = a₀ / R₀
+        e₀² = e₀^2
+        n₀  = μm / √(al₀^3)
+        p₀  = al₀ * (1 - e₀²)
+        p₀² = p₀^2
 
-        sin_i, cos_i = sincos(i)
-
-        # Unperturbed mean motion.
-        n₀ = orbital_angular_velocity(a, e, i; perturbation = :J0)
+        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀² = sin_i₀^2
+        β²      = 1 - e₀²
+        β       = √β²
 
         # Perturbed orbit mean motion.
-        n̄ = n₀ * (1 + (3 // 4) * J₂ / p² * √(1 - e²) * (2 - 3sin_i^2))
+        n̄ = n₀ * (1 + (3 // 4) * J₂ / p₀² * β * (2 - 3sin_i₀²))
 
         # First-order time-derivative of the RAAN [rad / s].
-        ∂Ω = -(3 // 2) * n̄ * J₂ / p² * cos_i
+        ∂Ω = -(3 // 2) * n̄ * J₂ / p₀² * cos_i₀
 
         return ∂Ω
 
     # Perturbation computed using perturbation terms J₂, J₂², and J₄.
-    elseif perturbation === :J4
+    elseif perturbation == :J4
+        # Convert the inputs to the correct type.
+        a₀  = T(a)
+        e₀  = T(e)
+        i₀  = T(i)
+
         # Auxiliary variables.
-        J₂   = T(EGM08_J2)
-        J₂²  = J₂^2
-        J₄   = T(EGM08_J4)
-        R₀   = T(WGS84_ELLIPSOID.a)
-        e²   = e^2
-        p    = (a / R₀) * (1 - e²)
-        p²   = p^2
-        p⁴   = p^4
-        aux  = 1 - e²
-        saux = √aux
+        μm  = √(μ / R₀^3)
+        al₀ = a₀ / R₀
+        e₀² = e₀^2
+        p₀  = al₀ * (1 - e₀²)
+        p₀² = p₀^2
+        p₀⁴ = p₀^4
+        n₀  = μm / √(al₀^3)
+        J₂² = J₂^2
+
+        sin_i₀, cos_i₀ = sincos(T(i₀))
+
+        sin_i₀² = sin_i₀^2
+        sin_i₀⁴ = sin_i₀^4
+        β²      = (1 - e₀²)
+        β       = √β²
 
         sin_i, cos_i = sincos(i)
         sin_i² = sin_i^2
 
-        # Unperturbed orbit period.
-        n₀ = orbital_angular_velocity(a, e, i; perturbation = :J0)
-
         # Perturbed mean motion.
-        ā = a * (1 - (3 // 4) * J₂ / p² * saux * (2 - 3sin_i²))
-        p̄ = (ā / R₀) * aux
-        n̄ = n₀ * (1 + (3 // 4) * J₂ / p̄^2 * saux * (2 - 3sin_i²))
+        kn₂  = J₂  / p₀² * β
+        kn₂₂ = J₂² / p₀⁴ * β
+        kn₄  = J₄  / p₀⁴ * β
+
+        n̄ = n₀ * (
+            1 +
+            ( 3 // 4  ) * kn₂  * (2 - 3sin_i₀²) +
+            ( 3 // 128) * kn₂₂ * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴) -
+            (45 // 128) * kn₄  * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
+        )
 
         # First-order time-derivative of the RAAN [rad / s].
-        δΩ = -( 3 // 2 ) * n̄ * J₂  / p² * cos_i +
-              ( 3 // 32) * n̄ * J₂² / p⁴ * cos_i * (-36 -  4e² + 48saux + (40 - 5e² - 72saux) * sin_i²) +
-              (15 // 32) * n̄ * J₄  / p⁴ * cos_i * (  8 + 12e² - (14 + 21e²) * sin_i²)
+        k̄₂  = n̄  * J₂  / p₀²
+        k̄₂₂ = n̄  * J₂² / p₀⁴
+        k₂₂ = n₀ * J₂² / p₀⁴
+        k₄  = n₀ * J₄  / p₀⁴
 
-        return δΩ
+        ∂Ω = -( 3 // 2 ) * k̄₂  * cos_i₀ +
+              ( 3 // 32) * k̄₂₂ * cos_i₀ * (-36 -  4e₀² + 48β + (40 - 5e₀² - 72β) * sin_i₀²) +
+              (15 // 32) * k₄  * cos_i₀ * (8 + 12e₀² - (14 + 21e₀²) * sin_i₀²)
+
+        return ∂Ω
     else
         throw(ArgumentError("The perturbation parameter $perturbation is not defined."))
     end
 end
 
-function raan_time_derivative(orb::Orbit; perturbation::Symbol = :J2)
+function raan_time_derivative(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
-    return raan_time_derivative(k.a, k.e, k.i; perturbation = perturbation)
+    return raan_time_derivative(k.a, k.e, k.i; kwargs...)
 end

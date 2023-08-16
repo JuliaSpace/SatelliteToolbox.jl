@@ -205,14 +205,8 @@ end
 #                                       Test Results
 ############################################################################################
 #
-# The Amazonia-1 orbit is:
-#
-#   - Semi-major axis : 7130.984e3 m
-#   - Excentricity    : 0.001111
-#   - Inclination     : 98.4106°
-#
-# and it is Sun-synchronous. Hence, the time-derivative of the RAAN must be close to
-# 0.9856473598947981 ° / day.
+# We will test the conversion by initializing the related propagator with the same inputs to
+# the function and comparing the RAAN time-derivative.
 #
 ############################################################################################
 
@@ -237,24 +231,42 @@ end
         # J₂
         # ==================================================================================
 
-        ∂Ω = raan_time_derivative(a, e, i)
+        orbp = Propagators.init(Val(:J2), orb)
+
+        ∂Ω = raan_time_derivative(a, e, i; m0 = 3.986004415e14, J2 = 0.0010826261738522227)
         @test eltype(∂Ω) == T
-        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 1e-3
+        @test ∂Ω ≈ orbp.j2d.δΩ
 
         ∂Ω = raan_time_derivative(orb)
         @test eltype(∂Ω) == T
-        @test rad2deg(∂Ω) * 86400 ≈ 0.9856473598947981 atol = 1e-3
+        @test ∂Ω ≈ orbp.j2d.δΩ
 
         # J₄
         # ==================================================================================
 
-        ∂Ω = raan_time_derivative(a, e, i; perturbation = :J4)
-        @test eltype(∂Ω) == T
-        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 2e-3
+        orbp = Propagators.init(Val(:J4), orb)
 
-        ∂Ω = raan_time_derivative(orb; perturbation = :J4)
+        ∂Ω = raan_time_derivative(
+            a,
+            e,
+            i;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
         @test eltype(∂Ω) == T
-        @test rad2deg(∂Ω) * 86400  ≈ 0.9856473598947981 atol = 2e-3
+        @test ∂Ω ≈ orbp.j4d.δΩ
+
+        ∂Ω = raan_time_derivative(
+            orb;
+            perturbation = :J4,
+            J2 = 0.0010826261738522227,
+            J4 = -1.6198975999169731e-6,
+            m0 = 3.986004415e14,
+        )
+        @test eltype(∂Ω) == T
+        @test ∂Ω ≈ orbp.j4d.δΩ
     end
 end
 
