@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>ISS Observation · Satellite Toolbox</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/iss_observation/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Satellite Toolbox logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Satellite Toolbox</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li class="is-active"><a class="tocitem" href>ISS Observation</a><ul class="internal"><li><a class="tocitem" href="#Theory"><span>Theory</span></a></li><li><a class="tocitem" href="#Algorithm"><span>Algorithm</span></a></li><li><a class="tocitem" href="#Code"><span>Code</span></a></li></ul></li></ul></li><li><a class="tocitem" href="../../lib/library/">Library</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>ISS Observation</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>ISS Observation</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaSpace/SatelliteToolbox.jl/blob/master/docs/src/tutorials/iss_observation.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="ISS-Observation-Instants"><a class="docs-heading-anchor" href="#ISS-Observation-Instants">ISS Observation Instants</a><a id="ISS-Observation-Instants-1"></a><a class="docs-heading-anchor-permalink" href="#ISS-Observation-Instants" title="Permalink"></a></h1><p>In this tutorial, we will compute the instants in which we can theoretically observe the ISS from our location. Actually, we will compute the moments an observer on the Earth&#39;s surface has a direct line of sight to the ISS.</p><h2 id="Theory"><a class="docs-heading-anchor" href="#Theory">Theory</a><a id="Theory-1"></a><a class="docs-heading-anchor-permalink" href="#Theory" title="Permalink"></a></h2><p>We can verify if we have a line of sight to an object by computing the elevation <span>$\lambda$</span> of its position vector represented in a local reference frame. Let&#39;s use the NED (North-East-Down) reference: its X axis points toward the North, its Y axis points toward the East, and its Z axis points toward the Earth&#39;s center, as shown in the following figure.</p><p><img src="../../assets/iss_observation/ned.pdf" alt="Elevation in NED Reference Frame"/></p><p>If the angle <span>$\lambda$</span> is greater than zero, we can theoretically observe the object we are analyzing because it is above the horizon at the desired location. We can compute this angle using:</p><p class="math-container">\[\begin{equation*}
+  \lambda = atan\left(-\frac{R_{NED,z}}{\sqrt{R_{NED,x}^2 + R_{NED,y}^2}}\right)~,
+\end{equation*}\]</p><p>where <span>$R_{NED,i}$</span> it the <span>$i$</span>-axis component of the object position vector <span>$\vec{R}$</span> represented in the NED reference frame.</p><h2 id="Algorithm"><a class="docs-heading-anchor" href="#Algorithm">Algorithm</a><a id="Algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithm" title="Permalink"></a></h2><p>We need to perform the following tasks to check when ISS enters our field of view:</p><ol><li>Obtain the ISS position during the desired period;</li><li>Convert the position vector to the NED reference frame;</li><li>Obtain the elevation for each instant; and</li><li>Check when the elevation is greater than zero.</li></ol><h2 id="Code"><a class="docs-heading-anchor" href="#Code">Code</a><a id="Code-1"></a><a class="docs-heading-anchor-permalink" href="#Code" title="Permalink"></a></h2><p>Before starting, let&#39;s load all the packages in the <strong>SatelliteToolbox.jl</strong> ecosystem:</p><pre><code class="language-julia-repl hljs">julia&gt; using SatelliteToolbox</code></pre><p>We first need to obtain the mean elements of the ISS to propagate its orbit. We can do this by using the Celestrak TLE fetcher. The following code creates the fetcher and downloads the latest available ISS TLE:</p><pre><code class="language-julia-repl hljs">julia&gt; f = create_tle_fetcher(CelestrakTleFetcher)
+CelestrakTleFetcher(&quot;https://celestrak.org/NORAD/elements/gp.php&quot;)
+
+julia&gt; tles = fetch_tles(f; satellite_name = &quot;ISS (ZARYA)&quot;)
+[ Info: Fetch TLEs from Celestrak using satellite name: &quot;ISS (ZARYA)&quot; ...
+1-element Vector{TLE}:
+ TLE: ISS (ZARYA) (Epoch = 2023-07-02T16:14:23.672)
+
+julia&gt; iss_tle = tles[1]
+TLE:
+                      Name : ISS (ZARYA)
+          Satellite number : 25544
+  International designator : 98067A
+        Epoch (Year / Day) : 23 / 183.67666287 (2023-07-02T16:14:23.672)
+        Element set number : 999
+              Eccentricity :   0.00045810
+               Inclination :  51.64230000 deg
+                      RAAN : 251.73890000 deg
+       Argument of perigee :  98.25980000 deg
+              Mean anomaly :  37.01280000 deg
+           Mean motion (n) :  15.50610282 revs / day
+         Revolution number : 40419
+                        B* :   0.00021501 1 / er
+                     ṅ / 2 :   0.00012101 rev / day²
+                     n̈ / 6 :            0 rev / day³</code></pre><p>The mean elements we obtained are encoded in a TLE by NORAD. Hence, we must use the SGP4/SDP4 algorithm to propagate its orbit. We can initialize the propagator as follows:</p><pre><code class="language-julia-repl hljs">julia&gt; orbp = Propagators.init(Val(:SGP4), iss_tle)
+OrbitPropagatorSgp4{Float64, Float64}:
+   Propagator name : SGP4 Orbit Propagator
+  Propagator epoch : 2023-07-02T16:14:23.672
+  Last propagation : 2023-07-02T16:14:23.672</code></pre><p>Let&#39;s say we want to check when the ISS will stay under our field of view within one day from this TLE epoch. The following code propagates the TLE for one day using a step of one second:</p><pre><code class="language-julia-repl hljs">julia&gt; ret = Propagators.propagate!.(orbp, 0:1:86400)
+86401-element Vector{Tuple{StaticArraysCore.SVector{3, Float64}, StaticArraysCore.SVector{3, Float64}}}:
+ ([4.3241138662552e6, 3.658818213831297e6, 3.737410008328138e6], [-1520.7633082033235, 6181.330955217756, -4275.4053760819315])
+ ([4.322590349691385e6, 3.6649972144279014e6, 3.733132227568888e6], [-1526.2732556957171, 6176.663987437403, -4280.179483156526])
+ ([4.321061324147931e6, 3.67117154413503e6, 3.7288496754281903e6], [-1531.7812633324513, 6171.989143201469, -4284.948124245782])
+ ⋮
+ ([-4.523980159202273e6, -3.810874556321396e6, -3.3522994708746294e6], [1497.4675552368813, -5876.71613186301, 4670.189355793778])
+ ([-4.522479829177213e6, -3.8167488378395094e6, -3.347627153102706e6], [1503.2022238337156, -5871.8808804082, 4674.448700122841])</code></pre><p>Each element in the returned array is a tuple with two vectors. The first is the satellite position [m], and the second is the velocity [m / s]. We only need to check its position. Thus, let&#39;s obtain this information for each instant:</p><pre><code class="language-julia-repl hljs">julia&gt; vr_teme = first.(ret)
+86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
+ [4.3241138662552e6, 3.658818213831297e6, 3.737410008328138e6]
+ [4.322590349691385e6, 3.6649972144279014e6, 3.733132227568888e6]
+ [4.321061324147931e6, 3.67117154413503e6, 3.7288496754281903e6]
+ ⋮
+ [-4.523980159202273e6, -3.810874556321396e6, -3.3522994708746294e6]
+ [-4.522479829177213e6, -3.8167488378395094e6, -3.347627153102706e6]</code></pre><p>This step concludes the first step of the algorithm.</p><p>The information obtained by the SGP4 is represented in the True-Equator, Mean-Equinox (TEME) reference frame, which is a quasi-inertial frame. Now, we need to convert it to a frame fixed on Earth since we need to compute the elevation angle in a specific position at Earth&#39;s surface. We can do this using the function <code>r_eci_to_ecef</code>. It returns a matrix that rotates an Earth-centered inertial (ECI) frame to an Earth-centered, Earth-fixed (ECEF) frame.  For our simple example, we will use the PEF (pseudo-Earth fixed) frame as the ECEF. All the vectors returned by the propagator can be converted as follows:</p><pre><code class="language-julia-repl hljs">julia&gt; vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400)) .* vr_teme
+86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
+ [-3.1517745650685215e6, -4.706509167226944e6, 3.737410008328138e6]
+ [-3.148954811670437e6, -4.711801726204846e6, 3.733132227568888e6]
+ [-3.146131833297915e6, -4.717088716679321e6, 3.7288496754281903e6]
+ ⋮
+ [3.3857219006283223e6, 4.850365818830511e6, -3.3522994708746294e6]
+ [3.383108804842527e6, 4.855406297217666e6, -3.347627153102706e6]</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>The code <code>Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400)</code> obtains the Julian Day [UTC] of each propagation instant.</p></div></div><p>We can now convert the ECEF vectors to the NED frame using the function <code>ecef_to_ned</code>. However, we must input the geodetic location we are analyzing. Here, we will use the location of the city of São José dos Campos, SP, Brazil:</p><ul><li><strong>Latitude</strong>: 23.1791 S.</li><li><strong>Longitude</strong>: 45.8872 W.</li><li><strong>Altitude</strong>: 593 m.</li></ul><pre><code class="language-julia-repl hljs">julia&gt; vr_ned = ecef_to_ned.(vr_pef, -23.1791 |&gt; deg2rad, -45.8872 |&gt; deg2rad, 593; translate = true)
+86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
+ [3.8867951998111717e6, -5.538957086708884e6, 6.7568967896751845e6]
+ [3.885130946017213e6, -5.540616594591433e6, 6.749915536859117e6]
+ [3.8834616159196747e6, -5.542269910950413e6, 6.742934017679935e6]
+ ⋮
+ [-3.540243127040135e6, 5.8070592063407935e6, 6.090776675161325e6]
+ [-3.5380883263308997e6, 5.808691621810904e6, 6.097614606058563e6]</code></pre><p>This step concludes the second step of the algorithm.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>We must set the keyword <code>translate</code> to <code>true</code> because we do not want only to rotate the reference frame. We also wish the frame origin for the returned vectors to be translated from the Earth&#39;s center to the city location.</p></div></div><p>The elevation in the third step can be easily computed using the presented formula:</p><pre><code class="language-julia-repl hljs">julia&gt; vλ = map(v -&gt; atand(-v[3], sqrt(v[1]^2 + v[2]^2)), vr_ned)
+86401-element Vector{Float64}:
+ -44.95878130917832
+ -44.92746141286671
+ -44.89614037059145
+   ⋮
+ -41.8461848156166
+ -41.876994453587045</code></pre><p>Finally, we need to find the indices related to elevations greater than zero:</p><pre><code class="language-julia-repl hljs">julia&gt; ids = findall(&gt;=(0), vλ)
+3102-element Vector{Int64}:
+  1409
+  1410
+  1411
+     ⋮
+ 85164
+ 85165</code></pre><p>Those are the instants that we will have a direct line of sight to the ISS. We can discover the related time using:</p><pre><code class="language-julia-repl hljs">julia&gt; using Dates
+
+julia&gt; getindex(Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400) .|&gt; julian2datetime, ids)
+3102-element Vector{DateTime}:
+ 2023-07-02T16:37:51.672
+ 2023-07-02T16:37:52.672
+ 2023-07-02T16:37:53.672
+ ⋮
+ 2023-07-03T15:53:46.672
+ 2023-07-03T15:53:47.672</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Home</a><a class="docs-footer-nextpage" href="../../lib/library/">Library »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Wednesday 16 August 2023 18:07">Wednesday 16 August 2023</span>. Using Julia version 1.9.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
