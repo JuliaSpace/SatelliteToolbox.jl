@@ -80,44 +80,58 @@ end
 #                                       Test Results
 ############################################################################################
 #
-# The Amazonia-1 orbit is:
-#
-#   - Semi-major axis : 7130.984e3 m
-#   - Excentricity    : 0.001111
-#   - Inclination     : 98.4106°
-#
-# and it performs 14 + 2 / 5 revolutions per day. Hence, its angular velocity is 0.06 °/s.
+# We will test the conversion by initializing the related propagator with the computed
+# semi-major axis and comparing the angular velocity.
 #
 ############################################################################################
 
 @testset "Function orbital_angular_velocity_to_semimajor_axis" begin
     for T in (Float64, Float32)
-        n   = T(0.06) |> deg2rad
-        a   = T(7130.984e3)
-        e   = T(0.001111)
-        i   = T(98.4106) |> deg2rad
-        orb = KeplerianElements(0, a, e, i, 0, 0, 0)
+        angvel = T(0.06) |> deg2rad
+        e      = T(0.1)
+        i      = T(98.4106) |> deg2rad
 
         # J₀
         # ==================================================================================
 
-        â = orbital_angular_velocity_to_semimajor_axis(n, e, i; perturbation = :J0)
+        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; perturbation = :J0)
+
         @test eltype(â) == T
-        @test â ≈ (GM_EARTH / n^2)^(1 // 3)
+        @test â ≈ (GM_EARTH / angvel^2)^(1 // 3)
+        @test conv == true
 
         # J₂
         # ==================================================================================
 
-        â = orbital_angular_velocity_to_semimajor_axis(n, e, i)
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            m0 = 3.986004415e14
+        )
+        orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
+        orbp = Propagators.init(Val(:J2), orb)
+
         @test eltype(â) == T
-        @test â ≈ a atol = 2
+        @test (orbp.j2d.n̄ + orbp.j2d.δω) ≈ angvel
+        @test conv == true
 
         # J₄
         # ==================================================================================
 
-        â = orbital_angular_velocity_to_semimajor_axis(n, e, i; perturbation = :J4)
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            perturbation = :J4,
+            m0 = 3.986004415e14
+        )
+        orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
+        orbp = Propagators.init(Val(:J4), orb)
+
         @test eltype(â) == T
-        @test â ≈ a atol = 30
+        @test (orbp.j4d.n̄ + orbp.j4d.δω) ≈ angvel
+        @test conv == true
     end
 end
 

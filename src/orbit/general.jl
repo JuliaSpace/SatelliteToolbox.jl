@@ -174,27 +174,38 @@ function orbital_angular_velocity(orb::Orbit; kwargs...)
 end
 
 """
-    orbital_angular_velocity_to_semimajor_axis(n::Number, e::Number, i::Number; kwargs...) -> T
+    orbital_angular_velocity_to_semimajor_axis(angvel::Number, e::Number, i::Number; kwargs...) -> T, Bool
 
-Compute the semi-major axis [m] that will provide an angular velocity `n` [rad / s] in an
-orbit with eccentricity `e` and inclination `i` [rad].
+Compute the semi-major axis [m] that will provide an angular velocity `angvel` [rad / s] in
+an orbit with eccentricity `e` and inclination `i` [rad].
 
-Notice that the angular velocity `n` is related to the nodal period, *i.e.* the time between
-two consecutive passages by the ascending node.
+Notice that the angular velocity `angvel` is related to the nodal period, *i.e.* the time
+between two consecutive passages by the ascending node.
 
 !!! note
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
-# Keyword
+# Keywords
 
-- `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
-    (**Default** = `GM_EARTH`)
 - `max_iterations::Int`: Maximum number of iterations allowed in the Newton-Raphson
     algorithm. (**Default** = 20)
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
-- `tolerance::Number`: Tolerance to stop the Newton-Raphson algorithm. (**Default** = 1e-10)
+- `tolerance::Union{Nothing, Number}`: Residue tolerances to verify if the numerical method
+    has converged. If it is `nothing`, `√eps(T)` will be used, where `T` is the internal
+    type for the computations. Notice that the residue function unit is [deg / min].
+    (**Default** = nothing)
+- `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
+    (**Default** = `GM_EARTH`)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
+
+# Returns
+
+- `T`: Semi-major axis [m].
+- `Bool`: `true` if the numerical method converged, `false` otherwise.
 
 # Perturbations
 
@@ -208,152 +219,238 @@ be considered in the computation. The possible values are:
 If `perturbation` is omitted, it defaults to `:J2`.
 """
 function orbital_angular_velocity_to_semimajor_axis(
-    n::T1,
+    angvel::T1,
     e::T2,
     i::T3;
-    m0::Number = GM_EARTH,
     max_iterations::Int = 20,
     perturbation::Symbol = :J2,
-    tolerance::Number = 1e-10
+    tolerance::Union{Nothing, Number} = nothing,
+    # Constants.
+    J2::Number = EGM08_J2,
+    J4::Number = EGM08_J4,
+    m0::Number = GM_EARTH,
+    R0::Number = EARTH_EQUATORIAL_RADIUS
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
-    if perturbation === :J0
+    R₀  = T(R0)
+    μ   = T(m0)
+    J₂  = T(J2)
+    J₄  = T(J4)
+    tol = isnothing(tolerance) ? √eps(T) : T(tolerance)
 
-        a = (T(m0) / T(n)^2)^(1 // 3)
-        return a
+    if perturbation == :J0
 
-    elseif perturbation === :J2
-        # Get the semi-major axis [m] that will provide the mean motion `n` using
-        # perturbation terms up to J2.
-        #
-        # This can only be done using a numerical algorithm to solve the following equation
-        # for `a`:
-        #
-        #          ┌                                                              ┐
-        #          │      3         √(1 - e²) . (3cos²(i) - 1) + (5cos²(i) - 1))  │
-        #   n = n₀ │ 1 + ─── . J₂ . ────────────────────────────────────────────  │
-        #          │      4                         a^2.(1-e^2)^2                 │
-        #          └                                                              ┘
-        #
-        #           √μ
-        #   n₀ =  ──────
-        #         √(a^3)
-        #
-        # To improve algorithm stability, we will compute the normalized semi-major axis,
-        # i.e. `a / R₀`.
+        a = (μ / T(angvel)^2)^(1 // 3)
+        return a, true
 
-        # Auxiliary variables to solve for the semi-major axis.
-        R₀     = T(WGS84_ELLIPSOID.a)
-        sqrt_μ = √(T(m0) / T(R₀)^3)
-        cos_i  = cos(T(i))
-        K      = (3 // 4) * T(EGM08_J2) * (√(1 - T(e)^2) * (3cos_i^2 - 1) + (5cos_i^2 - 1)) / (1 - T(e)^2)^2
+    elseif perturbation == :J2
+        rs_to_dm = T(60 * 180 / π)
 
-        # Initial guess using a non-perturbed orbit.
-        a = (T(m0) / T(n)^2)^(1 // 3) / R₀
+        # Convert the inputs to the correct type.
+        e₀  = T(e)
+        i₀  = T(i)
+        ω_d = T(angvel) * rs_to_dm
 
-        # Newton-Raphson algorithm
+        # Auxiliary variables.
+        β² = (1 - T(e₀)^2)
+        β  = √β²
+        β³ = β² * β
+        β⁴ = β² * β²
+
+        sin_i₀ = sin(T(i₀))
+        sin_i₀² = sin_i₀^2
+
+        k₁ = (3 // 4) * J₂ * (2 - 3sin_i₀²) / β³
+        k₂ = (3 // 4) * J₂ * (4 - 5sin_i₀²) / β⁴
+        k₃ = √(μ / R₀^3) * rs_to_dm
+
+        # Newton-Raphson Algorithm
         # ==================================================================================
+
+        # We defined the orbit angular velocity here based on the nodal period, i.e., the
+        # time it takes for the satellite to cross the ascending node two consecutive times.
+        # Hence, we can compute it by:
         #
-        # Notice that we will allow, at most, `max_iterations`.
-        for k in 1:max_iterations
-            # Auxiliary variables.
-            ap3o2  = √(a^3)    # -> a^( 2 / 3)
-            ap5o2  = ap3o2 * a # -> a^( 5 / 2)
-            ap7o2  = ap5o2 * a # -> a^( 7 / 2)
-            ap11o2 = ap7o2 * a # -> a^(11 / 2)
+        #             ∂M         ∂ω
+        #   angvel = ──── (a) + ──── (a) .
+        #             ∂t         ∂t
+        #
+        # The expressions for those time-derivatives were obtained from the J2 orbit
+        # propagator of SatelliteToolboxPropagators.jl package.
+        #
+        # Since we cannot analytical isolate `a`, we will use a Newton-Raphson algorithm to
+        # find the semi-major axis `a` that provides the desired angular velocity.
 
-            # Compute the residue.
-            res = n - sqrt_μ / ap3o2 - K * sqrt_μ / ap7o2
+        # Initial guess based on the unperturbed model. Notice that we will estimate
+        # `1 / √(a / R₀)`.
+        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / T(μ))^(1 // 3))
 
-            # Compute the Jacobian of the function.
-            df = (3 // 2) * sqrt_μ / ap5o2 + (7 // 2) * K * sqrt_μ / ap11o2
+        # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
+        # executed at least one time.
+        f₁ = 10tol
+
+        # Loop.
+        it = 1
+        converged = true
+
+        while abs(f₁) > tol
+            isqrt_ā²  = isqrt_ā   * isqrt_ā
+            isqrt_ā³  = isqrt_ā²  * isqrt_ā
+            isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
+            isqrt_ā⁷  = isqrt_ā⁶  * isqrt_ā
+            isqrt_ā¹⁰ = isqrt_ā⁷  * isqrt_ā³
+            isqrt_ā¹¹ = isqrt_ā¹⁰ * isqrt_ā
+
+            # Compute the residue and the derivative.
+            f₁ = ω_d - k₃ * (isqrt_ā³ + (k₁ + k₂) * isqrt_ā⁷ + k₁ * k₂ * isqrt_ā¹¹)
+
+            @debug """
+            Iteration #$it
+              Estimation :
+                a  = $(R₀ / (isqrt_ā * isqrt_ā) / 1000) km
+              Residue :
+                f₁ = $(f₁) ° / min
+            """
+
+            # Compute the function derivative.
+            ∂f₁_∂isqrt_ā = - k₃ * (3isqrt_ā² + 7 * (k₁ + k₂) * isqrt_ā⁶ + 11 * k₁ * k₂ * isqrt_ā¹⁰)
 
             # Compute the new estimate.
-            a = a - res / df
+            isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
 
-            (abs(res) < tolerance) && break
+            # If the maximum number of iterations allowed has been reached, indicate that
+            # the solution did not converged and exit loop.
+            if (it >= max_iterations)
+                converged = false
+                break
+            end
+
+            it += 1
         end
 
-        return a * R₀
+        # Convert `isqrt_ā` to semi-major axis.
+        a = R₀ / isqrt_ā^2
 
-    elseif perturbation === :J4
+        return a, converged
 
-        # Auxiliary variables
-        R₀     = T(WGS84_ELLIPSOID.a)
-        sqrt_μ = √(T(m0) / T(R₀)^3)
-        sin_i  = sin(T(i))
-        sin_i² = sin_i^2
-        sin_i⁴ = sin_i^3
-        e²     = T(e)^2
-        e⁴     = T(e)^4
-        aux    = 1 - e²
-        saux   = √aux
+    elseif perturbation == :J4
+        rs_to_dm = T(60 * 180 / π)
 
-        # Get the semi-major axis using J4 perturbation theory [er].
-        #
-        # This can only be done using a numerical algorithm to solve the following equation
-        # for `a`:
-        #
-        #            .   .
-        #   n = n₀ + ω + M₀ ,
-        #
-        #           √μ
-        #   n₀ =  ──────
-        #         √(a^3)
-        #
-        # and the time-derivatives of the argument of perigee and the initial mean anomaly
-        # is compute considering the terms J2, J4, and J2².
-        #
-        # To improve algorithm stability, we will compute the normalized semi-major axis,
-        # i.e. `a / R₀`.
+        # Convert the inputs to the correct type.
+        e₀  = T(e)
+        i₀  = T(i)
+        ω_d = T(angvel) * rs_to_dm
 
-        K₁ = (3 // 4) * T(EGM08_J2) / aux^2 * ((4 - 5sin_i²) + √(1 - e²) * (2 - 3sin_i²))
+        # Auxiliary variables.
+        e₀² = e₀^2
+        J₂² = J₂^2
+        β²  = (1 - e₀²)
+        β   = √β²
+        β³  = β² * β
+        β⁴  = β² * β²
+        β⁷  = β⁴ * β³
+        β⁸  = β⁴ * β⁴
 
-        K₂ = (3 // 512) * T(EGM08_J2)^2 / aux^4 * (
-            224e² + (3040 - 144e²) * sin_i² - (3560 + 180e²) * sin_i⁴ + 1 / saux * (
-                (         320e² - 280e⁴) +
-                ( 1600 - 1568e² + 328e⁴) * sin_i² +
-                (-2096 + 1072e² +  79e⁴) * sin_i⁴
+        sin_i₀, cos_i₀ = sincos(i₀)
+
+        sin_i₀² = sin_i₀^2
+        sin_i₀⁴ = sin_i₀^4
+        cos_i₀⁴ = cos_i₀^4
+
+        k₁ = +( 3 // 4  ) * J₂  / β³ * (2 - 3sin_i₀²)
+        k₂ = +( 3 // 128) * J₂² / β⁷ * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴)
+        k₃ = -(45 // 128) * J₄  / β⁷ * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
+        k₄ = +( 3 // 4  ) * J₂  / β⁴ * (4 - 5sin_i₀²)
+        k₅ = +( 3 // 128) * J₂² / β⁸ * (384 + 96e₀² - 384β + (-824 - 116e₀² + 1056β) * sin_i₀² + (430 - 5e₀² - 720β) * sin_i₀⁴)
+        k₆ = -(15 // 16 ) * J₂² / β⁸ * e₀² * cos_i₀⁴
+        k₇ = -(15 // 128) * J₄  / β⁸ * (64 + 72e₀² - (248 + 252e₀²) * sin_i₀² + (196 + 189e₀²) * sin_i₀⁴)
+        k₈ = √(μ / R₀^3) * rs_to_dm
+
+        # Newton-Raphson Algorithm
+        # ==================================================================================
+
+        # We defined the orbit angular velocity here based on the nodal period, i.e., the
+        # time it takes for the satellite to cross the ascending node two consecutive times.
+        # Hence, we can compute it by:
+        #
+        #             ∂M         ∂ω
+        #   angvel = ──── (a) + ──── (a) .
+        #             ∂t         ∂t
+        #
+        # The expressions for those time-derivatives were obtained from the J2 orbit
+        # propagator of SatelliteToolboxPropagators.jl package.
+        #
+        # Since we cannot analytical isolate `a`, we will use a Newton-Raphson algorithm to
+        # find the semi-major axis `a` that provides the desired angular velocity.
+
+        # Initial guess based on the unperturbed model. Notice that we will estimate
+        # `1 / √(a / R₀)`.
+        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / T(μ))^(1 // 3))
+
+        # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
+        # executed at least one time.
+        f₁ = 10tol
+
+        # Loop.
+        it = 1
+        converged = true
+
+        while abs(f₁) > tol
+            isqrt_ā²  = isqrt_ā   * isqrt_ā
+            isqrt_ā³  = isqrt_ā²  * isqrt_ā
+            isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
+            isqrt_ā⁷  = isqrt_ā⁶  * isqrt_ā
+            isqrt_ā¹⁰ = isqrt_ā⁷  * isqrt_ā³
+            isqrt_ā¹¹ = isqrt_ā¹⁰ * isqrt_ā
+            isqrt_ā¹⁴ = isqrt_ā⁷  * isqrt_ā⁷
+            isqrt_ā¹⁵ = isqrt_ā¹⁴ * isqrt_ā
+            isqrt_ā¹⁸ = isqrt_ā¹¹ * isqrt_ā⁷
+            isqrt_ā¹⁹ = isqrt_ā¹⁸ * isqrt_ā
+
+            # Compute the residue and the derivative.
+            f₁ = ω_d - k₈ * (
+                isqrt_ā³  +
+                isqrt_ā⁷  * (k₁ + k₄) +
+                isqrt_ā¹¹ * (k₁ * k₄ + k₂ + k₃ + k₅ + k₆ + k₇) +
+                isqrt_ā¹⁵ * (k₄ * (k₂ + k₃) + k₁ * k₅) +
+                isqrt_ā¹⁹ * (k₂ + k₃) * k₅
             )
-        )
 
-        K₃ = (15 // 128) * T(EGM08_J4) / aux^4 * (
-            64 + 72e² -
-            (248 + 252e²) * sin_i² +
-            (196 + 189e²) * sin_i⁴ +
-            e² / saux * (-8 + 40sin_i - 35sin_i²)
-        )
+            @debug """
+            Iteration #$it
+              Estimation :
+                a  = $(R₀ / (isqrt_ā * isqrt_ā) / 1000) km
+              Residue :
+                f₁ = $(f₁) ° / min
+            """
 
-        # Initial guess using a non-perturbed orbit.
-        a = (T(m0) / T(n)^2)^(1 // 3) / R₀
-
-        # Newton-Raphson algorithm
-        # ==================================================================================
-        #
-        # Notice that we will allow, at most, `max_iterations`.
-        for k = 1:max_iterations
-            # Auxiliary variables.
-            ap3o2  = √(a^3)      # -> a^( 3 / 2)
-            ap5o2  =  ap3o2 * a  # -> a^( 5 / 2)
-            ap7o2  =  ap5o2 * a  # -> a^( 7 / 2)
-            ap9o2  =  ap7o2 * a  # -> a^( 9 / 2)
-            ap11o2 =  ap9o2 * a  # -> a^(11 / 2)
-            ap13o2 = ap11o2 * a  # -> a^(13 / 2)
-
-            # Compute the residue.
-            res = n - sqrt_μ * (1 / ap3o2 + K₁ / ap7o2 + (K₂ + K₃) / ap11o2)
-
-            # Compute the Jacobian of the function.
-            df = sqrt_μ / 2 * (3ap5o2 + 7K₁ / ap9o2 + 11 * (K₂ + K₃) / ap13o2)
+            # Compute the function derivative.
+            ∂f₁_∂isqrt_ā = - k₈ * (
+                3  * isqrt_ā²  +
+                7  * isqrt_ā⁶  * (k₁ + k₄) +
+                11 * isqrt_ā¹⁰ * (k₁ * k₄ + k₂ + k₃ + k₅ + k₆ + k₇) +
+                15 * isqrt_ā¹⁴ * (k₄ * (k₂ + k₃) + k₁ * k₅) +
+                19 * isqrt_ā¹⁸ * (k₂ + k₃) * k₅
+            )
 
             # Compute the new estimate.
-            a = a - res / df
+            isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
 
-            (abs(res) < tolerance) && break
+            # If the maximum number of iterations allowed has been reached, indicate that
+            # the solution did not converged and exit loop.
+            if (it >= max_iterations)
+                converged = false
+                break
+            end
+
+            it += 1
         end
 
-        return a * R₀
+        # Convert `isqrt_ā` to semi-major axis.
+        a = R₀ / isqrt_ā^2
+
+        return a, converged
     else
         throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
     end
@@ -371,10 +468,15 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
-# Keyword
+# Keywords
 
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
+- `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
+    (**Default** = `GM_EARTH`)
+- `J2::Number`: J₂ perturbation term. (**Default** = EGM08_J2)
+- `J4::Number`: J₄ perturbation term. (**Default** = EGM08_J4)
+- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
 
 # Perturbations
 
