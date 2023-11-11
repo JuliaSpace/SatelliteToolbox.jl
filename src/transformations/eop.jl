@@ -330,20 +330,37 @@ function _parse_iers_eop_iau_1980(eop::Matrix)
     # extrapolation will be flat, considering the nearest point.
     knots::Vector{Float64} = Vector{Float64}(eop[:, 1] .+ 2400000.5)
 
-    return EOPData_IAU1980(
-        _create_iers_eop_interpolation(knots, eop[:, 6]),
-        _create_iers_eop_interpolation(knots, eop[:, 8]),
-        _create_iers_eop_interpolation(knots, eop[:, 11]),
-        _create_iers_eop_interpolation(knots, eop[:, 13]),
-        _create_iers_eop_interpolation(knots, eop[:, 16]),
-        _create_iers_eop_interpolation(knots, eop[:, 18]),
-        _create_iers_eop_interpolation(knots, eop[:, 7]),
-        _create_iers_eop_interpolation(knots, eop[:, 9]),
-        _create_iers_eop_interpolation(knots, eop[:, 12]),
-        _create_iers_eop_interpolation(knots, eop[:, 14]),
-        _create_iers_eop_interpolation(knots, eop[:, 17]),
-        _create_iers_eop_interpolation(knots, eop[:, 19]),
-    )
+    if size(eop)[2] == 37
+        return EOPData_IAU1980(
+            _create_iers_eop_interpolation(knots, eop[:, 6]),
+            _create_iers_eop_interpolation(knots, eop[:, 8]),
+            _create_iers_eop_interpolation(knots, eop[:, 15]),
+            _create_iers_eop_interpolation(knots, eop[:, 17]),
+            _create_iers_eop_interpolation(knots, eop[:, 20]),
+            _create_iers_eop_interpolation(knots, eop[:, 22]),
+            _create_iers_eop_interpolation(knots, eop[:, 7]),
+            _create_iers_eop_interpolation(knots, eop[:, 9]),
+            _create_iers_eop_interpolation(knots, eop[:, 16]),
+            _create_iers_eop_interpolation(knots, eop[:, 18]),
+            _create_iers_eop_interpolation(knots, eop[:, 21]),
+            _create_iers_eop_interpolation(knots, eop[:, 23]),
+        )
+    else
+        return EOPData_IAU1980(
+            _create_iers_eop_interpolation(knots, eop[:, 6]),
+            _create_iers_eop_interpolation(knots, eop[:, 8]),
+            _create_iers_eop_interpolation(knots, eop[:, 11]),
+            _create_iers_eop_interpolation(knots, eop[:, 13]),
+            _create_iers_eop_interpolation(knots, eop[:, 16]),
+            _create_iers_eop_interpolation(knots, eop[:, 18]),
+            _create_iers_eop_interpolation(knots, eop[:, 7]),
+            _create_iers_eop_interpolation(knots, eop[:, 9]),
+            _create_iers_eop_interpolation(knots, eop[:, 12]),
+            _create_iers_eop_interpolation(knots, eop[:, 14]),
+            _create_iers_eop_interpolation(knots, eop[:, 17]),
+            _create_iers_eop_interpolation(knots, eop[:, 19]),
+        )
+    end
 end
 
 # Parse the IERS EOP (IAU 2000A) data.
@@ -354,20 +371,37 @@ function _parse_iers_eop_iau_2000A(eop::Matrix)
     # extrapolation will be flat, considering the nearest point.
     knots::Vector{Float64} = Vector{Float64}(eop[:, 1] .+ 2400000.5)
 
-    EOPData_IAU2000A(
-        _create_iers_eop_interpolation(knots, eop[:, 6]),
-        _create_iers_eop_interpolation(knots, eop[:, 8]),
-        _create_iers_eop_interpolation(knots, eop[:, 11]),
-        _create_iers_eop_interpolation(knots, eop[:, 13]),
-        _create_iers_eop_interpolation(knots, eop[:, 20]),
-        _create_iers_eop_interpolation(knots, eop[:, 22]),
-        _create_iers_eop_interpolation(knots, eop[:, 7]),
-        _create_iers_eop_interpolation(knots, eop[:, 9]),
-        _create_iers_eop_interpolation(knots, eop[:, 12]),
-        _create_iers_eop_interpolation(knots, eop[:, 14]),
-        _create_iers_eop_interpolation(knots, eop[:, 21]),
-        _create_iers_eop_interpolation(knots, eop[:, 23]),
-    )
+    if size(eop)[2] == 37
+        return EOPData_IAU2000A(
+            _create_iers_eop_interpolation(knots, eop[:, 6]),
+            _create_iers_eop_interpolation(knots, eop[:, 8]),
+            _create_iers_eop_interpolation(knots, eop[:, 15]),
+            _create_iers_eop_interpolation(knots, eop[:, 17]),
+            _create_iers_eop_interpolation(knots, eop[:, 24]),
+            _create_iers_eop_interpolation(knots, eop[:, 26]),
+            _create_iers_eop_interpolation(knots, eop[:, 7]),
+            _create_iers_eop_interpolation(knots, eop[:, 9]),
+            _create_iers_eop_interpolation(knots, eop[:, 16]),
+            _create_iers_eop_interpolation(knots, eop[:, 18]),
+            _create_iers_eop_interpolation(knots, eop[:, 25]),
+            _create_iers_eop_interpolation(knots, eop[:, 27]),
+        )
+    else
+        return EOPData_IAU2000A(
+            _create_iers_eop_interpolation(knots, eop[:, 6]),
+            _create_iers_eop_interpolation(knots, eop[:, 8]),
+            _create_iers_eop_interpolation(knots, eop[:, 11]),
+            _create_iers_eop_interpolation(knots, eop[:, 13]),
+            _create_iers_eop_interpolation(knots, eop[:, 20]),
+            _create_iers_eop_interpolation(knots, eop[:, 22]),
+            _create_iers_eop_interpolation(knots, eop[:, 7]),
+            _create_iers_eop_interpolation(knots, eop[:, 9]),
+            _create_iers_eop_interpolation(knots, eop[:, 12]),
+            _create_iers_eop_interpolation(knots, eop[:, 14]),
+            _create_iers_eop_interpolation(knots, eop[:, 21]),
+            _create_iers_eop_interpolation(knots, eop[:, 23]),
+        )
+    end
 end
 
 # Create the interpolation object for the `knots` and `field` from IERS.
