@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.9.5
+-------------
+
+- ![Enhancement][badge-enhancement] The package now supports the new format of the EOP files
+  `finals.all.csv` and `finals2000A.all.csv` introduced in November 6, 2023.
+
 Version 0.9.4
 -------------
 
