@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.12.1
+--------------
+
+- ![Enhancement][badge-enhancement] We updated the dependency compatibility bounds.
+- ![Enhancement][badge-enhancement] We now reexport **SatelliteToolboxLegendre.jl**.
+
 Version 0.12.0
 --------------
 
