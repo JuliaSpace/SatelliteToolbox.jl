@@ -14,6 +14,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+export equation_of_time
+
 """
     equation_of_time(t::Union{Number, DateTime})
 
