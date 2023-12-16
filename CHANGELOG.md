@@ -6,6 +6,7 @@ Version 0.12.1
 
 - ![Enhancement][badge-enhancement] We updated the dependency compatibility bounds.
 - ![Enhancement][badge-enhancement] We now reexport **SatelliteToolboxLegendre.jl**.
+- ![Enhancement][badge-enhancement] We exported the function `equation_of_time`.
 
 Version 0.12.0
 --------------
