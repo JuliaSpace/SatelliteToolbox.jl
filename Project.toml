@@ -3,7 +3,7 @@ uuid = "6ac157d9-b43d-51bb-8fab-48bf53814f4a"
 license = "MIT"
 desc = "A toolbox for satellite analysis"
 authors = ["Ronan Arraes Jardim Chagas <ronisbr@gmail.com>"]
-version = "0.12.0"
+version = "0.12.1"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
