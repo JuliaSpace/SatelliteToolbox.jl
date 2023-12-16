@@ -7,6 +7,7 @@ using Reexport
 @reexport using SatelliteToolboxCelestialBodies
 @reexport using SatelliteToolboxGeomagneticField
 @reexport using SatelliteToolboxGravityModels
+@reexport using SatelliteToolboxLegendre
 @reexport using SatelliteToolboxPropagators
 @reexport using SatelliteToolboxSgp4
 @reexport using SatelliteToolboxTle
