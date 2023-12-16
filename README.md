@@ -9,6 +9,7 @@ SatelliteToolbox.jl
 [![codecov](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSpace/SatelliteToolbox.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)][docs-stable-url]
 [![](https://img.shields.io/badge/docs-dev-blue.svg)][docs-dev-url]
+[![DOI](https://zenodo.org/badge/133264084.svg)](https://zenodo.org/doi/10.5281/zenodo.10396045)
 
 The **SatelliteToolbox.jl** contains a set of packages with functions to perform analysis
 and build simulations related to satellites. It is used on a daily basis on projects at the
