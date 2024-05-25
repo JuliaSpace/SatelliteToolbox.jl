@@ -1,11 +1,8 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#
-# Description
-# ==========================================================================================
+## Description #############################################################################
 #
 #   Functions to compute general values related to the orbit.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+############################################################################################
 
 export orbital_angular_velocity
 export orbital_angular_velocity_to_semimajor_axis
@@ -13,7 +10,7 @@ export orbital_period
 export raan_time_derivative
 
 ############################################################################################
-#                                        Functions
+#                                        Functions                                         #
 ############################################################################################
 
 """
@@ -25,6 +22,7 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
 `Orbit`).
 
 !!! note
+
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
@@ -34,9 +32,12 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
-- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
+- `J2::Number`: J₂ perturbation term.
+    (**Default** = `EGM_2008_J2`)
+- `J4::Number`: J₄ perturbation term.
+    (**Default** = `EGM_2008_J4`)
+- `R0::Number`: Earth's equatorial radius [m].
+    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
@@ -183,13 +184,15 @@ Notice that the angular velocity `angvel` is related to the nodal period, *i.e.*
 between two consecutive passages by the ascending node.
 
 !!! note
+
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
 # Keywords
 
 - `max_iterations::Int`: Maximum number of iterations allowed in the Newton-Raphson
-    algorithm. (**Default** = 20)
+    algorithm.
+    (**Default** = 20)
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
 - `tolerance::Union{Nothing, Number}`: Residue tolerances to verify if the numerical method
@@ -198,9 +201,12 @@ between two consecutive passages by the ascending node.
     (**Default** = nothing)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
-- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
+- `J2::Number`: J₂ perturbation term.
+    (**Default** = `EGM_2008_J2`)
+- `J4::Number`: J₄ perturbation term.
+    (**Default** = `EGM_2008_J4`)
+- `R0::Number`: Earth's equatorial radius [m].
+    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
 
 # Returns
 
@@ -265,8 +271,7 @@ function orbital_angular_velocity_to_semimajor_axis(
         k₂ = (3 // 4) * J₂ * (4 - 5sin_i₀²) / β⁴
         k₃ = √(μ / R₀^3) * rs_to_dm
 
-        # Newton-Raphson Algorithm
-        # ==================================================================================
+        # == Newton-Raphson Algorithm ======================================================
 
         # We defined the orbit angular velocity here based on the nodal period, i.e., the
         # time it takes for the satellite to cross the ascending node two consecutive times.
@@ -367,8 +372,7 @@ function orbital_angular_velocity_to_semimajor_axis(
         k₇ = -(15 // 128) * J₄  / β⁸ * (64 + 72e₀² - (248 + 252e₀²) * sin_i₀² + (196 + 189e₀²) * sin_i₀⁴)
         k₈ = √(μ / R₀^3) * rs_to_dm
 
-        # Newton-Raphson Algorithm
-        # ==================================================================================
+        # == Newton-Raphson Algorithm ======================================================
 
         # We defined the orbit angular velocity here based on the nodal period, i.e., the
         # time it takes for the satellite to cross the ascending node two consecutive times.
@@ -465,6 +469,7 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
 `Orbit`).
 
 !!! note
+
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
@@ -474,9 +479,12 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
-- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
+- `J2::Number`: J₂ perturbation term.
+    (**Default** = `EGM_2008_J2`)
+- `J4::Number`: J₄ perturbation term.
+    (**Default** = `EGM_2008_J4`)
+- `R0::Number`: Earth's equatorial radius [m].
+    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
@@ -518,9 +526,12 @@ orbit can also be specified by `orb` (see `Orbit`).
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default** = `GM_EARTH`)
-- `J2::Number`: J₂ perturbation term. (**Default** = EGM_2008_J2)
-- `J4::Number`: J₄ perturbation term. (**Default** = EGM_2008_J4)
-- `R0::Number`: Earth's equatorial radius [m]. (**Default** = EARTH_EQUATORIAL_RADIUS)
+- `J2::Number`: J₂ perturbation term.
+    (**Default** = `EGM_2008_J2`)
+- `J4::Number`: J₄ perturbation term.
+    (**Default** = `EGM_2008_J4`)
+- `R0::Number`: Earth's equatorial radius [m].
+    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
