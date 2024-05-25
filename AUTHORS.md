@@ -1,9 +1,8 @@
-SatelliteToolbox.jl
-===================
+# SatelliteToolbox.jl
 
 **INPE - Brazilian National Institute for Space Research**  
-**CGETE - Department of Space Engineering and Technology**  
-**DIDSE - Space Systems Division**
+**CGECE - Department of Space Engineering, Technology, and Science**  
+**DISEP - Space Systems Division**
 
 The initial versions of **SatelliteToolbox.jl** were developed by Dr. Ronan
 Arraes Jardim Chagas at the [Brazilian National Institute for Space
