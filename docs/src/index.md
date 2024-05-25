@@ -1,11 +1,7 @@
-SatelliteToolbox.jl
-===================
+# SatelliteToolbox.jl
 
 ```@meta
 CurrentModule = SatelliteToolbox
-DocTestSetup = quote
-    using SatelliteToolbox
-end
 ```
 
 The **SatelliteToolbox.jl** contains a set of packages with functions to perform analysis
@@ -41,4 +37,5 @@ This page contains tutorials with examples of analyses that can be performed usi
 the related package documentation page.
 
 !!! warning
+
     This documentation is under construction, and more tutorials will be added.

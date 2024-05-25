@@ -1,5 +1,4 @@
-ISS Observation Instants
-========================
+# ISS Observation Instants
 
 In this tutorial, we will compute the instants in which we can theoretically observe the ISS
 from our location. Actually, we will compute the moments an observer on the Earth's surface
@@ -139,6 +138,7 @@ julia> vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ (collec
 ```
 
 !!! note
+
     The code `Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400)` obtains the Julian
     Day [UTC] of each propagation instant.
 
@@ -164,6 +164,7 @@ julia> vr_ned = ecef_to_ned.(vr_pef, -23.1791 |> deg2rad, -45.8872 |> deg2rad, 5
 This step concludes the second step of the algorithm.
 
 !!! note
+
     We must set the keyword `translate` to `true` because we do not want only to rotate the
     reference frame. We also wish the frame origin for the returned vectors to be translated
     from the Earth's center to the city location.
