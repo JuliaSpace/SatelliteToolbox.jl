@@ -1,6 +1,12 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 0.12.3
+--------------
+
+- ![Enhancement][badge-enhancement] Minor source-code updates.
+- ![Enhancement][badge-enhancement] We updated the documentation.
+
 Version 0.12.2
 --------------
 
