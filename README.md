@@ -64,6 +64,9 @@ Please, see each package for the related documentation of the functions.
 [SatelliteToolboxLegendre-link]: https://github.com/JuliaSpace/SatelliteToolboxLegendre.jl
 [SatelliteToolboxLegendre-cov]: https://img.shields.io/codecov/c/github/JuliaSpace/SatelliteToolboxLegendre.jl?token=AUE8ZZ5IXJ&style=flat-square&logo=codecov&logoColor=white&labelColor=475569
 [SatelliteToolboxLegendre-ci]: https://img.shields.io/github/actions/workflow/status/JuliaSpace/SatelliteToolboxLegendre.jl/ci.yml?style=flat-square&logo=githubactions&logoColor=white&labelColor=475569&label=CI
+[SatelliteToolboxOrbitDataMessages-link]: https://github.com/JuliaSpace/SatelliteToolboxOrbitDataMessages.jl
+[SatelliteToolboxOrbitDataMessages-cov]: https://img.shields.io/codecov/c/github/JuliaSpace/SatelliteToolboxOrbitDataMessages.jl?token=IQMHCB4OB7&style=flat-square&logo=codecov&logoColor=white&labelColor=475569
+[SatelliteToolboxOrbitDataMessages-ci]: https://img.shields.io/github/actions/workflow/status/JuliaSpace/SatelliteToolboxOrbitDataMessages.jl/ci.yml?style=flat-square&logo=githubactions&logoColor=white&labelColor=475569&label=CI
 [SatelliteToolboxPropagators-link]: https://github.com/JuliaSpace/SatelliteToolboxPropagators.jl
 [SatelliteToolboxPropagators-cov]: https://img.shields.io/codecov/c/github/JuliaSpace/SatelliteToolboxPropagators.jl?token=WSVR7QYKOD&style=flat-square&logo=codecov&logoColor=white&labelColor=475569
 [SatelliteToolboxPropagators-ci]: https://img.shields.io/github/actions/workflow/status/JuliaSpace/SatelliteToolboxPropagators.jl/ci.yml?style=flat-square&logo=githubactions&logoColor=white&labelColor=475569&label=CI
