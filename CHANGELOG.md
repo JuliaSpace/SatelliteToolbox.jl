@@ -1,6 +1,21 @@
 SatelliteToolbox.jl Changelog
 =============================
 
+Version 1.1.0
+-------------
+
+- ![Feature][badge-feature] Add a Makie theme extension. Loading a Makie backend together
+  with **SatelliteToolbox.jl** provides the functions `makie_theme` and `makie_palette`,
+  which style plots with coordinated dark and light variants using bundled IBM Plex fonts.
+- ![Feature][badge-feature] We now reexport **SatelliteToolboxOrbitDataMessages.jl**.
+- ![Enhancement][badge-enhancement] We improved the documentation, which now contains a
+  gallery for the Makie theme, and fixed several typos.
+- ![Bugfix][badge-bugfix] The function `orbital_angular_velocity_to_semimajor_axis` now
+  evaluates the convergence flag against the returned estimate and validates the keyword
+  `tolerance`, which must be positive.
+- ![Bugfix][badge-bugfix] We now load `Dates` directly instead of relying on a transitive
+  reexport from another package in the ecosystem.
+
 Version 1.0.0
 -------------
 
@@ -529,12 +544,12 @@ Version 0.1.0
       was renamed to **SatelliteToolbox** to be submitted to julia METADATA
       repo.
 
-[badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
-[badge-deprecation]: https://img.shields.io/badge/Deprecation-orange.svg
-[badge-feature]: https://img.shields.io/badge/Feature-green.svg
-[badge-enhancement]: https://img.shields.io/badge/Enhancement-blue.svg
-[badge-bugfix]: https://img.shields.io/badge/Bugfix-purple.svg
-[badge-info]: https://img.shields.io/badge/Info-gray.svg
+[badge-breaking]: https://img.shields.io/badge/Breaking-DC2626?style=flat-square
+[badge-deprecation]: https://img.shields.io/badge/Deprecation-D97706?style=flat-square
+[badge-feature]: https://img.shields.io/badge/Feature-16A34A?style=flat-square
+[badge-enhancement]: https://img.shields.io/badge/Enhancement-0284C7?style=flat-square
+[badge-bugfix]: https://img.shields.io/badge/Bugfix-DB2777?style=flat-square
+[badge-info]: https://img.shields.io/badge/Info-475569?style=flat-square
 
 [gh-issue-12]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/12
 [gh-issue-20]: https://github.com/JuliaSpace/SatelliteToolbox.jl/issues/20
