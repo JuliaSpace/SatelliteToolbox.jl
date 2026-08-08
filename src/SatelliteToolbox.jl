@@ -9,6 +9,7 @@ using Reexport
 @reexport using SatelliteToolboxGeomagneticField
 @reexport using SatelliteToolboxGravityModels
 @reexport using SatelliteToolboxLegendre
+@reexport using SatelliteToolboxOrbitDataMessages
 @reexport using SatelliteToolboxPropagators
 @reexport using SatelliteToolboxSgp4
 @reexport using SatelliteToolboxTle

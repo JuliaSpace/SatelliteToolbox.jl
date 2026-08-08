@@ -16,6 +16,7 @@ The set of packages is listed below. All of them are loaded and reexported in th
 - [SatelliteToolboxGeomagneticField.jl](https://github.com/JuliaSpace/SatelliteToolboxGeomagneticField.jl): Geomagnetic field models.
 - [SatelliteToolboxGravityModels.jl](https://github.com/JuliaSpace/SatelliteToolboxGravityModels.jl): Gravity models.
 - [SatelliteToolboxLegendre.jl](https://github.com/JuliaSpace/SatelliteToolboxLegendre.jl): Legendre associated functions and their time-derivatives.
+- [SatelliteToolboxOrbitDataMessages.jl](https://github.com/JuliaSpace/SatelliteToolboxOrbitDataMessages.jl): Creating, fetching, and parsing orbit data messages.
 - [SatelliteToolboxPropagators.jl](https://github.com/JuliaSpace/SatelliteToolboxPropagators.jl): Orbit propagators.
 - [SatelliteToolboxSgp4.jl](https://github.com/JuliaSpace/SatelliteToolboxSgp4.jl): SGP4/SDP4 orbit propagator.
 - [SatelliteToolboxTle.jl](https://github.com/JuliaSpace/SatelliteToolboxTle.jl): Creating, fetching, and parsing TLEs.
