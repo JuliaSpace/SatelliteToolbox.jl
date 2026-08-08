@@ -1,6 +1,6 @@
 ## Description #############################################################################
 #
-# Functions to create Makie theme for the SatelliteToolbox ecosystem.
+# Functions to create Makie themes for the SatelliteToolbox.jl ecosystem.
 #
 ############################################################################################
 
@@ -67,16 +67,20 @@ end
 # Directory holding the bundled `.ttf` font files, relative to this source file.
 const _FONT_DIR = normpath(joinpath(@__DIR__, "..", "..", "assets", "fonts"))
 
-# Return the absolute path to a bundled font file, so Makie loads it directly instead of
-# looking the family up in the host system's installed fonts.
+"""
+    _font(file::AbstractString) -> String
+
+Return the absolute path to the bundled font `file`, so Makie loads it directly instead of
+looking the family up in the host system's installed fonts.
+"""
 _font(file::AbstractString) = joinpath(_FONT_DIR, file)
 
 """
     _build_theme(; kwargs...) -> Theme
 
-Assemble a Makie `Theme` from the provided color roles and font scale. Both `dark_theme`
-and `light_theme` call this with their respective palettes, so all styling common to the
-two variants lives here.
+Assemble a Makie `Theme` from the provided color roles and font scale. Both
+`makie_theme(Val(:dark))` and `makie_theme(Val(:light))` call this with their respective
+palettes, so all styling common to the two variants lives here.
 
 # Keywords
 
@@ -113,7 +117,7 @@ function _build_theme(;
     fontscale::Real = 1,
     mono_ticklabels::Bool = false,
 )
-    # Helper to scale a base font size by `fontscale`, keeping the result a plain `Float64`.
+    # Helper to scale a base font size by `fontscale`.
     fs(base) = base * fontscale
 
     # Tick labels use the monospace font when requested (fixed-width digits align numeric
@@ -128,8 +132,8 @@ function _build_theme(;
 
         # Fonts are referenced by absolute path to the `.ttf` files bundled with this package
         # (see `assets/fonts/`), so text renders identically regardless of which fonts are
-        # installed on the host system. IBM Plex Sans matches the INPE presentation template
-        # and ships all four styles, so each maps to its dedicated weight.
+        # installed on the host system. IBM Plex Sans ships all four styles, so each maps to
+        # its dedicated weight.
         fonts = Attributes(;
             regular     = _font("IBMPlexSans-Regular.ttf"),     # ................ body text
             bold        = _font("IBMPlexSans-Bold.ttf"),        # ......... titles / display
@@ -139,8 +143,8 @@ function _build_theme(;
 
         # == Axis ==========================================================================
         Axis = Attributes(;
-            backgroundcolor = card,  # slightly offset from figure bg,
-                                     # keeps the plot area from blending into it.
+            backgroundcolor = card,  # Slightly offset from the figure background, keeping
+                                     # the plot area from blending into it.
 
             # Spines match the tick color so they read as subtle chrome rather than an accent.
             # Makie has no single `spinecolor`; each side must be set individually, otherwise
@@ -233,7 +237,7 @@ function _build_theme(;
             ticklabelfont  = ticklabelfont,
             labelcolor     = text_primary,
             labelsize      = fs(18),
-            spinecolor     = cyan, # secondary accent, consistent with axes.
+            spinecolor     = cyan, # Secondary accent to highlight the colorbar outline.
         ),
 
         # == Text ==========================================================================

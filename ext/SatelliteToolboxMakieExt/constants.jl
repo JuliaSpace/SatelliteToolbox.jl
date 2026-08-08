@@ -7,7 +7,6 @@
 # == Dark Theme Colors =====================================================================
 
 const NAVY_PRIMARY   = colorant"#0A1929" # ................................ slide background
-const NAVY_DEEP      = colorant"#04101F" # ................. darker half of split background
 const NAVY_CARD      = colorant"#0D2137" # ..... slightly raised surface (legends, tooltips)
 const SEPARATOR_DARK = colorant"#162940" # ................. grid lines, horizontal dividers
 const BORDER_DARK    = colorant"#1E3A5F" # ....................... axis spines, box outlines
@@ -34,7 +33,6 @@ const CATEGORICAL_DARK = [
 # == Light Theme Colors ====================================================================
 
 const SURFACE         = colorant"#FFFFFF" # ............................... slide background
-const SURFACE_ALT     = colorant"#EEF4FB" # ............... lighter half of split background
 const SURFACE_CARD    = colorant"#F7FAFD" # .. slightly recessed surface (legends, tooltips)
 const SEPARATOR_LIGHT = colorant"#DDE8F5" # ................ grid lines, horizontal dividers
 const BORDER_LIGHT    = colorant"#CBD5E1" # ...................... axis spines, box outlines
