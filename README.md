@@ -40,11 +40,34 @@ julia> using Pkg
 julia> Pkg.add("SatelliteToolbox")
 ```
 
+## Makie Theme
+
+**SatelliteToolbox.jl** ships a [Makie](https://makie.org) theme with coordinated dark and
+light variants, designed for presentation slides and reports. It is provided by a package
+extension that is loaded automatically when a Makie backend is available:
+
+```julia
+using CairoMakie   # Or GLMakie, WGLMakie, etc.
+using SatelliteToolbox
+
+set_theme!(makie_theme(:dark))   # Use makie_theme() for the light variant.
+scatter(rand(100))
+```
+
+The function `makie_palette` returns the categorical palette used by the theme, and the
+keywords `fontscale` and `mono_ticklabels` adjust the font sizes and the tick label font.
+See the [documentation][docs-makie-url] for a gallery and the complete API reference.
+
+The theme bundles the IBM Plex Sans and IBM Plex Mono fonts, copyright © IBM Corp. and
+distributed under the [SIL Open Font License 1.1](https://openfontlicense.org). The license
+texts are available in `assets/fonts/`.
+
 ## Documentation
 
 Please, see each package for the related documentation of the functions.
 
 [docs-dev-url]: https://juliaspace.github.io/SatelliteToolbox.jl/dev
+[docs-makie-url]: https://juliaspace.github.io/SatelliteToolbox.jl/dev/man/makie_theme/
 [docs-stable-url]: https://juliaspace.github.io/SatelliteToolbox.jl/stable
 [SatelliteToolboxAtmosphericModels-link]: https://github.com/JuliaSpace/SatelliteToolboxAtmosphericModels.jl
 [SatelliteToolboxAtmosphericModels-cov]: https://img.shields.io/codecov/c/github/JuliaSpace/SatelliteToolboxAtmosphericModels.jl?token=oQOhGnQmdG&style=flat-square&logo=codecov&logoColor=white&labelColor=475569
