@@ -146,9 +146,10 @@ function _build_theme(;
             backgroundcolor = card,  # Slightly offset from the figure background, keeping
                                      # the plot area from blending into it.
 
-            # Spines match the tick color so they read as subtle chrome rather than an accent.
-            # Makie has no single `spinecolor`; each side must be set individually, otherwise
-            # the spines fall back to the default black (wrong on the dark background).
+            # Spines match the tick color so they read as subtle chrome rather than an
+            # accent. Makie has no single `spinecolor`; each side must be set individually,
+            # otherwise the spines fall back to the default black (wrong on the dark
+            # background).
             leftspinecolor     = text_secondary,
             rightspinecolor    = text_secondary,
             bottomspinecolor   = text_secondary,
@@ -213,6 +214,7 @@ function _build_theme(;
         ),
 
         # == Legend ========================================================================
+
         Legend = Attributes(;
             backgroundcolor = card,
             framecolor      = border,
@@ -230,6 +232,7 @@ function _build_theme(;
         ),
 
         # == Colorbar ======================================================================
+
         Colorbar = Attributes(;
             tickcolor      = text_secondary,
             ticklabelcolor = text_secondary,
@@ -241,18 +244,21 @@ function _build_theme(;
         ),
 
         # == Text ==========================================================================
+
         Text = Attributes(;
             color    = text_primary,
             fontsize = fs(18),
         ),
 
         # == Lines =========================================================================
+
         Lines = Attributes(;
             linewidth = 2.0,
             cycle     = Cycle([:color], covary = true),
         ),
 
         # == Scatter =======================================================================
+
         Scatter = Attributes(;
             markersize   = 8,
             strokewidth  = 0.5,
@@ -261,6 +267,7 @@ function _build_theme(;
         ),
 
         # == BarPlot =======================================================================
+
         BarPlot = Attributes(;
             gap         = 0.15,
             strokewidth = 0,
@@ -268,11 +275,13 @@ function _build_theme(;
         ),
 
         # == Heatmap =======================================================================
+
         Heatmap = Attributes(;
             colormap = :viridis,
         ),
 
         # == Color and Marker Cycle ========================================================
+
         palette = Attributes(;
             color     = categorical,
             marker    = [:circle, :rect, :diamond, :utriangle, :cross, :star5],
