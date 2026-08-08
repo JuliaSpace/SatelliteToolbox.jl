@@ -46,4 +46,9 @@
     # November 2.
     eot = SatelliteToolbox.equation_of_time(date_to_jd(2000, 11, 2, 0, 0, 0)) * ang_to_min
     @test 16 < eot < 17
+
+    # The DateTime method must match the Julian Day method.
+    eot_dt = SatelliteToolbox.equation_of_time(DateTime(2000, 11, 2))
+    eot_jd = SatelliteToolbox.equation_of_time(date_to_jd(2000, 11, 2, 0, 0, 0))
+    @test eot_dt == eot_jd
 end

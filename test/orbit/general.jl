@@ -108,11 +108,35 @@ end
         @test typeof(â) == T
         @test (orbp.j4d.n̄ + orbp.j4d.∂ω) ≈ angvel
         @test conv == true
+
+        # == Convergence Failure ===========================================================
+
+        # A very tight tolerance together with a single allowed iteration must report a
+        # convergence failure.
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            max_iterations = 1,
+            tolerance = eps(Float64)
+        )
+
+        @test typeof(â) == T
+        @test conv == false
+
+        # == Custom Tolerance ==============================================================
+
+        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; tolerance = 1e-3)
+
+        @test typeof(â) == T
+        @test conv == true
     end
 end
 
 @testset "Function orbital_angular_velocity_to_semimajor_axis [ERRORS]" begin
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; perturbation = :J3)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = 0)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = -1)
 end
 
 # -- Function: orbital_period --------------------------------------------------------------
