@@ -11,7 +11,11 @@ Return the first `n` colors from the categorical palette. Set `dark = false` to 
 light-background variant. Throws `ArgumentError` if `n > 6`.
 """
 function makie_palette(::Any; kwargs...)
-    return error("Load Makie.jl to use the `makie_palette` function.")
+    return error(
+        "The function `makie_palette` is provided by a package extension. Load Makie.jl " *
+        "(e.g., `using CairoMakie`) to use it. If Makie.jl is already loaded, check the " *
+        "arguments: the valid call is `makie_palette(n::Int; kwargs...)`."
+    )
 end
 
 """
@@ -39,6 +43,19 @@ Recommended export resolution:
     Mono.
     (**Default** = `false`)
 """
+function makie_theme(; kwargs...)
+    return makie_theme(Val(:light); kwargs...)
+end
+
+function makie_theme(variant::Symbol; kwargs...)
+    return makie_theme(Val(variant); kwargs...)
+end
+
 function makie_theme(::Any; kwargs...)
-    return error("Load Makie.jl to use the `makie_theme` function.")
+    return error(
+        "The function `makie_theme` is provided by a package extension. Load Makie.jl " *
+        "(e.g., `using CairoMakie`) to use it. If Makie.jl is already loaded, check the " *
+        "arguments: the valid calls are `makie_theme()`, `makie_theme(:dark)`, and " *
+        "`makie_theme(:light)`."
+    )
 end

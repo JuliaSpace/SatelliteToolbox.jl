@@ -16,10 +16,6 @@ function makie_palette(n::Int; dark::Bool = true)
     return colors[1:n]
 end
 
-function makie_theme(; kwargs...)
-    return makie_theme(Val(:light); kwargs...)
-end
-
 function makie_theme(::Val{:dark}; fontscale::Real = 1, mono_ticklabels::Bool = false)
     return _build_theme(;
         bg              = NAVY_PRIMARY,
@@ -54,6 +50,12 @@ function makie_theme(::Val{:light}; fontscale::Real = 1, mono_ticklabels::Bool =
         fontscale       = fontscale,
         mono_ticklabels = mono_ticklabels,
     )
+end
+
+function makie_theme(::Val{T}; kwargs...) where T
+    throw(ArgumentError(
+        "Unknown Makie theme variant `:$T`. The available options are `:dark` and `:light`."
+    ))
 end
 
 ############################################################################################
