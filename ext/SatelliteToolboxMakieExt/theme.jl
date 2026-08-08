@@ -8,11 +8,13 @@
 #                                     Public Functions                                     #
 ############################################################################################
 
-function makie_palette(n::Int; dark::Bool = true)
+function makie_palette(n::Int; dark::Bool = false)
     colors = dark ? CATEGORICAL_DARK : CATEGORICAL_LIGHT
-    n > length(colors) && throw(
-        ArgumentError("Categorical palette has $(length(colors)) colors; requested: $n.")
+
+    (0 <= n <= length(colors)) || throw(
+        ArgumentError("The categorical palette has $(length(colors)) colors; requested: $n.")
     )
+
     return colors[1:n]
 end
 

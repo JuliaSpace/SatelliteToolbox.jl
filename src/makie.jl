@@ -5,10 +5,10 @@
 ############################################################################################
 
 """
-    makie_palette(n::Int; dark::Bool = true) → Vector{Colorant}
+    makie_palette(n::Int; dark::Bool = false) → Vector{Colorant}
 
-Return the first `n` colors from the categorical palette. Set `dark = false` to get the
-light-background variant. Throws `ArgumentError` if `n > 6`.
+Return the first `n` colors from the categorical palette. Set `dark = true` to get the
+dark-background variant. Throws `ArgumentError` if `n > 6`.
 """
 function makie_palette(::Any; kwargs...)
     return error(
