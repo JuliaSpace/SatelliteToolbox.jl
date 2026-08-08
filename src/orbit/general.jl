@@ -88,7 +88,7 @@ function orbital_angular_velocity(
         p₀  = al₀ * (1 - e₀²)  # .................................... Semi-latus rectum [er]
         p₀² = p₀^2             # ........................... Semi-latus rectum squared [er²]
 
-        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀  = sin(i₀)
         sin_i₀² = sin_i₀^2
 
         # We defined the orbit angular velocity here based on the nodal period, i.e., the
@@ -129,7 +129,7 @@ function orbital_angular_velocity(
         p₀² = p₀^2       # ................................. Semi-latus rectum squared [er²]
         p₀⁴ = p₀^4       # ........................ Semi-latus rectum to the 4th power [er⁴]
 
-        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀, cos_i₀ = sincos(i₀)
 
         sin_i₀² = sin_i₀^2
         sin_i₀⁴ = sin_i₀^4
@@ -259,12 +259,12 @@ function orbital_angular_velocity_to_semimajor_axis(
         ω_d = T(angvel) * rs_to_dm
 
         # Auxiliary variables.
-        β² = (1 - T(e₀)^2)
+        β² = (1 - e₀^2)
         β  = √β²
         β³ = β² * β
         β⁴ = β² * β²
 
-        sin_i₀ = sin(T(i₀))
+        sin_i₀  = sin(i₀)
         sin_i₀² = sin_i₀^2
 
         k₁ = (3 // 4) * J₂ * (2 - 3sin_i₀²) / β³
@@ -289,7 +289,7 @@ function orbital_angular_velocity_to_semimajor_axis(
 
         # Initial guess based on the unperturbed model. Notice that we will estimate
         # `1 / √(a / R₀)`.
-        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / T(μ))^(1 // 3))
+        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
 
         # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
         # executed at least one time.
@@ -390,7 +390,7 @@ function orbital_angular_velocity_to_semimajor_axis(
 
         # Initial guess based on the unperturbed model. Notice that we will estimate
         # `1 / √(a / R₀)`.
-        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / T(μ))^(1 // 3))
+        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
 
         # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
         # executed at least one time.
@@ -581,7 +581,7 @@ function raan_time_derivative(
         p₀  = al₀ * (1 - e₀²)
         p₀² = p₀^2
 
-        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀, cos_i₀ = sincos(i₀)
         sin_i₀² = sin_i₀^2
         β²      = 1 - e₀²
         β       = √β²
@@ -611,15 +611,12 @@ function raan_time_derivative(
         n₀  = μm / √(al₀^3)
         J₂² = J₂^2
 
-        sin_i₀, cos_i₀ = sincos(T(i₀))
+        sin_i₀, cos_i₀ = sincos(i₀)
 
         sin_i₀² = sin_i₀^2
         sin_i₀⁴ = sin_i₀^4
         β²      = (1 - e₀²)
         β       = √β²
-
-        sin_i, cos_i = sincos(i)
-        sin_i² = sin_i^2
 
         # Perturbed mean motion.
         kn₂  = J₂  / p₀² * β
@@ -636,7 +633,6 @@ function raan_time_derivative(
         # First-order time-derivative of the RAAN [rad / s].
         k̄₂  = n̄  * J₂  / p₀²
         k̄₂₂ = n̄  * J₂² / p₀⁴
-        k₂₂ = n₀ * J₂² / p₀⁴
         k₄  = n₀ * J₄  / p₀⁴
 
         ∂Ω = -( 3 // 2 ) * k̄₂  * cos_i₀ +
