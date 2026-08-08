@@ -2,8 +2,8 @@ name = "SatelliteToolbox"
 uuid = "6ac157d9-b43d-51bb-8fab-48bf53814f4a"
 license = "MIT"
 desc = "A toolbox for satellite analysis"
-authors = ["Ronan Arraes Jardim Chagas <ronisbr@gmail.com>"]
 version = "1.0.0"
+authors = ["Ronan Arraes Jardim Chagas <ronisbr@gmail.com>"]
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -19,8 +19,15 @@ SatelliteToolboxSgp4 = "ba14ac17-bfc9-4710-a76f-b32930ef2339"
 SatelliteToolboxTle = "7ff27aeb-5fff-4337-a9ee-a9fe6b7ed35e"
 SatelliteToolboxTransformations = "6b019ec1-7a1e-4f04-96c7-a9db1ca5514d"
 
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+
+[extensions]
+SatelliteToolboxMakieExt = ["Makie"]
+
 [compat]
 Dates = "1.10"
+Makie = "0.24"
 Reexport = "1"
 SatelliteToolboxAtmosphericModels = "1"
 SatelliteToolboxBase = "1"

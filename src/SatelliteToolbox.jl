@@ -17,6 +17,8 @@ using Reexport
 #                                          Files                                           #
 ############################################################################################
 
+include("./makie.jl")
+
 include("./orbit/general.jl")
 
 include("./time/equation_of_time.jl")
