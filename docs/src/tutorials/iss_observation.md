@@ -11,7 +11,7 @@ of its position vector represented in a local reference frame. Let's use the NED
 (North-East-Down) reference: its X axis points toward the North, its Y axis points toward
 the East, and its Z axis points toward the Earth's center, as shown in the following figure.
 
-![Elevation in NED Reference Frame](../assets/iss_observation/ned.pdf)
+![Elevation in NED Reference Frame](../assets/iss_observation/ned.png)
 
 If the angle ``\lambda`` is greater than zero, we can theoretically observe the object we
 are analyzing because it is above the horizon at the desired location. We can compute this
