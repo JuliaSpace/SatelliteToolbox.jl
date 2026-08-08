@@ -245,6 +245,10 @@ function orbital_angular_velocity_to_semimajor_axis(
     J₄  = T(J4)
     tol = isnothing(tolerance) ? √eps(T) : T(tolerance)
 
+    if !isnothing(tolerance) && (tolerance <= 0)
+        throw(ArgumentError("The keyword `tolerance` must be greater than 0."))
+    end
+
     if perturbation == :J0
 
         a = (μ / T(angvel)^2)^(1 // 3)
@@ -291,15 +295,12 @@ function orbital_angular_velocity_to_semimajor_axis(
         # `1 / √(a / R₀)`.
         isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
 
-        # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
-        # executed at least one time.
-        f₁ = 10tol
+        # Newton-Raphson loop. The residue is evaluated at the top of the loop so that the
+        # `converged` flag always describes the returned estimate.
+        it = 0
+        converged = false
 
-        # Loop.
-        it = 1
-        converged = true
-
-        while abs(f₁) > tol
+        while true
             isqrt_ā²  = isqrt_ā   * isqrt_ā
             isqrt_ā³  = isqrt_ā²  * isqrt_ā
             isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
@@ -307,7 +308,7 @@ function orbital_angular_velocity_to_semimajor_axis(
             isqrt_ā¹⁰ = isqrt_ā⁷  * isqrt_ā³
             isqrt_ā¹¹ = isqrt_ā¹⁰ * isqrt_ā
 
-            # Compute the residue and the derivative.
+            # Compute the residue at the current estimate.
             f₁ = ω_d - k₃ * (isqrt_ā³ + (k₁ + k₂) * isqrt_ā⁷ + k₁ * k₂ * isqrt_ā¹¹)
 
             @debug """
@@ -318,18 +319,22 @@ function orbital_angular_velocity_to_semimajor_axis(
                 f₁ = $(f₁) ° / min
             """
 
+            # If the residue at the current estimate is within the tolerance, indicate that
+            # the solution converged and exit the loop.
+            if abs(f₁) <= tol
+                converged = true
+                break
+            end
+
+            # If the maximum number of iterations allowed has been reached, indicate that
+            # the solution did not converge and exit the loop.
+            (it >= max_iterations) && break
+
             # Compute the function derivative.
             ∂f₁_∂isqrt_ā = - k₃ * (3isqrt_ā² + 7 * (k₁ + k₂) * isqrt_ā⁶ + 11 * k₁ * k₂ * isqrt_ā¹⁰)
 
             # Compute the new estimate.
             isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
-
-            # If the maximum number of iterations allowed has been reached, indicate that
-            # the solution did not converged and exit loop.
-            if (it >= max_iterations)
-                converged = false
-                break
-            end
 
             it += 1
         end
@@ -392,15 +397,12 @@ function orbital_angular_velocity_to_semimajor_axis(
         # `1 / √(a / R₀)`.
         isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
 
-        # By setting the initial values of `f₁` to `10tol`, we assure that the loop will be
-        # executed at least one time.
-        f₁ = 10tol
+        # Newton-Raphson loop. The residue is evaluated at the top of the loop so that the
+        # `converged` flag always describes the returned estimate.
+        it = 0
+        converged = false
 
-        # Loop.
-        it = 1
-        converged = true
-
-        while abs(f₁) > tol
+        while true
             isqrt_ā²  = isqrt_ā   * isqrt_ā
             isqrt_ā³  = isqrt_ā²  * isqrt_ā
             isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
@@ -412,7 +414,7 @@ function orbital_angular_velocity_to_semimajor_axis(
             isqrt_ā¹⁸ = isqrt_ā¹¹ * isqrt_ā⁷
             isqrt_ā¹⁹ = isqrt_ā¹⁸ * isqrt_ā
 
-            # Compute the residue and the derivative.
+            # Compute the residue at the current estimate.
             f₁ = ω_d - k₈ * (
                 isqrt_ā³  +
                 isqrt_ā⁷  * (k₁ + k₄) +
@@ -429,6 +431,17 @@ function orbital_angular_velocity_to_semimajor_axis(
                 f₁ = $(f₁) ° / min
             """
 
+            # If the residue at the current estimate is within the tolerance, indicate that
+            # the solution converged and exit the loop.
+            if abs(f₁) <= tol
+                converged = true
+                break
+            end
+
+            # If the maximum number of iterations allowed has been reached, indicate that
+            # the solution did not converge and exit the loop.
+            (it >= max_iterations) && break
+
             # Compute the function derivative.
             ∂f₁_∂isqrt_ā = - k₈ * (
                 3  * isqrt_ā²  +
@@ -440,13 +453,6 @@ function orbital_angular_velocity_to_semimajor_axis(
 
             # Compute the new estimate.
             isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
-
-            # If the maximum number of iterations allowed has been reached, indicate that
-            # the solution did not converged and exit loop.
-            if (it >= max_iterations)
-                converged = false
-                break
-            end
 
             it += 1
         end
