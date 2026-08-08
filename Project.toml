@@ -45,7 +45,8 @@ Test = "1.10"
 julia = "1.10"
 
 [extras]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Makie", "Test"]
