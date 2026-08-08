@@ -19,11 +19,11 @@ angle using:
 
 ```math
 \begin{equation*}
-  \lambda = atan\left(-\frac{R_{NED,z}}{\sqrt{R_{NED,x}^2 + R_{NED,y}^2}}\right)~,
+  \lambda = \arctan\left(-\frac{R_{NED,z}}{\sqrt{R_{NED,x}^2 + R_{NED,y}^2}}\right)~,
 \end{equation*}
 ```
 
-where ``R_{NED,i}`` it the ``i``-axis component of the object position vector ``\vec{R}``
+where ``R_{NED,i}`` is the ``i``-axis component of the object position vector ``\vec{R}``
 represented in the NED reference frame.
 
 ## Algorithm
@@ -86,7 +86,7 @@ OrbitPropagatorSgp4{Float64, Float64}:
   Last propagation : 2023-07-02T16:14:23.672
 ```
 
-Let's say we want to check when the ISS will stay under our field of view within one day
+Let's say we want to check when the ISS will be inside our field of view within one day
 from this TLE epoch. The following code propagates the TLE for one day using a step of one
 second:
 
@@ -116,7 +116,7 @@ julia> vr_teme = first.(ret)
  [-4.522479829177213e6, -3.8167488378395094e6, -3.347627153102706e6]
 ```
 
-This step concludes the first step of the algorithm.
+This concludes the first step of the algorithm.
 
 The information obtained by the SGP4 is represented in the True-Equator, Mean-Equinox (TEME)
 reference frame, which is a quasi-inertial frame. Now, we need to convert it to a frame
@@ -127,7 +127,7 @@ frame.  For our simple example, we will use the PEF (pseudo-Earth fixed) frame a
 All the vectors returned by the propagator can be converted as follows:
 
 ```julia-repl
-julia> vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400)) .* vr_teme
+julia> vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ ((0:1:86400) ./ 86400)) .* vr_teme
 86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
  [-3.1517745650685215e6, -4.706509167226944e6, 3.737410008328138e6]
  [-3.148954811670437e6, -4.711801726204846e6, 3.733132227568888e6]
@@ -139,7 +139,7 @@ julia> vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ (collec
 
 !!! note
 
-    The code `Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400)` obtains the Julian
+    The code `Propagators.epoch(orbp) .+ ((0:1:86400) ./ 86400)` obtains the Julian
     Day [UTC] of each propagation instant.
 
 We can now convert the ECEF vectors to the NED frame using the function `ecef_to_ned`.
@@ -161,7 +161,7 @@ julia> vr_ned = ecef_to_ned.(vr_pef, -23.1791 |> deg2rad, -45.8872 |> deg2rad, 5
  [-3.5380883263308997e6, 5.808691621810904e6, 6.097614606058563e6]
 ```
 
-This step concludes the second step of the algorithm.
+This concludes the second step of the algorithm.
 
 !!! note
 
@@ -201,7 +201,7 @@ the related time using:
 ```julia-repl
 julia> using Dates
 
-julia> getindex(Propagators.epoch(orbp) .+ (collect(0:1:86400) ./ 86400) .|> julian2datetime, ids)
+julia> getindex(Propagators.epoch(orbp) .+ ((0:1:86400) ./ 86400) .|> julian2datetime, ids)
 3102-element Vector{DateTime}:
  2023-07-02T16:37:51.672
  2023-07-02T16:37:52.672

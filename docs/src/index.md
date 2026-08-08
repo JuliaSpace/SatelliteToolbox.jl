@@ -8,14 +8,14 @@ The **SatelliteToolbox.jl** contains a set of packages with functions to perform
 and build simulations related to satellites. It is used on a daily basis on projects at the
 [Brazilian National Institute for Space Research (INPE)](http://www.gov.br/inpe).
 
-The set of packages are listed bellow. All of them are loaded and reexported in this one.
+The set of packages is listed below. All of them are loaded and reexported in this one.
 
 - [SatelliteToolboxAtmosphericModels.jl](https://github.com/JuliaSpace/SatelliteToolboxAtmosphericModels.jl): Atmospheric models.
 - [SatelliteToolboxBase.jl](https://github.com/JuliaSpace/SatelliteToolboxBase.jl): Base functions and type definitions.
 - [SatelliteToolboxCelestialBodies.jl](https://github.com/JuliaSpace/SatelliteToolboxCelestialBodies.jl): Celestial bodies.
 - [SatelliteToolboxGeomagneticField.jl](https://github.com/JuliaSpace/SatelliteToolboxGeomagneticField.jl): Geomagnetic field models.
 - [SatelliteToolboxGravityModels.jl](https://github.com/JuliaSpace/SatelliteToolboxGravityModels.jl): Gravity models.
-- [SatelliteToolboxLegendre.jl](https://github.com/JuliaSpace/SatelliteToolboxLegendre.jl): Legendre associated functions and its time-derivatives.
+- [SatelliteToolboxLegendre.jl](https://github.com/JuliaSpace/SatelliteToolboxLegendre.jl): Legendre associated functions and their time-derivatives.
 - [SatelliteToolboxPropagators.jl](https://github.com/JuliaSpace/SatelliteToolboxPropagators.jl): Orbit propagators.
 - [SatelliteToolboxSgp4.jl](https://github.com/JuliaSpace/SatelliteToolboxSgp4.jl): SGP4/SDP4 orbit propagator.
 - [SatelliteToolboxTle.jl](https://github.com/JuliaSpace/SatelliteToolboxTle.jl): Creating, fetching, and parsing TLEs.
