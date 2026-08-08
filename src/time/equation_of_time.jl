@@ -12,11 +12,11 @@
 export equation_of_time
 
 """
-    equation_of_time(t::Union{Number, DateTime})
+    equation_of_time(t::Union{Number, DateTime}) -> Float64
 
 Compute the difference between the Sun apparent local time and the Sun mean local time
-[rad], which is called Equation of Time, at the time `t`, which can be represented by a
-Julian Day or `DateTime`. The algorithm was adapted from **[1, p. 178, 277-279]**.
+[rad], which is called Equation of Time, at the time `t` [UT1], which can be represented by
+a Julian Day or `DateTime`. The algorithm was adapted from **[1, p. 178, 277-279]**.
 
 # References
 
@@ -34,7 +34,7 @@ function equation_of_time(jd::Number)
 
     # Mean anomaly of the Sun.
     #
-    # Here, we should use T_TBD (Barycentric Dynamical Time). However, it is sufficient to
+    # Here, we should use T_TDB (Barycentric Dynamical Time). However, it is sufficient to
     # use t_ut1 because this is a low precision computation [1].
     Ms = mod(357.5291092 + 35999.05034t_ut1, 360) |> deg2rad
 
@@ -42,7 +42,7 @@ function equation_of_time(jd::Number)
     sin_Ms  = sin(Ms)
     sin_2Ms = sin(2Ms)
 
-    # Ecliptic latitude of the Sun.
+    # Ecliptic longitude of the Sun.
     λ_ecliptic = mod(λ_m + 1.914666471sin_Ms + 0.019994643sin_2Ms, 360) |> deg2rad
 
     # Compute the equation of time [deg].

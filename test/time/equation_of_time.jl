@@ -5,7 +5,7 @@
 ## References ##############################################################################
 #
 # [1] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications. 4th ed.
-#     Microcosm Press, Hawthorn, CA, USA.
+#     Microcosm Press, Hawthorne, CA.
 #
 ############################################################################################
 

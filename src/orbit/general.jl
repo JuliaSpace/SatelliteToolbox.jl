@@ -31,13 +31,13 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
-    (**Default** = `GM_EARTH`)
+    (**Default**: `GM_EARTH`)
 - `J2::Number`: J₂ perturbation term.
-    (**Default** = `EGM_2008_J2`)
+    (**Default**: `EGM_2008_J2`)
 - `J4::Number`: J₄ perturbation term.
-    (**Default** = `EGM_2008_J4`)
+    (**Default**: `EGM_2008_J4`)
 - `R0::Number`: Earth's equatorial radius [m].
-    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
+    (**Default**: `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
@@ -68,7 +68,7 @@ function orbital_angular_velocity(
     J₂ = T(J2)
     J₄ = T(J4)
 
-    # Unperturbed orbit period.
+    # Unperturbed mean motion.
     n₀ = √(μ / T(a)^3)
 
     # Perturbation computed using a Keplerian orbit.
@@ -185,28 +185,28 @@ between two consecutive passages by the ascending node.
 
 !!! note
 
-    The output type `T` in the first signature is obtained by promoting the inputs to a
-    float type.
+    The output type `T` is obtained by promoting the inputs to a float type.
 
 # Keywords
 
 - `max_iterations::Int`: Maximum number of iterations allowed in the Newton-Raphson
     algorithm.
-    (**Default** = 20)
+    (**Default**: `20`)
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
-- `tolerance::Union{Nothing, Number}`: Residue tolerances to verify if the numerical method
-    has converged. If it is `nothing`, `√eps(T)` will be used, where `T` is the internal
+- `tolerance::Union{Nothing, Number}`: Residue tolerance to verify if the numerical method
+    has converged. It must be greater than 0, otherwise this function throws an
+    `ArgumentError`. If it is `nothing`, `√eps(T)` will be used, where `T` is the internal
     type for the computations. Notice that the residue function unit is [deg / min].
-    (**Default** = nothing)
+    (**Default**: `nothing`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
-    (**Default** = `GM_EARTH`)
+    (**Default**: `GM_EARTH`)
 - `J2::Number`: J₂ perturbation term.
-    (**Default** = `EGM_2008_J2`)
+    (**Default**: `EGM_2008_J2`)
 - `J4::Number`: J₄ perturbation term.
-    (**Default** = `EGM_2008_J4`)
+    (**Default**: `EGM_2008_J4`)
 - `R0::Number`: Earth's equatorial radius [m].
-    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
+    (**Default**: `EARTH_EQUATORIAL_RADIUS`)
 
 # Returns
 
@@ -288,7 +288,7 @@ function orbital_angular_velocity_to_semimajor_axis(
         # The expressions for those time-derivatives were obtained from the J2 orbit
         # propagator of SatelliteToolboxPropagators.jl package.
         #
-        # Since we cannot analytical isolate `a`, we will use a Newton-Raphson algorithm to
+        # Since we cannot analytically isolate `a`, we will use a Newton-Raphson algorithm to
         # find the semi-major axis `a` that provides the desired angular velocity.
 
         # Initial guess based on the unperturbed model. Notice that we will estimate
@@ -390,7 +390,7 @@ function orbital_angular_velocity_to_semimajor_axis(
         # The expressions for those time-derivatives were obtained from the J2 orbit
         # propagator of SatelliteToolboxPropagators.jl package.
         #
-        # Since we cannot analytical isolate `a`, we will use a Newton-Raphson algorithm to
+        # Since we cannot analytically isolate `a`, we will use a Newton-Raphson algorithm to
         # find the semi-major axis `a` that provides the desired angular velocity.
 
         # Initial guess based on the unperturbed model. Notice that we will estimate
@@ -484,13 +484,13 @@ eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by 
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
-    (**Default** = `GM_EARTH`)
+    (**Default**: `GM_EARTH`)
 - `J2::Number`: J₂ perturbation term.
-    (**Default** = `EGM_2008_J2`)
+    (**Default**: `EGM_2008_J2`)
 - `J4::Number`: J₄ perturbation term.
-    (**Default** = `EGM_2008_J4`)
+    (**Default**: `EGM_2008_J4`)
 - `R0::Number`: Earth's equatorial radius [m].
-    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
+    (**Default**: `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
@@ -517,12 +517,14 @@ end
 
 """
     raan_time_derivative(a::Number, e::Number, i::Number; kwargs...) -> T
+    raan_time_derivative(orb::Orbit{Tepoch, T}; kwargs...) where {Tepoch<:Number, T<:Number} -> T
 
 Compute the time derivative of the right ascension of the ascending node (RAAN) [rad / s] in
 an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad]. The
 orbit can also be specified by `orb` (see `Orbit`).
 
 !!! note
+
     The output type `T` in the first signature is obtained by promoting the inputs to a
     float type.
 
@@ -531,13 +533,13 @@ orbit can also be specified by `orb` (see `Orbit`).
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
-    (**Default** = `GM_EARTH`)
+    (**Default**: `GM_EARTH`)
 - `J2::Number`: J₂ perturbation term.
-    (**Default** = `EGM_2008_J2`)
+    (**Default**: `EGM_2008_J2`)
 - `J4::Number`: J₄ perturbation term.
-    (**Default** = `EGM_2008_J4`)
+    (**Default**: `EGM_2008_J4`)
 - `R0::Number`: Earth's equatorial radius [m].
-    (**Default** = `EARTH_EQUATORIAL_RADIUS`)
+    (**Default**: `EARTH_EQUATORIAL_RADIUS`)
 
 # Perturbations
 
