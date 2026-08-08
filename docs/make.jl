@@ -14,7 +14,6 @@ makedocs(
         "Tutorials" => [
             "ISS Observation" => "tutorials/iss_observation.md",
         ],
-        "Makie Theme" => "man/makie_theme.md",
         "Library" => "lib/library.md",
     ],
 )

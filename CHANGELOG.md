@@ -4,12 +4,8 @@ SatelliteToolbox.jl Changelog
 Version 1.1.0
 -------------
 
-- ![Feature][badge-feature] Add a Makie theme extension. Loading a Makie backend together
-  with **SatelliteToolbox.jl** provides the functions `makie_theme` and `makie_palette`,
-  which style plots with coordinated dark and light variants using bundled IBM Plex fonts.
 - ![Feature][badge-feature] We now reexport **SatelliteToolboxOrbitDataMessages.jl**.
-- ![Enhancement][badge-enhancement] We improved the documentation, which now contains a
-  gallery for the Makie theme, and fixed several typos.
+- ![Enhancement][badge-enhancement] We improved the documentation and fixed several typos.
 - ![Bugfix][badge-bugfix] The function `orbital_angular_velocity_to_semimajor_axis` now
   evaluates the convergence flag against the returned estimate and validates the keyword
   `tolerance`, which must be positive.

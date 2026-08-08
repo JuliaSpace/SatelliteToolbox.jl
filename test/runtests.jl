@@ -1,11 +1,6 @@
 using Test
 
-using Makie
 using SatelliteToolbox
-
-@testset "Makie Extension" verbose = true begin
-    include("./makie.jl")
-end
 
 @testset "Orbit" verbose = true begin
     include("./orbit/general.jl")
