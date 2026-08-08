@@ -505,7 +505,7 @@ If `perturbation` is omitted, it defaults to `:J2`.
 """
 function orbital_period(a::Number, e::Number, i::Number; kwargs...)
     n = orbital_angular_velocity(a, e, i; kwargs...)
-    T = eltype(n)
+    T = typeof(n)
     return T(2π) / n
 end
 
