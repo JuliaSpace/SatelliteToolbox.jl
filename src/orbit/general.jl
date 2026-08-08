@@ -641,7 +641,7 @@ function raan_time_derivative(
 
         return ∂Ω
     else
-        throw(ArgumentError("The perturbation parameter $perturbation is not defined."))
+        throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
     end
 end
 
