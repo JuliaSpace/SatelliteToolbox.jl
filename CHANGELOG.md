@@ -6,6 +6,8 @@ Version 1.1.0
 
 - ![Feature][badge-feature] We now reexport **SatelliteToolboxOrbitDataMessages.jl**.
 - ![Enhancement][badge-enhancement] We improved the documentation and fixed several typos.
+- ![Enhancement][badge-enhancement] We updated the ISS observation tutorial to obtain the
+  ISS mean elements using an Orbit Mean-Elements Message (OMM) instead of a TLE.
 - ![Bugfix][badge-bugfix] The function `orbital_angular_velocity_to_semimajor_axis` now
   evaluates the convergence flag against the returned estimate and validates the keyword
   `tolerance`, which must be positive.
