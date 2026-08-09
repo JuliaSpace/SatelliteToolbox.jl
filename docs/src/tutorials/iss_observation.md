@@ -43,62 +43,103 @@ Before starting, let's load all the packages in the **SatelliteToolbox.jl** ecos
 julia> using SatelliteToolbox
 ```
 
-We first need to obtain the mean elements of the ISS to propagate its orbit. We can do this
-by using the Celestrak TLE fetcher. The following code creates the fetcher and downloads the
-latest available ISS TLE:
+We first need to obtain the mean elements of the ISS to propagate its orbit. Celestrak
+distributes the general perturbation (GP) data of the cataloged objects using the Orbit
+Mean-Elements Message (OMM) format, which is defined in the CCSDS Orbit Data Messages (ODM)
+standard. The package
+[SatelliteToolboxOrbitDataMessages.jl](https://github.com/JuliaSpace/SatelliteToolboxOrbitDataMessages.jl)
+provides a fetcher to download those messages. The following code creates the fetcher and
+downloads the latest available OMM of the ISS:
 
 ```julia-repl
-julia> f = create_tle_fetcher(CelestrakTleFetcher)
-CelestrakTleFetcher("https://celestrak.org/NORAD/elements/gp.php")
+julia> f = create_omm_fetcher(CelestrakOmmFetcher)
+CelestrakOmmFetcher: https://celestrak.org/NORAD/elements/gp.php
 
-julia> tles = fetch_tles(f; satellite_name = "ISS (ZARYA)")
-[ Info: Fetch TLEs from Celestrak using satellite name: "ISS (ZARYA)" ...
-1-element Vector{TLE}:
- TLE: ISS (ZARYA) (Epoch = 2023-07-02T16:14:23.672)
+julia> omms = fetch_omms(f; satellite_name = "ISS (ZARYA)")
+1-element Vector{OrbitMeanElementsMessage}:
+ OMM: ISS (ZARYA) [1998-067A] (Epoch = 2026-08-09T11:20:13.861824)
 
-julia> iss_tle = tles[1]
+julia> iss_omm = omms[1]
+OrbitMeanElementsMessage:
+  Header
+    Originator :
+  Body
+  └─ Segment
+     ├─ Metadata
+     │    Object Name         : ISS (ZARYA)
+     │    Object ID           : 1998-067A
+     │    Center Name         : EARTH
+     │    Ref. Frame          : TEME
+     │    Time System         : UTC
+     │    Mean Element Theory : SGP4
+     └─ Data
+        ├─ Mean Keplerian Elements
+        │    Epoch              : 2026-08-09T11:20:13.861824
+        │    Mean Motion        : 15.49394423 rev/day
+        │    Eccentricity       : 0.0007357
+        │    Inclination        : 51.6322°
+        │    RA of Asc. Node    : 36.3838°
+        │    Arg. of Pericenter : 29.0181°
+        │    Mean Anomaly       : 331.1215°
+        └─ TLE Related Parameters
+             Ephemeris Type      : 0
+             Classification Type : U
+             NORAD Cat ID        : 25544
+             Element Set Number  : 999
+             Rev at Epoch        : 58001
+             Bstar               : 8.7174e-5
+             ∂(Mean Motion)/∂t   : 4.421e-5 rev/day²
+             ∂²(Mean Motion)/∂t² : 0.0 rev/day³
+```
+
+The mean elements in the fetched OMM are related to the SGP4 theory, as we can see in the
+field `Mean Element Theory`. Hence, we must use the SGP4/SDP4 algorithm to propagate the ISS
+orbit. This propagator is initialized using a TLE, and we can convert the OMM to it using
+the function `convert`:
+
+```julia-repl
+julia> iss_tle = convert(TLE, iss_omm)
 TLE:
                       Name : ISS (ZARYA)
           Satellite number : 25544
   International designator : 98067A
-        Epoch (Year / Day) : 23 / 183.67666287 (2023-07-02T16:14:23.672)
+        Epoch (Year / Day) : 26 / 221.47238266 (2026-08-09T11:20:13.862)
         Element set number : 999
-              Eccentricity :   0.00045810
-               Inclination :  51.64230000 deg
-                      RAAN : 251.73890000 deg
-       Argument of perigee :  98.25980000 deg
-              Mean anomaly :  37.01280000 deg
-           Mean motion (n) :  15.50610282 revs / day
-         Revolution number : 40419
-                        B* :   0.00021501 1 / er
-                     ṅ / 2 :   0.00012101 rev / day²
+              Eccentricity :   0.00073570
+               Inclination :  51.63220000 deg
+                      RAAN :  36.38380000 deg
+       Argument of perigee :  29.01810000 deg
+              Mean anomaly : 331.12150000 deg
+           Mean motion (n) :  15.49394423 revs / day
+         Revolution number : 58001
+                        B* :   8.7174e-05 1 / er
+                     ṅ / 2 :    4.421e-05 rev / day²
                      n̈ / 6 :            0 rev / day³
 ```
 
-The mean elements we obtained are encoded in a TLE by NORAD. Hence, we must use the
-SGP4/SDP4 algorithm to propagate its orbit. We can initialize the propagator as follows:
+Now, we can initialize the SGP4/SDP4 propagator as follows:
 
 ```julia-repl
 julia> orbp = Propagators.init(Val(:SGP4), iss_tle)
 OrbitPropagatorSgp4{Float64, Float64}:
    Propagator name : SGP4 Orbit Propagator
-  Propagator epoch : 2023-07-02T16:14:23.672
-  Last propagation : 2023-07-02T16:14:23.672
+  Propagator epoch : 2026-08-09T11:20:13.862
+  Last propagation : 2026-08-09T11:20:13.862
 ```
 
 Let's say we want to check when the ISS will be inside our field of view within one day
-from this TLE epoch. The following code propagates the TLE for one day using a step of one
-second:
+from this OMM epoch. The following code propagates the mean elements for one day using a
+step of one second:
 
 ```julia-repl
 julia> ret = Propagators.propagate!.(orbp, 0:1:86400)
 86401-element Vector{Tuple{StaticArraysCore.SVector{3, Float64}, StaticArraysCore.SVector{3, Float64}}}:
- ([4.3241138662552e6, 3.658818213831297e6, 3.737410008328138e6], [-1520.7633082033235, 6181.330955217756, -4275.4053760819315])
- ([4.322590349691385e6, 3.6649972144279014e6, 3.733132227568888e6], [-1526.2732556957171, 6176.663987437403, -4280.179483156526])
- ([4.321061324147931e6, 3.67117154413503e6, 3.7288496754281903e6], [-1531.7812633324513, 6171.989143201469, -4284.948124245782])
+ ([5.468768324422245e6, 4.0295595004779864e6, 22.35656936455697], [-2828.846105092686, 3823.457263702539, 6012.017080056535])
+ ([5.465935992393167e6, 4.0333803899831795e6, 6034.361341059221], [-2835.8084008800856, 3818.323466411273, 6012.013214222088])
+ ([5.463096699847507e6, 4.037196143261074e6, 12046.358405488236], [-2842.767114054207, 3813.1847856499407, 6012.001670588928])
  ⋮
- ([-4.523980159202273e6, -3.810874556321396e6, -3.3522994708746294e6], [1497.4675552368813, -5876.71613186301, 4670.189355793778])
- ([-4.522479829177213e6, -3.8167488378395094e6, -3.347627153102706e6], [1503.2022238337156, -5871.8808804082, 4674.448700122841])
+ ([-5.734090462719248e6, -3.654916824133614e6, -162139.0214012769], [2666.634683445473, -3934.751232174644, -6001.663032767319])
+ ([-5.731420201838812e6, -3.6588492491559116e6, -168140.57485467652], [2673.9065676262103, -3930.1125486813057, -6001.452955618615])
 ```
 
 Each element in the returned array is a tuple with two vectors. The first is the satellite
@@ -108,12 +149,12 @@ Thus, let's obtain this information for each instant:
 ```julia-repl
 julia> vr_teme = first.(ret)
 86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
- [4.3241138662552e6, 3.658818213831297e6, 3.737410008328138e6]
- [4.322590349691385e6, 3.6649972144279014e6, 3.733132227568888e6]
- [4.321061324147931e6, 3.67117154413503e6, 3.7288496754281903e6]
+ [5.468768324422245e6, 4.0295595004779864e6, 22.35656936455697]
+ [5.465935992393167e6, 4.0333803899831795e6, 6034.361341059221]
+ [5.463096699847507e6, 4.037196143261074e6, 12046.358405488236]
  ⋮
- [-4.523980159202273e6, -3.810874556321396e6, -3.3522994708746294e6]
- [-4.522479829177213e6, -3.8167488378395094e6, -3.347627153102706e6]
+ [-5.734090462719248e6, -3.654916824133614e6, -162139.0214012769]
+ [-5.731420201838812e6, -3.6588492491559116e6, -168140.57485467652]
 ```
 
 This concludes the first step of the algorithm.
@@ -129,12 +170,12 @@ All the vectors returned by the propagator can be converted as follows:
 ```julia-repl
 julia> vr_pef = r_eci_to_ecef.(TEME(), PEF(), Propagators.epoch(orbp) .+ ((0:1:86400) ./ 86400)) .* vr_teme
 86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
- [-3.1517745650685215e6, -4.706509167226944e6, 3.737410008328138e6]
- [-3.148954811670437e6, -4.711801726204846e6, 3.733132227568888e6]
- [-3.146131833297915e6, -4.717088716679321e6, 3.7288496754281903e6]
+ [-194731.00204485405, -6.79020298598938e6, 22.35656936455697]
+ [-190471.55402402583, -6.790311791836043e6, 6034.361341059221]
+ [-186211.87978995888, -6.790412607999009e6, 12046.358405488236]
  ⋮
- [3.3857219006283223e6, 4.850365818830511e6, -3.3522994708746294e6]
- [3.383108804842527e6, 4.855406297217666e6, -3.347627153102706e6]
+ [769132.5300043474, 6.756230130573698e6, -162139.0214012769]
+ [764888.7653951888, 6.756574615488757e6, -168140.57485467652]
 ```
 
 !!! note
@@ -153,12 +194,12 @@ location of the city of São José dos Campos, SP, Brazil:
 ```julia-repl
 julia> vr_ned = ecef_to_ned.(vr_pef, -23.1791 |> deg2rad, -45.8872 |> deg2rad, 593; translate = true)
 86401-element Vector{StaticArraysCore.SVector{3, Float64}}:
- [3.8867951998111717e6, -5.538957086708884e6, 6.7568967896751845e6]
- [3.885130946017213e6, -5.540616594591433e6, 6.749915536859117e6]
- [3.8834616159196747e6, -5.542269910950413e6, 6.742934017679935e6]
+ [1.8501090008805105e6, -4.866289565779151e6, 2.0183969472293633e6]
+ [1.8568334581728124e6, -4.863307143262354e6, 2.0179659395906986e6]
+ [1.8635557124885947e6, -4.860318996926273e6, 2.0175400574827082e6]
  ⋮
- [-3.540243127040135e6, 5.8070592063407935e6, 6.090776675161325e6]
- [-3.5380883263308997e6, 5.808691621810904e6, 6.097614606058563e6]
+ [-1.8630798143715921e6, 5.25504550236853e6, 1.0278662358401524e7]
+ [-1.8698569695073399e6, 5.2522383899692455e6, 1.0279242995992837e7]
 ```
 
 This concludes the second step of the algorithm.
@@ -174,25 +215,25 @@ The elevation in the third step can be easily computed using the presented formu
 ```julia-repl
 julia> vλ = map(v -> atand(-v[3], sqrt(v[1]^2 + v[2]^2)), vr_ned)
 86401-element Vector{Float64}:
- -44.95878130917832
- -44.92746141286671
- -44.89614037059145
+ -21.191163866411994
+ -21.188497280309722
+ -21.185863544167628
    ⋮
- -41.8461848156166
- -41.876994453587045
+ -61.52293043348618
+ -61.52590774915887
 ```
 
 Finally, we need to find the indices related to elevations greater than zero:
 
 ```julia-repl
 julia> ids = findall(>=(0), vλ)
-3102-element Vector{Int64}:
-  1409
-  1410
-  1411
+2678-element Vector{Int64}:
+ 30727
+ 30728
+ 30729
      ⋮
- 85164
- 85165
+ 72375
+ 72376
 ```
 
 Those are the instants that we will have a direct line of sight to the ISS. We can discover
@@ -202,11 +243,11 @@ the related time using:
 julia> using Dates
 
 julia> getindex(Propagators.epoch(orbp) .+ ((0:1:86400) ./ 86400) .|> julian2datetime, ids)
-3102-element Vector{DateTime}:
- 2023-07-02T16:37:51.672
- 2023-07-02T16:37:52.672
- 2023-07-02T16:37:53.672
+2678-element Vector{DateTime}:
+ 2026-08-09T19:52:19.862
+ 2026-08-09T19:52:20.862
+ 2026-08-09T19:52:21.862
  ⋮
- 2023-07-03T15:53:46.672
- 2023-07-03T15:53:47.672
+ 2026-08-10T07:26:27.862
+ 2026-08-10T07:26:28.862
 ```
