@@ -23,7 +23,7 @@ SatelliteToolboxTransformations = "6b019ec1-7a1e-4f04-96c7-a9db1ca5514d"
 [compat]
 Dates = "1.10"
 Reexport = "1"
-SatelliteToolboxAtmosphericModels = "1"
+SatelliteToolboxAtmosphericModels = "1, 2"
 SatelliteToolboxBase = "1"
 SatelliteToolboxCelestialBodies = "1"
 SatelliteToolboxGeomagneticField = "1"
