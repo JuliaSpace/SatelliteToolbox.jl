@@ -2,6 +2,14 @@
 #
 #   Functions to compute general values related to the orbit.
 #
+## References ##############################################################################
+#
+# [1] Kozai, Y (1959). The Motion of a Close Earth Satellite. The Astronomical Journal,
+#     v. 64, no. 1274, pp. 367 -- 377.
+#
+# [2] Vallado, D. A (2013). Fundamentals of Astrodynamics and Applications. 4th ed.
+#     Microcosm Press, Hawthorne, CA.
+#
 ############################################################################################
 
 export orbital_angular_velocity
@@ -15,11 +23,15 @@ export raan_time_derivative
 
 """
     orbital_angular_velocity(a::Number, e::Number, i::Number; kwargs...) -> T
-    orbital_angular_velocity(orb::Orbit{Tepoch, T}; kwargs...) where {Tepoch<:Number, T<:Number} -> T
+    orbital_angular_velocity(orb::Orbit; kwargs...) -> T
 
-Compute the angular velocity [rad/s] of an object in an orbit with semi-major axis `a` [m],
-eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by `orb` (see
-`Orbit`).
+Compute the angular velocity [rad / s] of an object in an orbit with semi-major axis `a`
+[m], eccentricity `e` [-], and inclination `i` [rad]. The orbit can also be specified by
+`orb` (see `Orbit`).
+
+The angular velocity is defined here based on the nodal period, *i.e.* the time between two
+consecutive passages by the ascending node. Hence, it is the sum of the perturbed mean
+motion and the argument of perigee time derivative.
 
 !!! note
 
@@ -60,112 +72,12 @@ function orbital_angular_velocity(
     J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
     R0::Number = EARTH_EQUATORIAL_RADIUS
-) where {T1<:Number, T2<:Number, T3<:Number}
+) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
-    R₀ = T(R0)
-    μ  = T(m0)
-    J₂ = T(J2)
-    J₄ = T(J4)
+    n̄, ∂ω, _ = _secular_rates(perturbation, T(a), T(e), T(i), T(m0), T(R0), T(J2), T(J4))
 
-    # Unperturbed mean motion.
-    n₀ = √(μ / T(a)^3)
-
-    # Perturbation computed using a Keplerian orbit.
-    if perturbation == :J0
-        return n₀
-
-    # Perturbation computed using perturbations terms up to J2.
-    elseif perturbation == :J2
-        # Convert the inputs to the correct type.
-        a₀ = T(a)
-        e₀ = T(e)
-        i₀ = T(i)
-
-        # Initial values and auxiliary variables.
-        al₀ = a₀ / R₀          # ........................... Normalized semi-major axis [er]
-        e₀² = e₀^2             # .................................. Eccentricity squared [ ]
-        p₀  = al₀ * (1 - e₀²)  # .................................... Semi-latus rectum [er]
-        p₀² = p₀^2             # ........................... Semi-latus rectum squared [er²]
-
-        sin_i₀  = sin(i₀)
-        sin_i₀² = sin_i₀^2
-
-        # We defined the orbit angular velocity here based on the nodal period, i.e., the
-        # time it takes for the satellite to cross the ascending node two consecutive times.
-        # Hence, we can compute it by:
-        #
-        #             ∂M     ∂ω
-        #   angvel = ──── + ────.
-        #             ∂t     ∂t
-        #
-        # The expressions for those time-derivatives were obtained from the J2 orbit
-        # propagator of SatelliteToolboxPropagators.jl package.
-
-        n̄     = n₀ * (1 + (3 // 4) * J₂ / p₀² * √(1 - e₀²) * (2 - 3sin_i₀²))
-        ∂M_∂t = n̄
-        ∂ω_∂t = +(3 // 4) * n̄ * J₂ / p₀² * (4 - 5sin_i₀²)
-
-        # Angular velocity.
-        ang_vel = ∂M_∂t + ∂ω_∂t
-
-        return ang_vel
-
-    # Perturbation computed using perturbations terms J2, J4, and J2².
-    elseif perturbation == :J4
-        # Convert the inputs to the correct type.
-        a₀ = T(a)
-        e₀ = T(e)
-        i₀ = T(i)
-
-        # Initial values and auxiliary variables.
-        e₀² = e₀^2
-        β²  = (1 - e₀²)
-        β   = √β²
-
-        al₀ = a₀ / R₀    # ................................. Normalized semi-major axis [er]
-        J₂² = J₂^2       # ............................................. J2 constant squared
-        p₀  = al₀ * β²   # .......................................... Semi-latus rectum [er]
-        p₀² = p₀^2       # ................................. Semi-latus rectum squared [er²]
-        p₀⁴ = p₀^4       # ........................ Semi-latus rectum to the 4th power [er⁴]
-
-        sin_i₀, cos_i₀ = sincos(i₀)
-
-        sin_i₀² = sin_i₀^2
-        sin_i₀⁴ = sin_i₀^4
-        cos_i₀⁴ = cos_i₀^4
-
-        # We defined the orbit angular velocity here based on the nodal period, i.e., the
-        # time it takes for the satellite to cross the ascending node two consecutive times.
-        # Hence, we can compute it by:
-        #
-        #             ∂M     ∂ω
-        #   angvel = ──── + ────.
-        #             ∂t     ∂t
-        #
-        # The expressions for those time-derivatives were obtained from the J2 orbit
-        # propagator of SatelliteToolboxPropagators.jl package.
-
-        n̄ = n₀ * (
-            1 +
-            ( 3 // 4  ) * J₂  / p₀² * β * (2 - 3sin_i₀²) +
-            ( 3 // 128) * J₂² / p₀⁴ * β * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴) -
-            (45 // 128) * J₄  / p₀⁴ * β * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
-        )
-
-        ∂M_∂t = n̄
-        ∂ω_∂t = ( 3 // 4  ) * n̄  * J₂  / p₀² * (4 - 5sin_i₀²) +
-                ( 3 // 128) * n̄  * J₂² / p₀⁴ * (384 + 96e₀² - 384β + (-824 - 116e₀² + 1056β) * sin_i₀² + (430 - 5e₀² - 720β) * sin_i₀⁴) -
-                (15 // 16 ) * n₀ * J₂² / p₀⁴ * e₀² * cos_i₀⁴ -
-                (15 // 128) * n₀ * J₄  / p₀⁴ * (64 + 72e₀² - (248 + 252e₀²) * sin_i₀² + (196 + 189e₀²) * sin_i₀⁴)
-
-        # Angular velocity.
-        ang_vel = ∂M_∂t + ∂ω_∂t
-
-        return ang_vel
-    else
-        throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
-    end
+    return n̄ + ∂ω
 end
 
 function orbital_angular_velocity(orb::Orbit; kwargs...)
@@ -178,7 +90,7 @@ end
     orbital_angular_velocity_to_semimajor_axis(angvel::Number, e::Number, i::Number; kwargs...) -> T, Bool
 
 Compute the semi-major axis [m] that will provide an angular velocity `angvel` [rad / s] in
-an orbit with eccentricity `e` and inclination `i` [rad].
+an orbit with eccentricity `e` [-] and inclination `i` [rad].
 
 Notice that the angular velocity `angvel` is related to the nodal period, *i.e.* the time
 between two consecutive passages by the ascending node.
@@ -239,240 +151,119 @@ function orbital_angular_velocity_to_semimajor_axis(
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
-    R₀  = T(R0)
-    μ   = T(m0)
-    J₂  = T(J2)
-    J₄  = T(J4)
-    tol = isnothing(tolerance) ? √eps(T) : T(tolerance)
-
     if !isnothing(tolerance) && (tolerance <= 0)
         throw(ArgumentError("The keyword `tolerance` must be greater than 0."))
     end
 
-    if perturbation == :J0
+    # Convert the inputs to the correct type.
+    R₀ = T(R0)
+    μ  = T(m0)
+    J₂ = T(J2)
+    J₄ = T(J4)
+    e₀ = T(e)
+    i₀ = T(i)
+    ω  = T(angvel)
 
-        a = (μ / T(angvel)^2)^(1 // 3)
-        return a, true
+    tol = isnothing(tolerance) ? √eps(T) : T(tolerance)
 
-    elseif perturbation == :J2
-        rs_to_dm = T(60 * 180 / π)
+    # Semi-major axis of the unperturbed orbit with the desired angular velocity [m]. It is
+    # the solution for the Keplerian orbit and the initial guess for the perturbed models.
+    a₀ = cbrt(μ / ω^2)
 
-        # Convert the inputs to the correct type.
-        e₀  = T(e)
-        i₀  = T(i)
-        ω_d = T(angvel) * rs_to_dm
+    perturbation == :J0 && return a₀, true
 
-        # Auxiliary variables.
-        β² = (1 - e₀^2)
-        β  = √β²
-        β³ = β² * β
-        β⁴ = β² * β²
+    # == Newton-Raphson Algorithm ==========================================================
 
-        sin_i₀  = sin(i₀)
-        sin_i₀² = sin_i₀^2
+    # We defined the orbit angular velocity here based on the nodal period, i.e., the time
+    # it takes for the satellite to cross the ascending node two consecutive times. Hence,
+    # we can compute it by:
+    #
+    #             ∂M         ∂ω
+    #   angvel = ──── (a) + ──── (a) .
+    #             ∂t         ∂t
+    #
+    # Since we cannot analytically isolate `a`, we will use a Newton-Raphson algorithm to
+    # find the semi-major axis `a` that provides the desired angular velocity.
+    #
+    # If we define `x = 1 / √(a / R₀)` and `y = x⁴`, the angular velocity is the polynomial:
+    #
+    #   angvel(x) = √(μ / R₀³) ⋅ x³ ⋅ g(y),    g(y) = 1 + c₁ y + c₂ y² + c₃ y³ + c₄ y⁴ ,
+    #
+    # where the coefficients `cₖ` depend only on the perturbation model, the eccentricity,
+    # and the inclination (see `_angular_velocity_polynomial_coefficients`). We estimate `x`
+    # and evaluate `g` and its derivative using the Horner's method.
+    c₁, c₂, c₃, c₄ = _angular_velocity_polynomial_coefficients(perturbation, e₀, i₀, J₂, J₄)
 
-        k₁ = (3 // 4) * J₂ * (2 - 3sin_i₀²) / β³
-        k₂ = (3 // 4) * J₂ * (4 - 5sin_i₀²) / β⁴
-        k₃ = √(μ / R₀^3) * rs_to_dm
+    # Normalized unperturbed mean motion [rad / s], i.e. the mean motion at `a = R₀`.
+    k = √(μ / R₀^3)
 
-        # == Newton-Raphson Algorithm ======================================================
+    # Conversion factor from [rad / s] to [deg / min] used to evaluate the residue.
+    rs_to_dm = T(60 * 180 / π)
 
-        # We defined the orbit angular velocity here based on the nodal period, i.e., the
-        # time it takes for the satellite to cross the ascending node two consecutive times.
-        # Hence, we can compute it by:
-        #
-        #             ∂M         ∂ω
-        #   angvel = ──── (a) + ──── (a) .
-        #             ∂t         ∂t
-        #
-        # The expressions for those time-derivatives were obtained from the J2 orbit
-        # propagator of SatelliteToolboxPropagators.jl package.
-        #
-        # Since we cannot analytically isolate `a`, we will use a Newton-Raphson algorithm to
-        # find the semi-major axis `a` that provides the desired angular velocity.
+    # Initial guess based on the unperturbed model.
+    x = √(R₀ / a₀)
 
-        # Initial guess based on the unperturbed model. Notice that we will estimate
-        # `1 / √(a / R₀)`.
-        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
+    # Newton-Raphson loop. The residue is evaluated at the top of the loop so that the
+    # `converged` flag always describes the returned estimate.
+    it = 0
+    converged = false
 
-        # Newton-Raphson loop. The residue is evaluated at the top of the loop so that the
-        # `converged` flag always describes the returned estimate.
-        it = 0
-        converged = false
+    while true
+        x² = x * x
+        x³ = x² * x
+        y  = x² * x²
 
-        while true
-            isqrt_ā²  = isqrt_ā   * isqrt_ā
-            isqrt_ā³  = isqrt_ā²  * isqrt_ā
-            isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
-            isqrt_ā⁷  = isqrt_ā⁶  * isqrt_ā
-            isqrt_ā¹⁰ = isqrt_ā⁷  * isqrt_ā³
-            isqrt_ā¹¹ = isqrt_ā¹⁰ * isqrt_ā
+        # Evaluate the polynomial and its derivative with respect to `y`.
+        g  = 1 + y * (c₁ + y * (c₂ + y * (c₃ + y * c₄)))
+        ∂g = c₁ + y * (2c₂ + y * (3c₃ + 4c₄ * y))
 
-            # Compute the residue at the current estimate.
-            f₁ = ω_d - k₃ * (isqrt_ā³ + (k₁ + k₂) * isqrt_ā⁷ + k₁ * k₂ * isqrt_ā¹¹)
+        # Compute the residue at the current estimate [rad / s].
+        f = k * x³ * g - ω
 
-            @debug """
-            Iteration #$it
-              Estimation :
-                a  = $(R₀ / (isqrt_ā * isqrt_ā) / 1000) km
-              Residue :
-                f₁ = $(f₁) ° / min
-            """
+        @debug """
+        Iteration #$it
+          Estimation :
+            a = $(R₀ / x² / 1000) km
+          Residue :
+            f = $(f) rad / s
+        """
 
-            # If the residue at the current estimate is within the tolerance, indicate that
-            # the solution converged and exit the loop.
-            if abs(f₁) <= tol
-                converged = true
-                break
-            end
-
-            # If the maximum number of iterations allowed has been reached, indicate that
-            # the solution did not converge and exit the loop.
-            (it >= max_iterations) && break
-
-            # Compute the function derivative.
-            ∂f₁_∂isqrt_ā = - k₃ * (3isqrt_ā² + 7 * (k₁ + k₂) * isqrt_ā⁶ + 11 * k₁ * k₂ * isqrt_ā¹⁰)
-
-            # Compute the new estimate.
-            isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
-
-            it += 1
+        # If the residue at the current estimate is within the tolerance, indicate that the
+        # solution converged and exit the loop.
+        if abs(f) * rs_to_dm <= tol
+            converged = true
+            break
         end
 
-        # Convert `isqrt_ā` to semi-major axis.
-        a = R₀ / isqrt_ā^2
+        # If the maximum number of iterations allowed has been reached, indicate that the
+        # solution did not converge and exit the loop.
+        (it >= max_iterations) && break
 
-        return a, converged
+        # Compute the residue derivative with respect to `x`.
+        ∂f = k * x² * (3g + 4y * ∂g)
 
-    elseif perturbation == :J4
-        rs_to_dm = T(60 * 180 / π)
+        # Compute the new estimate.
+        x -= f / ∂f
 
-        # Convert the inputs to the correct type.
-        e₀  = T(e)
-        i₀  = T(i)
-        ω_d = T(angvel) * rs_to_dm
-
-        # Auxiliary variables.
-        e₀² = e₀^2
-        J₂² = J₂^2
-        β²  = (1 - e₀²)
-        β   = √β²
-        β³  = β² * β
-        β⁴  = β² * β²
-        β⁷  = β⁴ * β³
-        β⁸  = β⁴ * β⁴
-
-        sin_i₀, cos_i₀ = sincos(i₀)
-
-        sin_i₀² = sin_i₀^2
-        sin_i₀⁴ = sin_i₀^4
-        cos_i₀⁴ = cos_i₀^4
-
-        k₁ = +( 3 // 4  ) * J₂  / β³ * (2 - 3sin_i₀²)
-        k₂ = +( 3 // 128) * J₂² / β⁷ * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴)
-        k₃ = -(45 // 128) * J₄  / β⁷ * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
-        k₄ = +( 3 // 4  ) * J₂  / β⁴ * (4 - 5sin_i₀²)
-        k₅ = +( 3 // 128) * J₂² / β⁸ * (384 + 96e₀² - 384β + (-824 - 116e₀² + 1056β) * sin_i₀² + (430 - 5e₀² - 720β) * sin_i₀⁴)
-        k₆ = -(15 // 16 ) * J₂² / β⁸ * e₀² * cos_i₀⁴
-        k₇ = -(15 // 128) * J₄  / β⁸ * (64 + 72e₀² - (248 + 252e₀²) * sin_i₀² + (196 + 189e₀²) * sin_i₀⁴)
-        k₈ = √(μ / R₀^3) * rs_to_dm
-
-        # == Newton-Raphson Algorithm ======================================================
-
-        # We defined the orbit angular velocity here based on the nodal period, i.e., the
-        # time it takes for the satellite to cross the ascending node two consecutive times.
-        # Hence, we can compute it by:
-        #
-        #             ∂M         ∂ω
-        #   angvel = ──── (a) + ──── (a) .
-        #             ∂t         ∂t
-        #
-        # The expressions for those time-derivatives were obtained from the J2 orbit
-        # propagator of SatelliteToolboxPropagators.jl package.
-        #
-        # Since we cannot analytically isolate `a`, we will use a Newton-Raphson algorithm to
-        # find the semi-major axis `a` that provides the desired angular velocity.
-
-        # Initial guess based on the unperturbed model. Notice that we will estimate
-        # `1 / √(a / R₀)`.
-        isqrt_ā = √(R₀ * ((ω_d / rs_to_dm)^2 / μ)^(1 // 3))
-
-        # Newton-Raphson loop. The residue is evaluated at the top of the loop so that the
-        # `converged` flag always describes the returned estimate.
-        it = 0
-        converged = false
-
-        while true
-            isqrt_ā²  = isqrt_ā   * isqrt_ā
-            isqrt_ā³  = isqrt_ā²  * isqrt_ā
-            isqrt_ā⁶  = isqrt_ā³  * isqrt_ā³
-            isqrt_ā⁷  = isqrt_ā⁶  * isqrt_ā
-            isqrt_ā¹⁰ = isqrt_ā⁷  * isqrt_ā³
-            isqrt_ā¹¹ = isqrt_ā¹⁰ * isqrt_ā
-            isqrt_ā¹⁴ = isqrt_ā⁷  * isqrt_ā⁷
-            isqrt_ā¹⁵ = isqrt_ā¹⁴ * isqrt_ā
-            isqrt_ā¹⁸ = isqrt_ā¹¹ * isqrt_ā⁷
-            isqrt_ā¹⁹ = isqrt_ā¹⁸ * isqrt_ā
-
-            # Compute the residue at the current estimate.
-            f₁ = ω_d - k₈ * (
-                isqrt_ā³  +
-                isqrt_ā⁷  * (k₁ + k₄) +
-                isqrt_ā¹¹ * (k₁ * k₄ + k₂ + k₃ + k₅ + k₆ + k₇) +
-                isqrt_ā¹⁵ * (k₄ * (k₂ + k₃) + k₁ * k₅) +
-                isqrt_ā¹⁹ * (k₂ + k₃) * k₅
-            )
-
-            @debug """
-            Iteration #$it
-              Estimation :
-                a  = $(R₀ / (isqrt_ā * isqrt_ā) / 1000) km
-              Residue :
-                f₁ = $(f₁) ° / min
-            """
-
-            # If the residue at the current estimate is within the tolerance, indicate that
-            # the solution converged and exit the loop.
-            if abs(f₁) <= tol
-                converged = true
-                break
-            end
-
-            # If the maximum number of iterations allowed has been reached, indicate that
-            # the solution did not converge and exit the loop.
-            (it >= max_iterations) && break
-
-            # Compute the function derivative.
-            ∂f₁_∂isqrt_ā = - k₈ * (
-                3  * isqrt_ā²  +
-                7  * isqrt_ā⁶  * (k₁ + k₄) +
-                11 * isqrt_ā¹⁰ * (k₁ * k₄ + k₂ + k₃ + k₅ + k₆ + k₇) +
-                15 * isqrt_ā¹⁴ * (k₄ * (k₂ + k₃) + k₁ * k₅) +
-                19 * isqrt_ā¹⁸ * (k₂ + k₃) * k₅
-            )
-
-            # Compute the new estimate.
-            isqrt_ā = isqrt_ā - f₁ / ∂f₁_∂isqrt_ā
-
-            it += 1
-        end
-
-        # Convert `isqrt_ā` to semi-major axis.
-        a = R₀ / isqrt_ā^2
-
-        return a, converged
-    else
-        throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
+        it += 1
     end
+
+    # Convert `x` to semi-major axis.
+    a = R₀ / x^2
+
+    return a, converged
 end
 
 """
     orbital_period(a::Number, e::Number, i::Number; kwargs...) -> T
-    orbital_period(orb::Orbit{Tepoch, T}; kwargs...) where {Tepoch<:Number, T<:Number} -> T
+    orbital_period(orb::Orbit; kwargs...) -> T
 
 Compute the orbital period [s] of an object in an orbit with semi-major axis `a` [m],
-eccentricity `e`, and inclination `i` [rad]. The orbit can also be specified by `orb` (see
-`Orbit`).
+eccentricity `e` [-], and inclination `i` [rad]. The orbit can also be specified by `orb`
+(see `Orbit`).
+
+The period is defined here based on the nodal period, *i.e.* the time between two
+consecutive passages by the ascending node.
 
 !!! note
 
@@ -517,10 +308,10 @@ end
 
 """
     raan_time_derivative(a::Number, e::Number, i::Number; kwargs...) -> T
-    raan_time_derivative(orb::Orbit{Tepoch, T}; kwargs...) where {Tepoch<:Number, T<:Number} -> T
+    raan_time_derivative(orb::Orbit; kwargs...) -> T
 
 Compute the time derivative of the right ascension of the ascending node (RAAN) [rad / s] in
-an orbit with semi-major axis `a` [m], eccentricity `e`, and inclination `i` [rad]. The
+an orbit with semi-major axis `a` [m], eccentricity `e` [-], and inclination `i` [rad]. The
 orbit can also be specified by `orb` (see `Orbit`).
 
 !!! note
@@ -562,99 +353,235 @@ function raan_time_derivative(
     J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
     R0::Number = EARTH_EQUATORIAL_RADIUS
-) where {T1<:Number, T2<:Number, T3<:Number}
+) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
-    R₀ = T(R0)
-    μ  = T(m0)
-    J₂ = T(J2)
-    J₄ = T(J4)
+    _, _, ∂Ω = _secular_rates(perturbation, T(a), T(e), T(i), T(m0), T(R0), T(J2), T(J4))
 
-    # Perturbation computed using a Keplerian orbit.
-    if perturbation == :J0
-        return zero(T)
-
-    # Perturbation computed using perturbations terms up to J2.
-    elseif perturbation == :J2
-        # Convert the inputs to the correct type.
-        a₀  = T(a)
-        e₀  = T(e)
-        i₀  = T(i)
-
-        # Auxiliary variables.
-        μm  = √(μ / R₀^3)
-        al₀ = a₀ / R₀
-        e₀² = e₀^2
-        n₀  = μm / √(al₀^3)
-        p₀  = al₀ * (1 - e₀²)
-        p₀² = p₀^2
-
-        sin_i₀, cos_i₀ = sincos(i₀)
-        sin_i₀² = sin_i₀^2
-        β²      = 1 - e₀²
-        β       = √β²
-
-        # Perturbed orbit mean motion.
-        n̄ = n₀ * (1 + (3 // 4) * J₂ / p₀² * β * (2 - 3sin_i₀²))
-
-        # First-order time-derivative of the RAAN [rad / s].
-        ∂Ω = -(3 // 2) * n̄ * J₂ / p₀² * cos_i₀
-
-        return ∂Ω
-
-    # Perturbation computed using perturbation terms J₂, J₂², and J₄.
-    elseif perturbation == :J4
-        # Convert the inputs to the correct type.
-        a₀  = T(a)
-        e₀  = T(e)
-        i₀  = T(i)
-
-        # Auxiliary variables.
-        μm  = √(μ / R₀^3)
-        al₀ = a₀ / R₀
-        e₀² = e₀^2
-        p₀  = al₀ * (1 - e₀²)
-        p₀² = p₀^2
-        p₀⁴ = p₀^4
-        n₀  = μm / √(al₀^3)
-        J₂² = J₂^2
-
-        sin_i₀, cos_i₀ = sincos(i₀)
-
-        sin_i₀² = sin_i₀^2
-        sin_i₀⁴ = sin_i₀^4
-        β²      = (1 - e₀²)
-        β       = √β²
-
-        # Perturbed mean motion.
-        kn₂  = J₂  / p₀² * β
-        kn₂₂ = J₂² / p₀⁴ * β
-        kn₄  = J₄  / p₀⁴ * β
-
-        n̄ = n₀ * (
-            1 +
-            ( 3 // 4  ) * kn₂  * (2 - 3sin_i₀²) +
-            ( 3 // 128) * kn₂₂ * (120 + 64β - 40β² + (-240 - 192β + 40β²) * sin_i₀² + (105 + 144β + 25β²) * sin_i₀⁴) -
-            (45 // 128) * kn₄  * e₀² * (-8 + 40sin_i₀² - 35sin_i₀⁴)
-        )
-
-        # First-order time-derivative of the RAAN [rad / s].
-        k̄₂  = n̄  * J₂  / p₀²
-        k̄₂₂ = n̄  * J₂² / p₀⁴
-        k₄  = n₀ * J₄  / p₀⁴
-
-        ∂Ω = -( 3 // 2 ) * k̄₂  * cos_i₀ +
-              ( 3 // 32) * k̄₂₂ * cos_i₀ * (-36 -  4e₀² + 48β + (40 - 5e₀² - 72β) * sin_i₀²) +
-              (15 // 32) * k₄  * cos_i₀ * (8 + 12e₀² - (14 + 21e₀²) * sin_i₀²)
-
-        return ∂Ω
-    else
-        throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
-    end
+    return ∂Ω
 end
 
 function raan_time_derivative(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
     k = convert(KeplerianElements, orb)
     return raan_time_derivative(k.a, k.e, k.i; kwargs...)
+end
+
+############################################################################################
+#                                    Private Functions                                     #
+############################################################################################
+
+# The secular theory implemented here follows the J2 and J4 orbit propagators of
+# SatelliteToolboxPropagators.jl, which are based on [1, 2]. Given the unperturbed mean
+# motion `n₀` and the semi-latus rectum `p₀` normalized by the Earth's equatorial radius,
+# the perturbed mean motion `n̄` and the first-order time derivatives of the argument of
+# perigee `∂ω` and of the RAAN `∂Ω` are:
+#
+#   n̄  = n₀ ⋅ (1 + A / p₀² + B / p₀⁴) ,
+#   ∂ω = n̄ ⋅ (C / p₀² + D / p₀⁴) + n₀ ⋅ E / p₀⁴ ,
+#   ∂Ω = n̄ ⋅ (F / p₀² + G / p₀⁴) + n₀ ⋅ H / p₀⁴ ,
+#
+# where the coefficients `A` to `H` depend only on the perturbation model, the eccentricity,
+# and the inclination. They are computed by `_secular_coefficients`, which is the single
+# place in this package where the perturbation theory is written down.
+
+"""
+    _secular_coefficients(perturbation::Symbol, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
+    _secular_coefficients(::Val{:J0}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
+    _secular_coefficients(::Val{:J2}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
+    _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
+
+Compute the coefficients `(A, B, C, D, E, F, G, H)` of the secular theory selected by
+`perturbation` (`:J0`, `:J2`, or `:J4`) for an orbit with eccentricity `e` [-] and
+inclination `i` [rad], using the zonal harmonics `J₂` and `J₄`.
+
+The coefficients relate the unperturbed mean motion `n₀` and the normalized semi-latus
+rectum `p₀` [er] to the perturbed mean motion `n̄`, the argument of perigee time derivative
+`∂ω`, and the RAAN time derivative `∂Ω` as follows:
+
+    n̄  = n₀ ⋅ (1 + A / p₀² + B / p₀⁴)
+    ∂ω = n̄ ⋅ (C / p₀² + D / p₀⁴) + n₀ ⋅ E / p₀⁴
+    ∂Ω = n̄ ⋅ (F / p₀² + G / p₀⁴) + n₀ ⋅ H / p₀⁴
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+"""
+function _secular_coefficients(
+    perturbation::Symbol,
+    e::T,
+    i::T,
+    J₂::T,
+    J₄::T
+) where {T <: Number}
+    perturbation == :J0 && return _secular_coefficients(Val(:J0), e, i, J₂, J₄)
+    perturbation == :J2 && return _secular_coefficients(Val(:J2), e, i, J₂, J₄)
+    perturbation == :J4 && return _secular_coefficients(Val(:J4), e, i, J₂, J₄)
+    throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
+end
+
+function _secular_coefficients(::Val{:J0}, e::T, i::T, J₂::T, J₄::T) where {T <: Number}
+    z = zero(T)
+    return (z, z, z, z, z, z, z, z)
+end
+
+function _secular_coefficients(::Val{:J2}, e::T, i::T, J₂::T, J₄::T) where {T <: Number}
+    sin_i, cos_i = sincos(i)
+    sin_i² = sin_i^2
+    β = √(1 - e^2)
+
+    # First-order secular terms, which depend only on J₂ [1].
+    A = +(3//4) * J₂ * β * (2 - 3sin_i²)
+    C = +(3//4) * J₂ * (4 - 5sin_i²)
+    F = -(3//2) * J₂ * cos_i
+
+    z = zero(T)
+    return (A, z, C, z, z, F, z, z)
+end
+
+function _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {T <: Number}
+    sin_i, cos_i = sincos(i)
+    sin_i² = sin_i^2
+    sin_i⁴ = sin_i^4
+    cos_i⁴ = cos_i^4
+    e²     = e^2
+    β²     = 1 - e²
+    β      = √β²
+    J₂²    = J₂^2
+
+    # First-order secular terms, which depend only on J₂ [1].
+    A = +(3//4) * J₂ * β * (2 - 3sin_i²)
+    C = +(3//4) * J₂ * (4 - 5sin_i²)
+    F = -(3//2) * J₂ * cos_i
+
+    # Second-order secular terms, which depend on J₂² and J₄ [1].
+    B = +(3//128) * J₂² * β * (
+            120 + 64β - 40β² +
+            (-240 - 192β + 40β²) * sin_i² +
+            (105 + 144β + 25β²) * sin_i⁴
+        ) -
+        (45//128) * J₄ * β * e² * (-8 + 40sin_i² - 35sin_i⁴)
+
+    D = +(3//128) * J₂² * (
+            384 + 96e² - 384β +
+            (-824 - 116e² + 1056β) * sin_i² +
+            (430 - 5e² - 720β) * sin_i⁴
+        )
+
+    E = -(15//16) * J₂² * e² * cos_i⁴ -
+        (15//128) * J₄ * (
+            64 + 72e² -
+            (248 + 252e²) * sin_i² +
+            (196 + 189e²) * sin_i⁴
+        )
+
+    G = +(3//32) * J₂² * cos_i * (-36 - 4e² + 48β + (40 - 5e² - 72β) * sin_i²)
+
+    H = +(15//32) * J₄ * cos_i * (8 + 12e² - (14 + 21e²) * sin_i²)
+
+    return (A, B, C, D, E, F, G, H)
+end
+
+"""
+    _secular_rates(perturbation::Symbol, a::T, e::T, i::T, μ::T, R₀::T, J₂::T, J₄::T) where {T <: Number} -> T, T, T
+
+Compute the perturbed mean motion [rad / s], the argument of perigee time derivative
+[rad / s], and the RAAN time derivative [rad / s] of an orbit with semi-major axis `a` [m],
+eccentricity `e` [-], and inclination `i` [rad] using the secular theory selected by
+`perturbation` (`:J0`, `:J2`, or `:J4`), the standard gravitational parameter `μ` [m³ / s²],
+the Earth's equatorial radius `R₀` [m], and the zonal harmonics `J₂` and `J₄`.
+
+# Returns
+
+- `T`: Perturbed mean motion `n̄` [rad / s].
+- `T`: Argument of perigee time derivative `∂ω` [rad / s].
+- `T`: RAAN time derivative `∂Ω` [rad / s].
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+"""
+function _secular_rates(
+    perturbation::Symbol,
+    a::T,
+    e::T,
+    i::T,
+    μ::T,
+    R₀::T,
+    J₂::T,
+    J₄::T
+) where {T <: Number}
+    A, B, C, D, E, F, G, H = _secular_coefficients(perturbation, e, i, J₂, J₄)
+
+    # Auxiliary variables.
+    n₀   = √(μ / a^3)         # .......................... Unperturbed mean motion [rad / s]
+    p₀   = a / R₀ * (1 - e^2) # ......................... Normalized semi-latus rectum [er]
+    ip₀² = 1 / p₀^2           # ............................................. 1 / p₀² [er⁻²]
+    ip₀⁴ = ip₀²^2             # ............................................. 1 / p₀⁴ [er⁻⁴]
+
+    # Perturbed mean motion [rad / s].
+    n̄ = n₀ * (1 + A * ip₀² + B * ip₀⁴)
+
+    # First-order time derivatives of the argument of perigee and of the RAAN [rad / s].
+    ∂ω = n̄ * (C * ip₀² + D * ip₀⁴) + n₀ * E * ip₀⁴
+    ∂Ω = n̄ * (F * ip₀² + G * ip₀⁴) + n₀ * H * ip₀⁴
+
+    return n̄, ∂ω, ∂Ω
+end
+
+"""
+    _angular_velocity_polynomial_coefficients(perturbation::Symbol, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{4, T}
+
+Compute the coefficients `(c₁, c₂, c₃, c₄)` of the polynomial that provides the orbital
+angular velocity as a function of `x = 1 / √(a / R₀)`, where `a` is the semi-major axis and
+`R₀` is the Earth's equatorial radius, for an orbit with eccentricity `e` [-] and
+inclination `i` [rad] using the secular theory selected by `perturbation` (`:J0`, `:J2`, or
+`:J4`) and the zonal harmonics `J₂` and `J₄`.
+
+The angular velocity is given by:
+
+    angvel(x) = √(μ / R₀³) ⋅ x³ ⋅ (1 + c₁ y + c₂ y² + c₃ y³ + c₄ y⁴),    y = x⁴ .
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+"""
+function _angular_velocity_polynomial_coefficients(
+    perturbation::Symbol,
+    e::T,
+    i::T,
+    J₂::T,
+    J₄::T
+) where {T <: Number}
+    A, B, C, D, E, _, _, _ = _secular_coefficients(perturbation, e, i, J₂, J₄)
+
+    # Since `p₀ = ā β²`, where `ā = a / R₀` and `β² = 1 - e²`, we have `1 / p₀² = y / β⁴`
+    # and `1 / p₀⁴ = y² / β⁸`. Hence, we fold the eccentricity factors into the secular
+    # coefficients.
+    iβ⁴ = 1 / (1 - e^2)^2
+    iβ⁸ = iβ⁴^2
+
+    Ā = A * iβ⁴
+    B̄ = B * iβ⁸
+    C̄ = C * iβ⁴
+    D̄ = D * iβ⁸
+    Ē = E * iβ⁸
+
+    # The angular velocity is:
+    #
+    #   n̄ + ∂ω = n₀ ⋅ [(1 + Ā y + B̄ y²) ⋅ (1 + C̄ y + D̄ y²) + Ē y²] .
+    #
+    # Expanding the product, we obtain the polynomial coefficients.
+    c₁ = Ā + C̄
+    c₂ = Ā * C̄ + B̄ + D̄ + Ē
+    c₃ = Ā * D̄ + B̄ * C̄
+    c₄ = B̄ * D̄
+
+    return (c₁, c₂, c₃, c₄)
 end
