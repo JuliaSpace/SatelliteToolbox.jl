@@ -107,7 +107,12 @@ function orbital_angular_velocity(orb::Orbit; kwargs...)
 end
 
 """
-    orbital_angular_velocity_to_semimajor_axis(angvel::Number, e::Number, i::Number; kwargs...) -> T, Bool
+    orbital_angular_velocity_to_semimajor_axis(
+        angvel::Number,
+        e::Number,
+        i::Number;
+        kwargs...
+    ) -> T, Bool
 
 Compute the semi-major axis [m] that will provide an angular velocity `angvel` [rad / s] in
 an orbit with eccentricity `e` [-] and inclination `i` [rad]. The inputs are validated and
@@ -461,10 +466,37 @@ end
 # place in this package where the perturbation theory is written down.
 
 """
-    _secular_coefficients(perturbation::Symbol, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
-    _secular_coefficients(::Val{:J0}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
-    _secular_coefficients(::Val{:J2}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
-    _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{8, T}
+    _secular_coefficients(
+        perturbation::Symbol,
+        e::T,
+        i::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> NTuple{8, T}
+
+    _secular_coefficients(
+        ::Val{:J0},
+        e::T,
+        i::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> NTuple{8, T}
+
+    _secular_coefficients(
+        ::Val{:J2},
+        e::T,
+        i::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> NTuple{8, T}
+
+    _secular_coefficients(
+        ::Val{:J4},
+        e::T,
+        i::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> NTuple{8, T}
 
 Compute the coefficients `(A, B, C, D, E, F, G, H)` of the secular theory selected by
 `perturbation` (`:J0`, `:J2`, or `:J4`) for an orbit with eccentricity `e` [-] and
@@ -494,11 +526,12 @@ function _secular_coefficients(
     perturbation == :J0 && return _secular_coefficients(Val(:J0), e, i, J₂, J₄)
     perturbation == :J2 && return _secular_coefficients(Val(:J2), e, i, J₂, J₄)
     perturbation == :J4 && return _secular_coefficients(Val(:J4), e, i, J₂, J₄)
-    throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
+    return throw(ArgumentError("The perturbation parameter :$perturbation is invalid."))
 end
 
 function _secular_coefficients(::Val{:J0}, e::T, i::T, J₂::T, J₄::T) where {T <: Number}
     z = zero(T)
+
     return (z, z, z, z, z, z, z, z)
 end
 
@@ -513,11 +546,13 @@ function _secular_coefficients(::Val{:J2}, e::T, i::T, J₂::T, J₄::T) where {
     F = -(3//2) * J₂ * cos_i
 
     z = zero(T)
+
     return (A, z, C, z, z, F, z, z)
 end
 
 function _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {T <: Number}
     sin_i, cos_i = sincos(i)
+
     sin_i² = sin_i^2
     sin_i⁴ = sin_i^4
     cos_i⁴ = cos_i^4
@@ -560,7 +595,16 @@ function _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {
 end
 
 """
-    _secular_rates(perturbation::Symbol, a::T, e::T, i::T, μ::T, R₀::T, J₂::T, J₄::T) where {T <: Number} -> T, T, T
+    _secular_rates(
+        perturbation::Symbol,
+        a::T,
+        e::T,
+        i::T,
+        μ::T,
+        R₀::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> T, T, T
 
 Compute the perturbed mean motion [rad / s], the argument of perigee time derivative
 [rad / s], and the RAAN time derivative [rad / s] of an orbit with semi-major axis `a` [m],
@@ -609,7 +653,7 @@ function _secular_rates(
 
     # Auxiliary variables.
     n₀   = √(μ / a^3)         # .......................... Unperturbed mean motion [rad / s]
-    p₀   = a / R₀ * (1 - e^2) # ......................... Normalized semi-latus rectum [er]
+    p₀   = a / R₀ * (1 - e^2) # .......................... Normalized semi-latus rectum [er]
     ip₀² = 1 / p₀^2           # ............................................. 1 / p₀² [er⁻²]
     ip₀⁴ = ip₀²^2             # ............................................. 1 / p₀⁴ [er⁻⁴]
 
@@ -624,7 +668,13 @@ function _secular_rates(
 end
 
 """
-    _angular_velocity_polynomial_coefficients(perturbation::Symbol, e::T, i::T, J₂::T, J₄::T) where {T <: Number} -> NTuple{4, T}
+    _angular_velocity_polynomial_coefficients(
+        perturbation::Symbol,
+        e::T,
+        i::T,
+        J₂::T,
+        J₄::T
+    ) where {T <: Number} -> NTuple{4, T}
 
 Compute the coefficients `(c₁, c₂, c₃, c₄)` of the polynomial that provides the orbital
 angular velocity as a function of `x = 1 / √(a / R₀)`, where `a` is the semi-major axis and
