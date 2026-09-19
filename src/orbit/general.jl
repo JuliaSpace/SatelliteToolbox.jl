@@ -89,9 +89,9 @@ function orbital_angular_velocity(
     return n̄ + ∂ω
 end
 
-# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
-# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
-# anomaly representation.
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the
+# conversion to the true anomaly (which solves Kepler's equation) that `convert` performs
+# for the mean anomaly representation.
 function orbital_angular_velocity(orb::KeplerianElements; kwargs...)
     return orbital_angular_velocity(
         orb.semi_major_axis,
@@ -344,9 +344,9 @@ function orbital_period(a::Number, e::Number, i::Number; kwargs...)
     return T(2π) / n
 end
 
-# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
-# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
-# anomaly representation.
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the
+# conversion to the true anomaly (which solves Kepler's equation) that `convert` performs
+# for the mean anomaly representation.
 function orbital_period(orb::KeplerianElements; kwargs...)
     return orbital_period(
         orb.semi_major_axis,
@@ -425,9 +425,9 @@ function raan_time_derivative(
     return ∂Ω
 end
 
-# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
-# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
-# anomaly representation.
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the
+# conversion to the true anomaly (which solves Kepler's equation) that `convert` performs
+# for the mean anomaly representation.
 function raan_time_derivative(orb::KeplerianElements; kwargs...)
     return raan_time_derivative(
         orb.semi_major_axis,

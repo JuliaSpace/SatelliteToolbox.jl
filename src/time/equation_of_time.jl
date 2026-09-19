@@ -52,7 +52,8 @@ function equation_of_time(jd::Number)
     sin_2Ms = sin(2Ms)
 
     # Ecliptic longitude of the Sun [rad].
-    λ_ecliptic = mod(λ_m + T(1.914666471) * sin_Ms + T(0.019994643) * sin_2Ms, 360) |> deg2rad
+    λ_ecliptic = mod(λ_m + T(1.914666471) * sin_Ms + T(0.019994643) * sin_2Ms, 360)
+    λ_ecliptic = deg2rad(λ_ecliptic)
 
     # Compute the equation of time [deg].
     eot = -T(1.914666471) * sin_Ms -

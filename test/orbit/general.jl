@@ -126,7 +126,12 @@ end
 
         # == J₀ ============================================================================
 
-        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; perturbation = :J0)
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            perturbation = :J0
+        )
 
         @test typeof(â) == T
         @test â ≈ (GM_EARTH / angvel^2)^(1 // 3)
@@ -144,7 +149,13 @@ end
 
         # == J₄ ============================================================================
 
-        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; perturbation = :J4)
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            perturbation = :J4
+        )
+
         orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
         orbp = Propagators.init(Val(:J4), orb)
 
@@ -204,9 +215,26 @@ end
 end
 
 @testset "Function orbital_angular_velocity_to_semimajor_axis [ERRORS]" begin
-    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; perturbation = :J3)
-    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = 0)
-    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = -1)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
+        0.001,
+        0,
+        0;
+        perturbation = :J3
+    )
+
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
+        0.001,
+        0,
+        0;
+        tolerance = 0
+    )
+
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
+        0.001,
+        0,
+        0;
+        tolerance = -1
+    )
 
     # Invalid inputs.
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0, 0, 0)
