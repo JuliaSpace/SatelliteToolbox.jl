@@ -71,6 +71,42 @@ end
     @test_throws ArgumentError orbital_angular_velocity(-7130.9e3, 0, 0)
 end
 
+# -- Orbit Inputs --------------------------------------------------------------------------
+
+############################################################################################
+#                                       Test Results                                       #
+############################################################################################
+#
+# Every representation of the same orbit must provide the same result as the elements, and
+# the Keplerian elements must not be converted (the mean anomaly representation would
+# require solving Kepler's equation, which allocates).
+#
+############################################################################################
+
+@testset "Orbit Inputs" begin
+    a = 7130.984e3
+    e = 0.001111
+    i = 98.4106 |> deg2rad
+
+    orb_true = KeplerianElements(0, a, e, i, 0, 0, 1.0)
+    orb_mean = KeplerianElements{MeanAnomaly}(0, a, e, i, 0, 0, 1.0)
+    sv       = convert(OrbitStateVector, orb_true)
+
+    for f in (orbital_angular_velocity, orbital_period, raan_time_derivative)
+        for perturbation in (:J0, :J2, :J4)
+            ref = f(a, e, i; perturbation = perturbation)
+
+            @test f(orb_true; perturbation = perturbation) == ref
+            @test f(orb_mean; perturbation = perturbation) == ref
+            @test f(sv; perturbation = perturbation) ≈ ref
+
+            # Warm up before measuring the allocations.
+            f(orb_mean; perturbation = perturbation)
+            @test @allocated(f(orb_mean; perturbation = perturbation)) == 0
+        end
+    end
+end
+
 # -- Function: orbital_angular_velocity_to_semimajor_axis ----------------------------------
 
 ############################################################################################

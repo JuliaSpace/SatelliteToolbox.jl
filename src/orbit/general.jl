@@ -89,10 +89,21 @@ function orbital_angular_velocity(
     return n̄ + ∂ω
 end
 
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
+# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
+# anomaly representation.
+function orbital_angular_velocity(orb::KeplerianElements; kwargs...)
+    return orbital_angular_velocity(
+        orb.semi_major_axis,
+        orb.eccentricity,
+        orb.inclination;
+        kwargs...
+    )
+end
+
 function orbital_angular_velocity(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
-    k = convert(KeplerianElements, orb)
-    return orbital_angular_velocity(k.a, k.e, k.i; kwargs...)
+    return orbital_angular_velocity(convert(KeplerianElements, orb); kwargs...)
 end
 
 """
@@ -333,10 +344,21 @@ function orbital_period(a::Number, e::Number, i::Number; kwargs...)
     return T(2π) / n
 end
 
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
+# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
+# anomaly representation.
+function orbital_period(orb::KeplerianElements; kwargs...)
+    return orbital_period(
+        orb.semi_major_axis,
+        orb.eccentricity,
+        orb.inclination;
+        kwargs...
+    )
+end
+
 function orbital_period(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
-    k = convert(KeplerianElements, orb)
-    return orbital_period(k.a, k.e, k.i; kwargs...)
+    return orbital_period(convert(KeplerianElements, orb); kwargs...)
 end
 
 """
@@ -403,10 +425,21 @@ function raan_time_derivative(
     return ∂Ω
 end
 
+# NOTE: The method for `KeplerianElements` reads the fields directly, avoiding the conversion
+# to the true anomaly (which solves Kepler's equation) that `convert` performs for the mean
+# anomaly representation.
+function raan_time_derivative(orb::KeplerianElements; kwargs...)
+    return raan_time_derivative(
+        orb.semi_major_axis,
+        orb.eccentricity,
+        orb.inclination;
+        kwargs...
+    )
+end
+
 function raan_time_derivative(orb::Orbit; kwargs...)
     # Convert first to Keplerian elements.
-    k = convert(KeplerianElements, orb)
-    return raan_time_derivative(k.a, k.e, k.i; kwargs...)
+    return raan_time_derivative(convert(KeplerianElements, orb); kwargs...)
 end
 
 ############################################################################################
