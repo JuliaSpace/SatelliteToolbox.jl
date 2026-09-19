@@ -27,7 +27,8 @@ export raan_time_derivative
 
 Compute the angular velocity [rad / s] of an object in an orbit with semi-major axis `a`
 [m], eccentricity `e` [-], and inclination `i` [rad]. The orbit can also be specified by
-`orb` (see `Orbit`).
+`orb` (see `Orbit`). The inputs are validated and this function throws an error if they do
+not describe a valid elliptical orbit.
 
 The angular velocity is defined here based on the nodal period, *i.e.* the time between two
 consecutive passages by the ascending node. Hence, it is the sum of the perturbed mean
@@ -61,6 +62,14 @@ be considered in the computation. The possible values are:
 - `:J4`: Consider the perturbation terms J2, J4, and J2².
 
 If `perturbation` is omitted, it defaults to `:J2`.
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+- `ArgumentError`: If the eccentricity `e` is not in the interval [0, 1).
+- `ArgumentError`: If the perigee radius `a * (1 - e)` is not positive.
 """
 function orbital_angular_velocity(
     a::T1,
@@ -90,7 +99,8 @@ end
     orbital_angular_velocity_to_semimajor_axis(angvel::Number, e::Number, i::Number; kwargs...) -> T, Bool
 
 Compute the semi-major axis [m] that will provide an angular velocity `angvel` [rad / s] in
-an orbit with eccentricity `e` [-] and inclination `i` [rad].
+an orbit with eccentricity `e` [-] and inclination `i` [rad]. The inputs are validated and
+this function throws an error if they do not describe a valid elliptical orbit.
 
 Notice that the angular velocity `angvel` is related to the nodal period, *i.e.* the time
 between two consecutive passages by the ascending node.
@@ -137,6 +147,15 @@ be considered in the computation. The possible values are:
 - `:J4`: Consider the perturbation terms J2, J4, and J2².
 
 If `perturbation` is omitted, it defaults to `:J2`.
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+- `ArgumentError`: If the angular velocity `angvel` is not positive.
+- `ArgumentError`: If the eccentricity `e` is not in the interval [0, 1).
+- `ArgumentError`: If the keyword `tolerance` is not `nothing` and not positive.
 """
 function orbital_angular_velocity_to_semimajor_axis(
     angvel::T1,
@@ -153,9 +172,15 @@ function orbital_angular_velocity_to_semimajor_axis(
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
-    if !isnothing(tolerance) && (tolerance <= 0)
-        throw(ArgumentError("The keyword `tolerance` must be greater than 0."))
-    end
+    angvel <= 0 && throw(ArgumentError("The angular velocity must be greater than 0."))
+
+    !(0 <= e < 1) && throw(
+        ArgumentError("The eccentricity must be in the interval [0, 1), but it is $e.")
+    )
+
+    !isnothing(tolerance) && (tolerance <= 0) && throw(
+        ArgumentError("The keyword `tolerance` must be greater than 0.")
+    )
 
     # Convert the inputs to the correct type.
     R₀ = T(R0)
@@ -259,7 +284,8 @@ end
 
 Compute the orbital period [s] of an object in an orbit with semi-major axis `a` [m],
 eccentricity `e` [-], and inclination `i` [rad]. The orbit can also be specified by `orb`
-(see `Orbit`).
+(see `Orbit`). The inputs are validated and this function throws an error if they do not
+describe a valid elliptical orbit.
 
 The period is defined here based on the nodal period, *i.e.* the time between two
 consecutive passages by the ascending node.
@@ -292,6 +318,14 @@ be considered in the computation. The possible values are:
 - `:J4`: Consider the perturbation terms J2, J4, and J2².
 
 If `perturbation` is omitted, it defaults to `:J2`.
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+- `ArgumentError`: If the eccentricity `e` is not in the interval [0, 1).
+- `ArgumentError`: If the perigee radius `a * (1 - e)` is not positive.
 """
 function orbital_period(a::Number, e::Number, i::Number; kwargs...)
     n = orbital_angular_velocity(a, e, i; kwargs...)
@@ -311,7 +345,8 @@ end
 
 Compute the time derivative of the right ascension of the ascending node (RAAN) [rad / s] in
 an orbit with semi-major axis `a` [m], eccentricity `e` [-], and inclination `i` [rad]. The
-orbit can also be specified by `orb` (see `Orbit`).
+orbit can also be specified by `orb` (see `Orbit`). The inputs are validated and this
+function throws an error if they do not describe a valid elliptical orbit.
 
 !!! note
 
@@ -341,6 +376,14 @@ be considered in the computation. The possible values are:
 - `:J4`: Consider the perturbation terms J2, J4, and J2².
 
 If `perturbation` is omitted, it defaults to `:J2`.
+
+# Extended help
+
+## Throws
+
+- `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+- `ArgumentError`: If the eccentricity `e` is not in the interval [0, 1).
+- `ArgumentError`: If the perigee radius `a * (1 - e)` is not positive.
 """
 function raan_time_derivative(
     a::T1,
@@ -503,6 +546,8 @@ the Earth's equatorial radius `R₀` [m], and the zonal harmonics `J₂` and `J�
 ## Throws
 
 - `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
+- `ArgumentError`: If the eccentricity `e` is not in the interval [0, 1).
+- `ArgumentError`: If the perigee radius `a * (1 - e)` is not positive.
 """
 function _secular_rates(
     perturbation::Symbol,
@@ -514,6 +559,19 @@ function _secular_rates(
     J₂::T,
     J₄::T
 ) where {T <: Number}
+    # The theory is only valid for elliptical orbits. Without these checks, the user would
+    # get a `DomainError` from an internal square root or silently wrong results.
+    !(0 <= e < 1) && throw(
+        ArgumentError("The eccentricity must be in the interval [0, 1), but it is $e.")
+    )
+
+    a * (1 - e) <= 0 && throw(
+        ArgumentError(
+            "The perigee radius must be positive, but the semi-major axis is $a m and " *
+            "the eccentricity is $e."
+        )
+    )
+
     A, B, C, D, E, F, G, H = _secular_coefficients(perturbation, e, i, J₂, J₄)
 
     # Auxiliary variables.

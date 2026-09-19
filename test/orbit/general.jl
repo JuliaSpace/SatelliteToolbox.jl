@@ -62,6 +62,13 @@ end
 
 @testset "Function orbital_angular_velocity [ERRORS]" begin
     @test_throws ArgumentError orbital_angular_velocity(7130.9e3, 0, 0; perturbation = :J3)
+
+    # Invalid orbits.
+    @test_throws ArgumentError orbital_angular_velocity(7130.9e3, -0.1, 0)
+    @test_throws ArgumentError orbital_angular_velocity(7130.9e3, 1.0, 0)
+    @test_throws ArgumentError orbital_angular_velocity(7130.9e3, 1.5, 0)
+    @test_throws ArgumentError orbital_angular_velocity(0, 0, 0)
+    @test_throws ArgumentError orbital_angular_velocity(-7130.9e3, 0, 0)
 end
 
 # -- Function: orbital_angular_velocity_to_semimajor_axis ----------------------------------
@@ -164,6 +171,12 @@ end
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; perturbation = :J3)
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = 0)
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 0, 0; tolerance = -1)
+
+    # Invalid inputs.
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0, 0, 0)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(-0.001, 0, 0)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, -0.1, 0)
+    @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(0.001, 1.0, 0)
 end
 
 # -- Function: orbital_period --------------------------------------------------------------
@@ -290,4 +303,18 @@ end
 
 @testset "Function raan_time_derivative [ERRORS]" begin
     @test_throws ArgumentError raan_time_derivative(7000e3, 0, 0; perturbation = :J3)
+
+    # Invalid orbits.
+    @test_throws ArgumentError raan_time_derivative(7000e3, -0.1, 0)
+    @test_throws ArgumentError raan_time_derivative(7000e3, 1.0, 0)
+    @test_throws ArgumentError raan_time_derivative(0, 0, 0)
+end
+
+@testset "Function orbital_period [ERRORS]" begin
+    @test_throws ArgumentError orbital_period(7000e3, 0, 0; perturbation = :J3)
+
+    # Invalid orbits.
+    @test_throws ArgumentError orbital_period(7000e3, -0.1, 0)
+    @test_throws ArgumentError orbital_period(7000e3, 1.0, 0)
+    @test_throws ArgumentError orbital_period(0, 0, 0)
 end
