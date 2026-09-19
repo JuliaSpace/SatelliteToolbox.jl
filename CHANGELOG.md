@@ -4,15 +4,38 @@ SatelliteToolbox.jl Changelog
 Version 1.1.0
 -------------
 
+- ![BREAKING][badge-breaking] The keyword `tolerance` of the function
+  `orbital_angular_velocity_to_semimajor_axis` is now relative to the requested angular
+  velocity instead of an absolute residue in [deg / min]. The default value `√eps(T)` is
+  kept.
+- ![BREAKING][badge-breaking] The functions `orbital_angular_velocity`, `orbital_period`,
+  `raan_time_derivative`, and `orbital_angular_velocity_to_semimajor_axis` now throw an
+  `ArgumentError` if the eccentricity is not in the interval [0, 1), if the perigee radius
+  is not positive, or if the requested angular velocity is not positive. Previously, those
+  inputs returned wrong values silently or raised a `DomainError`.
 - ![Feature][badge-feature] We now reexport **SatelliteToolboxOrbitDataMessages.jl**.
 - ![Enhancement][badge-enhancement] We improved the documentation and fixed several typos.
 - ![Enhancement][badge-enhancement] We updated the ISS observation tutorial to obtain the
   ISS mean elements using an Orbit Mean-Elements Message (OMM) instead of a TLE.
+- ![Enhancement][badge-enhancement] We unified the implementation of the J2 and J4 secular
+  theories used by the orbit functions, which is now written once and shared by the
+  angular velocity, period, RAAN time derivative, and semi-major axis computations.
+- ![Enhancement][badge-enhancement] The functions `orbital_angular_velocity`,
+  `orbital_period`, and `raan_time_derivative` no longer solve Kepler's equation when
+  called with a `KeplerianElements` object that stores the mean anomaly.
+- ![Enhancement][badge-enhancement] The function `equation_of_time` is now generic in the
+  type of the Julian Day.
+- ![Enhancement][badge-enhancement] The docstrings of the functions that convert between
+  the RAAN and the local time of the ascending or descending node now state that the RAAN
+  is referenced to the MOD frame.
+- ![Enhancement][badge-enhancement] We added the JuliaFormatter configuration file.
 - ![Bugfix][badge-bugfix] The function `orbital_angular_velocity_to_semimajor_axis` now
   evaluates the convergence flag against the returned estimate and validates the keyword
   `tolerance`, which must be positive.
 - ![Bugfix][badge-bugfix] We now load `Dates` directly instead of relying on a transitive
   reexport from another package in the ecosystem.
+- ![Info][badge-info] We now require **SatelliteToolboxAtmosphericModels.jl** v2.0.1 or
+  later, which is the first version compatible with **SatelliteToolboxBase.jl** v2.
 
 Version 1.0.0
 -------------
@@ -565,9 +588,7 @@ Version 0.1.0
 
 [gh-pr-31]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/31
 [gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
-[gh-pr-33]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/33
 [gh-pr-36]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/36
-[gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
 [gh-pr-43]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/43
 [gh-pr-60]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/60
 [gh-pr-61]: https://github.com/JuliaSpace/SatelliteToolbox.jl/pull/61
