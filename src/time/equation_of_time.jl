@@ -56,9 +56,8 @@ function equation_of_time(jd::Number)
     λ_ecliptic = deg2rad(λ_ecliptic)
 
     # Compute the equation of time [deg].
-    eot = -T(1.914666471) * sin_Ms -
-        T(0.019994643) * sin_2Ms +
-        T(2.466) * sin(2λ_ecliptic) -
+    eot =
+        -T(1.914666471) * sin_Ms - T(0.019994643) * sin_2Ms + T(2.466) * sin(2λ_ecliptic) -
         T(0.0053) * sin(4λ_ecliptic)
 
     return deg2rad(eot)

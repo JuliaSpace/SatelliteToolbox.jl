@@ -127,10 +127,7 @@ end
         # == J₀ ============================================================================
 
         â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            perturbation = :J0
+            angvel, e, i; perturbation = :J0
         )
 
         @test typeof(â) == T
@@ -140,7 +137,7 @@ end
         # == J₂ ============================================================================
 
         â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i)
-        orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
+        orb = KeplerianElements(0, â, e, i, 0, 0, 0)
         orbp = Propagators.init(Val(:J2), orb)
 
         @test typeof(â) == T
@@ -150,10 +147,7 @@ end
         # == J₄ ============================================================================
 
         â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            perturbation = :J4
+            angvel, e, i; perturbation = :J4
         )
 
         orb  = KeplerianElements(0, â, e, i, 0, 0, 0)
@@ -170,12 +164,7 @@ end
 
         for perturbation in (:J2, :J4)
             angvel_a = orbital_angular_velocity(a, e, i; perturbation = perturbation)
-            â, conv  = orbital_angular_velocity_to_semimajor_axis(
-                angvel_a,
-                e,
-                i;
-                perturbation = perturbation
-            )
+            â, conv  = orbital_angular_velocity_to_semimajor_axis(angvel_a, e, i; perturbation = perturbation)
 
             @test typeof(â) == T
             @test â ≈ a rtol = 10 * √eps(T)
@@ -187,11 +176,7 @@ end
         # A very tight tolerance together with no allowed iterations must report a
         # convergence failure, and the returned estimate must be the unperturbed solution.
         â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            max_iterations = 0,
-            tolerance = eps(T)
+            angvel, e, i; max_iterations = 0, tolerance = eps(T)
         )
 
         @test typeof(â) == T
@@ -202,11 +187,7 @@ end
 
         # A loose relative tolerance must be satisfied by the unperturbed initial guess.
         â, conv = orbital_angular_velocity_to_semimajor_axis(
-            angvel,
-            e,
-            i;
-            max_iterations = 0,
-            tolerance = 1e-2
+            angvel, e, i; max_iterations = 0, tolerance = 1e-2
         )
 
         @test typeof(â) == T
@@ -216,24 +197,15 @@ end
 
 @testset "Function orbital_angular_velocity_to_semimajor_axis [ERRORS]" begin
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
-        0.001,
-        0,
-        0;
-        perturbation = :J3
+        0.001, 0, 0; perturbation = :J3
     )
 
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
-        0.001,
-        0,
-        0;
-        tolerance = 0
+        0.001, 0, 0; tolerance = 0
     )
 
     @test_throws ArgumentError orbital_angular_velocity_to_semimajor_axis(
-        0.001,
-        0,
-        0;
-        tolerance = -1
+        0.001, 0, 0; tolerance = -1
     )
 
     # Invalid inputs.

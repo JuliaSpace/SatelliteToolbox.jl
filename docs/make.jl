@@ -1,9 +1,9 @@
 using Documenter
 using SatelliteToolbox
 
-makedocs(
+makedocs(;
     modules = [SatelliteToolbox],
-    format = Documenter.HTML(
+    format = Documenter.HTML(;
         prettyurls = !("local" in ARGS),
         canonical = "https://juliaspace.github.io/SatelliteToolbox.jl/stable/",
     ),
@@ -11,14 +11,9 @@ makedocs(
     authors = "Ronan Arraes Jardim Chagas",
     pages = [
         "Home" => "index.md",
-        "Tutorials" => [
-            "ISS Observation" => "tutorials/iss_observation.md",
-        ],
+        "Tutorials" => ["ISS Observation" => "tutorials/iss_observation.md"],
         "Library" => "lib/library.md",
     ],
 )
 
-deploydocs(
-    repo = "github.com/JuliaSpace/SatelliteToolbox.jl.git",
-    target = "build",
-)
+deploydocs(; repo = "github.com/JuliaSpace/SatelliteToolbox.jl.git", target = "build")

@@ -80,7 +80,7 @@ function orbital_angular_velocity(
     J2::Number = EGM_2008_J2,
     J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
-    R0::Number = EARTH_EQUATORIAL_RADIUS
+    R0::Number = EARTH_EQUATORIAL_RADIUS,
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
@@ -94,10 +94,7 @@ end
 # for the mean anomaly representation.
 function orbital_angular_velocity(orb::KeplerianElements; kwargs...)
     return orbital_angular_velocity(
-        orb.semi_major_axis,
-        orb.eccentricity,
-        orb.inclination;
-        kwargs...
+        orb.semi_major_axis, orb.eccentricity, orb.inclination; kwargs...
     )
 end
 
@@ -184,7 +181,7 @@ function orbital_angular_velocity_to_semimajor_axis(
     J2::Number = EGM_2008_J2,
     J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
-    R0::Number = EARTH_EQUATORIAL_RADIUS
+    R0::Number = EARTH_EQUATORIAL_RADIUS,
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
@@ -194,9 +191,9 @@ function orbital_angular_velocity_to_semimajor_axis(
         ArgumentError("The eccentricity must be in the interval [0, 1), but it is $e.")
     )
 
-    !isnothing(tolerance) && (tolerance <= 0) && throw(
-        ArgumentError("The keyword `tolerance` must be greater than 0.")
-    )
+    !isnothing(tolerance) &&
+        (tolerance <= 0) &&
+        throw(ArgumentError("The keyword `tolerance` must be greater than 0."))
 
     # Convert the inputs to the correct type.
     R₀ = T(R0)
@@ -353,12 +350,7 @@ end
 # conversion to the true anomaly (which solves Kepler's equation) that `convert` performs
 # for the mean anomaly representation.
 function orbital_period(orb::KeplerianElements; kwargs...)
-    return orbital_period(
-        orb.semi_major_axis,
-        orb.eccentricity,
-        orb.inclination;
-        kwargs...
-    )
+    return orbital_period(orb.semi_major_axis, orb.eccentricity, orb.inclination; kwargs...)
 end
 
 function orbital_period(orb::Orbit; kwargs...)
@@ -421,7 +413,7 @@ function raan_time_derivative(
     J2::Number = EGM_2008_J2,
     J4::Number = EGM_2008_J4,
     m0::Number = GM_EARTH,
-    R0::Number = EARTH_EQUATORIAL_RADIUS
+    R0::Number = EARTH_EQUATORIAL_RADIUS,
 ) where {T1 <: Number, T2 <: Number, T3 <: Number}
     T = float(promote_type(T1, T2, T3))
 
@@ -435,10 +427,7 @@ end
 # for the mean anomaly representation.
 function raan_time_derivative(orb::KeplerianElements; kwargs...)
     return raan_time_derivative(
-        orb.semi_major_axis,
-        orb.eccentricity,
-        orb.inclination;
-        kwargs...
+        orb.semi_major_axis, orb.eccentricity, orb.inclination; kwargs...
     )
 end
 
@@ -517,11 +506,7 @@ rectum `p₀` [er] to the perturbed mean motion `n̄`, the argument of perigee t
 - `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
 """
 function _secular_coefficients(
-    perturbation::Symbol,
-    e::T,
-    i::T,
-    J₂::T,
-    J₄::T
+    perturbation::Symbol, e::T, i::T, J₂::T, J₄::T
 ) where {T <: Number}
     perturbation == :J0 && return _secular_coefficients(Val(:J0), e, i, J₂, J₄)
     perturbation == :J2 && return _secular_coefficients(Val(:J2), e, i, J₂, J₄)
@@ -567,6 +552,7 @@ function _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {
     F = -(3//2) * J₂ * cos_i
 
     # Second-order secular terms, which depend on J₂² and J₄ [1].
+    #! format: off
     B = +(3//128) * J₂² * β * (
             120 + 64β - 40β² +
             (-240 - 192β + 40β²) * sin_i² +
@@ -590,6 +576,7 @@ function _secular_coefficients(::Val{:J4}, e::T, i::T, J₂::T, J₄::T) where {
     G = +(3//32) * J₂² * cos_i * (-36 - 4e² + 48β + (40 - 5e² - 72β) * sin_i²)
 
     H = +(15//32) * J₄ * cos_i * (8 + 12e² - (14 + 21e²) * sin_i²)
+    #! format: on
 
     return (A, B, C, D, E, F, G, H)
 end
@@ -627,14 +614,7 @@ the Earth's equatorial radius `R₀` [m], and the zonal harmonics `J₂` and `J�
 - `ArgumentError`: If the perigee radius `a * (1 - e)` is not positive.
 """
 function _secular_rates(
-    perturbation::Symbol,
-    a::T,
-    e::T,
-    i::T,
-    μ::T,
-    R₀::T,
-    J₂::T,
-    J₄::T
+    perturbation::Symbol, a::T, e::T, i::T, μ::T, R₀::T, J₂::T, J₄::T
 ) where {T <: Number}
     # The theory is only valid for elliptical orbits. Without these checks, the user would
     # get a `DomainError` from an internal square root or silently wrong results.
@@ -645,8 +625,8 @@ function _secular_rates(
     a * (1 - e) <= 0 && throw(
         ArgumentError(
             "The perigee radius must be positive, but the semi-major axis is $a m and " *
-            "the eccentricity is $e."
-        )
+            "the eccentricity is $e.",
+        ),
     )
 
     A, B, C, D, E, F, G, H = _secular_coefficients(perturbation, e, i, J₂, J₄)
@@ -693,11 +673,7 @@ The angular velocity is given by:
 - `ArgumentError`: If `perturbation` is not `:J0`, `:J2`, or `:J4`.
 """
 function _angular_velocity_polynomial_coefficients(
-    perturbation::Symbol,
-    e::T,
-    i::T,
-    J₂::T,
-    J₄::T
+    perturbation::Symbol, e::T, i::T, J₂::T, J₄::T
 ) where {T <: Number}
     A, B, C, D, E, _, _, _ = _secular_coefficients(perturbation, e, i, J₂, J₄)
 
