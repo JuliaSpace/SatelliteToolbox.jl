@@ -109,24 +109,51 @@ end
         @test (orbp.j4d.n̄ + orbp.j4d.∂ω) ≈ angvel
         @test conv == true
 
+        # == Round Trip ====================================================================
+
+        # Inverting the angular velocity of a known orbit must recover its semi-major axis.
+        a = T(7130.984e3)
+
+        for perturbation in (:J2, :J4)
+            angvel_a = orbital_angular_velocity(a, e, i; perturbation = perturbation)
+            â, conv  = orbital_angular_velocity_to_semimajor_axis(
+                angvel_a,
+                e,
+                i;
+                perturbation = perturbation
+            )
+
+            @test typeof(â) == T
+            @test â ≈ a rtol = 10 * √eps(T)
+            @test conv == true
+        end
+
         # == Convergence Failure ===========================================================
 
-        # A very tight tolerance together with a single allowed iteration must report a
-        # convergence failure.
+        # A very tight tolerance together with no allowed iterations must report a
+        # convergence failure, and the returned estimate must be the unperturbed solution.
         â, conv = orbital_angular_velocity_to_semimajor_axis(
             angvel,
             e,
             i;
-            max_iterations = 1,
-            tolerance = eps(Float64)
+            max_iterations = 0,
+            tolerance = eps(T)
         )
 
         @test typeof(â) == T
+        @test â ≈ (GM_EARTH / angvel^2)^(1 // 3)
         @test conv == false
 
         # == Custom Tolerance ==============================================================
 
-        â, conv = orbital_angular_velocity_to_semimajor_axis(angvel, e, i; tolerance = 1e-3)
+        # A loose relative tolerance must be satisfied by the unperturbed initial guess.
+        â, conv = orbital_angular_velocity_to_semimajor_axis(
+            angvel,
+            e,
+            i;
+            max_iterations = 0,
+            tolerance = 1e-2
+        )
 
         @test typeof(â) == T
         @test conv == true

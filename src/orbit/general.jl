@@ -106,10 +106,12 @@ between two consecutive passages by the ascending node.
     (**Default**: `20`)
 - `perturbation::Symbol`: Symbol to select the perturbation terms that will be used.
     (**Default**: `:J2`)
-- `tolerance::Union{Nothing, Number}`: Residue tolerance to verify if the numerical method
-    has converged. It must be greater than 0, otherwise this function throws an
+- `tolerance::Union{Nothing, Number}`: Relative tolerance to verify if the numerical method
+    has converged. The algorithm converges when the absolute difference between the angular
+    velocity of the estimated orbit and `angvel` is lower than or equal to
+    `tolerance * angvel`. It must be greater than 0, otherwise this function throws an
     `ArgumentError`. If it is `nothing`, `√eps(T)` will be used, where `T` is the internal
-    type for the computations. Notice that the residue function unit is [deg / min].
+    type for the computations.
     (**Default**: `nothing`)
 - `m0::Number`: Standard gravitational parameter for Earth [m³ / s²].
     (**Default**: `GM_EARTH`)
@@ -197,9 +199,6 @@ function orbital_angular_velocity_to_semimajor_axis(
     # Normalized unperturbed mean motion [rad / s], i.e. the mean motion at `a = R₀`.
     k = √(μ / R₀^3)
 
-    # Conversion factor from [rad / s] to [deg / min] used to evaluate the residue.
-    rs_to_dm = T(60 * 180 / π)
-
     # Initial guess based on the unperturbed model.
     x = √(R₀ / a₀)
 
@@ -228,9 +227,9 @@ function orbital_angular_velocity_to_semimajor_axis(
             f = $(f) rad / s
         """
 
-        # If the residue at the current estimate is within the tolerance, indicate that the
-        # solution converged and exit the loop.
-        if abs(f) * rs_to_dm <= tol
+        # If the residue at the current estimate is within the relative tolerance, indicate
+        # that the solution converged and exit the loop.
+        if abs(f) <= tol * ω
             converged = true
             break
         end
