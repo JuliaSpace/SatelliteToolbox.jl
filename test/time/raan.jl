@@ -16,6 +16,10 @@
 
     raan = ltan_to_raan(Time("22:30:00"), t₀)
     @test raan ≈ 4.289024646407403
+
+    # The Julian Day method must match the DateTime method.
+    raan = ltan_to_raan(22.5, datetime2julian(t₀))
+    @test raan ≈ 4.289024646407403
 end
 
 # -- Function ltdn_to_raan -----------------------------------------------------------------
@@ -27,6 +31,10 @@ end
 
     raan = ltdn_to_raan(Time("10:30:00"), t₀)
     @test raan ≈ 4.289024646407403
+
+    # The Julian Day method must match the DateTime method.
+    raan = ltdn_to_raan(10.5, datetime2julian(t₀))
+    @test raan ≈ 4.289024646407403
 end
 
 # -- Function raan_to_ltan -----------------------------------------------------------------
@@ -35,6 +43,10 @@ end
     t₀ = DateTime("2021-06-19T19:35:35")
     ltan = raan_to_ltan(4.289024646407403, t₀)
     @test ltan ≈ 22.5
+
+    # The Julian Day method must match the DateTime method.
+    ltan = raan_to_ltan(4.289024646407403, datetime2julian(t₀))
+    @test ltan ≈ 22.5
 end
 
 # -- Function raan_to_ltdn -----------------------------------------------------------------
@@ -42,5 +54,9 @@ end
 @testset "Function raan_to_ltdn" begin
     t₀ = DateTime("2021-06-19T19:35:35")
     ltdn = raan_to_ltdn(4.289024646407403, t₀)
+    @test ltdn ≈ 10.5
+
+    # The Julian Day method must match the DateTime method.
+    ltdn = raan_to_ltdn(4.289024646407403, datetime2julian(t₀))
     @test ltdn ≈ 10.5
 end
