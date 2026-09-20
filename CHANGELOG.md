@@ -17,6 +17,12 @@ Version 1.1.0
 - ![Enhancement][badge-enhancement] We improved the documentation and fixed several typos.
 - ![Enhancement][badge-enhancement] We updated the ISS observation tutorial to obtain the
   ISS mean elements using an Orbit Mean-Elements Message (OMM) instead of a TLE.
+- ![Enhancement][badge-enhancement] We added four tutorials to the documentation showing
+  how to convert a GPS state vector from the ITRF to the GCRF using the Earth Orientation
+  Parameters, how to compute the geomagnetic field along a LEO orbit for ADCS sizing, how
+  to compare the truncations of a spherical harmonics gravity model, and how to fit mean
+  elements to noisy state vectors and propagate the resulting covariance. The code in the
+  tutorials is executed when the documentation is built.
 - ![Enhancement][badge-enhancement] We unified the implementation of the J2 and J4 secular
   theories used by the orbit functions, which is now written once and shared by the
   angular velocity, period, RAAN time derivative, and semi-major axis computations.
