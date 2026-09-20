@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Mean Elements Fit and Covariance · Satellite Toolbox</title><meta name="title" content="Mean Elements Fit and Covariance · Satellite Toolbox"/><meta property="og:title" content="Mean Elements Fit and Covariance · Satellite Toolbox"/><meta property="twitter:title" content="Mean Elements Fit and Covariance · Satellite Toolbox"/><meta name="description" content="Documentation for Satellite Toolbox."/><meta property="og:description" content="Documentation for Satellite Toolbox."/><meta property="twitter:description" content="Documentation for Satellite Toolbox."/><meta property="og:url" content="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/mean_elements_fit_covariance/"/><meta property="twitter:url" content="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/mean_elements_fit_covariance/"/><link rel="canonical" href="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/mean_elements_fit_covariance/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Satellite Toolbox logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Satellite Toolbox</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../iss_observation/">ISS Observation</a></li><li><a class="tocitem" href="../gps_itrf_to_gcrf/">GPS State Vector: ITRF to GCRF</a></li><li><a class="tocitem" href="../geomagnetic_field_leo/">Geomagnetic Field Along a LEO Orbit</a></li><li><a class="tocitem" href="../gravity_model_comparison/">Comparing Gravity Models</a></li><li class="is-active"><a class="tocitem" href>Mean Elements Fit and Covariance</a><ul class="internal"><li><a class="tocitem" href="#Theory"><span>Theory</span></a></li><li><a class="tocitem" href="#Algorithm"><span>Algorithm</span></a></li><li><a class="tocitem" href="#Code"><span>Code</span></a></li></ul></li></ul></li><li><a class="tocitem" href="../../lib/library/">Library</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Mean Elements Fit and Covariance</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Mean Elements Fit and Covariance</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaSpace/SatelliteToolbox.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaSpace/SatelliteToolbox.jl/blob/master/docs/src/tutorials/mean_elements_fit_covariance.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Mean-Elements-Fit-and-Covariance"><a class="docs-heading-anchor" href="#Mean-Elements-Fit-and-Covariance">Mean Elements Fit and Covariance</a><a id="Mean-Elements-Fit-and-Covariance-1"></a><a class="docs-heading-anchor-permalink" href="#Mean-Elements-Fit-and-Covariance" title="Permalink"></a></h1><p>In this tutorial, we will fit the mean elements of an analytical orbit propagator to a set of state vectors, as we would do with the navigation solutions of an onboard GNSS receiver, and then propagate the uncertainty of the fitted orbit. This is a simplified version of the orbit determination process that generates, for example, the two-line elements (TLE) used by the SGP4 propagator.</p><h2 id="Theory"><a class="docs-heading-anchor" href="#Theory">Theory</a><a id="Theory-1"></a><a class="docs-heading-anchor-permalink" href="#Theory" title="Permalink"></a></h2><p>Analytical propagators like the J2 osculating propagator receive <strong>mean elements</strong>, from which the short-period variations caused by the <span>$J_2$</span> term are added to obtain the <strong>osculating elements</strong> that correspond to the instantaneous position and velocity. Hence, we cannot initialize the propagator with the osculating elements computed from a single state vector: we must find the mean elements <span>$\vec{x}$</span> that minimize the weighted residuals over a set of <span>$k$</span> measurements <span>$\vec{y}_k$</span>:</p><p class="math-container">\[\begin{equation*}
+  \hat{\vec{x}} = \arg\min_{\vec{x}} \sum_k
+  \left(\vec{y}_k - \vec{h}_k(\vec{x})\right)^T W
+  \left(\vec{y}_k - \vec{h}_k(\vec{x})\right)~,
+\end{equation*}\]</p><p>where <span>$\vec{h}_k$</span> propagates the mean elements to the instant of the <span>$k$</span>-th measurement and <span>$W$</span> is the weight matrix. The Gauss-Newton method solves this problem iteratively using the Jacobian <span>$J_k = \partial \vec{h}_k / \partial \vec{x}$</span>:</p><p class="math-container">\[\begin{equation*}
+  \delta\vec{x} = \left(\sum_k J_k^T W J_k\right)^{-1} \sum_k J_k^T W
+  \left(\vec{y}_k - \vec{h}_k(\vec{x})\right)~, \qquad
+  P = \left(\sum_k J_k^T W J_k\right)^{-1}~.
+\end{equation*}\]</p><p>If <span>$W$</span> is the inverse of the measurement covariance, <span>$P$</span> is the covariance of the estimated state. The package <a href="https://github.com/JuliaSpace/SatelliteToolboxPropagators.jl">SatelliteToolboxPropagators.jl</a> implements this algorithm with the state <span>$\vec{x}$</span> defined as the Cartesian position and velocity of the mean elements at the fit epoch, and it can compute the Jacobians using forward-mode automatic differentiation.</p><p>Once we have the covariance <span>$P_0$</span> at the epoch, we can propagate it linearly using the state transition matrix <span>$\Phi$</span>, which is the Jacobian of the propagated state with respect to the initial state:</p><p class="math-container">\[\begin{equation*}
+  P(\Delta t) = \Phi(\Delta t) \, P_0 \, \Phi(\Delta t)^T~, \qquad
+  \Phi(\Delta t) = \frac{\partial \vec{x}(\Delta t)}{\partial \vec{x}_0}~.
+\end{equation*}\]</p><p>The position covariance is easier to interpret in the LVLH (Local Vertical, Local Horizontal) frame. If <span>$D$</span> is the rotation matrix from the inertial frame to the LVLH frame, the position covariance in the latter is:</p><p class="math-container">\[\begin{equation*}
+  P_{r, LVLH} = D \, P_{r} \, D^T~.
+\end{equation*}\]</p><h2 id="Algorithm"><a class="docs-heading-anchor" href="#Algorithm">Algorithm</a><a id="Algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithm" title="Permalink"></a></h2><p>We need to perform the following tasks:</p><ol><li>Generate a set of noisy state vectors from a known orbit;</li><li>Fit the mean elements and compare them with the known values;</li><li>Propagate the covariance using automatic differentiation; and</li><li>Verify the linear propagation with a Monte Carlo simulation.</li></ol><h2 id="Code"><a class="docs-heading-anchor" href="#Code">Code</a><a id="Code-1"></a><a class="docs-heading-anchor-permalink" href="#Code" title="Permalink"></a></h2><p>Before starting, let&#39;s load all the packages in the <strong>SatelliteToolbox.jl</strong> ecosystem together with the auxiliary packages used in this tutorial:</p><pre><code class="language-julia hljs">using SatelliteToolbox
+using CairoMakie
+using ForwardDiff
+using LinearAlgebra
+using Printf
+using Random
+using StaticArrays</code></pre><p>We will use the mean elements of a Sun-synchronous orbit as the truth. The J2 osculating propagator, initialized with <code>Propagators.init</code>, provides the position and velocity at every 10 s during one orbit:</p><pre><code class="language-julia hljs">jd₀ = date_to_jd(2023, 1, 1, 0, 0, 0)
+
+orb_truth = KeplerianElements(
+    jd₀,
+    7130.982e3,
+    0.001111,
+    98.405 |&gt; deg2rad,
+    90     |&gt; deg2rad,
+    200    |&gt; deg2rad,
+    45     |&gt; deg2rad,
+)
+
+orbp = Propagators.init(Val(:J2osc), orb_truth)
+vt   = 0:10:6000
+
+vr_true, vv_true = Propagators.propagate!(orbp, vt)
+vjd = Propagators.epoch(orbp) .+ vt ./ 86400</code></pre><p>We simulate a GNSS receiver by adding Gaussian noise with 10 m and 0.01 m/s of standard deviation to each component of the position and velocity. The random number generator is seeded to make the results reproducible:</p><pre><code class="language-julia hljs">rng = MersenneTwister(1986)
+σ_r = 10.0
+σ_v = 0.01
+
+vr_meas = [r + σ_r * randn(rng, SVector{3, Float64}) for r in vr_true]
+vv_meas = [v + σ_v * randn(rng, SVector{3, Float64}) for v in vv_true]</code></pre><p>This concludes the first step of the algorithm.</p><p>The function <code>fit_j2osc_mean_elements</code> performs the least-squares fit. We select the automatic differentiation to compute the Jacobians with <code>ForwardDiffJacobian()</code> and pass the inverse of the measurement variances as weights, so that the returned matrix is the covariance of the estimated state. The keyword <code>mean_elements_epoch</code> selects the epoch of the fitted elements, which we set to the first measurement to compare with the truth:</p><pre><code class="language-julia hljs">W = SVector(1 / σ_r^2, 1 / σ_r^2, 1 / σ_r^2, 1 / σ_v^2, 1 / σ_v^2, 1 / σ_v^2)
+
+orb_fit, P_fit, stats = fit_j2osc_mean_elements(
+    vjd,
+    vr_meas,
+    vv_meas;
+    mean_elements_epoch = vjd[1],
+    jacobian_method     = ForwardDiffJacobian(),
+    weight_vector       = W,
+    verbose             = false,
+)
+
+orb_fit</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi"><span class="sgr1">KeplerianElements{MeanAnomaly, Float64, Float64}:</span>
+<span class="sgr90">  </span><span class="sgr1">Epoch</span>             : 2.45995e6 (2023-01-01T00:00:00)
+<span class="sgr90">  </span><span class="sgr1">Semi-Major Axis</span>   : 7130.981734 <span class="sgr90">km</span>
+<span class="sgr90">  </span><span class="sgr1">Eccentricity</span>      : 0.001111041013
+<span class="sgr90">  </span><span class="sgr1">Inclination</span>       : 98.40500022<span class="sgr90">°</span>
+<span class="sgr90">  </span><span class="sgr1">RA of Asc. Node</span>   : 89.99999964<span class="sgr90">°</span>
+<span class="sgr90">  </span><span class="sgr1">Arg. of Periapsis</span> : 200.001406<span class="sgr90">°</span>
+<span class="sgr90">  </span><span class="sgr1">Mean Anomaly</span>      : 44.90861372<span class="sgr90">°</span></code></pre><div class="admonition is-info" id="Note-581b2dc58dbba4cf"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-581b2dc58dbba4cf" title="Permalink"></a></header><div class="admonition-body"><p>The function prints the progress of the iterations by default. We disabled it with the keyword <code>verbose = false</code>.</p></div></div><p>The statistics of the fit show that the algorithm converged in a few iterations and that the root mean square (RMS) of the residuals matches the noise we added. Notice that the RMS is computed using the norm of the residual vectors, which is <span>$\sqrt{3}$</span> times the standard deviation of each component:</p><pre><code class="language-julia hljs">stats</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(converged = true, iterations = 4, position_rmse = 17.496042152550856, velocity_rmse = 0.017140133747790207, total_rmse = 2.4492767828401383)</code></pre><p>Let&#39;s compare the fitted elements with the truth. The fitted elements use the mean anomaly, whereas we defined the truth using the true anomaly. Hence, we convert the latter before comparing:</p><pre><code class="language-julia hljs">orb_truth_mean = convert(KeplerianElements{MeanAnomaly}, orb_truth)
+
+angles = (
+    (&quot;i&quot;, orb_truth_mean.i, orb_fit.i),
+    (&quot;Ω&quot;, orb_truth_mean.Ω, orb_fit.Ω),
+    (&quot;ω&quot;, orb_truth_mean.ω, orb_fit.ω),
+    (&quot;M&quot;, orb_truth_mean.f, orb_fit.f),
+)
+
+a_t, a_f = orb_truth_mean.a, orb_fit.a
+e_t, e_f = orb_truth_mean.e, orb_fit.e
+
+println(&quot;Element         Truth          Fitted     Difference&quot;)
+@printf(&quot;a [m]  %14.3f  %14.3f  %+12.3f\n&quot;, a_t, a_f, a_f - a_t)
+@printf(&quot;e [-]  %14.7f  %14.7f  %+12.3e\n&quot;, e_t, e_f, e_f - e_t)
+
+for (name, t, f) in angles
+    δ = rad2deg(rem2pi(f - t, RoundNearest))
+    @printf(&quot;%s [°]  %14.6f  %14.6f  %+12.3e\n&quot;, name, rad2deg(t), rad2deg(f), δ)
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Element         Truth          Fitted     Difference
+a [m]     7130982.000     7130981.734        -0.266
+e [-]       0.0011110       0.0011110    +4.101e-08
+i [°]       98.405000       98.405000    +2.201e-07
+Ω [°]       90.000000       90.000000    -3.602e-07
+ω [°]      200.000000      200.001406    +1.406e-03
+M [°]       45.000000       44.998584    -1.416e-03</code></pre><p>The differences in the argument of perigee and in the mean anomaly are much larger than the others, but they have opposite signs. This is expected: in a nearly circular orbit, the position of the perigee is poorly defined, and only the sum <span>$\omega + M$</span> is well observed.</p><p>The diagonal of the covariance matrix provides the standard deviation of the mean state at the epoch. Since we combined hundreds of measurements, it is much smaller than the measurement noise:</p><pre><code class="language-julia hljs">σ_fit = sqrt.(diag(P_fit))
+
+σ_pos = norm(σ_fit[1:3])
+σ_vel = norm(σ_fit[4:6])
+
+@printf(&quot;Mean state 1σ at the epoch: position %.3f m, velocity %.5f m/s\n&quot;, σ_pos, σ_vel)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Mean state 1σ at the epoch: position 0.943 m, velocity 0.00089 m/s</code></pre><p>Finally, let&#39;s verify the residuals by propagating the fitted elements at the measurement instants. The result must look like the noise we added:</p><pre><code class="language-julia hljs">orbp_fit = Propagators.init(Val(:J2osc), orb_fit)
+vr_fit, vv_fit = Propagators.propagate!(orbp_fit, vt)
+vres = norm.(vr_meas .- vr_fit)
+
+fig = Figure(size = (800, 400))
+ax  = Axis(fig[1, 1]; xlabel = &quot;Time [min]&quot;, ylabel = &quot;Position residual [m]&quot;)
+lines!(ax, vt ./ 60, vres)
+
+fig</code></pre><img src="431cf6c0.png" alt="Example block output"/><p>This concludes the second step of the algorithm.</p><p>To propagate the covariance, we need a function that maps the Cartesian mean state at the epoch to the Cartesian osculating state after <span>$\Delta t$</span>. The package <a href="https://github.com/JuliaDiff/ForwardDiff.jl">ForwardDiff.jl</a> computes its Jacobian by evaluating the function with a special number type. Hence, the function must create the propagator structures using the element type of its input, which we obtain with <code>eltype</code>. We use the low-level API of the J2 osculating propagator for this purpose:</p><pre><code class="language-julia hljs">function j2osc_map(x₀::AbstractVector, Δt::Number, epoch::Number; j2c = J2C_EGM2008)
+    T  = eltype(x₀)
+    r₀ = SVector{3}(x₀[1], x₀[2], x₀[3])
+    v₀ = SVector{3}(x₀[4], x₀[5], x₀[6])
+
+    j2d = J2Propagator{typeof(epoch), T}()
+    j2d.j2c = J2PropagatorConstants{T}(j2c)
+
+    j2oscd = J2OsculatingPropagator{typeof(epoch), T}()
+    j2oscd.j2d = j2d
+
+    j2osc_init!(j2oscd, rv_to_kepler(r₀, v₀, epoch))
+    r, v = j2osc!(j2oscd, Δt)
+
+    return vcat(r, v)
+end</code></pre><div class="admonition is-info" id="Note-24ad00cc6f87ec1a"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-24ad00cc6f87ec1a" title="Permalink"></a></header><div class="admonition-body"><p>The epoch is kept as a <code>Float64</code> because we do not differentiate with respect to it. Every other structure field must use the type <code>T</code>, otherwise the automatic differentiation fails when it tries to store its numbers.</p></div></div><p>The Cartesian mean state at the epoch is obtained by converting the fitted elements with <code>kepler_to_rv</code>. Let&#39;s propagate the covariance for one day:</p><pre><code class="language-julia hljs">r₀, v₀ = kepler_to_rv(orb_fit)
+x₀     = vcat(r₀, v₀)
+epoch  = orb_fit.t
+Δt     = 86400.0
+
+Φ = ForwardDiff.jacobian(x -&gt; j2osc_map(x, Δt, epoch), x₀)
+P = Φ * P_fit * Φ&#39;
+
+@printf(&quot;Position 1σ after one day: %.3f m\n&quot;, sqrt(sum(diag(P)[1:3])))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Position 1σ after one day: 16.363 m</code></pre><p>We can now repeat the computation at every minute during two days, projecting the position covariance onto the LVLH frame using <code>r_eci_to_lvlh</code>:</p><pre><code class="language-julia hljs">vΔt     = 0.0:60.0:(2 * 86400.0)
+vσ_pos  = Float64[]
+vσ_lvlh = SVector{3, Float64}[]
+
+for Δt in vΔt
+    x_t = j2osc_map(x₀, Δt, epoch)
+    Φ_t = ForwardDiff.jacobian(x -&gt; j2osc_map(x, Δt, epoch), x₀)
+    P_t = Φ_t * P_fit * Φ_t&#39;
+
+    D_t    = r_eci_to_lvlh(SVector{3}(x_t[1:3]), SVector{3}(x_t[4:6]))
+    P_lvlh = D_t * P_t[1:3, 1:3] * D_t&#39;
+
+    push!(vσ_pos,  sqrt(sum(diag(P_t)[1:3])))
+    push!(vσ_lvlh, sqrt.(SVector{3}(diag(P_lvlh))))
+end
+
+fig = Figure(size = (800, 500))
+
+ax1 = Axis(fig[1, 1]; ylabel = &quot;Position 1σ [m]&quot;)
+lines!(ax1, vΔt ./ 3600, vσ_pos)
+
+ax2 = Axis(fig[2, 1]; xlabel = &quot;Time [h]&quot;, ylabel = &quot;LVLH 1σ [m]&quot;)
+
+for (i, label) in enumerate((&quot;along-track&quot;, &quot;cross-track&quot;, &quot;radial&quot;))
+    lines!(ax2, vΔt ./ 3600, getindex.(vσ_lvlh, i); label = label)
+end
+
+axislegend(ax2; position = :lt)
+
+fig</code></pre><img src="9e2e11a9.png" alt="Example block output"/><p>The uncertainty grows almost linearly in the along-track direction, since a small error in the semi-major axis changes the mean motion and, hence, the position along the orbit accumulates an error over time. The radial and cross-track components stay bounded and oscillate with the orbital period. This concludes the third step of the algorithm.</p><p>The linear propagation is an approximation. We can verify it with a Monte Carlo simulation: we draw samples of the initial state using the covariance <span>$P_0$</span>, propagate each one for one day, and compare the dispersion of the results with the linear prediction:</p><pre><code class="language-julia hljs">L     = cholesky(Symmetric(P_fit)).L
+N     = 500
+x_nom = j2osc_map(x₀, 86400.0, epoch)
+
+samples = [j2osc_map(x₀ + L * randn(rng, 6), 86400.0, epoch) - x_nom for _ in 1:N]
+σ_mc    = sqrt(sum(abs2, reduce(hcat, samples)[1:3, :]) / N)
+σ_lin   = sqrt(sum(diag(P)[1:3]))
+
+@printf(&quot;After one day: linear = %.3f m, Monte Carlo = %.3f m\n&quot;, σ_lin, σ_mc)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">After one day: linear = 16.363 m, Monte Carlo = 16.353 m</code></pre><p>Both values agree, confirming that the linear propagation is adequate for uncertainties of this magnitude. This concludes the tutorial.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../gravity_model_comparison/">« Comparing Gravity Models</a><a class="docs-footer-nextpage" href="../../lib/library/">Library »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Sunday 20 September 2026 00:52">Sunday 20 September 2026</span>. Using Julia version 1.13.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
