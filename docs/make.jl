@@ -17,6 +17,7 @@ makedocs(;
             "ISS Observation"                     => "tutorials/iss_observation.md",
             "GPS State Vector: ITRF to GCRF"      => "tutorials/gps_itrf_to_gcrf.md",
             "Geomagnetic Field Along a LEO Orbit" => "tutorials/geomagnetic_field_leo.md",
+            "Comparing Gravity Models"            => "tutorials/gravity_model_comparison.md",
         ],
         "Library" => "lib/library.md",
     ],
