@@ -18,6 +18,7 @@ makedocs(;
             "GPS State Vector: ITRF to GCRF"      => "tutorials/gps_itrf_to_gcrf.md",
             "Geomagnetic Field Along a LEO Orbit" => "tutorials/geomagnetic_field_leo.md",
             "Comparing Gravity Models"            => "tutorials/gravity_model_comparison.md",
+            "Mean Elements Fit and Covariance"    => "tutorials/mean_elements_fit_covariance.md",
         ],
         "Library" => "lib/library.md",
     ],
