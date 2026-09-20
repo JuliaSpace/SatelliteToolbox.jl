@@ -15,6 +15,7 @@ makedocs(;
         "Home" => "index.md",
         "Tutorials" => [
             "ISS Observation"                     => "tutorials/iss_observation.md",
+            "GPS State Vector: ITRF to GCRF"      => "tutorials/gps_itrf_to_gcrf.md",
         ],
         "Library" => "lib/library.md",
     ],
