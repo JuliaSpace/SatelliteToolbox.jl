@@ -1,9 +1,11 @@
 SatelliteToolbox.jl Changelog
 =============================
 
-Version 1.1.0
+Version 2.0.0
 -------------
 
+- ![BREAKING][badge-breaking] We bumped all the packages in the SatelliteToolbox.jl
+  ecosystem. All of them are reexported, and some of them contain breaking changes.
 - ![BREAKING][badge-breaking] The keyword `tolerance` of the function
   `orbital_angular_velocity_to_semimajor_axis` is now relative to the requested angular
   velocity instead of an absolute residue in [deg / min]. The default value `√eps(T)` is
