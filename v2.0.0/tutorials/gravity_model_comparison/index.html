@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Comparing Gravity Models · Satellite Toolbox</title><meta name="title" content="Comparing Gravity Models · Satellite Toolbox"/><meta property="og:title" content="Comparing Gravity Models · Satellite Toolbox"/><meta property="twitter:title" content="Comparing Gravity Models · Satellite Toolbox"/><meta name="description" content="Documentation for Satellite Toolbox."/><meta property="og:description" content="Documentation for Satellite Toolbox."/><meta property="twitter:description" content="Documentation for Satellite Toolbox."/><meta property="og:url" content="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/gravity_model_comparison/"/><meta property="twitter:url" content="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/gravity_model_comparison/"/><link rel="canonical" href="https://juliaspace.github.io/SatelliteToolbox.jl/stable/tutorials/gravity_model_comparison/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Satellite Toolbox logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">Satellite Toolbox</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../iss_observation/">ISS Observation</a></li><li><a class="tocitem" href="../gps_itrf_to_gcrf/">GPS State Vector: ITRF to GCRF</a></li><li><a class="tocitem" href="../geomagnetic_field_leo/">Geomagnetic Field Along a LEO Orbit</a></li><li class="is-active"><a class="tocitem" href>Comparing Gravity Models</a><ul class="internal"><li><a class="tocitem" href="#Theory"><span>Theory</span></a></li><li><a class="tocitem" href="#Algorithm"><span>Algorithm</span></a></li><li><a class="tocitem" href="#Code"><span>Code</span></a></li></ul></li><li><a class="tocitem" href="../mean_elements_fit_covariance/">Mean Elements Fit and Covariance</a></li></ul></li><li><a class="tocitem" href="../../lib/library/">Library</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Comparing Gravity Models</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Comparing Gravity Models</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaSpace/SatelliteToolbox.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaSpace/SatelliteToolbox.jl/blob/master/docs/src/tutorials/gravity_model_comparison.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Comparing-Gravity-Models"><a class="docs-heading-anchor" href="#Comparing-Gravity-Models">Comparing Gravity Models</a><a id="Comparing-Gravity-Models-1"></a><a class="docs-heading-anchor-permalink" href="#Comparing-Gravity-Models" title="Permalink"></a></h1><p>In this tutorial, we will evaluate the gravitational acceleration along a low Earth orbit (LEO) using a spherical harmonics gravity model truncated at different degrees. This analysis helps us select the model complexity required by a numerical orbit propagator given the desired accuracy.</p><h2 id="Theory"><a class="docs-heading-anchor" href="#Theory">Theory</a><a id="Theory-1"></a><a class="docs-heading-anchor-permalink" href="#Theory" title="Permalink"></a></h2><p>The package <a href="https://github.com/JuliaSpace/SatelliteToolboxGravityModels.jl">SatelliteToolboxGravityModels.jl</a> computes the gravitational potential using the spherical harmonics expansion:</p><p class="math-container">\[\begin{equation*}
+  U(r, \phi, \lambda) = \frac{\mu}{r} \sum_{n=0}^{N} \left(\frac{R}{r}\right)^n
+  \sum_{m=0}^{n} \bar{P}_{nm}(\sin\phi)
+  \left(\bar{C}_{nm} \cos m\lambda + \bar{S}_{nm} \sin m\lambda\right)~,
+\end{equation*}\]</p><p>where <span>$\mu$</span> is the gravitational constant, <span>$R$</span> is the reference radius, <span>$r$</span>, <span>$\phi$</span>, and <span>$\lambda$</span> are the geocentric distance, latitude, and longitude, <span>$\bar{P}_{nm}$</span> are the fully normalized associated Legendre functions, and <span>$\bar{C}_{nm}$</span> and <span>$\bar{S}_{nm}$</span> are the normalized coefficients distributed in the ICGEM (International Centre for Global Earth Models) files. The gravitational acceleration is the gradient of this potential:</p><p class="math-container">\[\begin{equation*}
+  \vec{a} = \nabla U~.
+\end{equation*}\]</p><p>The term <span>$n = 0$</span> is the point-mass acceleration. The degree-1 terms vanish when the origin of the frame is at the center of mass, and the zonal term of degree 2 is related to the Earth&#39;s oblateness by:</p><p class="math-container">\[\begin{equation*}
+  J_2 = -\sqrt{5} \, \bar{C}_{20}~.
+\end{equation*}\]</p><p>Truncating the expansion at <span>$n = 2$</span> and <span>$m = 0$</span> yields the well-known point-mass plus <span>$J_2$</span> acceleration:</p><p class="math-container">\[\begin{equation*}
+  \vec{a} = -\frac{\mu}{r^3} \vec{r} + \frac{3}{2} \frac{J_2 \mu R^2}{r^5}
+  \begin{bmatrix}
+    x \left(5 z^2 / r^2 - 1\right) \\
+    y \left(5 z^2 / r^2 - 1\right) \\
+    z \left(5 z^2 / r^2 - 3\right)
+  \end{bmatrix}~,
+\end{equation*}\]</p><p>which we will use to validate the model evaluation.</p><p>Finally, notice that the <strong>gravitational</strong> acceleration is caused by the Earth&#39;s mass only. The <strong>gravity</strong> acceleration, which is what an accelerometer resting on the ground measures, also includes the centrifugal term due to the Earth&#39;s rotation:</p><p class="math-container">\[\begin{equation*}
+  \vec{g} = \nabla U + \omega_\oplus^2 \begin{bmatrix} x \\ y \\ 0 \end{bmatrix}~.
+\end{equation*}\]</p><p>Orbit dynamics must use the gravitational acceleration.</p><h2 id="Algorithm"><a class="docs-heading-anchor" href="#Algorithm">Algorithm</a><a id="Algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithm" title="Permalink"></a></h2><p>We need to perform the following tasks to compare the model truncations:</p><ol><li>Load the gravity model;</li><li>Propagate the orbit and convert the positions to the body-fixed frame;</li><li>Evaluate the acceleration using the full model and the truncated versions; and</li><li>Validate the truncation of degree 2 against the analytic <span>$J_2$</span> formula.</li></ol><h2 id="Code"><a class="docs-heading-anchor" href="#Code">Code</a><a id="Code-1"></a><a class="docs-heading-anchor-permalink" href="#Code" title="Permalink"></a></h2><p>Before starting, let&#39;s load all the packages in the <strong>SatelliteToolbox.jl</strong> ecosystem together with the auxiliary packages used in this tutorial:</p><pre><code class="language-julia hljs">using SatelliteToolbox
+using CairoMakie
+using LinearAlgebra
+using Printf
+using Statistics</code></pre><p>The function <code>fetch_icgem_file</code> downloads the ICGEM file of well-known models to a scratch space, and the function <code>GravityModels.load</code> parses it. We will use the EGM96 model, which has degree and order 360:</p><pre><code class="language-julia hljs">egm96 = GravityModels.load(IcgemFile, fetch_icgem_file(:EGM96))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi"><span class="sgr1">IcgemFile{Float64, Val{:full}}:</span>
+<span class="sgr90">  </span><span class="sgr1">Product Type</span>               : gravity_field
+<span class="sgr90">  </span><span class="sgr1">Model Name</span>                 : EGM96
+<span class="sgr90">  </span><span class="sgr1">Gravity Constant</span>           : 3.986004415e14 <span class="sgr90">m³/s²</span>
+<span class="sgr90">  </span><span class="sgr1">Radius</span>                     : 6.3781363e6 <span class="sgr90">m</span>
+<span class="sgr90">  </span><span class="sgr1">Angular Speed</span>              : 7.292115147e-5 <span class="sgr90">rad/s</span>
+<span class="sgr90">  </span><span class="sgr1">Maximum Degree</span>             : 360
+<span class="sgr90">  </span><span class="sgr1">Errors</span>                     : formal
+<span class="sgr90">  </span><span class="sgr1">Tide System</span>                : tide_free
+<span class="sgr90">  </span><span class="sgr1">Normalization</span>              : full
+<span class="sgr90">  </span><span class="sgr1">Time-Variable Coefficients</span> : none</code></pre><div class="admonition is-info" id="Note-9de5b2aafc15e182"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-9de5b2aafc15e182" title="Permalink"></a></header><div class="admonition-body"><p>The EGM2008 model, which is also available, has degree 2190 and its file is much larger. The EGM96 is enough for this tutorial, since we are interested in the behavior of the truncation error and not in the absolute accuracy.</p></div></div><p>The evaluation functions accept a workspace that holds the buffers used to compute the Legendre functions. Creating it once and reusing it avoids allocations, which largely improves the performance when the model is evaluated many times:</p><pre><code class="language-julia hljs">N_max = GravityModels.maximum_degree(egm96)
+μ     = GravityModels.gravity_constant(egm96)
+R     = GravityModels.radius(egm96)
+ws    = GravityModels.Workspace(egm96)</code></pre><p>This concludes the first step of the algorithm.</p><p>We will analyze a Sun-synchronous orbit at 500 km of altitude during one nodal period, which is obtained by the function <code>orbital_period</code>. The J2 propagator returns the positions in the true equator of date. Hence, we use the TOD (True of Date) frame as the ECI and the PEF (Pseudo-Earth Fixed) frame as the ECEF, avoiding the need of the EOP (Earth Orientation Parameters):</p><pre><code class="language-julia hljs">jd₀ = date_to_jd(2023, 1, 1, 0, 0, 0)
+orb = KeplerianElements(jd₀, 6878.137e3, 0.001, 98 |&gt; deg2rad, 0, 0, 0)
+
+T_orb = orbital_period(orb)
+orbp  = Propagators.init(Val(:J2), orb)
+vt    = 0:10:ceil(T_orb)
+
+vr_tod, vv_tod = Propagators.propagate!(orbp, vt)
+vjd    = Propagators.epoch(orbp) .+ vt ./ 86400
+vr_pef = r_eci_to_ecef.(TOD(), PEF(), vjd) .* vr_tod</code></pre><div class="admonition is-info" id="Note-742a442241254180"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-742a442241254180" title="Permalink"></a></header><div class="admonition-body"><p>The gravity model must be evaluated with the position represented in the body-fixed frame, which is the ITRF for the Earth. The PEF differs from the ITRF only by the polar motion, which displaces the position by roughly 10 m at LEO altitudes. This is negligible for the comparison we are performing, but it must be taken into account in a high-fidelity propagator.</p></div></div><p>This concludes the second step of the algorithm.</p><p>The function <code>GravityModels.gravitational_acceleration</code> evaluates the model at a position [m] and returns the acceleration [m/s²]. If the keyword <code>max_degree</code> is omitted, the full model is used. Let&#39;s compute the reference acceleration and also show the centrifugal contribution included by <code>GravityModels.gravity_acceleration</code>:</p><pre><code class="language-julia hljs">va_full = [
+    GravityModels.gravitational_acceleration(egm96, r; workspace = ws) for r in vr_pef
+]
+
+g_full = GravityModels.gravity_acceleration(egm96, vr_pef[1]; workspace = ws)
+
+@printf(&quot;|a| at the first sample:        %.6f m/s²\n&quot;, norm(va_full[1]))
+@printf(&quot;Centrifugal term at the sample: %.4f m/s²\n&quot;, norm(g_full - va_full[1]))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">|a| at the first sample:        8.454181 m/s²
+Centrifugal term at the sample: 0.0365 m/s²</code></pre><p>We can now evaluate the truncated models and compute the error with respect to the full model:</p><pre><code class="language-julia hljs">degrees = [2, 4, 10, 36, 120]
+
+verr = Dict(
+    n =&gt; [
+        norm(
+            GravityModels.gravitational_acceleration(
+                egm96,
+                r;
+                max_degree = n,
+                workspace = ws
+            ) - a
+        ) for (r, a) in zip(vr_pef, va_full)
+    ] for n in degrees
+)
+
+println(&quot;Degree   Max. error [m/s²]   RMS error [m/s²]&quot;)
+
+for n in degrees
+    @printf(&quot;%6d   %17.3e   %16.3e\n&quot;, n, maximum(verr[n]), sqrt(mean(verr[n] .^ 2)))
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Degree   Max. error [m/s²]   RMS error [m/s²]
+     2           2.757e-04          1.436e-04
+     4           1.829e-04          8.821e-05
+    10           6.059e-05          2.991e-05
+    36           1.577e-05          3.608e-06
+   120           1.682e-08          4.782e-09</code></pre><pre><code class="language-julia hljs">fig = Figure(size = (800, 450))
+ax  = Axis(
+    fig[1, 1];
+    xlabel = &quot;Time [min]&quot;,
+    ylabel = &quot;|a_n - a_360| [m/s²]&quot;,
+    yscale = log10,
+)
+
+for n in degrees
+    lines!(ax, vt ./ 60, verr[n]; label = &quot;n = $n&quot;)
+end
+
+axislegend(ax; position = :rt)
+
+fig</code></pre><img src="d51e377f.png" alt="Example block output"/><p>The error decreases quickly with the degree at this altitude. For reference, an acceleration error of <span>$10^{-6}$</span> m/s² integrated during one orbit leads to a position error of the order of meters. The truncation error also depends on the position, since the higher degree terms are related to local mass anomalies.</p><p>The error as a function of the maximum degree at a fixed point shows the expected exponential decay, since the contribution of each degree is attenuated by the factor <span>$(R / r)^n$</span>:</p><pre><code class="language-julia hljs">r₁ = vr_pef[1]
+a₁ = va_full[1]
+vn = 1:(N_max - 1)
+
+verr_n = [
+    norm(
+        GravityModels.gravitational_acceleration(
+            egm96,
+            r₁;
+            max_degree = n,
+            workspace = ws
+        ) - a₁
+    ) for n in vn
+]
+
+fig = Figure(size = (800, 450))
+ax  = Axis(
+    fig[1, 1];
+    xlabel = &quot;Maximum degree&quot;,
+    ylabel = &quot;|a_n - a_360| [m/s²]&quot;,
+    yscale = log10,
+)
+lines!(ax, vn, verr_n)
+
+fig</code></pre><img src="1a05cadd.png" alt="Example block output"/><p>This concludes the third step of the algorithm.</p><p>Finally, let&#39;s validate the model evaluation against the analytic formula presented in the theory section. The function <code>GravityModels.coefficients</code> returns the normalized coefficients of a given degree and order, from which we obtain <span>$J_2$</span>. Notice that the value is close to the one of the EGM2008 model available in the package <a href="https://github.com/JuliaSpace/SatelliteToolboxBase.jl">SatelliteToolboxBase.jl</a>:</p><pre><code class="language-julia hljs">C20, S20 = GravityModels.coefficients(egm96, 2, 0)
+J2 = -√5 * C20
+
+@printf(&quot;J2 from EGM96:   %.10e\n&quot;, J2)
+@printf(&quot;J2 from EGM2008: %.10e\n&quot;, EGM_2008_J2)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">J2 from EGM96:   1.0826266836e-03
+J2 from EGM2008: 1.0826261739e-03</code></pre><p>The truncation at degree 2 and order 0 must match the analytic expression up to the floating-point precision:</p><pre><code class="language-julia hljs">function point_mass_j2(r, μ, R, J2)
+    x, y, z = r
+    rn = norm(r)
+    k  = 3 // 2 * J2 * μ * R^2 / rn^5
+    z2 = 5 * z^2 / rn^2
+    return -μ / rn^3 * r + k * [x * (z2 - 1), y * (z2 - 1), z * (z2 - 3)]
+end
+
+verr_j2 = [
+    norm(
+        point_mass_j2(r, μ, R, J2) - GravityModels.gravitational_acceleration(
+            egm96,
+            r;
+            max_degree = 2,
+            max_order = 0,
+            workspace = ws
+        )
+    ) / norm(a) for (r, a) in zip(vr_pef, va_full)
+]
+
+@printf(&quot;Maximum relative difference: %.2e\n&quot;, maximum(verr_j2))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Maximum relative difference: 5.68e-16</code></pre><p>This concludes the tutorial.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../geomagnetic_field_leo/">« Geomagnetic Field Along a LEO Orbit</a><a class="docs-footer-nextpage" href="../mean_elements_fit_covariance/">Mean Elements Fit and Covariance »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.19.0 on <span class="colophon-date" title="Monday 21 September 2026 16:11">Monday 21 September 2026</span>. Using Julia version 1.13.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
