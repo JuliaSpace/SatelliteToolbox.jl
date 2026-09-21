@@ -2,7 +2,7 @@ name = "SatelliteToolbox"
 uuid = "6ac157d9-b43d-51bb-8fab-48bf53814f4a"
 license = "MIT"
 desc = "A toolbox for satellite analysis"
-version = "1.0.0"
+version = "2.0.0"
 authors = ["Ronan Arraes Jardim Chagas <ronisbr@gmail.com>"]
 
 [deps]
